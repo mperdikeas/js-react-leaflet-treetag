@@ -1,0 +1,7 @@
+node_modules/
+dist/bundle.js
+dist/index.html
+npm-debug.log*
+lib/
+*.war
+build.xml.*.log

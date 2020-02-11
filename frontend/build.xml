@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="presentation-oriented-SPA"
+         basedir="."
+         default="build"
+         xmlns:contrib="http://net.sf.antcontrib">
+
+    <description>
+        Simple Ant build file to package a webpack-bundled application as a WAR
+    </description>
+    
+    <property file="${basedir}/build.properties"/>
+
+    <property name="war.file" value = "${basedir}/${war.fname}"/>
+    
+    <taskdef uri="http://net.sf.antcontrib"  resource="net/sf/antcontrib/antlib.xml"  classpath="ant-contrib-1.0b3.jar"/>
+
+    <target name="npm-install">
+        <exec executable="npm" dir="${basedir}" failonerror="true">
+            <arg value="install"/>
+        </exec>
+    </target>
+
+    <target name="build" depends="npm-install" description="prepare WAR">
+        <exec executable="npm" dir="${basedir}" failonerror="true">
+            <arg value="run"/>
+            <arg value="build"/>
+        </exec>
+        <war destfile="${war.file}" basedir="dist"
+             webxml="web.xml"
+             compress="true" update="false">
+        </war>
+    </target>
+
+    <target name="clean" description="clean both NPM and WAR artifact">
+        <exec executable="npm" dir="${basedir}" failonerror="true">
+            <arg value="run"/>
+            <arg value="raze"/>
+        </exec>
+        <exec executable="rm" dir="${basedir}" failonerror="true">
+            <arg value="-f"/>
+            <arg value="build/bundle.js"/>
+            <arg value="*.war"/>
+        </exec>
+    </target>
+
+
+    <target name="test" depends="npm-install" description="test JS code">
+        <exec executable="npm" dir="${basedir}" failonerror="true">
+            <arg value="run"/>
+            <arg value="test"/>
+        </exec>
+    </target>
+
+
+    <target name="deploy" depends="build, test" description="deploy to local configured web server">
+      <echo message="copying ${war.file} to ${deploy.dir}/"/>
+      <copy file="${war.file}" tofile="${deploy.dir}/${war.fname}"/>
+    </target>
+
+    <target name="undeploy" description="delete from local configured web server">
+      <delete file="${deploy.dir}/${war.fname}"/>
+    </target>
+</project>
+
+
