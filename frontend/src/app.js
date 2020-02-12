@@ -15,99 +15,51 @@ const assert = require('chai').assert;
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
+import 'reset-css';
+
+import Map from './map.js';
+
 
 class App extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
+            tileProviderId: 1
         };
+        this.onTileProviderSelect = this.onTileProviderSelect.bind(this);
     }
 
     componentDidMount() {
-        console.log('componentDidMount()');
-        this.map = L.map('map-id', {
-            center: Athens,
-            zoom: 12,
-            zoomControl: true
-        });
-
-
-        const layerToUse = 2;
-        if (layerToUse===1) {
-            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-	        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012',
-                detectRetina: true,
-                maxZoom: 50
-            }).addTo(this.map);
-        } else if (layerToUse===2) {
-            // provider: MapBox
-            const mapboxAccessToken = "pk.eyJ1IjoibXBlcmRpa2VhcyIsImEiOiJjazZpMjZjMW4wOXJzM2ttc2hrcTJrNG9nIn0.naHhlYnc4czWUjX0-icY7Q";
-            L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-                maxZoom: 25,
-                id: 'mapbox/streets-v11',
-                accessToken: mapboxAccessToken
-            }).addTo(this.map);
-        }
-        const treeIcon = new L.icon({
-            iconUrl: require('./tree.png'),
-            iconSize: [8, 8],
-            iconAnchor: [2, 2],
-            popupAnchor: [0, -2]
-        });
-
-        /*
-         *  circle markers
-         *
-         */
-        var myRenderer = L.canvas({ padding: 0.5 });
-        generateCoordinatesInAthens(100).forEach( c=> {
-            var circleMarker = L.circleMarker(c, {
-                renderer: myRenderer,
-                color: '#3388ff',
-                radius: 3
-            }).addTo(this.map);
-        });
-
-        /*
-         *  circles
-         *
-         */
-
-        generateCoordinatesInAthens(10*1000).forEach( c=> {
-            L.circle(c, {
-                renderer: myRenderer,
-                color: 'red',
-                fillColor: '#f03',
-                fillOpacity: 0.5,
-                radius: 1
-            }).addTo(this.map);
-        });
-
-        /*
-         *  markers
-         *
-         */            
-        generateCoordinatesInAthens(100).forEach( c=> {
-            L.marker(c, {icon: treeIcon}).addTo(this.map).bindPopup('a fucking tree');
-        });
-
-
-
-        
-
     }
     
     componentDidUpdate(prevProps, prevState) {
-        console.log('componentDidUpdate()');
+    }
+
+    onTileProviderSelect(tileProviderId) {
+        this.setState({tileProviderId :tileProviderId});
     }
 
 
     render() {
-        console.log('render()');
         return (
-                <div id='map-id' style={{width: "80%", height: "800px" }}>
+                <div class='container-fluid'>
+                    <div class='row'>
+                        <div class="dropdown col-sm">
+                            <button class="btn btn-primary btn-lg dropdown-toggle"
+                                type="button" id="dropdownMenuButton"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false">
+                                    Tiles provider
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" onClick={()=>this.onTileProviderSelect(1)}>ESRI</a>
+                                <a class="dropdown-item" onClick={()=>this.onTileProviderSelect(2)}>openstreetmap</a>
+                            </div>
+                         </div>
+                    </div>
+                    <Map tileProviderId={this.state.tileProviderId}/>
                 </div>
         );
     }
