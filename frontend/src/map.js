@@ -14,7 +14,16 @@ const assert = require('chai').assert;
 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import proj4 from 'proj4';
 
+// https://spatialreference.org/ref/epsg/2100/
+proj4.defs([
+  [
+    'EPSG:2100',
+    '+proj=tmerc +lat_0=0 +lon_0=24 +k=0.9996 +x_0=500000 +y_0=0 +ellps=GRS80 +towgs84=-199.87,74.79,246.62,0,0,0,0 +units=m +no_defs']
+]);
+const WGS84  = 'EPSG:4326';
+const HGRS87 = 'EPSG:2100';
 
 class Map extends React.Component {
 
@@ -48,10 +57,10 @@ class Map extends React.Component {
         this.addTiles(null);
         this.addMarkers();
         this.map.on('click', function(e){
-            var coord = e.latlng;
-            var lat = coord.lat;
-            var lng = coord.lng;
-            console.log("You clicked the map at latitude: " + lat + " and longitude: " + lng);
+            const {lat, lng} = e.latlng;
+            console.log(`You clicked the map at latitude: ${lat} and longitude ${lng}`);
+            const proj = proj4(WGS84, HGRS87,[lng, lat]);
+            console.log(`converted are ${proj}`);
         });
     }
 
