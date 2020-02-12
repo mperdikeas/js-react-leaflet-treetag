@@ -49,50 +49,50 @@ class App extends React.Component {
                 id: 'mapbox/streets-v11',
                 accessToken: mapboxAccessToken
             }).addTo(this.map);
-
-            const treeIcon = new L.icon({
-                iconUrl: require('./tree.png'),
-                iconSize: [8, 8],
-                iconAnchor: [2, 2],
-                popupAnchor: [0, -2]
-            });
-
-            /*
-             *  circle markers
-             *
-             */
-            var myRenderer = L.canvas({ padding: 0.5 });
-            generateCoordinatesInAthens(100).forEach( c=> {
-                var circleMarker = L.circleMarker(c, {
-                    renderer: myRenderer,
-                    color: '#3388ff',
-                    radius: 3
-                }).addTo(this.map);
-            });
-
-            /*
-             *  circles
-             *
-             */
-
-            generateCoordinatesInAthens(100*1000).forEach( c=> {
-                L.circle(c, {
-                    renderer: myRenderer,
-                    color: 'red',
-                    fillColor: '#f03',
-                    fillOpacity: 0.5,
-                    radius: 1
-                }).addTo(this.map);
-            });
-
-            /*
-             *  markers
-             *
-             */            
-            generateCoordinatesInAthens(100).forEach( c=> {
-                L.marker(c, {icon: treeIcon}).addTo(this.map).bindPopup('a fucking tree');
-            });
         }
+        const treeIcon = new L.icon({
+            iconUrl: require('./tree.png'),
+            iconSize: [8, 8],
+            iconAnchor: [2, 2],
+            popupAnchor: [0, -2]
+        });
+
+        /*
+         *  circle markers
+         *
+         */
+        var myRenderer = L.canvas({ padding: 0.5 });
+        generateCoordinatesInAthens(100).forEach( c=> {
+            var circleMarker = L.circleMarker(c, {
+                renderer: myRenderer,
+                color: '#3388ff',
+                radius: 3
+            }).addTo(this.map);
+        });
+
+        /*
+         *  circles
+         *
+         */
+
+        generateCoordinatesInAthens(10*1000).forEach( c=> {
+            L.circle(c, {
+                renderer: myRenderer,
+                color: 'red',
+                fillColor: '#f03',
+                fillOpacity: 0.5,
+                radius: 1
+            }).addTo(this.map);
+        });
+
+        /*
+         *  markers
+         *
+         */            
+        generateCoordinatesInAthens(100).forEach( c=> {
+            L.marker(c, {icon: treeIcon}).addTo(this.map).bindPopup('a fucking tree');
+        });
+
 
 
         
