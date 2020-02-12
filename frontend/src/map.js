@@ -20,6 +20,22 @@ class Map extends React.Component {
 
     constructor(props) {
         super(props);
+        this.esriTileLayer = 
+            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+	        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012',
+                detectRetina: true,
+                maxZoom: 50
+            });
+        {
+            const mapboxAccessToken = "pk.eyJ1IjoibXBlcmRpa2VhcyIsImEiOiJjazZpMjZjMW4wOXJzM2ttc2hrcTJrNG9nIn0.naHhlYnc4czWUjX0-icY7Q";
+            this.mapboxTileLayer =
+            L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+                maxZoom: 25,
+                id: 'mapbox/streets-v11',
+                accessToken: mapboxAccessToken
+            });
+        }
     }
 
     componentDidMount() {
@@ -28,33 +44,30 @@ class Map extends React.Component {
             zoom: 12,
             zoomControl: false
         });
-        this.addTiles();
+        this.addTiles(null);
         this.addMarkers();
     }
 
     componentDidUpdate(newProps, newState) {
         console.log('Map::componentDidUpdate');
-        if (newProps.tileProviderId!==this.props.tileProviderid)
-            this.addTiles();
+        if (newProps.tileProviderId!==this.props.tileProviderId) {
+            console.log(`tile provider change detected from ${this.props.tileProviderId} to ${newProps.tileProviderId}`);
+            this.addTiles(this.props.tileProviderId);
+        }
     }
 
-    addTiles() {
+    addTiles(prevTileProvider) {
         const {tileProviderId} = this.props;
         if (tileProviderId===1) {
-            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-	        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012',
-                detectRetina: true,
-                maxZoom: 50
-            }).addTo(this.map);
+            console.log('A');
+            if (prevTileProvider!==null)
+                this.map.removeLayer(this.mapboxTileLayer);
+            this.esriTileLayer.addTo(this.map);
         } else if (tileProviderId===2) {
-            // provider: MapBox
-            const mapboxAccessToken = "pk.eyJ1IjoibXBlcmRpa2VhcyIsImEiOiJjazZpMjZjMW4wOXJzM2ttc2hrcTJrNG9nIn0.naHhlYnc4czWUjX0-icY7Q";
-            L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-                maxZoom: 25,
-                id: 'mapbox/streets-v11',
-                accessToken: mapboxAccessToken
-            }).addTo(this.map);
+            console.log('B');
+            if (prevTileProvider!==null)
+                this.map.removeLayer(this.esriTileLayer);
+            this.mapboxTileLayer.addTo(this.map);
         } else
             assert.fail(`unhandled case ${tileProviderId}`);
     }
