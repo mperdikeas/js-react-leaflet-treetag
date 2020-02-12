@@ -47,6 +47,12 @@ class Map extends React.Component {
         });
         this.addTiles(null);
         this.addMarkers();
+        this.map.on('click', function(e){
+            var coord = e.latlng;
+            var lat = coord.lat;
+            var lng = coord.lng;
+            console.log("You clicked the map at latitude: " + lat + " and longitude: " + lng);
+        });
     }
 
     componentDidUpdate(newProps, newState) {
