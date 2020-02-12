@@ -50,17 +50,24 @@ class App extends React.Component {
                 accessToken: mapboxAccessToken
             }).addTo(this.map);
 
+            const treeIcon = new L.icon({
+                iconUrl: require('./tree.png'),
+                iconSize: [8, 8],
+                iconAnchor: [2, 2],
+                popupAnchor: [0, -2]
+            });
 
-            generateCoordinatesInAthens().forEach( c=> {
-                if (true)
+            generateMarkers().forEach( c=> {
+                if (false)
                 L.circle(c, {
                     color: 'red',
                     fillColor: '#f03',
                     fillOpacity: 0.5,
                     radius: 1
                 }).addTo(this.map);
-                else
-                L.marker(c).addTo(this.map).bindPopup('a marker').openPopup();
+                else {
+                    L.marker(c, {icon: treeIcon}).addTo(this.map).bindPopup('a fucking tree').openPopup();
+                }
             });
         }
 
