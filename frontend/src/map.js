@@ -36,6 +36,7 @@ class Map extends React.Component {
                 accessToken: mapboxAccessToken
             });
         }
+        this.currentTileLayer = null;
     }
 
     componentDidMount() {
@@ -52,22 +53,22 @@ class Map extends React.Component {
         console.log('Map::componentDidUpdate');
         if (newProps.tileProviderId!==this.props.tileProviderId) {
             console.log(`tile provider change detected from ${this.props.tileProviderId} to ${newProps.tileProviderId}`);
-            this.addTiles(this.props.tileProviderId);
+            this.addTiles();
         }
     }
 
-    addTiles(prevTileProvider) {
+    addTiles() {
+        if (this.currentTileLayer!==null) {
+            console.log('removing previous tile provider from map');
+            this.map.removeLayer(this.currentTileLayer);
+        }
         const {tileProviderId} = this.props;
         if (tileProviderId===1) {
-            console.log('A');
-            if (prevTileProvider!==null)
-                this.map.removeLayer(this.mapboxTileLayer);
             this.esriTileLayer.addTo(this.map);
+            this.currentTileLayer = this.esriTileLayer;
         } else if (tileProviderId===2) {
-            console.log('B');
-            if (prevTileProvider!==null)
-                this.map.removeLayer(this.esriTileLayer);
             this.mapboxTileLayer.addTo(this.map);
+            this.currentTileLayer = this.mapboxTileLayer;
         } else
             assert.fail(`unhandled case ${tileProviderId}`);
     }
@@ -75,8 +76,8 @@ class Map extends React.Component {
     addMarkers() {
         const treeIcon = new L.icon({
             iconUrl: require('./tree.png'),
-            iconSize: [8, 8],
-            iconAnchor: [2, 2],
+            iconSize: [16, 16],
+            iconAnchor: [4, 4],
             popupAnchor: [0, -2]
         });
 
