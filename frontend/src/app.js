@@ -57,17 +57,40 @@ class App extends React.Component {
                 popupAnchor: [0, -2]
             });
 
-            generateMarkers().forEach( c=> {
-                if (false)
+            /*
+             *  circle markers
+             *
+             */
+            var myRenderer = L.canvas({ padding: 0.5 });
+            generateCoordinatesInAthens(100).forEach( c=> {
+                var circleMarker = L.circleMarker(c, {
+                    renderer: myRenderer,
+                    color: '#3388ff',
+                    radius: 3
+                }).addTo(this.map);
+            });
+
+            /*
+             *  circles
+             *
+             */
+
+            generateCoordinatesInAthens(100*1000).forEach( c=> {
                 L.circle(c, {
+                    renderer: myRenderer,
                     color: 'red',
                     fillColor: '#f03',
                     fillOpacity: 0.5,
                     radius: 1
                 }).addTo(this.map);
-                else {
-                    L.marker(c, {icon: treeIcon}).addTo(this.map).bindPopup('a fucking tree').openPopup();
-                }
+            });
+
+            /*
+             *  markers
+             *
+             */            
+            generateCoordinatesInAthens(100).forEach( c=> {
+                L.marker(c, {icon: treeIcon}).addTo(this.map).bindPopup('a fucking tree');
             });
         }
 
@@ -92,11 +115,11 @@ class App extends React.Component {
 
 const Athens = [37.98, 23.72];
 
-function generateCoordinatesInAthens() {
+function generateCoordinatesInAthens(N) {
     const rv = [];
     const spanDegrees = 0.05;
     
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < N; i++) {
         rv.push([Athens[0]+(Math.random()-.5)*spanDegrees
                  , Athens[1]+(Math.random()-.5)*spanDegrees]);
     }
