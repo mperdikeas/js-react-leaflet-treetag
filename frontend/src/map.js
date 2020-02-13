@@ -56,12 +56,20 @@ class Map extends React.Component {
         });
         this.addTiles(null);
         this.createLayerGroups();
+        this.addLayerGroups();
         this.map.on('click', function(e){
             const {lat, lng} = e.latlng;
             console.log(`You clicked the map at latitude: ${lat} and longitude ${lng}`);
             const proj = proj4(WGS84, HGRS87,[lng, lat]);
             console.log(`converted are ${proj}`);
         });
+
+        const baseLayers = {
+            'esri': this.esriTileLayer
+            , 'mapbox': this.mapboxTileLayer
+        };
+        L.control.layers(baseLayers, this.layerGroups).addTo(this.map);
+
     }
 
     componentDidUpdate(newProps, newState) {
@@ -98,16 +106,15 @@ class Map extends React.Component {
 
         const myRenderer = L.canvas({ padding: 0.5 });
 
-        const circleMarkers = generateCoordinatesInAthens(100).map( c=> {
+        const circleMarkersLG = L.layerGroup(generateCoordinatesInAthens(100).map( c=> {
             return L.circleMarker(c, {
                 renderer: myRenderer,
                 color: '#3388ff',
                 radius: 3
             });
-        });
-        L.layerGroup(circleMarkers).addTo(this.map);
+        }));
 
-        const circles = generateCoordinatesInAthens(10*1000).map( c=> {
+        const circlesLG = L.layerGroup(generateCoordinatesInAthens(10*1000).map( c=> {
             return L.circle(c, {
                 renderer: myRenderer,
                 color: 'red',
@@ -115,14 +122,20 @@ class Map extends React.Component {
                 fillOpacity: 0.5,
                 radius: 1
             });
-        });
-        L.layerGroup(circles).addTo(this.map);
+        }));
 
 
-        const trees = generateCoordinatesInAthens(100).map( c=> {
+        const treesLG = L.layerGroup(generateCoordinatesInAthens(100).map( c=> {
             return L.marker(c, {icon: treeIcon}).bindPopup('a fucking tree');
-        });
-        L.layerGroup(trees).addTo(this.map);
+        }));
+
+        this.layerGroups = {circleMarkersLG, circlesLG, treesLG};
+    }
+
+    addLayerGroups() {
+        this.layerGroups.circleMarkersLG.addTo(this.map);
+        this.layerGroups.circlesLG      .addTo(this.map);
+        this.layerGroups.treesLG        .addTo(this.map);
     }
     
 
