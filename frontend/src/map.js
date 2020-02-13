@@ -56,7 +56,7 @@ class Map extends React.Component {
         });
         this.addTiles(null);
         this.createLayerGroups();
-        this.addLayerGroups();
+        this.configureLayerGroups();
         this.map.on('click', function(e){
             const {lat, lng} = e.latlng;
             console.log(`You clicked the map at latitude: ${lat} and longitude ${lng}`);
@@ -69,6 +69,17 @@ class Map extends React.Component {
             , 'mapbox': this.mapboxTileLayer
         };
         L.control.layers(baseLayers, this.layerGroups).addTo(this.map);
+
+        this.map.on('zoomend', () => {
+            this.configureLayerGroups();
+            if (false)
+            if (this.map.getZoom() < 15){
+                this.map.removeLayer(this.layerGroups.circlesLG);
+            }
+            else {
+                this.map.addLayer(this.layerGroups.circlesLG);
+            }
+        });
 
     }
 
@@ -132,10 +143,14 @@ class Map extends React.Component {
         this.layerGroups = {circleMarkersLG, circlesLG, treesLG};
     }
 
-    addLayerGroups() {
-        this.layerGroups.circleMarkersLG.addTo(this.map);
-        this.layerGroups.circlesLG      .addTo(this.map);
-        this.layerGroups.treesLG        .addTo(this.map);
+    configureLayerGroups() {
+        const zoomLevel = this.map.getZoom();
+        for (let x in this.layerGroups) {
+            if (zoomLevel >= LayersConfiguration[x].minZoomLevel)
+                this.layerGroups[x].addTo(this.map);
+            else
+                this.map.removeLayer(this.layerGroups[x]);
+        }
     }
     
 
@@ -149,6 +164,18 @@ class Map extends React.Component {
 }
 
 const Athens = [37.98, 23.72];
+
+class LayerConfiguration {
+    constructor(minZoomLevel) {
+        this.minZoomLevel = minZoomLevel;
+    }
+}
+
+const LayersConfiguration = {
+    circleMarkersLG: new LayerConfiguration(14),
+    circlesLG      : new LayerConfiguration(17),
+    treesLG        : new LayerConfiguration(14)
+};
 
 function generateCoordinatesInAthens(N) {
     const rv = [];
