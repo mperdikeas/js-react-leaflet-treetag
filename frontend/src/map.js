@@ -13,8 +13,12 @@ const createReactClass = require('create-react-class');
 const assert = require('chai').assert;
 
 import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import 'leaflet/dist/leaflet.css'; // TODO: remove that
 import proj4 from 'proj4';
+
+
+
+import {BaseLayers, BaseLayersForLayerControl} from './baseLayers.js';
 
 // https://spatialreference.org/ref/epsg/2100/
 proj4.defs([
@@ -29,21 +33,6 @@ class Map extends React.Component {
 
     constructor(props) {
         super(props);
-        this.baseLayers = {
-            'esri': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
-	        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012',
-                detectRetina: true,
-                maxZoom: 50
-            })
-            , 'mapbox': L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-                maxZoom: 25,
-                id: 'mapbox/streets-v11',
-                accessToken: "pk.eyJ1IjoibXBlcmRpa2VhcyIsImEiOiJjazZpMjZjMW4wOXJzM2ttc2hrcTJrNG9nIn0.naHhlYnc4czWUjX0-icY7Q"
-            })
-            , 
-            'thunderForest/landscape': L.tileLayer('http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png')
-        };
         this.currentTileLayer = null;
     }
 
@@ -62,8 +51,7 @@ class Map extends React.Component {
             const proj = proj4(WGS84, HGRS87,[lng, lat]);
             console.log(`converted are ${proj}`);
         });
-
-        L.control.layers(this.baseLayers, this.layerGroups).addTo(this.map);
+        L.control.layers(BaseLayersForLayerControl, this.layerGroups).addTo(this.map);
 
         this.map.on('zoomend', () => {
             this.configureLayerGroups();
@@ -94,8 +82,8 @@ class Map extends React.Component {
             this.map.removeLayer(this.currentTileLayer);
         }
         const {tileProviderId} = this.props;
-
-        const newBaseLayer = this.baseLayers[tileProviderId];
+        console.log(`providerid is ${tileProviderId}`);
+        const newBaseLayer = BaseLayers[tileProviderId].tileLayer;
         assert.isDefined(newBaseLayer);
         newBaseLayer.addTo(this.map);
         this.currentTileLayer = newBaseLayer;
@@ -149,7 +137,7 @@ class Map extends React.Component {
     
 
     render() {
-        console.log('render()');
+        console.log('Map::render()');
         return (
                 <div id='map-id' style={{width: "80%", height: "800px" }}>
                 </div>
