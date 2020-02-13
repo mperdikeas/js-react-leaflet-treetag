@@ -29,22 +29,21 @@ class Map extends React.Component {
 
     constructor(props) {
         super(props);
-        this.esriTileLayer = 
-            L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+        this.baseLayers = {
+            'esri': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
 	        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012',
                 detectRetina: true,
                 maxZoom: 50
-            });
-        {
-            const mapboxAccessToken = "pk.eyJ1IjoibXBlcmRpa2VhcyIsImEiOiJjazZpMjZjMW4wOXJzM2ttc2hrcTJrNG9nIn0.naHhlYnc4czWUjX0-icY7Q";
-            this.mapboxTileLayer =
-            L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+            })
+            , 'mapbox': L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
                 attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
                 maxZoom: 25,
                 id: 'mapbox/streets-v11',
-                accessToken: mapboxAccessToken
-            });
-        }
+                accessToken: "pk.eyJ1IjoibXBlcmRpa2VhcyIsImEiOiJjazZpMjZjMW4wOXJzM2ttc2hrcTJrNG9nIn0.naHhlYnc4czWUjX0-icY7Q"
+            })
+            , 
+            'thunderForest/landscape': L.tileLayer('http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png')
+        };
         this.currentTileLayer = null;
     }
 
@@ -64,11 +63,7 @@ class Map extends React.Component {
             console.log(`converted are ${proj}`);
         });
 
-        const baseLayers = {
-            'esri': this.esriTileLayer
-            , 'mapbox': this.mapboxTileLayer
-        };
-        L.control.layers(baseLayers, this.layerGroups).addTo(this.map);
+        L.control.layers(this.baseLayers, this.layerGroups).addTo(this.map);
 
         this.map.on('zoomend', () => {
             this.configureLayerGroups();
@@ -87,7 +82,6 @@ class Map extends React.Component {
     }
 
     componentDidUpdate(newProps, newState) {
-        console.log('Map::componentDidUpdate');
         if (newProps.tileProviderId!==this.props.tileProviderId) {
             console.log(`tile provider change detected from ${this.props.tileProviderId} to ${newProps.tileProviderId}`);
             this.addTiles();
@@ -100,14 +94,11 @@ class Map extends React.Component {
             this.map.removeLayer(this.currentTileLayer);
         }
         const {tileProviderId} = this.props;
-        if (tileProviderId===1) {
-            this.esriTileLayer.addTo(this.map);
-            this.currentTileLayer = this.esriTileLayer;
-        } else if (tileProviderId===2) {
-            this.mapboxTileLayer.addTo(this.map);
-            this.currentTileLayer = this.mapboxTileLayer;
-        } else
-            assert.fail(`unhandled case ${tileProviderId}`);
+
+        const newBaseLayer = this.baseLayers[tileProviderId];
+        assert.isDefined(newBaseLayer);
+        newBaseLayer.addTo(this.map);
+        this.currentTileLayer = newBaseLayer;
     }
     
     createLayerGroups() {

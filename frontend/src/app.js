@@ -25,7 +25,7 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            tileProviderId: 1
+            tileProviderId: 'esri'
         };
         this.onTileProviderSelect = this.onTileProviderSelect.bind(this);
     }
@@ -54,8 +54,9 @@ class App extends React.Component {
                                     Tiles provider
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" onClick={()=>this.onTileProviderSelect(1)}>ESRI</a>
-                                <a class="dropdown-item" onClick={()=>this.onTileProviderSelect(2)}>openstreetmap</a>
+                                <a class="dropdown-item" onClick={()=>this.onTileProviderSelect('esri')}>ESRI</a>
+                                <a class="dropdown-item" onClick={()=>this.onTileProviderSelect('mapbox')}>openstreetmap</a>
+                                <a class="dropdown-item" onClick={()=>this.onTileProviderSelect('thunderForest/landscape')}>Thunderforest (landscape)</a>                
                             </div>
                          </div>
                     </div>
