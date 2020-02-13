@@ -92,8 +92,8 @@ class Map extends React.Component {
     createLayerGroups() {
         const treeIcon = new L.icon({
             iconUrl: require('./tree.png'),
-            iconSize: [16, 16],
-            iconAnchor: [4, 4],
+            iconSize: [32, 32],
+            iconAnchor: [16, 16],
             popupAnchor: [0, -2]
         });
 
@@ -103,7 +103,7 @@ class Map extends React.Component {
             return L.circleMarker(c, {
                 renderer: myRenderer,
                 color: '#3388ff',
-                radius: 3
+                radius: 8
             });
         }));
 
@@ -113,7 +113,7 @@ class Map extends React.Component {
                 color: 'red',
                 fillColor: '#f03',
                 fillOpacity: 0.5,
-                radius: 1
+                radius: 8
             });
         }));
 
@@ -156,7 +156,7 @@ class LayerConfiguration {
 const LayersConfiguration = {
     circleMarkersLG: new LayerConfiguration(14),
     circlesLG      : new LayerConfiguration(17),
-    treesLG        : new LayerConfiguration(14)
+    treesLG        : new LayerConfiguration(15)
 };
 
 function generateCoordinatesInAthens(N) {
