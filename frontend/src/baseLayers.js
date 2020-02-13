@@ -11,6 +11,12 @@ const BaseLayers = {
                 detectRetina: true,
                 maxZoom: 50
              })}
+    ,'esri/satellite': {friendlyName: 'ESRI (sat)'
+                        , tileLayer: L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png', {
+	        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012',
+                detectRetina: true,
+                maxZoom: 50
+             })}
     , 'mapbox': {friendlyName: 'MapBox'
                  , tileLayer: L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
                 attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -31,7 +37,7 @@ const BaseLayers = {
     , 'stamen/terrain': {friendlyName: 'Stamen (terrain)'
                          , tileLayer: new L.StamenTileLayer("terrain")}
     , 'stamen/toner': {friendlyName: 'Stamen (toner)'
-                            , tileLayer: new L.StamenTileLayer("toner")}
+                       , tileLayer: new L.StamenTileLayer("toner")}
 };
 
 
