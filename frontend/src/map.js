@@ -119,7 +119,16 @@ class Map extends React.Component {
 
 
         const treesLG = L.layerGroup(generateCoordinatesInAthens(100).map( c=> {
-            return L.marker(c, {icon: treeIcon}).bindPopup('a fucking tree');
+
+            const options = {
+                icon: treeIcon // there is apparently an issue if I rely on the default icon
+                , clickable: true
+                , draggable: true
+                , title: 'a tree'
+                , riseOnHover: true // rises on top of other markers
+                , riseOffset: 250
+            };
+            return L.marker(c, options).bindPopup('a fucking tree');
         }));
 
         this.layerGroups = {circleMarkersLG, circlesLG, treesLG};
@@ -156,7 +165,7 @@ class LayerConfiguration {
 const LayersConfiguration = {
     circleMarkersLG: new LayerConfiguration(14),
     circlesLG      : new LayerConfiguration(17),
-    treesLG        : new LayerConfiguration(15)
+    treesLG        : new LayerConfiguration(13)
 };
 
 function generateCoordinatesInAthens(N) {
