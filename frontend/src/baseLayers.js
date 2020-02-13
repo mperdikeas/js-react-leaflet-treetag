@@ -1,3 +1,5 @@
+require('./tile-stamen-v1_3_0.js');
+
 const assert = require('chai').assert;
 
 const L = require('leaflet');
@@ -23,7 +25,13 @@ const BaseLayers = {
     , 'thunderforest/transport': {friendlyName: 'Thunderforest (transport)'
                                   , tileLayer: L.tileLayer('http://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png')}
     , 'thunderforest/outdoors': {friendlyName: 'Thunderforest (outdoors)'
-                                  , tileLayer: L.tileLayer('http://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png')}
+                                 , tileLayer: L.tileLayer('http://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png')}
+    , 'stamen/watercolor': {friendlyName: 'Stamen (watercolor)'
+                            , tileLayer: new L.StamenTileLayer("watercolor")}
+    , 'stamen/terrain': {friendlyName: 'Stamen (terrain)'
+                         , tileLayer: new L.StamenTileLayer("terrain")}
+    , 'stamen/toner': {friendlyName: 'Stamen (toner)'
+                            , tileLayer: new L.StamenTileLayer("toner")}
 };
 
 

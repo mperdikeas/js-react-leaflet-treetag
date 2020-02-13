@@ -69,9 +69,9 @@ class Map extends React.Component {
 
     }
 
-    componentDidUpdate(newProps, newState) {
-        if (newProps.tileProviderId!==this.props.tileProviderId) {
-            console.log(`tile provider change detected from ${this.props.tileProviderId} to ${newProps.tileProviderId}`);
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.tileProviderId!==this.props.tileProviderId) {
+            console.log(`tile provider change detected from ${prevProps.tileProviderId} to ${this.props.tileProviderId}`);
             this.addTiles();
         }
     }
