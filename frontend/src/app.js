@@ -14,10 +14,13 @@ const assert = require('chai').assert;
 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-
 import 'reset-css';
 
-import Map from './map.js';
+
+
+
+import Map        from './map.js';
+import {BaseLayers, BaseLayersForLayerControl} from './baseLayers.js';
 
 
 class App extends React.Component {
@@ -42,6 +45,20 @@ class App extends React.Component {
 
 
     render() {
+        const options = [];
+        for (let x in BaseLayers) {
+            console.log('for x in BaseLayers', x);
+            options.push(
+                <a class="dropdown-item" onClick={()=>this.onTileProviderSelect(x)}>
+                    {BaseLayers[x].friendlyName}
+                </a>
+            );
+        }
+        const dropDownMenu = (
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                {options}
+            </div>
+        );
         return (
                 <div class='container-fluid'>
                     <div class='row'>
@@ -53,11 +70,7 @@ class App extends React.Component {
                                 aria-expanded="false">
                                     Tiles provider
                             </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" onClick={()=>this.onTileProviderSelect('esri')}>ESRI</a>
-                                <a class="dropdown-item" onClick={()=>this.onTileProviderSelect('mapbox')}>openstreetmap</a>
-                                <a class="dropdown-item" onClick={()=>this.onTileProviderSelect('thunderForest/landscape')}>Thunderforest (landscape)</a>                
-                            </div>
+                           {dropDownMenu}
                          </div>
                     </div>
                     <Map tileProviderId={this.state.tileProviderId}/>
