@@ -18,6 +18,12 @@ const BaseLayers = {
                  })}
     , 'thunderforest/landscape': {friendlyName: 'Thunderforest (landscape)'
                                   , tileLayer: L.tileLayer('http://{s}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png')}
+    , 'thunderforest/cycle': {friendlyName: 'Thunderforest (cycle)'
+                                  , tileLayer: L.tileLayer('http://{s}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png')}
+    , 'thunderforest/transport': {friendlyName: 'Thunderforest (transport)'
+                                  , tileLayer: L.tileLayer('http://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png')}
+    , 'thunderforest/outdoors': {friendlyName: 'Thunderforest (outdoors)'
+                                  , tileLayer: L.tileLayer('http://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png')}
 };
 
 
