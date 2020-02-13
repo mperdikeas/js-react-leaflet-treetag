@@ -55,7 +55,7 @@ class Map extends React.Component {
             zoomControl: false
         });
         this.addTiles(null);
-        this.addMarkers();
+        this.createLayerGroups();
         this.map.on('click', function(e){
             const {lat, lng} = e.latlng;
             console.log(`You clicked the map at latitude: ${lat} and longitude ${lng}`);
@@ -88,7 +88,7 @@ class Map extends React.Component {
             assert.fail(`unhandled case ${tileProviderId}`);
     }
     
-    addMarkers() {
+    createLayerGroups() {
         const treeIcon = new L.icon({
             iconUrl: require('./tree.png'),
             iconSize: [16, 16],
@@ -96,46 +96,33 @@ class Map extends React.Component {
             popupAnchor: [0, -2]
         });
 
-        /*
-         *  circle markers
-         *
-         */
-        var myRenderer = L.canvas({ padding: 0.5 });
-        generateCoordinatesInAthens(100).forEach( c=> {
-            var circleMarker = L.circleMarker(c, {
+        const myRenderer = L.canvas({ padding: 0.5 });
+
+        const circleMarkers = generateCoordinatesInAthens(100).map( c=> {
+            return L.circleMarker(c, {
                 renderer: myRenderer,
                 color: '#3388ff',
                 radius: 3
-            }).addTo(this.map);
+            });
         });
+        L.layerGroup(circleMarkers).addTo(this.map);
 
-        /*
-         *  circles
-         *
-         */
-
-        generateCoordinatesInAthens(10*1000).forEach( c=> {
-            L.circle(c, {
+        const circles = generateCoordinatesInAthens(10*1000).map( c=> {
+            return L.circle(c, {
                 renderer: myRenderer,
                 color: 'red',
                 fillColor: '#f03',
                 fillOpacity: 0.5,
                 radius: 1
-            }).addTo(this.map);
+            });
         });
+        L.layerGroup(circles).addTo(this.map);
 
-        /*
-         *  markers
-         *
-         */            
-        generateCoordinatesInAthens(100).forEach( c=> {
-            L.marker(c, {icon: treeIcon}).addTo(this.map).bindPopup('a fucking tree');
+
+        const trees = generateCoordinatesInAthens(100).map( c=> {
+            return L.marker(c, {icon: treeIcon}).bindPopup('a fucking tree');
         });
-
-
-
-        
-
+        L.layerGroup(trees).addTo(this.map);
     }
     
 
