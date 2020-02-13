@@ -80,6 +80,9 @@ class Map extends React.Component {
                 this.map.addLayer(this.layerGroups.circlesLG);
             }
         });
+        $('div.leaflet-control-container section.leaflet-control-layers-list div.leaflet-control-layers-overlays input.leaflet-control-layers-selector[type="checkbox"]').on('change', (e)=>{
+            console.log('checkbox changed', e);
+        });
 
     }
 
