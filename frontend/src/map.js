@@ -193,8 +193,12 @@ class Map extends React.Component {
                                , heatMapCfg);
         })();
 
+<<<<<<< HEAD
         this.layerGroups = {circleMarkersLG, circlesLG, treesLG, defaultMarkersLG
                             , makiMarkersLG, markerClusterGroup, heatMap};
+=======
+        this.layerGroups = {circleMarkersLG, circlesLG, treesLG, defaultMarkersLG, makiMarkersLG, markerClusterGroup, heatMap};
+>>>>>>> origin/master
     }
 
     configureLayerGroups() {
