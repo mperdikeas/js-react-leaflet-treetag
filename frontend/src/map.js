@@ -14,12 +14,12 @@ const createReactClass = require('create-react-class');
 const assert = require('chai').assert;
 
 import L from 'leaflet';
-import 'leaflet/dist/leaflet.css'; // TODO: remove that
 import proj4 from 'proj4';
 
 
 
 import {BaseLayers, BaseLayersForLayerControl} from './baseLayers.js';
+import {DefaultIcon, TreeIcon}                          from './icons.js';
 
 // https://spatialreference.org/ref/epsg/2100/
 proj4.defs([
@@ -91,22 +91,6 @@ class Map extends React.Component {
     }
     
     createLayerGroups() {
-        const treeIcon = new L.icon({
-            iconUrl: require('./tree.png'),
-            iconSize: [32, 32],
-            iconAnchor: [16, 16],
-            popupAnchor: [0, -2]
-        });
-
-        const defaultIcon = new L.icon({
-            iconUrl     : require('../node_modules/leaflet/dist/images/marker-icon.png'),
-            shadowUrl   : require('../node_modules/leaflet/dist/images/marker-shadow.png'),
-            iconSize    : [40, 60],
-            shadowSize  : [60, 40],
-            iconAnchor  : [20, 60],
-            shadowAnchor: [20, 40],
-            popupAnchor : [ 0, -60]
-        });
 
         const myRenderer = L.canvas({ padding: 0.5 });
 
@@ -131,7 +115,7 @@ class Map extends React.Component {
 
         const treesLG = L.layerGroup(generateCoordinatesInAthens(100).map( c=> {
             const options = {
-                icon: treeIcon // there is apparently an issue if I rely on the default icon
+                icon: new TreeIcon()
                 , clickable: true
                 , draggable: true
                 , title: 'a tree'
@@ -143,7 +127,7 @@ class Map extends React.Component {
 
         const defaultMarkersLG = L.layerGroup(generateCoordinatesInAthens(100).map( c=> {
             const options = {
-                icon: defaultIcon
+                icon: new DefaultIcon()
                 , clickable: true
                 , draggable: false
                 , title: 'a tree'
