@@ -3,6 +3,11 @@ const assert = require('chai').assert;
 
 const L = require('leaflet');
 
+require('./ots/Leaflet.MakiMarkers.js');
+
+// provenance: https://account.mapbox.com/ (default public token)
+L.MakiMarkers.accessToken =
+    "pk.eyJ1IjoibXBlcmRpa2VhcyIsImEiOiJjazZpMjZjMW4wOXJzM2ttc2hrcTJrNG9nIn0.naHhlYnc4czWUjX0-icY7Q";
 
 
 const DefaultIcon = L.Icon.extend({
@@ -26,6 +31,9 @@ const TreeIcon = L.Icon.extend({
     }
 });
 
+
+
 exports.DefaultIcon = DefaultIcon;
 exports.TreeIcon    = TreeIcon;
+
 

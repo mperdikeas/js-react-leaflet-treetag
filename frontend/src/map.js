@@ -19,7 +19,8 @@ import proj4 from 'proj4';
 
 
 import {BaseLayers, BaseLayersForLayerControl} from './baseLayers.js';
-import {DefaultIcon, TreeIcon}                          from './icons.js';
+import {DefaultIcon, TreeIcon}          from './icons.js';
+import rainbow from './rainbow.js';
 
 // https://spatialreference.org/ref/epsg/2100/
 proj4.defs([
@@ -102,7 +103,7 @@ class Map extends React.Component {
             });
         }));
 
-        const circlesLG = L.layerGroup(generateCoordinatesInAthens(10*1000).map( c=> {
+        const circlesLG = L.layerGroup(generateCoordinatesInAthens(1000).map( c=> {
             return L.circle(c, {
                 renderer: myRenderer,
                 color: 'red',
@@ -137,6 +138,20 @@ class Map extends React.Component {
             return L.marker(c, options).bindPopup('a fucking tree');
         }));
 
+        const makiMarkersLG = L.layerGroup(generateCoordinatesInAthens(1000).map( c=> {
+            const options = {
+                icon: new L.MakiMarkers.Icon({icon: randomItem(['park', 'park-alt1', 'wetland', 'florist'])
+                                              , color: rainbow(30, Math.floor(Math.random()*30))
+                                              , size: randomItem(['s', 'm', 'l'])})
+                , clickable: false
+                , draggable: false
+                , title: 'a maki marker'
+                , riseOnHover: true // rises on top of other markers
+                , riseOffset: 250
+            };
+            return L.marker(c, options).bindPopup('a fucking tree');
+        }));
+
 
         const heatMap = (()=> {
         const heatMapCfg = {
@@ -151,7 +166,7 @@ class Map extends React.Component {
                                , heatMapCfg);
         })();
 
-        this.layerGroups = {circleMarkersLG, circlesLG, treesLG, defaultMarkersLG, heatMap};
+        this.layerGroups = {circleMarkersLG, circlesLG, treesLG, defaultMarkersLG, makiMarkersLG, heatMap};
     }
 
     configureLayerGroups() {
@@ -183,11 +198,12 @@ class LayerConfiguration {
 }
 
 const LayersConfiguration = {
-    circleMarkersLG: new LayerConfiguration(14),
-    circlesLG      : new LayerConfiguration(17),
-    treesLG        : new LayerConfiguration(13),
+    circleMarkersLG  : new LayerConfiguration(14),
+    circlesLG        : new LayerConfiguration(14),
+    treesLG          : new LayerConfiguration(13),
     defaultMarkersLG : new LayerConfiguration(13),
-    heatMap        : new LayerConfiguration(5)
+    makiMarkersLG    : new LayerConfiguration(16),
+    heatMap          : new LayerConfiguration( 5)
 };
 
 function generateCoordinatesInAthens(N) {
@@ -200,6 +216,15 @@ function generateCoordinatesInAthens(N) {
     }
     return rv;
 }
+
+function randomItem(items) {
+    const rv = items[Math.floor(Math.random() * items.length)];
+    console.log(rv);
+    return rv;
+}
+
+
+    
 
 export default Map;
 
