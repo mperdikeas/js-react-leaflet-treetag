@@ -98,6 +98,16 @@ class Map extends React.Component {
             popupAnchor: [0, -2]
         });
 
+        const defaultIcon = new L.icon({
+            iconUrl     : require('../node_modules/leaflet/dist/images/marker-icon.png'),
+            shadowUrl   : require('../node_modules/leaflet/dist/images/marker-shadow.png'),
+            iconSize    : [40, 60],
+            shadowSize  : [60, 40],
+            iconAnchor  : [20, 60],
+            shadowAnchor: [20, 40],
+            popupAnchor : [ 0, -60]
+        });
+
         const myRenderer = L.canvas({ padding: 0.5 });
 
         const circleMarkersLG = L.layerGroup(generateCoordinatesInAthens(100).map( c=> {
@@ -120,11 +130,22 @@ class Map extends React.Component {
 
 
         const treesLG = L.layerGroup(generateCoordinatesInAthens(100).map( c=> {
-
             const options = {
                 icon: treeIcon // there is apparently an issue if I rely on the default icon
                 , clickable: true
                 , draggable: true
+                , title: 'a tree'
+                , riseOnHover: true // rises on top of other markers
+                , riseOffset: 250
+            };
+            return L.marker(c, options).bindPopup('a fucking tree');
+        }));
+
+        const defaultMarkersLG = L.layerGroup(generateCoordinatesInAthens(100).map( c=> {
+            const options = {
+                icon: defaultIcon
+                , clickable: true
+                , draggable: false
                 , title: 'a tree'
                 , riseOnHover: true // rises on top of other markers
                 , riseOffset: 250
@@ -146,7 +167,7 @@ class Map extends React.Component {
                                , heatMapCfg);
         })();
 
-        this.layerGroups = {circleMarkersLG, circlesLG, treesLG, heatMap};
+        this.layerGroups = {circleMarkersLG, circlesLG, treesLG, defaultMarkersLG, heatMap};
     }
 
     configureLayerGroups() {
@@ -181,6 +202,7 @@ const LayersConfiguration = {
     circleMarkersLG: new LayerConfiguration(14),
     circlesLG      : new LayerConfiguration(17),
     treesLG        : new LayerConfiguration(13),
+    defaultMarkersLG : new LayerConfiguration(13),
     heatMap        : new LayerConfiguration(5)
 };
 
