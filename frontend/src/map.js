@@ -1,4 +1,5 @@
 require('./css/style.css');
+require('./ots/leaflet-heat.js');
 const     _ = require('lodash');
 const     $ = require('jquery');
 window.$ = $; // make jquery available to other scripts (not really applicable in our case) and the console
@@ -131,7 +132,21 @@ class Map extends React.Component {
             return L.marker(c, options).bindPopup('a fucking tree');
         }));
 
-        this.layerGroups = {circleMarkersLG, circlesLG, treesLG};
+
+        const heatMap = (()=> {
+        const heatMapCfg = {
+            minOpacity: 0.5
+            , maxZoom: 20
+            , max: 1
+            , radius: 35 //  radius of each "point" of the heatmap, 25 by default
+            , blur: 50   //amount of blur, 15 by default
+            , gradient: {0.4: 'blue', 0.65: 'lime', 1: 'red'} // color gradient config, e.g. {0.4: 'blue', 0.65: 'lime', 1: 'red'}
+        };
+            return L.heatLayer(generateCoordinatesInAthens(10000)
+                               , heatMapCfg);
+        })();
+
+        this.layerGroups = {circleMarkersLG, circlesLG, treesLG, heatMap};
     }
 
     configureLayerGroups() {
@@ -165,7 +180,8 @@ class LayerConfiguration {
 const LayersConfiguration = {
     circleMarkersLG: new LayerConfiguration(14),
     circlesLG      : new LayerConfiguration(17),
-    treesLG        : new LayerConfiguration(13)
+    treesLG        : new LayerConfiguration(13),
+    heatMap        : new LayerConfiguration(5)
 };
 
 function generateCoordinatesInAthens(N) {
