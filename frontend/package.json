@@ -57,6 +57,7 @@
     "fs-extra": "^7.0.1",
     "jquery": "^3.4.1",
     "leaflet": "^1.6.0",
+    "leaflet.markercluster": "^1.4.1",
     "popper": "^1.0.1",
     "popper.js": "^1.16.1",
     "proj4": "^2.6.0",

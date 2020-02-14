@@ -16,7 +16,8 @@ const assert = require('chai').assert;
 import L from 'leaflet';
 import proj4 from 'proj4';
 
-
+require('../node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css');
+require('../node_modules/leaflet.markercluster/dist/leaflet.markercluster.js');
 
 import {BaseLayers, BaseLayersForLayerControl} from './baseLayers.js';
 import {DefaultIcon, TreeIcon}          from './icons.js';
@@ -138,7 +139,7 @@ class Map extends React.Component {
             return L.marker(c, options).bindPopup('a fucking tree');
         }));
 
-        const makiMarkersLG = L.layerGroup(generateCoordinatesInAthens(1000).map( c=> {
+        const makiMarkersLG = L.layerGroup(generateCoordinatesInAthens(100).map( c=> {
             const options = {
                 icon: new L.MakiMarkers.Icon({icon: randomItem(['park', 'park-alt1', 'wetland', 'florist'])
                                               , color: rainbow(30, Math.floor(Math.random()*30))
@@ -151,6 +152,32 @@ class Map extends React.Component {
             };
             return L.marker(c, options).bindPopup('a fucking tree');
         }));
+
+
+        const markerClusterGroup = (()=>{
+            const rv = L.markerClusterGroup(
+                {
+                    showCoverageOnHover: true,
+                    zoomToBoundsOnClick: true,
+                    spiderfyOnMaxZoom: true,
+                    removeOutsideVisibleBounds: true
+                }
+            );
+            generateCoordinatesInAthens(50*1000).forEach( c=> {
+                const options = {
+                    icon: new L.MakiMarkers.Icon({icon: randomItem(['park', 'park-alt1', 'wetland', 'florist'])
+                                                  , color: rainbow(30, Math.floor(Math.random()*30))
+                                                  , size: randomItem(['s', 'm', 'l'])})
+                    , clickable: false
+                    , draggable: false
+                    , title: 'a maki marker'
+                    , riseOnHover: true // rises on top of other markers
+                    , riseOffset: 250
+                };
+                rv.addLayer(L.marker(c, options).bindPopup('a fucking tree'));
+            });
+            return rv;
+        })();
 
 
         const heatMap = (()=> {
@@ -166,7 +193,8 @@ class Map extends React.Component {
                                , heatMapCfg);
         })();
 
-        this.layerGroups = {circleMarkersLG, circlesLG, treesLG, defaultMarkersLG, makiMarkersLG, heatMap};
+        this.layerGroups = {circleMarkersLG, circlesLG, treesLG, defaultMarkersLG
+                            , makiMarkersLG, markerClusterGroup, heatMap};
     }
 
     configureLayerGroups() {
@@ -203,6 +231,7 @@ const LayersConfiguration = {
     treesLG          : new LayerConfiguration(13),
     defaultMarkersLG : new LayerConfiguration(13),
     makiMarkersLG    : new LayerConfiguration(16),
+    markerClusterGroup: new LayerConfiguration(0),
     heatMap          : new LayerConfiguration( 5)
 };
 
@@ -219,7 +248,6 @@ function generateCoordinatesInAthens(N) {
 
 function randomItem(items) {
     const rv = items[Math.floor(Math.random() * items.length)];
-    console.log(rv);
     return rv;
 }
 
