@@ -160,7 +160,8 @@ class Map extends React.Component {
                     showCoverageOnHover: true,
                     zoomToBoundsOnClick: true,
                     spiderfyOnMaxZoom: true,
-                    removeOutsideVisibleBounds: true
+                    removeOutsideVisibleBounds: true,
+                    maxClusterRadius: 80
                 }
             );
             generateCoordinatesInAthens(50*1000).forEach( c=> {
@@ -193,12 +194,8 @@ class Map extends React.Component {
                                , heatMapCfg);
         })();
 
-<<<<<<< HEAD
         this.layerGroups = {circleMarkersLG, circlesLG, treesLG, defaultMarkersLG
                             , makiMarkersLG, markerClusterGroup, heatMap};
-=======
-        this.layerGroups = {circleMarkersLG, circlesLG, treesLG, defaultMarkersLG, makiMarkersLG, markerClusterGroup, heatMap};
->>>>>>> origin/master
     }
 
     configureLayerGroups() {
