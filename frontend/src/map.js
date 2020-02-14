@@ -136,13 +136,13 @@ class Map extends React.Component {
         const heatMap = (()=> {
         const heatMapCfg = {
             minOpacity: 0.5
-            , maxZoom: 20
+            , maxZoom: 19
             , max: 1
             , radius: 35 //  radius of each "point" of the heatmap, 25 by default
-            , blur: 50   //amount of blur, 15 by default
-            , gradient: {0.4: 'blue', 0.65: 'lime', 1: 'red'} // color gradient config, e.g. {0.4: 'blue', 0.65: 'lime', 1: 'red'}
+            , blur: 15   //amount of blur, 15 by default
+            , gradient: {.4:"blue",.6:"cyan",.7:"lime",.8:"yellow",1:"red"} // color gradient config
         };
-            return L.heatLayer(generateCoordinatesInAthens(10000)
+            return L.heatLayer(generateCoordinatesInAthens(100)
                                , heatMapCfg);
         })();
 
