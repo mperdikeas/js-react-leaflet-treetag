@@ -1,4 +1,4 @@
-require('./tile-stamen-v1_3_0.js');
+require('./ots/tile-stamen-v1_3_0.js');
 
 const assert = require('chai').assert;
 

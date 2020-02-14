@@ -1,0 +1,1 @@
+wget http://maps.stamen.com/js/tile.stamen.js?v1.3.0 -O tile-stamen-v1_3_0.js
