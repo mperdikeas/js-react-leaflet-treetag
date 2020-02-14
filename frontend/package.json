@@ -54,6 +54,7 @@
     "chai": "^4.2.*",
     "classnames": "^2.2.6",
     "create-react-class": "^15.6.3",
+    "esri-leaflet": "^2.3.3",
     "fs-extra": "^7.0.1",
     "jquery": "^3.4.1",
     "leaflet": "^1.6.0",

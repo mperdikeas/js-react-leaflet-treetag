@@ -3,6 +3,7 @@ require('./ots/tile-stamen-v1_3_0.js');
 const assert = require('chai').assert;
 
 const L = require('leaflet');
+const {basemapLayer, featureLayer} = require('esri-leaflet');
 
 const BaseLayers = {
     'esri': {friendlyName: 'ESRI'
@@ -11,12 +12,20 @@ const BaseLayers = {
                 detectRetina: true,
                 maxZoom: 50
              })}
-    ,'esri/satellite': {friendlyName: 'ESRI (sat)'
+    ,'esri/satellite': {friendlyName: 'ESRI - satellite'
                         , tileLayer: L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png', {
 	        attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012',
                 detectRetina: true,
                 maxZoom: 50
-             })}
+                        })}
+    , 'esri/leaflet/Streets': {
+        friendlyName: 'ESRI (leaflet) - Streets'
+        , tileLayer: basemapLayer('Streets', {})
+    }
+    , 'esri/leaflet/NationalGeographic': {
+        friendlyName: 'ESRI (leaflet) - Topographic'
+        , tileLayer: basemapLayer('Topographic', {})
+    }    
     , 'mapbox': {friendlyName: 'MapBox'
                  , tileLayer: L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
                 attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',

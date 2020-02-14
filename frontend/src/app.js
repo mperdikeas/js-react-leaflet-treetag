@@ -79,18 +79,7 @@ class App extends React.Component {
     }
 }
 
-const Athens = [37.98, 23.72];
 
-function generateCoordinatesInAthens(N) {
-    const rv = [];
-    const spanDegrees = 0.05;
-    
-    for (let i = 0; i < N; i++) {
-        rv.push([Athens[0]+(Math.random()-.5)*spanDegrees
-                 , Athens[1]+(Math.random()-.5)*spanDegrees]);
-    }
-    return rv;
-}
 
 export default App;
 
