@@ -1,0 +1,1 @@
+ensure that the ant clean target removes the dist/ directory

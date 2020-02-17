@@ -1,5 +1,12 @@
 require('./css/style.css');
 require('./ots/leaflet-heat.js');
+
+window.shp=require('shpjs');
+//window.shp = shp;
+console.log(`first shp is ${shp}`);
+require('./ots/leaflet.shpfile.js');
+
+
 const     _ = require('lodash');
 const     $ = require('jquery');
 window.$ = $; // make jquery available to other scripts (not really applicable in our case) and the console
@@ -104,7 +111,7 @@ class Map extends React.Component {
             });
         }));
 
-        const circlesLG = L.layerGroup(generateCoordinatesInAthens(1000).map( c=> {
+        const circlesLG = L.layerGroup(generateCoordinatesInAthens(100).map( c=> {
             return L.circle(c, {
                 renderer: myRenderer,
                 color: 'red',
@@ -164,7 +171,7 @@ class Map extends React.Component {
                     maxClusterRadius: 80
                 }
             );
-            generateCoordinatesInAthens(50*1000).forEach( c=> {
+            generateCoordinatesInAthens(1*100).forEach( c=> {
                 const options = {
                     icon: new L.MakiMarkers.Icon({icon: randomItem(['park', 'park-alt1', 'wetland', 'florist'])
                                                   , color: rainbow(30, Math.floor(Math.random()*30))
@@ -194,8 +201,11 @@ class Map extends React.Component {
                                , heatMapCfg);
         })();
 
+        const url = 'leaflet/oriaota.zip';
+        const shapeFileLayer_ORIA_OTA = L.shapefile(url);
+
         this.layerGroups = {circleMarkersLG, circlesLG, treesLG, defaultMarkersLG
-                            , makiMarkersLG, markerClusterGroup, heatMap};
+                            , makiMarkersLG, markerClusterGroup, heatMap, shapeFileLayer_ORIA_OTA};
     }
 
     configureLayerGroups() {
@@ -233,7 +243,8 @@ const LayersConfiguration = {
     defaultMarkersLG : new LayerConfiguration(13),
     makiMarkersLG    : new LayerConfiguration(16),
     markerClusterGroup: new LayerConfiguration(0),
-    heatMap          : new LayerConfiguration( 5)
+    heatMap          : new LayerConfiguration( 5),
+    shapeFileLayer_ORIA_OTA: new LayerConfiguration( 0)
 };
 
 function generateCoordinatesInAthens(N) {
