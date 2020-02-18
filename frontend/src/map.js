@@ -106,12 +106,12 @@ class Map extends React.Component {
 
         const myRenderer = L.canvas({ padding: 0.5 });
 
-        const circleMarkersLG = L.layerGroup(generateCoordinatesInAthens(N).map( c=> {
+        const circleMarkersLG = L.layerGroup(generateCoordinatesInAthens(N*1000).map( c=> {
             return L.circleMarker(c, {
                 renderer: myRenderer,
                 color: '#3388ff',
                 radius: 8
-            });
+            }).on('click', clickOnCircleMarker);
         }));
 
         const circlesLG = L.layerGroup(generateCoordinatesInAthens(N).map( c=> {
@@ -215,6 +215,9 @@ class Map extends React.Component {
                     });
                 }
             }
+            , style: (feature)=>{
+                return  {color:"black",fillColor:"red",fillOpacity:.75};
+            }
         };
         const ota_Callicrates = L.shapefile(url, options);
 
@@ -296,3 +299,8 @@ function unpack(str) {
         codePoints.push( str.charCodeAt(i) );
     return codePoints;
 };
+
+
+function clickOnCircleMarker(e) {
+    console.log(`clickOnCircleMarker: ${Object.keys(e).join(', ')}`);
+}
