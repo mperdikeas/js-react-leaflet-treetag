@@ -28,6 +28,8 @@ import {BaseLayers, BaseLayersForLayerControl} from './baseLayers.js';
 import {DefaultIcon, TreeIcon}          from './icons.js';
 import rainbow from './rainbow.js';
 
+import {CustomCircleMarker} from './custom-markers.js';
+
 // const Buffer = require('buffer').Buffer;
 // const Iconv  = require('iconv').Iconv;
 
@@ -107,11 +109,23 @@ class Map extends React.Component {
         const myRenderer = L.canvas({ padding: 0.5 });
 
         const circleMarkersLG = L.layerGroup(generateCoordinatesInAthens(N*1000).map( c=> {
-            return L.circleMarker(c, {
+            const baseOptions = {
                 renderer: myRenderer,
                 color: '#3388ff',
                 radius: 8
-            }).on('click', clickOnCircleMarker);
+            };
+            const newOptions = {
+                someCustomProperty: 'custom property value #1'
+            };
+            const effectiveOptions = Object.assign({}, baseOptions, newOptions);
+            const useCustomMarker = true;
+            if (!useCustomMarker)
+                return L.circleMarker(c, baseOptions).on('click', clickOnCircleMarker);
+            else {
+                const marker = new CustomCircleMarker(c, effectiveOptions);
+                marker.on('click', clickOnCircleMarker);
+                return marker;
+            }
         }));
 
         const circlesLG = L.layerGroup(generateCoordinatesInAthens(N).map( c=> {
@@ -302,5 +316,6 @@ function unpack(str) {
 
 
 function clickOnCircleMarker(e) {
-    console.log(`clickOnCircleMarker: ${Object.keys(e).join(', ')}`);
+    console.log(`clickOnCircleMarker: ${Object.keys(e.target.options).join(', ')}`);
+    console.log(`clickOnCircleMarker, custom1 = ${e.target.options.someCustomProperty}, custom2=${e.target.options.anotherCustomProperty}`);
 }
