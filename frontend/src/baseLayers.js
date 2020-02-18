@@ -58,7 +58,7 @@ const BaseLayersForLayerControl = (()=>{
     return rv;
 })();
 
-console.log('baselayers.js', JSON.stringify(BaseLayersForLayerControl));
+
 module.exports = {BaseLayers, BaseLayersForLayerControl};
 
 

@@ -2,7 +2,6 @@ require('./css/style.css');
 require('./ots/leaflet-heat.js');
 
 window.shp=require('shpjs');
-console.log(`first shp is ${shp}`);
 require('./ots/leaflet.shpfile.js');
 
 
@@ -28,6 +27,10 @@ require('../node_modules/leaflet.markercluster/dist/leaflet.markercluster.js');
 import {BaseLayers, BaseLayersForLayerControl} from './baseLayers.js';
 import {DefaultIcon, TreeIcon}          from './icons.js';
 import rainbow from './rainbow.js';
+
+// const Buffer = require('buffer').Buffer;
+// const Iconv  = require('iconv').Iconv;
+
 
 // https://spatialreference.org/ref/epsg/2100/
 proj4.defs([
@@ -202,7 +205,18 @@ class Map extends React.Component {
         })();
 
         const url = require('../data/oriadhmwnkallikraths.zip');
-        const ota_Callicrates = L.shapefile(url);
+        const options = {
+            onEachFeature: function(feature, layer) {
+                if (feature.properties) {
+                    layer.bindPopup(Object.keys(feature.properties).map(function(k) {
+                        return k + ": " + feature.properties[k];
+                    }).join("<br />"), {
+                        maxHeight: 200
+                    });
+                }
+            }
+        };
+        const ota_Callicrates = L.shapefile(url, options);
 
         this.layerGroups = {circleMarkersLG: circleMarkersLG
                             , circlesLG: circlesLG
@@ -214,6 +228,7 @@ class Map extends React.Component {
                             , 'Καλλικρατικοί δήμοι': ota_Callicrates};
     }
 
+    
     configureLayerGroups() {
         const zoomLevel = this.map.getZoom();
         for (let x in this.layerGroups) {
@@ -228,7 +243,7 @@ class Map extends React.Component {
     render() {
         console.log('Map::render()');
         return (
-                <div id='map-id' style={{width: "80%", height: "600px" }}>
+                <div id='map-id' style={{width: "60%", height: "600px" }}>
                 </div>
         );
     }
@@ -274,3 +289,10 @@ function randomItem(items) {
 
 export default Map;
 
+
+function unpack(str) {
+    var codePoints = [];
+    for(var i = 0; i < str.length; i++)
+        codePoints.push( str.charCodeAt(i) );
+    return codePoints;
+};

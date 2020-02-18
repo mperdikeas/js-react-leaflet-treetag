@@ -2,6 +2,7 @@ node_modules/
 dist/bundle.js
 dist/index.html
 dist/src
+dist/*.zip
 dist/oriaota.zip
 npm-debug.log*
 lib/

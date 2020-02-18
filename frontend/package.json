@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "clean-logs": "rm -fr npm-debug.log.*",
-    "clean": "rm -fr build/index.html && rm -fr build/bundle.js && npm run clean-logs",
+    "clean": "rm -fr dist && rm -fr build/index.html && rm -fr build/bundle.js && npm run clean-logs",
     "raze": "npm run clean && rm -fr node_modules",
     "build": "webpack-cli --progress --colors --config webpack.config.js",
     "build-min": "webpack --config=webpack.min.config.js",

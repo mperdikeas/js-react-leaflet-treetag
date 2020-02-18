@@ -36,11 +36,14 @@
             <arg value="run"/>
             <arg value="raze"/>
         </exec>
-        <exec executable="rm" dir="${basedir}" failonerror="true">
-            <arg value="-f"/>
-            <arg value="build/bundle.js"/>
-            <arg value="*.war"/>
-        </exec>
+
+        <delete>
+            <fileset dir="${basedir}">
+                <include name="*.war"/>
+                <include name="build.xml.*.log"/>
+            </fileset>
+        </delete>        
+
     </target>
 
 
