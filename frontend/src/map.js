@@ -2,7 +2,6 @@ require('./css/style.css');
 require('./ots/leaflet-heat.js');
 
 window.shp=require('shpjs');
-//window.shp = shp;
 console.log(`first shp is ${shp}`);
 require('./ots/leaflet.shpfile.js');
 
@@ -100,10 +99,11 @@ class Map extends React.Component {
     }
     
     createLayerGroups() {
+        const N = 10;
 
         const myRenderer = L.canvas({ padding: 0.5 });
 
-        const circleMarkersLG = L.layerGroup(generateCoordinatesInAthens(100).map( c=> {
+        const circleMarkersLG = L.layerGroup(generateCoordinatesInAthens(N).map( c=> {
             return L.circleMarker(c, {
                 renderer: myRenderer,
                 color: '#3388ff',
@@ -111,7 +111,7 @@ class Map extends React.Component {
             });
         }));
 
-        const circlesLG = L.layerGroup(generateCoordinatesInAthens(100).map( c=> {
+        const circlesLG = L.layerGroup(generateCoordinatesInAthens(N).map( c=> {
             return L.circle(c, {
                 renderer: myRenderer,
                 color: 'red',
@@ -122,7 +122,7 @@ class Map extends React.Component {
         }));
 
 
-        const treesLG = L.layerGroup(generateCoordinatesInAthens(100).map( c=> {
+        const treesLG = L.layerGroup(generateCoordinatesInAthens(N).map( c=> {
             const options = {
                 icon: new TreeIcon()
                 , clickable: true
@@ -134,7 +134,7 @@ class Map extends React.Component {
             return L.marker(c, options).bindPopup('a fucking tree');
         }));
 
-        const defaultMarkersLG = L.layerGroup(generateCoordinatesInAthens(100).map( c=> {
+        const defaultMarkersLG = L.layerGroup(generateCoordinatesInAthens(N).map( c=> {
             const options = {
                 icon: new DefaultIcon()
                 , clickable: true
@@ -146,7 +146,7 @@ class Map extends React.Component {
             return L.marker(c, options).bindPopup('a fucking tree');
         }));
 
-        const makiMarkersLG = L.layerGroup(generateCoordinatesInAthens(100).map( c=> {
+        const makiMarkersLG = L.layerGroup(generateCoordinatesInAthens(N).map( c=> {
             const options = {
                 icon: new L.MakiMarkers.Icon({icon: randomItem(['park', 'park-alt1', 'wetland', 'florist'])
                                               , color: rainbow(30, Math.floor(Math.random()*30))
@@ -201,8 +201,8 @@ class Map extends React.Component {
                                , heatMapCfg);
         })();
 
-        const url = 'leaflet/oriaota.zip';
-        const shapeFileLayer_ORIA_OTA = L.shapefile(url);
+        const url = require('../data/oriadhmwnkallikraths.zip');
+        const OTA_Callicrates = L.shapefile(url);
 
         this.layerGroups = {circleMarkersLG, circlesLG, treesLG, defaultMarkersLG
                             , makiMarkersLG, markerClusterGroup, heatMap, shapeFileLayer_ORIA_OTA};

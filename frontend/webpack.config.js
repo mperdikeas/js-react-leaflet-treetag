@@ -31,7 +31,10 @@ const config = {
                 loader: 'url-loader?limit=9999&name=[path][name].[ext]'
             },{
                 test: /\.README$/, loader: 'null'
-            }
+            },{
+                test: /.*data\/.*\.zip/,
+                loader: 'file-loader'
+            },
         ]
     },
     plugins: [HTMLWebpackPluginConfig],
