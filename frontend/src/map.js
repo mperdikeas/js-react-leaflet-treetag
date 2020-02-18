@@ -202,10 +202,16 @@ class Map extends React.Component {
         })();
 
         const url = require('../data/oriadhmwnkallikraths.zip');
-        const OTA_Callicrates = L.shapefile(url);
+        const ota_Callicrates = L.shapefile(url);
 
-        this.layerGroups = {circleMarkersLG, circlesLG, treesLG, defaultMarkersLG
-                            , makiMarkersLG, markerClusterGroup, heatMap, shapeFileLayer_ORIA_OTA};
+        this.layerGroups = {circleMarkersLG: circleMarkersLG
+                            , circlesLG: circlesLG
+                            , treesLG: treesLG
+                            , defaultMarkersLG: defaultMarkersLG
+                            , makiMarkersLG: makiMarkersLG
+                            , markerClusterGroup: markerClusterGroup
+                            , heatMap: heatMap
+                            , 'Καλλικρατικοί δήμοι': ota_Callicrates};
     }
 
     configureLayerGroups() {
@@ -222,7 +228,7 @@ class Map extends React.Component {
     render() {
         console.log('Map::render()');
         return (
-                <div id='map-id' style={{width: "80%", height: "800px" }}>
+                <div id='map-id' style={{width: "80%", height: "600px" }}>
                 </div>
         );
     }
@@ -237,14 +243,14 @@ class LayerConfiguration {
 }
 
 const LayersConfiguration = {
-    circleMarkersLG  : new LayerConfiguration(14),
-    circlesLG        : new LayerConfiguration(14),
-    treesLG          : new LayerConfiguration(13),
-    defaultMarkersLG : new LayerConfiguration(13),
-    makiMarkersLG    : new LayerConfiguration(16),
-    markerClusterGroup: new LayerConfiguration(0),
-    heatMap          : new LayerConfiguration( 5),
-    shapeFileLayer_ORIA_OTA: new LayerConfiguration( 0)
+    circleMarkersLG    : new LayerConfiguration(14),
+    circlesLG          : new LayerConfiguration(14),
+    treesLG            : new LayerConfiguration(13),
+    defaultMarkersLG   : new LayerConfiguration(13),
+    makiMarkersLG      : new LayerConfiguration(16),
+    markerClusterGroup : new LayerConfiguration(0),
+    heatMap            : new LayerConfiguration( 5),
+    'Καλλικρατικοί δήμοι'              : new LayerConfiguration( 0)
 };
 
 function generateCoordinatesInAthens(N) {
