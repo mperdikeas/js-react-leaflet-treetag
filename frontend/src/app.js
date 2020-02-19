@@ -27,6 +27,8 @@ class App extends React.Component {
             tileProviderId: 'esri'
             , target: {
                 information: 'Ελιά'
+                , photos: 'φωτογραφίες'
+                , history: 'ιστορικο'
             }
         };
         this.onTileProviderSelect = this.onTileProviderSelect.bind(this);

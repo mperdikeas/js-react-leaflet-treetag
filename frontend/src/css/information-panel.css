@@ -1,0 +1,3 @@
+#tree .nav .nav-item > a.active {
+    font-weight: bold;
+}
