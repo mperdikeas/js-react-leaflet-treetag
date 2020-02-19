@@ -1,4 +1,3 @@
-require('./css/style.css');
 const     _ = require('lodash');
 const     $ = require('jquery');
 window.$ = $; // make jquery available to other scripts (not really applicable in our case) and the console
@@ -12,16 +11,13 @@ import PropTypes from 'prop-types';
 const createReactClass = require('create-react-class');
 const assert = require('chai').assert;
 
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import 'reset-css';
 
 
 
 
 import Map        from './map.js';
 import {BaseLayers, BaseLayersForLayerControl} from './baseLayers.js';
-
+import InformationPanel from './information-panel.js';
 
 class App extends React.Component {
 
@@ -29,6 +25,7 @@ class App extends React.Component {
         super(props);
         this.state = {
             tileProviderId: 'esri'
+            , information: 'a tree'
         };
         this.onTileProviderSelect = this.onTileProviderSelect.bind(this);
     }
@@ -61,19 +58,24 @@ class App extends React.Component {
         );
         return (
                 <div class='container-fluid'>
-                    <div class='row'>
-                        <div class="dropdown col-sm">
-                            <button class="btn btn-primary btn-lg dropdown-toggle"
-                                type="button" id="dropdownMenuButton"
-                                data-toggle="dropdown"
-                                aria-haspopup="true"
-                                aria-expanded="false">
-                                    Tiles provider
-                            </button>
-                           {dropDownMenu}
-                         </div>
+                    <div class='row no-gutters'>
+                        <div class='col-8 padding-0'>
+                            <div class='row'>
+                                <div class="dropdown col-sm">
+                                    <button class="btn btn-primary btn-lg dropdown-toggle"
+                                            type="button" id="dropdownMenuButton"
+                                            data-toggle="dropdown"
+                                            aria-haspopup="true"
+                                            aria-expanded="false">
+                                            Tiles provider
+                                    </button>
+                                    {dropDownMenu}
+                                </div>
+                            </div>
+                            <Map tileProviderId={this.state.tileProviderId}/>
+                        </div>
+                        <InformationPanel information={this.state.information}/>
                     </div>
-                    <Map tileProviderId={this.state.tileProviderId}/>
                 </div>
         );
     }

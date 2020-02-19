@@ -4,10 +4,11 @@ import React    from 'react';
 import ReactDOM from 'react-dom';
 import App      from './app.js';
 
-// import Bootstrap from 'bootstrap/dist/css/bootstrap.css'; // https://medium.com/commencis/how-to-import-bootstrap-using-webpack-7245eba98056
 
+import 'reset-css';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './css/style.css';
 
 $(document).ready(doStuff);
 

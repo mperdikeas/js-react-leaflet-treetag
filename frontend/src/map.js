@@ -19,6 +19,7 @@ const createReactClass = require('create-react-class');
 const assert = require('chai').assert;
 
 import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import proj4 from 'proj4';
 
 require('../node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css');
@@ -260,7 +261,7 @@ class Map extends React.Component {
     render() {
         console.log('Map::render()');
         return (
-                <div id='map-id' style={{width: "60%", height: "600px" }}>
+                <div id='map-id' style={{height: "600px" }}>
                 </div>
         );
     }
