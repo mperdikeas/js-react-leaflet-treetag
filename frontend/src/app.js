@@ -25,7 +25,9 @@ class App extends React.Component {
         super(props);
         this.state = {
             tileProviderId: 'esri'
-            , information: 'a tree'
+            , target: {
+                information: 'Ελιά'
+            }
         };
         this.onTileProviderSelect = this.onTileProviderSelect.bind(this);
     }
@@ -74,7 +76,7 @@ class App extends React.Component {
                             </div>
                             <Map tileProviderId={this.state.tileProviderId}/>
                         </div>
-                        <InformationPanel information={this.state.information}/>
+                        <InformationPanel target={this.state.target}/>
                     </div>
                 </div>
         );

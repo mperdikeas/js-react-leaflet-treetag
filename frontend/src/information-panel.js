@@ -1,7 +1,6 @@
 require('./css/style.css');
 const     _ = require('lodash');
 const     $ = require('jquery');
-window.$ = $; // make jquery available to other scripts (not really applicable in our case) and the console
 
 
 const React = require('react');
@@ -11,6 +10,7 @@ import PropTypes from 'prop-types';
 
 const createReactClass = require('create-react-class');
 const assert = require('chai').assert;
+
 
 class InformationPanel extends React.Component {
 
@@ -29,10 +29,24 @@ class InformationPanel extends React.Component {
 
     render() {
         return (
-            <div class='col-4 padding-0' style={{backgroundColor: 'blue'}}>
-                {this.props.information}    
+            <div id='tree' class='col-4 padding-0' style={{backgroundColor: 'lightgrey'}}>
+                <ul class="nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Πληροφορίες</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Φωτογραφίες</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Ιστορικό</a>
+                    </li>
+                </ul>
+                <div>
+                    {this.props.target.information}
+                </div>
             </div>
         );
+
     }
 }
 
