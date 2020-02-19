@@ -58,13 +58,15 @@ class InformationPanel extends React.Component {
         const historyClasses = Object.assign({}, defaultClasses, {'active': this.state.tab==='history'});
         const paneToDisplay = this.paneToDisplay();
         return (
-            <div id='detailInformation' class='col-4 padding-0' style={{backgroundColor: 'lightgrey'}}>
+            <div id='detail-information' class='col-4 padding-0' style={{backgroundColor: 'lightgrey'}}>
                 <ul class="nav">
                     <li class="nav-item">
                         <a id='information' class={cx(informationClasses)} href="#" onClick={this.onInformation}>Πληροφορίες</a>
                     </li>
                     <li class="nav-item">
-                        <a id='photos' class={cx(photoClasses)} href="#" onClick={this.onPhotos}>Φωτογραφίες</a>
+                        <a id='photos' class={cx(photoClasses)} href="#" onClick={this.onPhotos}>
+                            Φωτογραφίες
+                        </a>
                     </li>
                     <li class="nav-item">
                         <a id='history' class={cx(historyClasses)} href="#" onClick={this.onHistory}>Ιστορικό</a>
@@ -87,6 +89,7 @@ class InformationPanel extends React.Component {
             return (
                 <div>
                     photos of {this.props.target.targetId}
+                    <img src={require("../photos/olive-tree-333973__340.jpg")} class="img-fluid" alt="Responsive image"></img>
                 </div>
             );
         case 'history':

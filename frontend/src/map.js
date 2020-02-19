@@ -244,7 +244,8 @@ class Map extends React.Component {
                             , makiMarkersLG: makiMarkersLG
                             , markerClusterGroup: markerClusterGroup
                             , heatMap: heatMap
-                            , 'Καλλικρατικοί δήμοι': ota_Callicrates};
+                           // , 'Καλλικρατικοί δήμοι': ota_Callicrates
+                           };
     }
 
     
@@ -289,8 +290,8 @@ const LayersConfiguration = {
     defaultMarkersLG   : new LayerConfiguration(13),
     makiMarkersLG      : new LayerConfiguration(16),
     markerClusterGroup : new LayerConfiguration(0),
-    heatMap            : new LayerConfiguration( 5),
-    'Καλλικρατικοί δήμοι'              : new LayerConfiguration( 0)
+    heatMap            : new LayerConfiguration( 5)
+//    , 'Καλλικρατικοί δήμοι'              : new LayerConfiguration( 0)
 };
 
 function generateCoordinatesInAthens(N) {
