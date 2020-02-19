@@ -25,13 +25,10 @@ class App extends React.Component {
         super(props);
         this.state = {
             tileProviderId: 'esri'
-            , target: {
-                information: 'Ελιά'
-                , photos: 'φωτογραφίες'
-                , history: 'ιστορικο'
-            }
+            , target: null
         };
         this.onTileProviderSelect = this.onTileProviderSelect.bind(this);
+        this.updateTarget = this.updateTarget.bind(this);
     }
 
     componentDidMount() {
@@ -44,6 +41,10 @@ class App extends React.Component {
         this.setState({tileProviderId :tileProviderId});
     }
 
+    updateTarget(targetId) {
+        console.log(`app::updateTarget(${targetId}}`);
+        this.setState({target: {targetId}});
+    }
 
     render() {
         const options = [];
@@ -76,7 +77,9 @@ class App extends React.Component {
                                     {dropDownMenu}
                                 </div>
                             </div>
-                            <Map tileProviderId={this.state.tileProviderId}/>
+                            <Map tileProviderId={this.state.tileProviderId}
+                                 updateTarget={this.updateTarget}
+                            />
                         </div>
                         <InformationPanel target={this.state.target}/>
                     </div>

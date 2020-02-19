@@ -21,8 +21,9 @@ class InformationPanel extends React.Component {
             tab: 'information'
         };
         this.onInformation = this.onInformation.bind(this);
-        this.onPhotos = this.onPhotos.bind(this);
-        this.onHistory = this.onHistory.bind(this);
+        this.onPhotos      = this.onPhotos     .bind(this);
+        this.onHistory     = this.onHistory    .bind(this);
+        this.paneToDisplay = this.paneToDisplay.bind(this);
     }
 
     componentDidMount() {
@@ -44,13 +45,20 @@ class InformationPanel extends React.Component {
     }
 
     render() {
+        if (this.props.target===null)
+            return (
+            <div id='detailInformation' class='col-4 padding-0' style={{backgroundColor: 'lightgrey'}}>
+            nothing to display
+            </div>
+            );
         console.log(`tab is now: ${this.state.tab}`);
         const defaultClasses = {'nav-link': true};
         const informationClasses = Object.assign({}, defaultClasses, {'active': this.state.tab==='information'});
         const photoClasses = Object.assign({}, defaultClasses, {'active': this.state.tab==='photos'});
         const historyClasses = Object.assign({}, defaultClasses, {'active': this.state.tab==='history'});
+        const paneToDisplay = this.paneToDisplay();
         return (
-            <div id='tree' class='col-4 padding-0' style={{backgroundColor: 'lightgrey'}}>
+            <div id='detailInformation' class='col-4 padding-0' style={{backgroundColor: 'lightgrey'}}>
                 <ul class="nav">
                     <li class="nav-item">
                         <a id='information' class={cx(informationClasses)} href="#" onClick={this.onInformation}>Πληροφορίες</a>
@@ -62,11 +70,35 @@ class InformationPanel extends React.Component {
                         <a id='history' class={cx(historyClasses)} href="#" onClick={this.onHistory}>Ιστορικό</a>
                     </li>
                 </ul>
-                <div>
-                    {this.props.target.information}
-                </div>
+                {paneToDisplay}
             </div>
         );
+    }
+
+    paneToDisplay() {
+        switch (this.state.tab) {
+        case 'information':
+            return (
+                <div>
+                    information on {this.props.target.targetId}
+                </div>
+            );
+        case 'photos':
+            return (
+                <div>
+                    photos of {this.props.target.targetId}
+                </div>
+            );
+        case 'history':
+            return (
+                <div>
+                    history of {this.props.target.targetId}
+                </div>
+            );
+        default:
+            assert.assertFail(`unhandled case ${this.state.tab}`);
+            return null; // SCA
+        }
     }
 }
 

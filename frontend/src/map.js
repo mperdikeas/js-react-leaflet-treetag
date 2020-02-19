@@ -49,6 +49,7 @@ class Map extends React.Component {
     constructor(props) {
         super(props);
         this.currentTileLayer = null;
+        this.clickOnCircleMarker = this.clickOnCircleMarker.bind(this);
     }
 
     componentDidMount() {
@@ -116,15 +117,15 @@ class Map extends React.Component {
                 radius: 8
             };
             const newOptions = {
-                someCustomProperty: 'custom property value #1'
+                targetId: `targetId of ${Math.random()}`
             };
             const effectiveOptions = Object.assign({}, baseOptions, newOptions);
             const useCustomMarker = true;
             if (!useCustomMarker)
-                return L.circleMarker(c, baseOptions).on('click', clickOnCircleMarker);
+                return L.circleMarker(c, baseOptions).on('click', this.clickOnCircleMarker);
             else {
                 const marker = new CustomCircleMarker(c, effectiveOptions);
-                marker.on('click', clickOnCircleMarker);
+                marker.on('click', this.clickOnCircleMarker);
                 return marker;
             }
         }));
@@ -265,6 +266,12 @@ class Map extends React.Component {
                 </div>
         );
     }
+
+    clickOnCircleMarker(e) {
+        this.props.updateTarget(e.target.options.targetId);
+        console.log(`clickOnCircleMarker: ${Object.keys(e.target.options).join(', ')}`);
+    }
+    
 }
 
 const Athens = [37.98, 23.72];
@@ -316,7 +323,5 @@ function unpack(str) {
 };
 
 
-function clickOnCircleMarker(e) {
-    console.log(`clickOnCircleMarker: ${Object.keys(e.target.options).join(', ')}`);
-    console.log(`clickOnCircleMarker, custom1 = ${e.target.options.someCustomProperty}, custom2=${e.target.options.anotherCustomProperty}`);
-}
+
+
