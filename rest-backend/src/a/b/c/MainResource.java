@@ -130,7 +130,7 @@ public class MainResource {
             logger.info(String.format("getFeaturePhoto(%d) ~*~ remote address: [%s]"
                                       , featureId
                                       , httpServletRequest.getRemoteAddr()));
-            TimeUnit.SECONDS.sleep(2);
+            TimeUnit.MILLISECONDS.sleep(200);
             final ClassLoader classloader = Thread.currentThread().getContextClassLoader();
             final InputStream is = classloader.getResourceAsStream("photos/olive-3687482__340.jpg");
             final BufferedImage image = ImageIO.read(is);
