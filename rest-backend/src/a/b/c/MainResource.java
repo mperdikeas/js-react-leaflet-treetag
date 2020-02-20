@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.OutputStream;
 import java.io.IOException;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -25,6 +26,8 @@ import java.nio.charset.StandardCharsets;
 import java.lang.reflect.Type;
 
 import java.awt.image.BufferedImage;
+
+import java.util.Base64;
 
 
 import com.google.common.base.Joiner;
@@ -128,11 +131,13 @@ public class MainResource {
                                       , featureId
                                       , httpServletRequest.getRemoteAddr()));
             TimeUnit.SECONDS.sleep(2);
-            final BufferedImage image = ImageIO.read(new File("imagen.png"));
+            final ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+            final InputStream is = classloader.getResourceAsStream("photos/olive-3687482__340.jpg");
+            final BufferedImage image = ImageIO.read(is);
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(image, "png", baos);
             final byte[] imageData = baos.toByteArray();
-            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok("image in Base64 encoded JSON format"))).build();
+            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(Base64.getEncoder().encodeToString(imageData)))).build();
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling getFeaturePhoto(%d) from remote address [%s]"
                                        , featureId

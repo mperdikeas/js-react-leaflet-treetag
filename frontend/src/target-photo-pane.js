@@ -39,37 +39,42 @@ export default class TargetPhotoPane extends React.Component {
         }
     }
 
-        render() {
-            if (this.state.loading) {
-                return (
-                        <img src={loading} class='img-fluid' alt='Please wait...'/>
-                );
+    render() {
+        console.log(`render(), payload is: ${this.state.payload}`);
+        if (this.state.loading) {
+            return (
+                    <img src={loading} class='img-fluid' alt='Please wait...'/>
+            );
 
+        } else {
+            if (this.state.error===null) {
+                console.log('retrieved data successfully');
+                console.log(Object.keys(this.state.payload));
+                console.log(this.state);
+                console.log(this.state.payload);
+                return (
+                        <>
+                        photo information on {this.props.targetId}
+                        <img src={`data:image/jpg;base64,${this.state.payload}`} class='img-fluid' alt='Responsive image'/>
+                        </>
+                );
             } else {
-                if (this.state.error===null)
-                    return (
-                            <div>
-                            photo information on {this.props.targetId}
-                            <img src='data:image/png;base64,iVBORw0K...' class='img-fluid' alt='Responsive image'/>
-                            </div>
-                    );
-                else
-                    return (
+                return (
+                        <>
                         <div>
-                            <div>
-                                shit happened: {this.state.error.message}
-                            </div>
-                            <div>
-                                Full stack trace (for your sick perusal) follows:
-                            </div>
-                            <div style={{color: 'red', background: 'yellow'}}>
-                                {this.state.error.strServerTrace}
-                            </div>
-                        </div>
-                    );
+                        shit happened: {this.state.error.message}
+                    </div>
+                        <div>
+                        Full stack trace (for your sick perusal) follows:
+                    </div>
+                        <div style={{height: 500, color: 'red', background: 'yellow', overflowY: 'scroll'}}>
+                        {this.state.error.strServerTrace}
+                    </div>
+                        </>
+                );
             }
         }
-
+    }
 
         fetchPayload() {
             console.log('fetchPayload');
@@ -79,10 +84,9 @@ export default class TargetPhotoPane extends React.Component {
             axios.get(url)
                 .then(res => {
                     console.log(res);
-                    console.log(JSON.stringify(res));
                     const {t, err} = res.data; // this is a ValueOrInternalServerExceptionData data type on the server side
                     if (err===null) {
-                        this.setState({ loading: false, payload: 'foo', error: null});
+                        this.setState({ loading: false, payload: t, error: null});
                     } else {
                         this.setState({ loading: false, payload: null, error: err});
                     }
