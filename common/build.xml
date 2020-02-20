@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:ivy="antlib:org.apache.ivy.ant"
+         basedir="."
+         default="build"
+         name="common">
+
+    <description>
+        domain-agnostic Java utilities
+    </description>
+
+    <import file="/home/mperdikeas/archetype-java-ant-ivy/build-system-machinery/build-common-jar.xml"/> 
+
+</project>

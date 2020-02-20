@@ -12,6 +12,9 @@ const createReactClass = require('create-react-class');
 const assert = require('chai').assert;
 
 require('./css/information-panel.css');
+import TargetDataPane     from './target-data-pane.js';
+import TargetPhotoPane    from './target-photo-pane.js';
+import TargetMetadataPane from './target-metadata-pane.js';
 
 class InformationPanel extends React.Component {
 
@@ -51,11 +54,12 @@ class InformationPanel extends React.Component {
             nothing to display
             </div>
             );
-        console.log(`tab is now: ${this.state.tab}`);
+        console.log(`tab is  ${this.state.tab}, targetId is: ${this.props.target.targetId}`);
         const defaultClasses = {'nav-link': true};
         const informationClasses = Object.assign({}, defaultClasses, {'active': this.state.tab==='information'});
         const photoClasses = Object.assign({}, defaultClasses, {'active': this.state.tab==='photos'});
         const historyClasses = Object.assign({}, defaultClasses, {'active': this.state.tab==='history'});
+
         const paneToDisplay = this.paneToDisplay();
         return (
             <div id='detail-information' class='col-4 padding-0' style={{backgroundColor: 'lightgrey'}}>
@@ -76,34 +80,27 @@ class InformationPanel extends React.Component {
             </div>
         );
     }
-
     paneToDisplay() {
         switch (this.state.tab) {
         case 'information':
             return (
-                <div>
-                    information on {this.props.target.targetId}
-                </div>
+                <TargetDataPane targetId={this.props.target.targetId}/>
             );
         case 'photos':
             return (
-                <div>
-                    photos of {this.props.target.targetId}
-                    <img src={require("../photos/olive-tree-333973__340.jpg")} class="img-fluid" alt="Responsive image"></img>
-                </div>
+                <TargetPhotoPane targetId={this.props.target.targetId}/>                
             );
         case 'history':
             return (
-                <div>
-                    history of {this.props.target.targetId}
-                </div>
+                <TargetMetadataPane targetId={this.props.target.targetId}/>
             );
         default:
-            assert.assertFail(`unhandled case ${this.state.tab}`);
+            assert.fail(`unhandled case [${this.state.tab}]`);
             return null; // SCA
         }
     }
 }
+
 
 
 

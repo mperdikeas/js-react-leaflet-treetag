@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+    <display-name>Sample JAX-RS application</display-name>
+
+    <servlet>
+        <servlet-name>resteasy-servlet</servlet-name>
+        <servlet-class>
+            org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher
+        </servlet-class>
+        <init-param>
+            <param-name>javax.ws.rs.Application</param-name>
+            <param-value>a.b.c.JaxRsApplication</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>resteasy-servlet</servlet-name>
+        <url-pattern>/jax-rs/*</url-pattern>
+    </servlet-mapping>
+   <!-- the below is mighty important you get 404 in JBoss without it -->
+   <context-param>
+        <param-name>resteasy.servlet.mapping.prefix</param-name>
+        <param-value>/jax-rs</param-value>
+    </context-param>
+
+
+
+    <filter>
+        <filter-name>logMDCClientIPFilter</filter-name>
+        <filter-class>a.b.LogMDCClientIPFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>logMDCClientIPFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    
+</web-app>

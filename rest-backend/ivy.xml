@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ivy-module version="2.0" 
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
+    <info organisation="foo" module="bar"/>
+    <configurations>
+        <conf name="compile-time"  description="artifacts for the compile-time classpath"                                    />
+        <conf name="run-time"      description="artifacts for the run    -time classpath"                                    />
+        <conf name="test-time"     description="artifacts for the test   -time classpath (in addition to the run-time ones)" />
+    </configurations>
+    <dependencies>
+        <!-- compile time dependencies - no transitive deps -->
+        <dependency org="javax"                     name="javaee-api"           rev="7.0"           conf="compile-time->master"/>
+        <dependency org="com.google.code.gson"      name="gson"                 rev="2.8.0"         conf="compile-time->master"/>
+        <dependency org="junit"                     name="junit"                rev="4.12"          conf="compile-time->master"/>
+        <dependency org="com.google.guava"          name="guava"                rev="20.0"          conf="compile-time->master"/>
+        <dependency org="log4j"                     name="log4j"                rev="1.2.17"        conf="compile-time->master"/>
+        <dependency org="io.jsonwebtoken"           name="jjwt-api"             rev="0.10.7"        conf="compile-time->master"/>
+        <!-- run-time dependencies                                              -->
+        <!-- we need the below during runtime, along with their transitive deps -->
+        <!-- TODO: see whether I can remove this dependency from JBoss (or, then again, maybe not)                            -->
+        <!--dependency org="javax"                     name="javaee-api"           rev="7.0"           conf="deploy-time->master"/-->
+
+        <dependency org="com.google.code.gson"      name="gson"                 rev="2.8.0"         conf="run-time->default"/>
+        <dependency org="com.google.guava"          name="guava"                rev="20.0"          conf="run-time->default"/>
+        <dependency org="commons-dbutils"           name="commons-dbutils"      rev="1.6"           conf="run-time->default"/>
+        <dependency org="junit"                     name="junit"                rev="4.12"          conf="run-time->default"/>
+        <dependency org="org.freemarker"            name="freemarker"           rev="2.3.23"        conf="run-time->default"/>
+        <dependency org="log4j"                     name="log4j"                rev="1.2.17"        conf="run-time->default"/>
+
+
+        <dependency org="io.jsonwebtoken"           name="jjwt-impl"            rev="0.10.7"        conf="run-time->default"/>
+        <dependency org="io.jsonwebtoken"           name="jjwt-jackson"         rev="0.10.7"        conf="run-time->default"/>
+
+        <!-- test-time dependencies                                             -->
+        <!-- we need the below during testing, along with their transitive deps -->        
+        <!-- EMPTY                                                              -->
+    </dependencies>
+</ivy-module>
+

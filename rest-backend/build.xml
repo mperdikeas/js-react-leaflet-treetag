@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:ivy="antlib:org.apache.ivy.ant"
+         basedir="."
+         default="build"
+         name="tree-cadaster-backend">
+
+    <description>
+        service-oriented WAR exposing a REST interface
+    </description>
+
+    <import file="/home/mperdikeas/archetype-java-ant-ivy/build-system-machinery/build-common-war.xml"/>
+
+</project>
+
+
