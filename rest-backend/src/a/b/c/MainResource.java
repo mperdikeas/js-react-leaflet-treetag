@@ -76,6 +76,8 @@ import io.jsonwebtoken.Jwts;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.concurrent.TimeUnit;
+
 
 
 // To support the Singleton annotation in a Tomcat 8.5 container see: http://stackoverflow.com/a/19003725/274677
@@ -117,6 +119,7 @@ public class MainResource {
             logger.info(String.format("getFeaturePhoto(%d) ~*~ remote address: [%s]"
                                       , featureId
                                       , httpServletRequest.getRemoteAddr()));
+            TimeUnit.SECONDS.sleep(2);
             final BufferedImage image = ImageIO.read(new File("imagen.png"));
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ImageIO.write(image, "png", baos);
