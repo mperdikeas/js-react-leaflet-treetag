@@ -46,12 +46,27 @@ export default class TargetPhotoPane extends React.Component {
                 );
 
             } else {
-                return (
+                if (this.state.error===null)
+                    return (
+                            <div>
+                            photo information on {this.props.targetId}
+                            <img src='data:image/png;base64,iVBORw0K...' class='img-fluid' alt='Responsive image'/>
+                            </div>
+                    );
+                else
+                    return (
                         <div>
-                        photo information on {this.props.targetId}
-                        <img src='data:image/png;base64,iVBORw0K...' class='img-fluid' alt='Responsive image'/>
+                            <div>
+                                shit happened: {this.state.error.message}
+                            </div>
+                            <div>
+                                Full stack trace (for your sick perusal) follows:
+                            </div>
+                            <div style={{color: 'red', background: 'yellow'}}>
+                                {this.state.error.strServerTrace}
+                            </div>
                         </div>
-                );
+                    );
             }
         }
 
@@ -63,7 +78,14 @@ export default class TargetPhotoPane extends React.Component {
             console.log(`axios URL is: ${url}`);
             axios.get(url)
                 .then(res => {
-                    this.setState({ loading: false, payload: 'foo', error: null});
+                    console.log(res);
+                    console.log(JSON.stringify(res));
+                    const {t, err} = res.data; // this is a ValueOrInternalServerExceptionData data type on the server side
+                    if (err===null) {
+                        this.setState({ loading: false, payload: 'foo', error: null});
+                    } else {
+                        this.setState({ loading: false, payload: null, error: err});
+                    }
                 }).catch( err => {
                     console.log(JSON.stringify(err));
                     console.log(err);
