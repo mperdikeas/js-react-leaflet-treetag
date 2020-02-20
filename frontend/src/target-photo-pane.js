@@ -58,11 +58,15 @@ export default class TargetPhotoPane extends React.Component {
 
         fetchPayload() {
             console.log('fetchPayload');
-            const url = `https://127.0.0.1:8445/tree-cadaster-backend/jax-rs/main/feature/${this.props.targedIt}/photo`;
+            const targetId = Math.round(this.props.targetId*1000);
+            const url = `https://127.0.0.1:8445/tree-cadaster-backend/jax-rs/main/feature/${targetId}/photo`;
+            console.log(`axios URL is: ${url}`);
             axios.get(url)
                 .then(res => {
                     this.setState({ loading: false, payload: 'foo', error: null});
                 }).catch( err => {
+                    console.log(JSON.stringify(err));
+                    console.log(err);
                     switch(err.response.data.code) {
                     case 'JWT-verif-failed':
                         this.setState({loading: false

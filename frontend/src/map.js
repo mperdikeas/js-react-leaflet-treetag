@@ -117,7 +117,7 @@ class Map extends React.Component {
                 radius: 8
             };
             const newOptions = {
-                targetId: `targetId of ${Math.random()}`
+                targetId: `${Math.random()}`
             };
             const effectiveOptions = Object.assign({}, baseOptions, newOptions);
             const useCustomMarker = true;

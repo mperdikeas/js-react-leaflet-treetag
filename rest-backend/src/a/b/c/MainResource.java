@@ -108,13 +108,21 @@ public class MainResource {
                                   , System.identityHashCode(this)));
     }
 
+    @Path("/foo")
+    @GET 
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getFeaturePhoto(@Context final HttpServletRequest httpServletRequest) {
+        System.out.println("1");        
+        return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok("foobar"))).build();
+    }
 
 
     @Path("/feature/{featureId}/photo")
     @GET 
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFeaturePhoto(@Context final HttpServletRequest httpServletRequest
-                                  , @PathParam("featureId") final int featureId) { 
+                                  , @PathParam("featureId") final int featureId) {
+        System.out.println("2");
         try {
             logger.info(String.format("getFeaturePhoto(%d) ~*~ remote address: [%s]"
                                       , featureId

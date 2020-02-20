@@ -9,7 +9,7 @@
     "raze": "npm run clean && rm -fr node_modules",
     "build": "webpack-cli --progress --colors --config webpack.config.js",
     "build-min": "webpack --config=webpack.min.config.js",
-    "dev": "webpack-dev-server --devtool eval --progress --colors --content-base build --port 8090",
+    "dev": "webpack-dev-server --devtool eval --progress --colors --content-base build --port 8090 --https",
     "test": "mocha --require @babel/register",
     "test-watch": "mocha --require @babel/register --watch"
   },

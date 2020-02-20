@@ -150,7 +150,7 @@ public class LoginResource {
     }
 
     private static Date createExpirationDate() {
-        final int VALIDITY_FOR_JWT_AUTHORIZATION_SECS = 10;
+        final int VALIDITY_FOR_JWT_AUTHORIZATION_SECS = 30;
         final LocalDateTime x = LocalDateTime.now().plusSeconds(VALIDITY_FOR_JWT_AUTHORIZATION_SECS);
         final Date rv = Date.from( x.atZone( ZoneId.systemDefault()).toInstant() );
         return rv;
