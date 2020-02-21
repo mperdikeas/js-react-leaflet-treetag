@@ -28,6 +28,7 @@ import java.lang.reflect.Type;
 import java.awt.image.BufferedImage;
 
 import java.util.Base64;
+import java.time.Instant;
 
 
 import com.google.common.base.Joiner;
@@ -81,6 +82,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.concurrent.TimeUnit;
 
+import java.time.temporal.ChronoUnit;
 
 
 // To support the Singleton annotation in a Tomcat 8.5 container see: http://stackoverflow.com/a/19003725/274677
@@ -131,13 +133,10 @@ public class MainResource {
                                       , featureId
                                       , httpServletRequest.getRemoteAddr()));
             TimeUnit.MILLISECONDS.sleep(200);
-            final ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-            final InputStream is = classloader.getResourceAsStream("photos/olive-3687482__340.jpg");
-            final BufferedImage image = ImageIO.read(is);
-            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(image, "jpg", baos);
-            final byte[] imageData = baos.toByteArray();
-            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(Base64.getEncoder().encodeToString(imageData)))).build();
+            final String photoBase64 = getPhotoBase64(featureId);
+            final Instant photoInstant = getPhotoInstant(featureId);
+            final FeaturePhoto featurePhoto = new FeaturePhoto(photoBase64, photoInstant);
+            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(featurePhoto))).build();
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling getFeaturePhoto(%d) from remote address [%s]"
                                        , featureId
@@ -146,11 +145,32 @@ public class MainResource {
             return ResourceUtil.softFailureResponse(t);
         }
     }
+
+    private Instant getPhotoInstant(final int featureid) {
+        final int days = featureid % 2000;
+        return Instant.now().minus(days, ChronoUnit.DAYS);
+    }
+    private String getPhotoBase64(final int featureid) throws Exception {
+        final ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        final InputStream is = classloader.getResourceAsStream("photos/olive-3687482__340.jpg");
+        final BufferedImage image = ImageIO.read(is);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(image, "jpg", baos);
+        final byte[] imageData = baos.toByteArray();
+        return Base64.getEncoder().encodeToString(imageData);
+    }
 }
-/*
-private class FeaturePhoto {
-    private FeaturePhoto(final String base64
+
+
+
+class FeaturePhoto {
+    final String photoBase64;
+    final Instant instant;
+    protected FeaturePhoto(final String photoBase64, Instant instant) {
+        this.photoBase64 = photoBase64;
+        this.instant = instant;
+    }
 
 }
 
-*/
+

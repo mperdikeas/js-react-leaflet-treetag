@@ -33,6 +33,7 @@ export default class TargetPhotoPane extends React.Component {
     }
     
     componentDidUpdate(prevProps, prevState) {
+        console.log(`component did update got called`);
         if (prevProps.targetId !== this.props.targetId) {
             this.setState(this.getInitialState());
             this.fetchPayload();            
@@ -49,13 +50,11 @@ export default class TargetPhotoPane extends React.Component {
         } else {
             if (this.state.error===null) {
                 console.log('retrieved data successfully');
-                console.log(Object.keys(this.state.payload));
-                console.log(this.state);
-                console.log(this.state.payload);
+                const {photoBase64, instant} = this.state.payload;
                 return (
                         <>
-                        photo information on {this.props.targetId}
-                        <img src={`data:image;base64,${this.state.payload}`} class='img-fluid' alt='Responsive image'/>
+                        <div>photo of {this.props.targetId} taken on {instant.seconds}</div>
+                        <img src={`data:image;base64,${photoBase64}`} class='img-fluid' alt='Responsive image'/>
                         </>
                 );
             } else {
