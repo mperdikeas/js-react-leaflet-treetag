@@ -22,6 +22,8 @@ export default class TargetPhotoPane extends React.Component {
         this.fetchNumOfPhotos = this.fetchNumOfPhotos   .bind(this);
         this.fetchPhoto       = this.fetchPhoto         .bind(this);
         this.getInitialState  = this.getInitialState    .bind(this);
+        this.nextImage        = this.nextImage          .bind(this);
+        this.prevImage        = this.prevImage          .bind(this);
         this.state            = this.getInitialState();
     }
 
@@ -33,6 +35,16 @@ export default class TargetPhotoPane extends React.Component {
                 , error           : null};
     }
 
+    prevImage() {
+        this.setState({currentPhotoIndx: this.state.currentPhotoIndx-1
+                       , photoBase64: null});
+    }
+    
+    nextImage() {
+        this.setState({currentPhotoIndx: this.state.currentPhotoIndx+1
+                       , photoBase64: null});
+    }    
+
     componentDidMount() {
         this.fetchNumOfPhotos();
     }
@@ -42,33 +54,75 @@ export default class TargetPhotoPane extends React.Component {
         if (prevProps.targetId !== this.props.targetId) {
             this.setState(this.getInitialState());
             this.fetchNumOfPhotos();
-        } else if (prevState.currentPhotoIndx !== this.state.currentPhotoIndx)
+        } else if ((prevState.currentPhotoIndx !== this.state.currentPhotoIndx)
+                   && (this.state.currentPhotoIndx!=null))
             this.fetchPhoto();
     }
 
     render() {
-        console.log(`render(), state is: ${this.state}`);
-        if (this.state.photoBase64===null) {
+        console.log(`render(), state is: ${JSON.stringify(this.state)}`);
+        if ((this.state.numOfPhotos === null) || ((this.state.numOfPhotos>0) && (this.state.photoBase64===null))) {
             return (
                     <img src={loading} class='img-fluid' alt='Please wait...'/>
             );
 
         } else {
 
-            const {numOfPhotos, currentPhotoIndx, photoBase64, photoBase64Instant: {seconds}} = this.state;
+            const {numOfPhotos, currentPhotoIndx, photoBase64, photoBase64Instant} = this.state;
             if (this.state.error===null) {
-                // by this point we expect photoBase64 but also numOfPhotos  and currentPhotoIndx to be retrieved                
-                assert.isNotNull(numOfPhotos);
-                assert.isNotNull(currentPhotoIndx);
-                assert.isNotNull(photoBase64);
-                assert.isNotNull(seconds);
 
-                console.log(numOfPhotos, currentPhotoIndx, photoBase64, seconds);
+                console.log(numOfPhotos, currentPhotoIndx, photoBase64, photoBase64Instant);
+
+                if ((numOfPhotos===0) && (photoBase64===null))
+                    return (
+                            <>
+                                <div>no photos are available</div>
+                            </>
+                    );
+
+
+                const imageDiv = (()=>{
+                if ((numOfPhotos>0) && (photoBase64===null))
+                    return (
+                            <>
+                                <div>fetching photo...</div>
+                            </>
+                    );
+                    else {
+                        return (
+                        <>
+                            <img src={`data:image;base64,${photoBase64}`} class='img-fluid' alt='Responsive image'/>
+                        </>
+                        );
+                    }
+
+
+                })();
+                const buttonClasses = {
+                    'btn': true,
+                    'btn-outline-info': true
+                };
+                const firstImage = currentPhotoIndx===0;
+                const lastImage = currentPhotoIndx===numOfPhotos-1;
+                const prevButtonClasses = Object.assign({}, buttonClasses,
+                                                        {
+                                                            disabled: firstImage,
+                                                            'not-allowed': firstImage
+                                                        });
+                const nextButtonClasses = Object.assign({}, buttonClasses,
+                                                        {
+                                                            disabled: lastImage,
+                                                            'not-allowed':lastImage
+                                                        });
                 return (
                         <>
-                        <div>photo of {this.props.targetId} taken on {seconds}</div>
-                        <div>photo {currentPhotoIndx} of {numOfPhotos}</div>
-                        <img src={`data:image;base64,${photoBase64}`} class='img-fluid' alt='Responsive image'/>
+                        <div>photo of {this.props.targetId} taken on {photoBase64Instant.seconds}</div>
+                        <div class='d-flex flex-row justify-content-between'>
+                        <button type="button" disabled={firstImage} className={cx(prevButtonClasses)} onClick={this.prevImage}>prev</button>
+                            photo {currentPhotoIndx+1} of {numOfPhotos}
+                        <button type="button" disabled={lastImage} className={cx(nextButtonClasses)} onClick={this.nextImage}>next</button>
+                        </div>
+                        {imageDiv}
                         </>
                 );
             } else {
@@ -90,7 +144,7 @@ export default class TargetPhotoPane extends React.Component {
     }
 
         fetchNumOfPhotos() {
-            console.log('fetchNumOfPhotos');
+            console.log('entering fetchNumOfPhotos...');
             const targetId = Math.round(this.props.targetId*1000);
             const url = `https://127.0.0.1:8445/tree-cadaster-backend/jax-rs/main/feature/${targetId}/photos/num`;
             console.log(`axios URL is: ${url}`);
@@ -100,10 +154,12 @@ export default class TargetPhotoPane extends React.Component {
                     const {t, err} = res.data; // this is a ValueOrInternalServerExceptionData data type on the server side
                     if (err===null) {
                         const numOfPhotos = t;
-                        const currentPhotoIndx = numOfPhotos>0?1:0;
+                        const currentPhotoIndx = numOfPhotos>0?0:null;
+                        console.log(`number of photos retrieved as ${numOfPhotos}`);
                         this.setState({ loading: false
                                         , numOfPhotos: numOfPhotos
                                         , currentPhotoIndx: currentPhotoIndx
+                                        , photoBase64: null
                                         , error: null});
                     } else {
                         this.setState({ loading: false, numOfPhotos: null, error: err});

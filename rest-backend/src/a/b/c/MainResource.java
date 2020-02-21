@@ -113,14 +113,6 @@ public class MainResource {
                                   , System.identityHashCode(this)));
     }
 
-    @Path("/foo")
-    @GET 
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getFeaturePhoto(@Context final HttpServletRequest httpServletRequest) {
-        System.out.println("1");        
-        return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok("foobar"))).build();
-    }
-
 
     @Path("/feature/{featureId}/photos/num")
     @GET 
@@ -132,7 +124,7 @@ public class MainResource {
             logger.info(String.format("getFeaturePhotosNum(%d) ~*~ remote address: [%s]"
                                       , featureId
                                       , httpServletRequest.getRemoteAddr()));
-            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(5))).build();
+            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(featureId % 4))).build();
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling getFeaturePhotosNum(%d) from remote address [%s]"
                                        , featureId
@@ -155,8 +147,8 @@ public class MainResource {
                                       , featureId
                                       , photoIndx
                                       , httpServletRequest.getRemoteAddr()));
-            TimeUnit.MILLISECONDS.sleep(200);
-            final String photoBase64 = getPhotoBase64(featureId);
+            TimeUnit.MILLISECONDS.sleep(500);
+            final String photoBase64 = getPhotoBase64(featureId, photoIndx);
             final Instant photoInstant = getPhotoInstant(featureId);
             final FeaturePhoto featurePhoto = new FeaturePhoto(photoBase64, photoInstant);
             return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(featurePhoto))).build();
@@ -169,13 +161,49 @@ public class MainResource {
         }
     }
 
-    private Instant getPhotoInstant(final int featureid) {
-        final int days = featureid % 2000;
+    private Instant getPhotoInstant(final int featureId) {
+        final int days = featureId % 2000;
         return Instant.now().minus(days, ChronoUnit.DAYS);
     }
-    private String getPhotoBase64(final int featureid) throws Exception {
+    private String getPhotoBase64(final int featureId, final int photoIndx) throws Exception {
+        final String[] photos = new String[]{
+            "olive-3687482__340.jpg",
+            "olives-1752199__340.jpg", 
+            "olive-tree-1973386__340.jpg", 
+            "olive-tree-333973__340.jpg", 
+            "olive-tree-3465274__340.jpg", 
+            "olive-tree-3495165__340.jpg", 
+            "olive-tree-3579922__340.jpg", 
+            "olive-tree-3662627__340.jpg", 
+            "olive-trees-4253749__340.jpg", 
+            "photo-1445264718234-a623be589d37.jpeg", 
+            "photo-1445294211564-3ca59d999abd.jpeg", 
+            "photo-1446714276218-bd84d334af98.jpeg", 
+            "photo-1471180625745-944903837c22.jpeg", 
+            "photo-1476712395872-c2971d88beb7.jpeg", 
+            "photo-1486162928267-e6274cb3106f.jpeg", 
+            "photo-1489644484856-f3ddc0adc923.jpeg", 
+            "photo-1496776574435-bf184935f729.jpeg", 
+            "photo-1500215667712-fdbc1bfc0887.jpeg", 
+            "photo-1501084291732-13b1ba8f0ebc.jpeg", 
+            "photo-1502311526760-ebc5d6cc0183.jpeg", 
+            "photo-1502770513380-138d6d3a51dd.jpeg", 
+            "photo-1505672678657-cc7037095e60.jpeg", 
+            "photo-1507369512168-9b7de6ec6be6.jpeg", 
+            "photo-1508349937151-22b68b72d5b1.jpeg", 
+            "photo-1523712999610-f77fbcfc3843.jpeg", 
+            "photo-1541426062085-72349d82d048.jpeg", 
+            "photo-1541623608922-3bce9d452968.jpeg", 
+            "photo-1543130732-4b8da601004b.jpeg", 
+            "photo-1545284860-c13569469d2a.jpeg", 
+            "photo-1553755322-56baa43a31d7.jpeg", 
+            "photo-1562207124-f93c6fc6c176.jpeg", 
+            "photo-1563433571545-99e130f273f2.jpeg"
+        };
+
         final ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        final InputStream is = classloader.getResourceAsStream("photos/olive-3687482__340.jpg");
+        final String fname = photos[ (featureId*photoIndx + featureId + photoIndx) % photos.length];
+        final InputStream is = classloader.getResourceAsStream(String.format("photos/%s", fname));
         final BufferedImage image = ImageIO.read(is);
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(image, "jpg", baos);
