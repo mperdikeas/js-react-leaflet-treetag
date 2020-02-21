@@ -51,7 +51,7 @@ class InformationPanel extends React.Component {
         if (this.props.target===null)
             return (
             <div id='detailInformation' class='col-4 padding-0' style={{backgroundColor: 'lightgrey'}}>
-            nothing to display
+            click on a feature to see its information
             </div>
             );
         console.log(`tab is  ${this.state.tab}, targetId is: ${this.props.target.targetId}`);
@@ -63,6 +63,9 @@ class InformationPanel extends React.Component {
         const paneToDisplay = this.paneToDisplay();
         return (
             <div id='detail-information' class='col-4 padding-0' style={{backgroundColor: 'lightgrey'}}>
+                <div style={{fontSize: '130%'}}>info on&nbsp;
+                    <span style={{fontFamily: 'monospace'}}>{this.props.target.targetId}</span>
+                </div>
                 <ul class="nav">
                     <li class="nav-item">
                         <a id='information' class={cx(informationClasses)} href="#" onClick={this.onInformation}>Πληροφορίες</a>

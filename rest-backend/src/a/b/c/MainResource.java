@@ -122,15 +122,38 @@ public class MainResource {
     }
 
 
-    @Path("/feature/{featureId}/photo")
+    @Path("/feature/{featureId}/photos/num")
+    @GET 
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getFeaturePhotosNum(@Context final HttpServletRequest httpServletRequest
+                                        , @PathParam("featureId") final int featureId
+                                    ) {
+        try {
+            logger.info(String.format("getFeaturePhotosNum(%d) ~*~ remote address: [%s]"
+                                      , featureId
+                                      , httpServletRequest.getRemoteAddr()));
+            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(5))).build();
+        } catch (Throwable t) {
+            logger.error(String.format("Problem when calling getFeaturePhotosNum(%d) from remote address [%s]"
+                                       , featureId
+                                       , httpServletRequest.getRemoteAddr())
+                         , t);
+            return ResourceUtil.softFailureResponse(t);
+        }
+    }
+    
+
+    @Path("/feature/{featureId}/photos/elem/{photoIndx}")
     @GET 
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFeaturePhoto(@Context final HttpServletRequest httpServletRequest
-                                  , @PathParam("featureId") final int featureId) {
-        System.out.println("2");
+                                  , @PathParam("featureId") final int featureId
+                                    , @PathParam("photoIndx") final int photoIndx
+                                    ) {
         try {
-            logger.info(String.format("getFeaturePhoto(%d) ~*~ remote address: [%s]"
+            logger.info(String.format("getFeaturePhoto(%d, %d) ~*~ remote address: [%s]"
                                       , featureId
+                                      , photoIndx
                                       , httpServletRequest.getRemoteAddr()));
             TimeUnit.MILLISECONDS.sleep(200);
             final String photoBase64 = getPhotoBase64(featureId);
@@ -138,7 +161,7 @@ public class MainResource {
             final FeaturePhoto featurePhoto = new FeaturePhoto(photoBase64, photoInstant);
             return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(featurePhoto))).build();
         } catch (Throwable t) {
-            logger.error(String.format("Problem when calling getFeaturePhoto(%d) from remote address [%s]"
+            logger.error(String.format("Problem when calling getFeaturePhoto(%d, %d) from remote address [%s]"
                                        , featureId
                                        , httpServletRequest.getRemoteAddr())
                          , t);
