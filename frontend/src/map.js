@@ -1,6 +1,11 @@
 require('./css/style.css');
 require('./ots/leaflet-heat.js');
 
+require('@ansur/leaflet-pulse-icon/dist/L.Icon.Pulse.css');
+require('@ansur/leaflet-pulse-icon/dist/L.Icon.Pulse.js');
+
+
+
 window.shp=require('shpjs');
 require('./ots/leaflet.shpfile.js');
 
@@ -61,11 +66,22 @@ class Map extends React.Component {
         this.addTiles(null);
         this.createLayerGroups();
         this.configureLayerGroups();
-        this.map.on('click', function(e){
+        this.map.on('click', (e)=>{
             const {lat, lng} = e.latlng;
             console.log(`You clicked the map at latitude: ${lat} and longitude ${lng}`);
             const proj = proj4(WGS84, HGRS87,[lng, lat]);
             console.log(`converted are ${proj}`);
+            const pulsingIcon = L.icon.pulse(
+                {iconSize:[20,20]
+                 , color:'red'
+                 , animate: true
+                 , heartbeat: 0.4
+                });
+            const marker = L.marker([lat, lng],{icon: pulsingIcon}).addTo(this.map);
+            marker.addTo(this.map);
+            window.setTimeout(()=>{
+                this.map.removeLayer(marker);
+            }, 2000);
         });
         L.control.layers(BaseLayersForLayerControl, this.layerGroups).addTo(this.map);
 
