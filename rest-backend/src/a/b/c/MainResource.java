@@ -135,7 +135,7 @@ public class MainResource {
             final InputStream is = classloader.getResourceAsStream("photos/olive-3687482__340.jpg");
             final BufferedImage image = ImageIO.read(is);
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(image, "png", baos);
+            ImageIO.write(image, "jpg", baos);
             final byte[] imageData = baos.toByteArray();
             return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(Base64.getEncoder().encodeToString(imageData)))).build();
         } catch (Throwable t) {
@@ -146,6 +146,11 @@ public class MainResource {
             return ResourceUtil.softFailureResponse(t);
         }
     }
-
+}
+/*
+private class FeaturePhoto {
+    private FeaturePhoto(final String base64
 
 }
+
+*/

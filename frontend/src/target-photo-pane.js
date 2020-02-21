@@ -55,7 +55,7 @@ export default class TargetPhotoPane extends React.Component {
                 return (
                         <>
                         photo information on {this.props.targetId}
-                        <img src={`data:image/jpg;base64,${this.state.payload}`} class='img-fluid' alt='Responsive image'/>
+                        <img src={`data:image;base64,${this.state.payload}`} class='img-fluid' alt='Responsive image'/>
                         </>
                 );
             } else {
