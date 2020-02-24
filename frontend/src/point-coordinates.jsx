@@ -18,25 +18,31 @@ export default function PointCoordinates({coords}) {
     return null;
   else {
     const {lat, lng} = coords;
-    const precisionA = 6;
+    const precisionA = 8;
     const precisionB = 8;
     const formatA = `${lat.toPrecision(precisionA)}:${lng.toPrecision(precisionA)}`;
     const [hgrs87lat, hgrs87long] = proj4(WGS84, HGRS87, [lng, lat]);
     const formatB = `${hgrs87lat.toPrecision(precisionB)}:${hgrs87long.toPrecision(precisionB)}`;
     return (
       <>
-          <div class="col-1">
-              WGS84
+      <div class="col-4">
+          <div class='row no-gutters'>
+              <div class="col-4">
+                 WGS84
+              </div>
+              <div class="col-8">
+                {formatA}
+              </div>
           </div>
-      <div class="col-3">
-      {formatA}
+          <div class='row no-gutters'>
+              <div class="col-4">
+                ΕΓΣΑ '87
+              </div>
+              <div class="col-8">
+                {formatB}
+              </div>
           </div>
-          <div class="col-1">
-            ΕΓΣΑ '87
-          </div>
-          <div class="col-3">
-            {formatB}
-          </div>
+      </div>
       </>
     );
   }
