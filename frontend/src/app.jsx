@@ -15,9 +15,10 @@ const assert = require('chai').assert;
 
 
 
-import Map        from './map.js';
+import Map        from './map.jsx';
 import {BaseLayers, BaseLayersForLayerControl} from './baseLayers.js';
-import InformationPanel from './information-panel.js';
+import InformationPanel from './information-panel.jsx';
+import PointCoordinates from './point-coordinates.jsx';
 
 class App extends React.Component {
 
@@ -26,15 +27,21 @@ class App extends React.Component {
         this.state = {
             tileProviderId: 'esri'
             , target: null
+            , coords: null
         };
+        this.updateCoordinates    = this.updateCoordinates   .bind(this);
         this.onTileProviderSelect = this.onTileProviderSelect.bind(this);
-        this.updateTarget = this.updateTarget.bind(this);
+        this.updateTarget         = this.updateTarget        .bind(this);
     }
 
     componentDidMount() {
     }
     
     componentDidUpdate(prevProps, prevState) {
+    }
+
+    updateCoordinates(coords) {
+        this.setState({coords: coords});
     }
 
     onTileProviderSelect(tileProviderId) {
@@ -76,9 +83,11 @@ class App extends React.Component {
                                     </button>
                                     {dropDownMenu}
                                 </div>
+                                <PointCoordinates coords={this.state.coords}/>
                             </div>
                             <Map tileProviderId={this.state.tileProviderId}
                                  updateTarget={this.updateTarget}
+                                 updateCoordinates={this.updateCoordinates}
                             />
                         </div>
                         <InformationPanel target={this.state.target}/>

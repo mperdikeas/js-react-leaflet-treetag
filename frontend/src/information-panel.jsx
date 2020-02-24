@@ -12,9 +12,9 @@ const createReactClass = require('create-react-class');
 const assert = require('chai').assert;
 
 require('./css/information-panel.css');
-import TargetDataPane     from './target-data-pane.js';
-import TargetPhotoPane    from './target-photo-pane.js';
-import TargetMetadataPane from './target-metadata-pane.js';
+import TargetDataPane     from './target-data-pane.jsx';
+import TargetPhotoPane    from './target-photo-pane.jsx';
+import TargetMetadataPane from './target-metadata-pane.jsx';
 
 class InformationPanel extends React.Component {
 

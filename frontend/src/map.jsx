@@ -69,6 +69,7 @@ class Map extends React.Component {
         this.map.on('click', (e)=>{
             const {lat, lng} = e.latlng;
             console.log(`You clicked the map at latitude: ${lat} and longitude ${lng}`);
+            this.props.updateCoordinates(e.latlng);        
             const proj = proj4(WGS84, HGRS87,[lng, lat]);
             console.log(`converted are ${proj}`);
             const pulsingIcon = L.icon.pulse(
