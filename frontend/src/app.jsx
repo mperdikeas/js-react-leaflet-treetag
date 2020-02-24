@@ -72,9 +72,9 @@ class App extends React.Component {
                 <div class='container-fluid'>
                     <div class='row no-gutters'>
                         <div class='col-8 padding-0'>
-                            <div class='row no-gutters'>
-                                <div class="dropdown col-4">
-                                    <button class="btn btn-primary btn-sm dropdown-toggle"
+                            <div class='row no-gutters justify-content-start align-items-center' style={{height: '50px'}}>
+                                <div class="dropdown col-3">
+                                    <button class="btn btn-primary dropdown-toggle"
                                             type="button" id="dropdownMenuButton"
                                             data-toggle="dropdown"
                                             aria-haspopup="true"
