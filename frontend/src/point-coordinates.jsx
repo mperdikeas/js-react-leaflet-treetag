@@ -25,13 +25,19 @@ export default function PointCoordinates({coords}) {
     const formatB = `${hgrs87lat.toPrecision(precisionB)}:${hgrs87long.toPrecision(precisionB)}`;
     return (
       <>
-      <div class="col-sm">
-          Συντ/μένες: {formatA}
-      </div>
-      <div class="col-sm">
-          ΕΓΣΑ '87 {formatB}
-      </div>    
-    </>
+          <div class="col-1">
+              WGS84
+          </div>
+      <div class="col-3">
+      {formatA}
+          </div>
+          <div class="col-1">
+            ΕΓΣΑ '87
+          </div>
+          <div class="col-3">
+            {formatB}
+          </div>
+      </>
     );
   }
 }
