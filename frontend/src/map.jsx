@@ -66,6 +66,9 @@ class Map extends React.Component {
         this.addTiles(null);
         this.createLayerGroups();
         this.configureLayerGroups();
+        this.map.on('mousemove', (e) => {
+            this.props.updateCoordinates(e.latlng);
+        })
         this.map.on('click', (e)=>{
             const {lat, lng} = e.latlng;
             console.log(`You clicked the map at latitude: ${lat} and longitude ${lng}`);
@@ -138,12 +141,12 @@ class Map extends React.Component {
             };
             const effectiveOptions = Object.assign({}, baseOptions, newOptions);
             const useCustomMarker = true;
-            if (!useCustomMarker)
-                return L.circleMarker(c, baseOptions).on('click', this.clickOnCircleMarker);
-            else {
+            if (useCustomMarker) {
                 const marker = new CustomCircleMarker(c, effectiveOptions);
                 marker.on('click', this.clickOnCircleMarker);
                 return marker;
+            } else {
+                return L.circleMarker(c, baseOptions).on('click', this.clickOnCircleMarker);
             }
         }));
 
