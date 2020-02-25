@@ -90,8 +90,10 @@ export default class TargetPhotoPane extends React.Component {
                     );
                     else {
                         return (
-                        <>
-                            <img src={`data:image;base64,${photoBase64}`} class='img-fluid' alt='Responsive image'/>
+                          <>
+                            <a href={`data:image/gif;base64,${photoBase64}`} download="tree-photo.jpg">
+                                <img src={`data:image;base64,${photoBase64}`} class='img-fluid' alt='Responsive image'/>
+                            </a>
                         </>
                         );
                     }
