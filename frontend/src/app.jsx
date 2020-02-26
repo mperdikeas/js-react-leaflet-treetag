@@ -69,40 +69,30 @@ class App extends React.Component {
 
     );
 
-    if (this.state.maximizedInfo) {
-      return (
-        <div key='a' class='container-fluid'>
-          <div key='b' class='row no-gutters'>
-            <div key='c' class='col-12 padding-0'>
-              {informationPanel}
-            </div>
-          </div>
-        </div>
-      );
-    } else {
-      return (
-        <div key='a' class='container-fluid'>
-          <div key='b' class='row no-gutters'>
-            <div class='col-8 padding-0'>
-              <div class='row no-gutters justify-content-start align-items-center' style={{height: '50px'}}>
-                <div class="col-3">
-                  <TilesSelector onTileProviderSelect={this.onTileProviderSelect}/> 
-                </div>
-                <PointCoordinates coords={this.state.coords}/>
+    const classesForMapDiv = Object.assign({'col-8': true, 'padding-0': true}
+                                         , {hidden: this.state.maximizedInfo});
+
+    return (
+      <div class='container-fluid'>
+        <div class='row no-gutters'>
+          <div class={cx(classesForMapDiv)}>
+            <div class='row no-gutters justify-content-start align-items-center' style={{height: '50px'}}>
+              <div class="col-3">
+                <TilesSelector onTileProviderSelect={this.onTileProviderSelect}/> 
               </div>
-              <Map tileProviderId={this.state.tileProviderId}
-                   updateTarget={this.updateTarget}
-                   updateCoordinates={this.updateCoordinates}
-              />
+              <PointCoordinates coords={this.state.coords}/>
             </div>
-            <div key='c' class='col-4 padding-0' >
-              {informationPanel}
-            </div>
+            <Map tileProviderId={this.state.tileProviderId}
+                 updateTarget={this.updateTarget}
+                 updateCoordinates={this.updateCoordinates}
+            />
           </div>
+          {informationPanel}
         </div>
-      );
-    }
+      </div>
+    );
   }
+
 }
 
 

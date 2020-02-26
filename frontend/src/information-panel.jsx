@@ -67,8 +67,10 @@ class InformationPanel extends React.Component {
 
     const paneToDisplay = this.paneToDisplay();
     const toggleTxt = this.props.maximized?'Ελαχιστοποίηση':'Μεγιστοποίηση';
+    const klasses = Object.assign({'padding-0': true}
+      , {'col-4': !this.props.maximized, 'col-12': this.props.maximized});
     return (
-      <div id='detail-information' style={{backgroundColor: 'lightgrey'}}>
+      <div id='detail-information' class={cx(klasses)} style={{backgroundColor: 'lightgrey'}}>
         <div class='row'>
           <div class='col-6' style={{fontSize: '130%'}}>
             info on&nbsp;

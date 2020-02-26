@@ -6,3 +6,7 @@ body {
   
   cursor: not-allowed !important;
 }
+
+.hidden {
+    display: none;
+}

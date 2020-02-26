@@ -79,10 +79,6 @@ class Map extends React.Component {
       zoomControl: false
     });
     this.addTiles();
-    this.addTiles(); /* For some weird reason that I don't have the time to investigate now
-                        when I maximize / minimize the information panel I need to call this
-                        twice otherwise the tiles layer does not render properly.
-                      */
     this.createLayerGroups();
     this.configureLayerGroups();
     if (false)
