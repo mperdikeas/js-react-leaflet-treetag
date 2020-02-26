@@ -14,9 +14,8 @@ const assert = require('chai').assert;
 
 
 
-
-import Map        from './map.jsx';
-import {BaseLayers, BaseLayersForLayerControl} from './baseLayers.js';
+import TilesSelector    from './tiles-selector.jsx';
+import Map              from './map.jsx';
 import InformationPanel from './information-panel.jsx';
 import PointCoordinates from './point-coordinates.jsx';
 
@@ -61,56 +60,48 @@ class App extends React.Component {
 
   render() {
     console.log('app::render()');
-    const options = [];
-    for (let x in BaseLayers) {
-      console.log('for x in BaseLayers', x);
-      options.push(
-        <a class="dropdown-item" onClick={()=>this.onTileProviderSelect(x)}>
-          {BaseLayers[x].friendlyName}
-        </a>
+
+    const informationPanel = (
+      <InformationPanel key={this.state.target}
+                        target={this.state.target}
+                        maximized={this.state.maximizedInfo}
+                        toggleInfoPanel={this.toggleInfoPanel}/>
+
+    );
+
+    if (this.state.maximizedInfo) {
+      return (
+        <div key='a' class='container-fluid'>
+          <div key='b' class='row no-gutters'>
+            <div key='c' class='col-12 padding-0'>
+              {informationPanel}
+            </div>
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div key='a' class='container-fluid'>
+          <div key='b' class='row no-gutters'>
+            <div class='col-8 padding-0'>
+              <div class='row no-gutters justify-content-start align-items-center' style={{height: '50px'}}>
+                <div class="col-3">
+                  <TilesSelector onTileProviderSelect={this.onTileProviderSelect}/> 
+                </div>
+                <PointCoordinates coords={this.state.coords}/>
+              </div>
+              <Map tileProviderId={this.state.tileProviderId}
+                   updateTarget={this.updateTarget}
+                   updateCoordinates={this.updateCoordinates}
+              />
+            </div>
+            <div key='c' class='col-4 padding-0' >
+              {informationPanel}
+            </div>
+          </div>
+        </div>
       );
     }
-    const dropDownMenu = (
-      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        {options}
-      </div>
-    );
-    if (this.state.maximizedInfo)
-      return (
-        <div class='container-fluid'>
-          <div class='row no-gutters'>
-            <div class='col-12 padding-0'>
-              <InformationPanel target={this.state.target} toggleInfoPanel={this.toggleInfoPanel}/>
-            </div>
-          </div>
-        </div>
-      )
-    else return (
-      <div class='container-fluid'>
-        <div class='row no-gutters'>
-          <div class='col-8 padding-0'>
-            <div class='row no-gutters justify-content-start align-items-center' style={{height: '50px'}}>
-              <div class="dropdown col-3">
-                <button class="btn btn-primary dropdown-toggle"
-                        type="button" id="dropdownMenuButton"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false">
-                  Tiles provider
-                </button>
-                {dropDownMenu}
-              </div>
-              <PointCoordinates coords={this.state.coords}/>
-            </div>
-            <Map tileProviderId={this.state.tileProviderId}
-                 updateTarget={this.updateTarget}
-                 updateCoordinates={this.updateCoordinates}
-            />
-          </div>
-          <InformationPanel target={this.state.target} toggleInfoPanel={this.toggleInfoPanel}/>
-        </div>
-      </div>
-    );
   }
 }
 

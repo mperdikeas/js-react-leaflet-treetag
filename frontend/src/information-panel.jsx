@@ -19,6 +19,7 @@ import TargetMetadataPane from './target-metadata-pane.jsx';
 class InformationPanel extends React.Component {
 
   constructor(props) {
+    console.log('InformationPanel:: constructor');
     super(props);
     this.state = {
       tab: 'information'
@@ -33,6 +34,10 @@ class InformationPanel extends React.Component {
   }
   
   componentDidUpdate(prevProps, prevState) {
+  }
+
+  componentWillUnmount() {
+    console.log('InformationPanel: unmounting...');
   }
 
   onInformation() {
@@ -61,15 +66,16 @@ class InformationPanel extends React.Component {
     const historyClasses = Object.assign({}, defaultClasses, {'active': this.state.tab==='history'});
 
     const paneToDisplay = this.paneToDisplay();
+    const toggleTxt = this.props.maximized?'Ελαχιστοποίηση':'Μεγιστοποίηση';
     return (
-      <div id='detail-information' class='col-4 padding-0' style={{backgroundColor: 'lightgrey'}}>
+      <div id='detail-information' style={{backgroundColor: 'lightgrey'}}>
         <div class='row'>
           <div class='col-6' style={{fontSize: '130%'}}>
             info on&nbsp;
             <span style={{fontFamily: 'monospace'}}>{this.props.target.targetId}</span>
           </div>
           <div class='col-6'>
-            <a id='toggle-info-panel' class={cx(defaultClasses)} href="#" onClick={this.props.toggleInfoPanel}>Μεγιστοποίηση</a>
+            <a id='toggle-info-panel' class={cx(defaultClasses)} href="#" onClick={this.props.toggleInfoPanel}>{toggleTxt}</a>
           </div>
         </div>
         <ul class="nav">
