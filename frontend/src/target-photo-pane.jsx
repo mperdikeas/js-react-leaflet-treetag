@@ -11,7 +11,10 @@ import PropTypes from 'prop-types';
 const createReactClass = require('create-react-class');
 const assert = require('chai').assert;
 
-const loading = require('../resources/loading.gif');
+const loading  = require('../resources/loading.gif');
+// require('../resources/down-arrow.png');
+import DownArrow from '../resources/down-arrow.png';
+// const download = url('../resources/
 import axios from 'axios';
 
 
@@ -88,15 +91,17 @@ export default class TargetPhotoPane extends React.Component {
                                 <div>fetching photo...</div>
                             </>
                     );
-                    else {
-                        return (
-                          <>
-                            <a href={`data:image/gif;base64,${photoBase64}`} download="tree-photo.jpg">
-                                <img src={`data:image;base64,${photoBase64}`} class='img-fluid' alt='Responsive image'/>
-                            </a>
-                        </>
-                        );
-                    }
+                  else {
+                    const style = {cursor: `url(${DownArrow})`};
+                    console.log('style is', style);
+                    return (
+                      <>
+                      <a href={`data:image/gif;base64,${photoBase64}`} download="tree-photo.jpg" style={style}>
+                        <img src={`data:image;base64,${photoBase64}`} class='img-fluid' alt='Responsive image' style={style}/>
+                      </a>
+                      </>
+                    );
+                  }
 
 
                 })();
