@@ -30,6 +30,7 @@ import proj4 from 'proj4';
 require('../node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css');
 require('../node_modules/leaflet.markercluster/dist/leaflet.markercluster.js');
 
+import {headerBarHeight}  from './geometry.js';
 import {BaseLayers, BaseLayersForLayerControl} from './baseLayers.js';
 import {DefaultIcon, TreeIcon}          from './icons.js';
 import rainbow from './rainbow.js';
@@ -298,9 +299,11 @@ class Map extends React.Component {
   
 
   render() {
-    console.log(`Map::render(): tileProviderId is [${this.props.tileProviderId}]`);
+    const viewportHeight = $(window).height();
+    console.log(`Map::render(): viewportHeight is [${viewportHeight}], tileProviderId is [${this.props.tileProviderId}]`);
+    const mapHeight = viewportHeight - headerBarHeight;
     return (
-      <div id='map-id' style={{height: "600px" }}>
+      <div id='map-id' style={{height: `${mapHeight}px` }}>
       </div>
     );
   }

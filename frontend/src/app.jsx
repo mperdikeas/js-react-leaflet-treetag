@@ -18,6 +18,7 @@ import TilesSelector    from './tiles-selector.jsx';
 import Map              from './map.jsx';
 import InformationPanel from './information-panel.jsx';
 import PointCoordinates from './point-coordinates.jsx';
+import {headerBarHeight}  from './geometry.js';
 
 class App extends React.Component {
 
@@ -76,7 +77,7 @@ class App extends React.Component {
       <div class='container-fluid'>
         <div class='row no-gutters'>
           <div class={cx(classesForMapDiv)}>
-            <div class='row no-gutters justify-content-start align-items-center' style={{height: '50px'}}>
+            <div class='row no-gutters justify-content-start align-items-center' style={{height: `${headerBarHeight}px`}}>
               <div class="col-3">
                 <TilesSelector onTileProviderSelect={this.onTileProviderSelect}/> 
               </div>
