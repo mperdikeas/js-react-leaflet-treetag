@@ -57,6 +57,13 @@ class Map extends React.Component {
     super(props);
     this.clickOnCircleMarker = this.clickOnCircleMarker.bind(this);
     this.getCurrentTileLayer = this.getCurrentTileLayer.bind(this);
+    this.handleResize        = this.handleResize       .bind(this);
+    this.getMapHeight        = this.getMapHeight       .bind(this);
+    this.state = {mapHeight: this.getMapHeight()};
+  }
+
+  getMapHeight() {
+    return $(window).height() - headerBarHeight;
   }
 
   getCurrentTileLayer() {
@@ -72,8 +79,18 @@ class Map extends React.Component {
       return null;
   }
 
+  handleResize() {
+    this.setState({mapHeight: this.getMapHeight()});
+  }
+
+  componentDidUnmount() {
+    console.log('map::componentDidUnmount()');
+    window.removeEventListener('resize', this.handleResize);
+  }
+
   componentDidMount() {
     console.log('map::componentDidMount()');
+    window.addEventListener('resize', this.handleResize);
     this.map = L.map('map-id', {
       center: Athens,
       zoom: 12,
@@ -83,9 +100,9 @@ class Map extends React.Component {
     this.createLayerGroups();
     this.configureLayerGroups();
     if (false)
-    this.map.on('mousemove', (e) => {
-      this.props.updateCoordinates(e.latlng);
-    })
+      this.map.on('mousemove', (e) => {
+        this.props.updateCoordinates(e.latlng);
+      })
     this.map.on('click', (e)=>{
       const {lat, lng} = e.latlng;
       console.log(`You clicked the map at latitude: ${lat} and longitude ${lng}`);
@@ -120,9 +137,10 @@ class Map extends React.Component {
       console.log('checkbox changed', e);
     });
 
+    
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     if (prevProps.tileProviderId!==this.props.tileProviderId) {
       console.log(`tile provider change detected from ${prevProps.tileProviderId} to ${this.props.tileProviderId}`);
       this.addTiles();
@@ -301,9 +319,8 @@ class Map extends React.Component {
   render() {
     const viewportHeight = $(window).height();
     console.log(`Map::render(): viewportHeight is [${viewportHeight}], tileProviderId is [${this.props.tileProviderId}]`);
-    const mapHeight = viewportHeight - headerBarHeight;
     return (
-      <div id='map-id' style={{height: `${mapHeight}px` }}>
+      <div id='map-id' style={{height: `${this.state.mapHeight}px` }}>
       </div>
     );
   }
