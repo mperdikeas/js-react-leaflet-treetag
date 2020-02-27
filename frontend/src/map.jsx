@@ -49,7 +49,10 @@ proj4.defs([
 const WGS84  = 'EPSG:4326';
 const HGRS87 = 'EPSG:2100';
 
-class Map extends React.Component {
+export default class Map extends React.Component {
+
+  static contextType = GeometryContext
+  
   constructor(props) {
     console.log('Map::constructor is called');
     super(props);
@@ -368,17 +371,9 @@ function randomItem(items) {
 
 
 
-Map.contextType = GeometryContext
-export default Map
 
-/*
 
-export default (props) => (
-  <GeometryContext.Consumer>
-    {state => <Map props={props} context={state} />}
-  </GeometryContext.Consumer>
-);
-*/
+
 function unpack(str) {
   var codePoints = [];
   for(var i = 0; i < str.length; i++)
