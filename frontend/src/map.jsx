@@ -55,10 +55,10 @@ class Map extends React.Component {
   constructor(props) {
     console.log('Map::constructor is called');
     super(props);
-    this.clickOnCircleMarker = this.clickOnCircleMarker.bind(this);
-    this.getCurrentTileLayer = this.getCurrentTileLayer.bind(this);
-    this.handleResize        = this.handleResize       .bind(this);
-    this.getMapHeight        = this.getMapHeight       .bind(this);
+    this.clickOnCircleMarker =            this.clickOnCircleMarker.bind(this);
+    this.getCurrentTileLayer =            this.getCurrentTileLayer.bind(this);
+    this.handleResize        = _.throttle(this.handleResize       .bind(this), 250);
+    this.getMapHeight        =            this.getMapHeight       .bind(this);
     this.state = {mapHeight: this.getMapHeight()};
   }
 
