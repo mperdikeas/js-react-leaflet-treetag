@@ -30,13 +30,12 @@ import proj4 from 'proj4';
 require('../node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css');
 require('../node_modules/leaflet.markercluster/dist/leaflet.markercluster.js');
 
-import {headerBarHeight}  from './geometry.js';
 import {BaseLayers, BaseLayersForLayerControl} from './baseLayers.js';
 import {DefaultIcon, TreeIcon}          from './icons.js';
 import rainbow from './rainbow.js';
 
 import {CustomCircleMarker} from './custom-markers.js';
-
+import GeometryContext from './context/geometry-context.js'
 // const Buffer = require('buffer').Buffer;
 // const Iconv  = require('iconv').Iconv;
 
@@ -51,19 +50,19 @@ const WGS84  = 'EPSG:4326';
 const HGRS87 = 'EPSG:2100';
 
 class Map extends React.Component {
-
   constructor(props) {
     console.log('Map::constructor is called');
     super(props);
     this.clickOnCircleMarker =            this.clickOnCircleMarker.bind(this);
     this.getCurrentTileLayer =            this.getCurrentTileLayer.bind(this);
-    this.handleResize        = _.throttle(this.handleResize       .bind(this), 250);
+
     this.getMapHeight        =            this.getMapHeight       .bind(this);
-    this.state = {mapHeight: this.getMapHeight()};
+    this.state = {mapHeight: 400} //this.getMapHeight()}
   }
 
   getMapHeight() {
-    return $(window).height() - headerBarHeight;
+    console.log('context is: ', this.context)
+    return this.context.height - 50 // this.props.context.headerBarHeight
   }
 
   getCurrentTileLayer() {
@@ -79,9 +78,6 @@ class Map extends React.Component {
       return null;
   }
 
-  handleResize() {
-    this.setState({mapHeight: this.getMapHeight()});
-  }
 
   componentDidUnmount() {
     console.log('map::componentDidUnmount()');
@@ -317,10 +313,13 @@ class Map extends React.Component {
   
 
   render() {
+    console.log('map::render() props:')
+    console.log(this.props)
+    console.log('map::render() context is:', this.props.context);
     const viewportHeight = $(window).height();
     console.log(`Map::render(): viewportHeight is [${viewportHeight}], tileProviderId is [${this.props.tileProviderId}]`);
     return (
-      <div id='map-id' style={{height: `${this.state.mapHeight}px` }}>
+      <div id='map-id' style={{height: `${this.context.height - 50}px` }}>
       </div>
     );
   }
@@ -369,10 +368,17 @@ function randomItem(items) {
 
 
 
+Map.contextType = GeometryContext
+export default Map
 
-export default Map;
+/*
 
-
+export default (props) => (
+  <GeometryContext.Consumer>
+    {state => <Map props={props} context={state} />}
+  </GeometryContext.Consumer>
+);
+*/
 function unpack(str) {
   var codePoints = [];
   for(var i = 0; i < str.length; i++)

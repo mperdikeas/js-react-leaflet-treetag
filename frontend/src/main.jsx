@@ -1,4 +1,3 @@
-const     _ = require('lodash');
 const     $ = require('jquery');
 import React    from 'react';
 import ReactDOM from 'react-dom';
@@ -16,12 +15,15 @@ import axios from 'axios';
 $(document).ready(doStuff);
 
 
+
 function doStuff() {
     if (false)
         submitCredentials('admin', 'pass');
 
-    ReactDOM.render(<App/>, $('#app')[0]);
-
+  ReactDOM.render(
+    <App/>
+    , $('#app')[0]);
+  window.addEventListener('resize', this.handleResize);
 }
 
 function submitCredentials(username, password) {

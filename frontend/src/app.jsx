@@ -1,26 +1,28 @@
-const     _ = require('lodash');
-const     $ = require('jquery');
+const     _ = require('lodash')
+const     $ = require('jquery')
 window.$ = $; // make jquery available to other scripts (not really applicable in our case) and the console
 
 
-const React = require('react');
-var      cx = require('classnames');
+const React = require('react')
+var      cx = require('classnames')
 
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
 
-const createReactClass = require('create-react-class');
-const assert = require('chai').assert;
-
-
+const createReactClass = require('create-react-class')
+const assert = require('chai').assert
 
 
-import TilesSelector    from './tiles-selector.jsx';
-import Map              from './map.jsx';
-import InformationPanel from './information-panel.jsx';
-import PointCoordinates from './point-coordinates.jsx';
-import {headerBarHeight}  from './geometry.js';
+
+
+import TilesSelector    from './tiles-selector.jsx'
+import Map              from './map.jsx'
+import InformationPanel from './information-panel.jsx'
+import PointCoordinates from './point-coordinates.jsx'
+import GeometryContext  from './context/geometry-context.js'
 
 class App extends React.Component {
+
+
 
   constructor(props) {
     super(props);
@@ -29,15 +31,26 @@ class App extends React.Component {
       , maximizedInfo: false
       , target: null
       , coords: null
+      , screen: this.getViewPortInfo()
     };
-    this.updateCoordinates              = this.updateCoordinates   .bind(this);
-    this.onTileProviderSelect           = this.onTileProviderSelect.bind(this);
-    this.updateTarget                   = this.updateTarget        .bind(this);
-    this.toggleInfoPanel = this.toggleInfoPanel.bind(this);
+    this.updateCoordinates              = this.updateCoordinates      .bind(this)
+    this.onTileProviderSelect           = this.onTileProviderSelect   .bind(this)
+    this.updateTarget                   = this.updateTarget           .bind(this)
+    this.toggleInfoPanel                = this.toggleInfoPanel        .bind(this)
+    this.handleResize                   = _.throttle(this.handleResize.bind(this), 250);
   }
 
-  componentDidMount() {
+  getViewPortInfo = () => {
+    return {height: $(window).height()}
   }
+  componentDidMount() {
+    window.addEventListener('resize', this.handleResize)
+  }
+
+  handleResize() {
+    this.setState({screen: this.getViewPortInfo()});
+  }
+  
   
   componentDidUpdate(prevProps, prevState) {
   }
@@ -73,24 +86,27 @@ class App extends React.Component {
     const classesForMapDiv = Object.assign({'col-8': true, 'padding-0': true}
                                          , {hidden: this.state.maximizedInfo});
 
+    console.log('app:render', this.state.screen);
     return (
-      <div class='container-fluid'>
-        <div class='row no-gutters'>
-          <div class={cx(classesForMapDiv)}>
-            <div class='row no-gutters justify-content-start align-items-center' style={{height: `${headerBarHeight}px`}}>
-              <div class="col-3">
-                <TilesSelector onTileProviderSelect={this.onTileProviderSelect}/> 
+      <GeometryContext.Provider value={this.state.screen}>
+        <div class='container-fluid'>
+          <div class='row no-gutters'>
+            <div class={cx(classesForMapDiv)}>
+              <div class='row no-gutters justify-content-start align-items-center' style={{height: `${this.context.headerBarHeight}px`}}>
+                <div class="col-3">
+                  <TilesSelector onTileProviderSelect={this.onTileProviderSelect}/> 
+                </div>
+                <PointCoordinates coords={this.state.coords}/>
               </div>
-              <PointCoordinates coords={this.state.coords}/>
+              <Map tileProviderId={this.state.tileProviderId}
+                   updateTarget={this.updateTarget}
+                   updateCoordinates={this.updateCoordinates}
+              />
             </div>
-            <Map tileProviderId={this.state.tileProviderId}
-                 updateTarget={this.updateTarget}
-                 updateCoordinates={this.updateCoordinates}
-            />
+            {informationPanel}
           </div>
-          {informationPanel}
         </div>
-      </div>
+      </GeometryContext.Provider>
     );
   }
 
