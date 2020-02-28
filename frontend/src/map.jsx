@@ -65,7 +65,7 @@ export default class Map extends React.Component {
 
   getMapHeight() {
     console.log('context is: ', this.context)
-    return this.context.height - 50 // this.props.context.headerBarHeight
+    return this.context.screen.height - this.context.geometry.headerBarHeight
   }
 
   getCurrentTileLayer() {
@@ -322,7 +322,7 @@ export default class Map extends React.Component {
     const viewportHeight = $(window).height();
     console.log(`Map::render(): viewportHeight is [${viewportHeight}], tileProviderId is [${this.props.tileProviderId}]`);
     return (
-      <div id='map-id' style={{height: `${this.context.height - 50}px` }}>
+      <div id='map-id' style={{height: `${this.getMapHeight()}px`}}>
       </div>
     );
   }

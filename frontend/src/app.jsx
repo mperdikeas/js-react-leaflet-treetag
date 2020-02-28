@@ -19,6 +19,7 @@ import Map              from './map.jsx'
 import InformationPanel from './information-panel.jsx'
 import PointCoordinates from './point-coordinates.jsx'
 import GeometryContext  from './context/geometry-context.js'
+import geometry         from './geometry.js'
 
 class App extends React.Component {
 
@@ -88,7 +89,7 @@ class App extends React.Component {
 
     console.log('app:render', this.state.screen);
     return (
-      <GeometryContext.Provider value={this.state.screen}>
+      <GeometryContext.Provider value={{screen: this.state.screen, geometry: geometry}}>
         <div class='container-fluid'>
           <div class='row no-gutters'>
             <div class={cx(classesForMapDiv)}>
