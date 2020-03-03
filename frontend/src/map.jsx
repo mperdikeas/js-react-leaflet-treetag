@@ -121,16 +121,18 @@ export default class Map extends React.Component {
     });
     L.control.layers(BaseLayersForLayerControl, this.layerGroups).addTo(this.map);
 
-    this.map.on('zoomend', () => {
-      this.configureLayerGroups();
-      if (false)
+    const recomputeLayerGroupsUponZoom = false;
+    if (recomputeLayerGroupsUponZoom) {
+      this.map.on('zoomend', () => {
+        this.configureLayerGroups();
         if (this.map.getZoom() < 15){
           this.map.removeLayer(this.layerGroups.circlesLG);
         }
-      else {
-        this.map.addLayer(this.layerGroups.circlesLG);
-      }
-    });
+        else {
+          this.map.addLayer(this.layerGroups.circlesLG);
+        }
+      });
+    }
     $('div.leaflet-control-container section.leaflet-control-layers-list div.leaflet-control-layers-overlays input.leaflet-control-layers-selector[type="checkbox"]').on('change', (e)=>{
       console.log('checkbox changed', e);
     });
