@@ -15,13 +15,16 @@ import axios from 'axios';
 $(document).ready(doStuff);
 
 
+import GeometryContextProvider  from './context/geometry-context.jsx'
 
 function doStuff() {
     if (false)
         submitCredentials('admin', 'pass');
 
   ReactDOM.render(
-    <App/>
+          <GeometryContextProvider>
+            <App/>
+          </GeometryContextProvider>
     , $('#app')[0]);
   window.addEventListener('resize', this.handleResize);
 }

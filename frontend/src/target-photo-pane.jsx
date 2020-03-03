@@ -11,9 +11,9 @@ import PropTypes from 'prop-types';
 const createReactClass = require('create-react-class');
 const assert = require('chai').assert;
 
-const loading  = require('../resources/loading.gif');
+const loading  = require('./resources/loading.gif');
 // require('../resources/down-arrow.png');
-import DownArrow from '../resources/down-arrow.png';
+import DownArrow from './resources/down-arrow.png';
 // const download = url('../resources/
 import axios from 'axios';
 

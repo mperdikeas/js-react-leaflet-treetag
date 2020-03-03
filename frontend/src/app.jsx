@@ -10,8 +10,7 @@ import PropTypes from 'prop-types'
 
 const assert = require('chai').assert
 
-
-import GeometryContextProvider  from './context/geometry-context.jsx'
+import {GeometryContext} from './context/geometry-context.jsx'
 
 import TilesSelector            from './tiles-selector.jsx'
 import Map                      from './map.jsx'
@@ -22,7 +21,8 @@ import Toolbox                  from './toolbox.jsx'
 class App extends React.Component {
 
 
-
+  static contextType = GeometryContext
+  
   constructor(props) {
     super(props);
     this.state = {
@@ -62,7 +62,7 @@ class App extends React.Component {
   }
 
   render() {
-    console.log('app::render()');
+    console.log('app::render()', this.context);
 
     const informationPanel = (
       <InformationPanel key={this.state.target}
@@ -75,9 +75,9 @@ class App extends React.Component {
     const classesForMapDiv = Object.assign({'col-8': true, 'padding-0': true}
                                          , {hidden: this.state.maximizedInfo});
 
-    const toolboxStyle = {flex: '0 0 80px', color: 'red', backgroundColor: 'green'};
+    const toolboxStyle = {flex: `0 0 ${this.context.toolboxTotalWidth()}px`
+      , backgroundColor: 'green'};
     return (
-      <GeometryContextProvider>
         <div class='container-fluid'>
           <div class='row no-gutters'>
             <div class={cx(classesForMapDiv)}>
@@ -103,7 +103,6 @@ class App extends React.Component {
             {informationPanel}
           </div>
         </div>
-      </GeometryContextProvider>
     );
   }
 
