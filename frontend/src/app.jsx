@@ -8,17 +8,16 @@ var      cx = require('classnames')
 
 import PropTypes from 'prop-types'
 
-const createReactClass = require('create-react-class')
 const assert = require('chai').assert
 
 
-
+import GeometryContextProvider  from './context/geometry-context.jsx'
 
 import TilesSelector            from './tiles-selector.jsx'
 import Map                      from './map.jsx'
 import InformationPanel         from './information-panel.jsx'
 import PointCoordinates         from './point-coordinates.jsx'
-import GeometryContextProvider  from './context/geometry-context.jsx'
+import Toolbox                  from './toolbox.jsx'
 
 class App extends React.Component {
 
@@ -76,21 +75,30 @@ class App extends React.Component {
     const classesForMapDiv = Object.assign({'col-8': true, 'padding-0': true}
                                          , {hidden: this.state.maximizedInfo});
 
+    const toolboxStyle = {flex: '0 0 80px', color: 'red', backgroundColor: 'green'};
     return (
       <GeometryContextProvider>
         <div class='container-fluid'>
           <div class='row no-gutters'>
             <div class={cx(classesForMapDiv)}>
-              <div class='row no-gutters justify-content-start align-items-center' style={{height: `${this.context.headerBarHeight}px`}}>
+              <div class='row no-gutters justify-content-start align-items-center'
+                   style={{height: `${this.context.headerBarHeight}px`}}>
                 <div class="col-3">
                   <TilesSelector onTileProviderSelect={this.onTileProviderSelect}/> 
                 </div>
                 <PointCoordinates coords={this.state.coords}/>
               </div>
-              <Map tileProviderId={this.state.tileProviderId}
-                   updateTarget={this.updateTarget}
-                   updateCoordinates={this.updateCoordinates}
-              />
+              <div class='row no-gutters'>
+                <div class='col' style={toolboxStyle}>
+                  <Toolbox/>
+                </div>
+                <div class='col'>
+                  <Map tileProviderId={this.state.tileProviderId}
+                       updateTarget={this.updateTarget}
+                       updateCoordinates={this.updateCoordinates}
+                  />
+                </div>
+              </div>
             </div>
             {informationPanel}
           </div>

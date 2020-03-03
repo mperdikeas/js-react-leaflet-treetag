@@ -1,4 +1,4 @@
-import React, {Component, createContext} from 'react'
+import React, {createContext} from 'react'
 
 
 export const GeometryContext =  createContext();
@@ -6,7 +6,7 @@ export const GeometryContext =  createContext();
 
 
 
-class GeometryContextProvider extends Component {
+class GeometryContextProvider extends React.Component {
 
   constructor(props) {
     super(props);
