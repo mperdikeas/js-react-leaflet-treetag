@@ -35,7 +35,7 @@ import {DefaultIcon, TreeIcon}          from './icons.js';
 import rainbow from './rainbow.js';
 
 import {CustomCircleMarker} from './custom-markers.js';
-import GeometryContext from './context/geometry-context.js'
+import {GeometryContext} from './context/geometry-context.jsx'
 // const Buffer = require('buffer').Buffer;
 // const Iconv  = require('iconv').Iconv;
 
@@ -60,11 +60,10 @@ export default class Map extends React.Component {
     this.getCurrentTileLayer =            this.getCurrentTileLayer.bind(this);
 
     this.getMapHeight        =            this.getMapHeight       .bind(this);
-    this.state = {mapHeight: 400} //this.getMapHeight()}
   }
 
   getMapHeight() {
-    console.log('context is: ', this.context)
+    console.log('Map::getMapHeight():: context is: ', this.context)
     return this.context.screen.height - this.context.geometry.headerBarHeight
   }
 
