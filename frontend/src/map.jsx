@@ -35,9 +35,12 @@ import {DefaultIcon, TreeIcon}          from './icons.js';
 import rainbow from './rainbow.js';
 
 import {CustomCircleMarker} from './custom-markers.js';
-import {GeometryContext} from './context/geometry-context.jsx'
+import {GeometryContext} from './context/geometry-context.jsx';
 // const Buffer = require('buffer').Buffer;
 // const Iconv  = require('iconv').Iconv;
+
+
+import {SELECT_TOOL, DEFINE_POLYGON_TOOL, MOVE_VERTEX_TOOL, REMOVE_TOOL} from './map-tools.js';
 
 
 // https://spatialreference.org/ref/epsg/2100/
@@ -56,18 +59,17 @@ export default class Map extends React.Component {
   constructor(props) {
     console.log('Map::constructor is called');
     super(props);
-    this.clickOnCircleMarker =            this.clickOnCircleMarker.bind(this);
-    this.getCurrentTileLayer =            this.getCurrentTileLayer.bind(this);
-
-    this.getMapHeight        =            this.getMapHeight       .bind(this);
+    this.state = {
+      points: []
+      };
   }
 
-  getMapHeight() {
+  getMapHeight = () => {
     console.log('Map::getMapHeight():: context is: ', this.context)
     return this.context.screen.height - this.context.geometry.headerBarHeight
   }
 
-  getCurrentTileLayer() {
+  getCurrentTileLayer = () => {
     const layers = [];
     this.map.eachLayer(function(layer) {
       if( layer instanceof L.TileLayer )
@@ -80,13 +82,22 @@ export default class Map extends React.Component {
       return null;
   }
 
+  drawPolygon = ()=>{
+    console.log('drawpolygon', this.props.selectedTool, this.state.points);
+    if ((this.props.selectedTool===DEFINE_POLYGON_TOOL) && (this.state.points.length!==0)) {
+      console.log('adding polygon to map');
+      L.polygon(this.state.points).addTo(this.map);
+      }
+  }
 
-  componentDidUnmount() {
+
+
+  componentDidUnmount = () => {
     console.log('map::componentDidUnmount()');
     window.removeEventListener('resize', this.handleResize);
   }
 
-  componentDidMount() {
+  componentDidMount = () => {
     console.log('map::componentDidMount()');
     window.addEventListener('resize', this.handleResize);
     this.map = L.map('map-id', {
@@ -103,7 +114,10 @@ export default class Map extends React.Component {
       })
     this.map.on('click', (e)=>{
       const {lat, lng} = e.latlng;
+      this.setState({points: [...this.state.points, {lat, lng}]});
+      this.drawPolygon();
       console.log(`You clicked the map at latitude: ${lat} and longitude ${lng}`);
+      console.log('points are: ', this.state.points);
       this.props.updateCoordinates(e.latlng);
       const proj = proj4(WGS84, HGRS87,[lng, lat]);
       console.log(`converted are ${proj}`);
@@ -328,7 +342,7 @@ export default class Map extends React.Component {
     );
   }
 
-  clickOnCircleMarker(e) {
+  clickOnCircleMarker = (e) => {
     this.props.updateTarget(e.target.options.targetId);
     console.log(`clickOnCircleMarker: ${Object.keys(e.target.options).join(', ')}`);
   }
