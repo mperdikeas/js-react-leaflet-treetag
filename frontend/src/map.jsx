@@ -82,12 +82,22 @@ export default class Map extends React.Component {
       return null;
   }
 
-  drawPolygon = ()=>{
+  drawPolygon = () => {
     console.log('drawpolygon', this.props.selectedTool, this.state.points);
-    if ((this.props.selectedTool===DEFINE_POLYGON_TOOL) && (this.state.points.length!==0)) {
-      console.log('adding polygon to map');
-      L.polygon(this.state.points).addTo(this.map);
+    if (this.props.selectedTool===DEFINE_POLYGON_TOOL) {
+      if (this.currentPolygon!=null)
+        this.currentPolygon.setLatLngs(this.state.points);
+      else
+        this.currentPolygon = L.polygon(this.state.points).addTo(this.map);
+    }
+    if (false) {
+      if (this.currentPolygon!=null)
+        this.map.removeLayer(this.currentPolygon);
+      if ((this.props.selectedTool===DEFINE_POLYGON_TOOL) && (this.state.points.length!==0)) {
+        console.log('adding polygon to map');
+        this.currentPolygon = L.polygon(this.state.points).addTo(this.map);
       }
+    }
   }
 
 
@@ -343,8 +353,10 @@ export default class Map extends React.Component {
   }
 
   clickOnCircleMarker = (e) => {
-    this.props.updateTarget(e.target.options.targetId);
-    console.log(`clickOnCircleMarker: ${Object.keys(e.target.options).join(', ')}`);
+    if (this.props.selectedTool === SELECT_TOOL) {
+      this.props.updateTarget(e.target.options.targetId);
+      console.log(`clickOnCircleMarker: ${Object.keys(e.target.options).join(', ')}`);
+    }
   }
   
 }

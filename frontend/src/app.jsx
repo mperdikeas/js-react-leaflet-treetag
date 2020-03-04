@@ -14,7 +14,7 @@ import {GeometryContext} from './context/geometry-context.jsx';
 
 import TilesSelector            from './tiles-selector.jsx';
 import Map                      from './map.jsx';
-import InformationPanel         from './information-panel.jsx';
+import TreeInformationPanel     from './tree-information-panel.jsx';
 import PointCoordinates         from './point-coordinates.jsx';
 import Toolbox                  from './toolbox.jsx';
 
@@ -65,8 +65,8 @@ class App extends React.Component {
   render() {
     console.log('app::render()', this.context);
 
-    const informationPanel = (
-      <InformationPanel key={this.state.target}
+    const treeInformationPanel = (
+      <TreeInformationPanel key={this.state.target}
                         target={this.state.target}
                         maximized={this.state.maximizedInfo}
                         toggleInfoPanel={this.toggleInfoPanel}/>
@@ -104,7 +104,7 @@ class App extends React.Component {
               </div>
             </div>
           </div>
-          {informationPanel}
+          {treeInformationPanel}
         </div>
       </div>
     );

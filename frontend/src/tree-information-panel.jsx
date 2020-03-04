@@ -16,7 +16,7 @@ import TargetDataPane     from './target-data-pane.jsx';
 import TargetPhotoPane    from './target-photo-pane.jsx';
 import TargetMetadataPane from './target-metadata-pane.jsx';
 
-class InformationPanel extends React.Component {
+class TreeInformationPanel extends React.Component {
 
   constructor(props) {
     console.log('InformationPanel:: constructor');
@@ -37,7 +37,7 @@ class InformationPanel extends React.Component {
   }
 
   componentWillUnmount() {
-    console.log('InformationPanel: unmounting...');
+    console.log('TreeInformationPanel: unmounting...');
   }
 
   onInformation() {
@@ -121,5 +121,5 @@ class InformationPanel extends React.Component {
 
 
 
-export default InformationPanel;
+export default TreeInformationPanel;
 
