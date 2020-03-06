@@ -82,6 +82,47 @@ export default class Map extends React.Component {
       return null;
   }
 
+  handleClick = (e) => {
+    switch (this.props.selectedTool) {
+
+      case null:
+        break;
+      case SELECT_TOOL:
+        this.addBeacon(e.latlng);
+        break;
+      case DEFINE_POLYGON_TOOL:
+        this.addPointToPolygonUnderConstruction(e.latlng);
+        break;
+      case MOVE_VERTEX_TOOL:
+        assert.fail('not handled 4');
+      case REMOVE_TOOL:
+        assert.fail('not handled 5');
+      default:
+        assert.fail('not handled 6');
+
+    }
+  }
+
+  addBeacon = ({lat, lng}) => {
+    const pulsingIcon = L.icon.pulse(
+      {iconSize:[20,20]
+     , color:'red'
+     , animate: true
+     , heartbeat: 0.4
+      });
+    const marker = L.marker([lat, lng],{icon: pulsingIcon}).addTo(this.map);
+    marker.addTo(this.map);
+    window.setTimeout(()=>{
+      this.map.removeLayer(marker);
+    }, 2000);
+  }
+
+
+  addPointToPolygonUnderConstruction = ({lat, lng})=>{
+    this.setState({points: [...this.state.points, {lat, lng}]});
+    console.log('points are: ', this.state.points);
+  }
+
   drawPolygon = () => {
     console.log('drawpolygon', this.props.selectedTool, this.state.points);
     if (this.props.selectedTool===DEFINE_POLYGON_TOOL) {
@@ -124,25 +165,11 @@ export default class Map extends React.Component {
       })
     this.map.on('click', (e)=>{
       const {lat, lng} = e.latlng;
-      this.setState({points: [...this.state.points, {lat, lng}]});
-      this.drawPolygon();
       console.log(`You clicked the map at latitude: ${lat} and longitude ${lng}`);
-      console.log('points are: ', this.state.points);
+      this.handleClick(e);
       this.props.updateCoordinates(e.latlng);
-      const proj = proj4(WGS84, HGRS87,[lng, lat]);
-      console.log(`converted are ${proj}`);
-      const pulsingIcon = L.icon.pulse(
-        {iconSize:[20,20]
-       , color:'red'
-       , animate: true
-       , heartbeat: 0.4
-        });
-      const marker = L.marker([lat, lng],{icon: pulsingIcon}).addTo(this.map);
-      marker.addTo(this.map);
-      window.setTimeout(()=>{
-        this.map.removeLayer(marker);
-      }, 2000);
     });
+
     L.control.layers(BaseLayersForLayerControl, this.layerGroups).addTo(this.map);
 
     const recomputeLayerGroupsUponZoom = false;
@@ -164,10 +191,15 @@ export default class Map extends React.Component {
     
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (prevProps.tileProviderId!==this.props.tileProviderId) {
       console.log(`tile provider change detected from ${prevProps.tileProviderId} to ${this.props.tileProviderId}`);
       this.addTiles();
+    }
+    if (prevState.selectedTool === this.state.selectedTool) {
+      if (prevState.points.length !== this.state.points.length) {
+        this.drawPolygon();
+      }
     }
   }
 
@@ -341,11 +373,9 @@ export default class Map extends React.Component {
   
 
   render() {
-    console.log('map::render() props:')
-    console.log(this.props)
-    console.log('map::render() context is:', this.props.context);
+    console.log('map::render()', this.props, this.state);
     const viewportHeight = $(window).height();
-    console.log(`Map::render(): viewportHeight is [${viewportHeight}], tileProviderId is [${this.props.tileProviderId}]`);
+//    this.drawPolygon();
     return (
       <div id='map-id' style={{height: `${this.getMapHeight()}px`}}>
       </div>
