@@ -26,6 +26,7 @@ const assert = require('chai').assert;
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import proj4 from 'proj4';
+import inside from 'point-in-polygon';
 
 require('../node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css');
 require('../node_modules/leaflet.markercluster/dist/leaflet.markercluster.js');
@@ -40,7 +41,7 @@ import {GeometryContext} from './context/geometry-context.jsx';
 // const Iconv  = require('iconv').Iconv;
 
 
-import {SELECT_TOOL, DEFINE_POLYGON_TOOL, MOVE_VERTEX_TOOL, REMOVE_TOOL} from './map-tools.js';
+import {ADD_BEACON_TOOL, SELECT_GEOMETRY_TOOL, DEFINE_POLYGON_TOOL, MOVE_VERTEX_TOOL, REMOVE_TOOL} from './map-tools.js';
 
 
 // https://spatialreference.org/ref/epsg/2100/
@@ -87,8 +88,11 @@ export default class Map extends React.Component {
 
       case null:
         break;
-      case SELECT_TOOL:
+      case ADD_BEACON_TOOL:
         this.addBeacon(e.latlng);
+        break;
+      case SELECT_GEOMETRY_TOOL:
+        this.selectGeometry(e.latlng);
         break;
       case DEFINE_POLYGON_TOOL:
         this.addPointToPolygonUnderConstruction(e.latlng);
@@ -117,6 +121,14 @@ export default class Map extends React.Component {
     }, 2000);
   }
 
+
+  selectGeometry = ({lat, lng}) => {
+    console.log(`points are ${this.state.points}`);
+    console.log(this.state.points);
+    const polygon = this.state.points.map( (e) => [e.lat, e.lng]);
+    const isInside = inside([lat, lng], polygon);
+    console.log(`point is inside polygon?  ${isInside}`);
+  }
 
   addPointToPolygonUnderConstruction = ({lat, lng})=>{
     this.setState({points: [...this.state.points, {lat, lng}]});
