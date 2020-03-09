@@ -42,7 +42,7 @@ import {GeometryContext} from './context/geometry-context.jsx';
 // const Iconv  = require('iconv').Iconv;
 
 
-
+import {Athens, layerGroups} from './tree-markers.js';
 
 
 import {ADD_BEACON_TOOL, SELECT_GEOMETRY_TOOL, DEFINE_POLYGON_TOOL, MOVE_VERTEX_TOOL, REMOVE_TOOL} from './map-tools.js';
@@ -172,7 +172,6 @@ export default class Map extends React.Component {
       zoomControl: false
     });
     this.addTiles();
-    this.createLayerGroups();
     this.configureLayerGroups();
     if (false)
       this.map.on('mousemove', (e) => {
@@ -180,7 +179,7 @@ export default class Map extends React.Component {
       })
     this.map.on('click', this.handleClick);
 
-    L.control.layers(BaseLayersForLayerControl, this.layerGroups).addTo(this.map);
+    L.control.layers(BaseLayersForLayerControl, layerGroups).addTo(this.map);
 
     $('div.leaflet-control-container section.leaflet-control-layers-list div.leaflet-control-layers-overlays input.leaflet-control-layers-selector[type="checkbox"]').on('change', (e)=>{
       console.log('checkbox changed', e);
@@ -236,156 +235,16 @@ export default class Map extends React.Component {
     assert.isDefined(newBaseLayer);
     newBaseLayer.addTo(this.map);
   }
-  
-  createLayerGroups() {
-    const N = 10;
-
-    const myRenderer = L.canvas({ padding: 0.5 });
-
-    const circleMarkersLG = L.layerGroup(generateCoordinatesInAthens(N*1000).map( c=> {
-      const baseOptions = {
-        renderer: myRenderer,
-        color: '#3388ff',
-        radius: 8
-      };
-      const newOptions = {
-        targetId: `${Math.random()}`
-      };
-      const effectiveOptions = Object.assign({}, baseOptions, newOptions);
-      const useCustomMarker = true;
-      if (useCustomMarker) {
-        const marker = new CustomCircleMarker(c, effectiveOptions);
-        marker.on('click', this.clickOnCircleMarker);
-        return marker;
-      } else {
-        return L.circleMarker(c, baseOptions).on('click', this.clickOnCircleMarker);
-      }
-    }));
-
-    const circlesLG = L.layerGroup(generateCoordinatesInAthens(N).map( c=> {
-      return L.circle(c, {
-        renderer: myRenderer,
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 0.5,
-        radius: 8
-      });
-    }));
-
-
-    const treesLG = L.layerGroup(generateCoordinatesInAthens(N).map( c=> {
-      const options = {
-        icon: new TreeIcon()
-        , clickable: true
-        , draggable: true
-        , title: 'a tree'
-        , riseOnHover: true // rises on top of other markers
-        , riseOffset: 250
-      };
-      return L.marker(c, options).bindPopup('a fucking tree');
-    }));
-
-    const defaultMarkersLG = L.layerGroup(generateCoordinatesInAthens(N).map( c=> {
-      const options = {
-        icon: new DefaultIcon()
-        , clickable: true
-        , draggable: false
-        , title: 'a tree'
-        , riseOnHover: true // rises on top of other markers
-        , riseOffset: 250
-      };
-      return L.marker(c, options).bindPopup('a fucking tree');
-    }));
-
-    const makiMarkersLG = L.layerGroup(generateCoordinatesInAthens(N).map( c=> {
-      const options = {
-        icon: new L.MakiMarkers.Icon({icon: randomItem(['park', 'park-alt1', 'wetland', 'florist'])
-                                    , color: rainbow(30, Math.floor(Math.random()*30))
-                                    , size: randomItem(['s', 'm', 'l'])})
-        , clickable: false
-        , draggable: false
-        , title: 'a maki marker'
-        , riseOnHover: true // rises on top of other markers
-        , riseOffset: 250
-      };
-      return L.marker(c, options).bindPopup('a fucking tree');
-    }));
-
-
-    const markerClusterGroup = (()=>{
-      const rv = L.markerClusterGroup(
-        {
-          showCoverageOnHover: true,
-          zoomToBoundsOnClick: true,
-          spiderfyOnMaxZoom: true,
-          removeOutsideVisibleBounds: true,
-          maxClusterRadius: 80
-        }
-      );
-      generateCoordinatesInAthens(1*100).forEach( c=> {
-        const options = {
-          icon: new L.MakiMarkers.Icon({icon: randomItem(['park', 'park-alt1', 'wetland', 'florist'])
-                                      , color: rainbow(30, Math.floor(Math.random()*30))
-                                      , size: randomItem(['s', 'm', 'l'])})
-          , clickable: false
-          , draggable: false
-          , title: 'a maki marker'
-          , riseOnHover: true // rises on top of other markers
-          , riseOffset: 250
-        };
-        rv.addLayer(L.marker(c, options).bindPopup('a fucking tree'));
-      });
-      return rv;
-    })();
-
-
-    const heatMap = (()=> {
-      const heatMapCfg = {
-        minOpacity: 0.5
-        , maxZoom: 19
-        , max: 1
-        , radius: 35 //  radius of each "point" of the heatmap, 25 by default
-        , blur: 15   //amount of blur, 15 by default
-        , gradient: {.4:"blue",.6:"cyan",.7:"lime",.8:"yellow",1:"red"} // color gradient config
-      };
-      return L.heatLayer(generateCoordinatesInAthens(100)
-                       , heatMapCfg);
-    })();
-
-    const url = require('../data/oriadhmwnkallikraths.zip');
-    const options = {
-      onEachFeature: function(feature, layer) {
-        if (feature.properties) {
-          layer.bindPopup(Object.keys(feature.properties).map(function(k) {
-            return k + ": " + feature.properties[k];
-          }).join("<br />"), {
-            maxHeight: 200
-          });
-        }
-      }
-      , style: (feature)=>{
-        return  {color:"black",fillColor:"red",fillOpacity:.75};
-      }
-    };
-    const ota_Callicrates = L.shapefile(url, options);
-
-    this.layerGroups = {circleMarkersLG: circleMarkersLG
-                      , circlesLG: circlesLG
-                      , treesLG: treesLG
-                      , defaultMarkersLG: defaultMarkersLG
-                      , makiMarkersLG: makiMarkersLG
-                      , markerClusterGroup: markerClusterGroup
-                      , heatMap: heatMap
-      // , 'Καλλικρατικοί δήμοι': ota_Callicrates
-    };
-  }
 
   
-  configureLayerGroups() {
-    for (let x in this.layerGroups) {
-      this.layerGroups[x].addTo(this.map);
+  configureLayerGroups = () => {
+    for (let x in layerGroups) {
+      layerGroups[x].addTo(this.map);
     }
-  }
+    layerGroups.circleMarkersLG.eachLayer ( (marker)=>{
+      marker.on('click', this.clickOnCircleMarker);
+    } );
+}
   
 
   render() {
@@ -404,7 +263,7 @@ export default class Map extends React.Component {
   
 }
 
-const Athens = [37.98, 23.72];
+
 
 class LayerConfiguration {
   constructor(minZoomLevel) {
