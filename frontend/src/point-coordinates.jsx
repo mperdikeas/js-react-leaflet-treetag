@@ -18,6 +18,7 @@ export default function PointCoordinates({coords}) {
     return null;
   else {
     const {lat, lng} = coords;
+    console.log(`lat=${lat} and lng=${lng}`);
     const precisionA = 8;
     const precisionB = 8;
     const formatA = `${lat.toPrecision(precisionA)}:${lng.toPrecision(precisionA)}`;

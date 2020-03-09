@@ -59,6 +59,7 @@
     "esri-leaflet": "^2.3.3",
     "fs-extra": "^7.0.1",
     "jquery": "^3.4.1",
+    "keycode": "^2.2.0",
     "leaflet": "^1.6.0",
     "leaflet.markercluster": "^1.4.1",
     "point-in-polygon": "^1.0.1",

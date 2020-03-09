@@ -53,12 +53,15 @@ class TreeInformationPanel extends React.Component {
   }
 
   render() {
-    if (this.props.target===null)
+    console.log('TreeInformationPanel::render()');
+    if (this.props.target===null) {
+      console.log('this.props.target===null');
       return (
         <div id='detailInformation' class='col-4 padding-0' style={{backgroundColor: 'lightgrey'}}>
           click on a feature to see its information
         </div>
       );
+    }
     console.log(`tab is  ${this.state.tab}, targetId is: ${this.props.target.targetId}`);
     const defaultClasses = {'nav-link': true};
     const informationClasses = Object.assign({}, defaultClasses, {'active': this.state.tab==='information'});

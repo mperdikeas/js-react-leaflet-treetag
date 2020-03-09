@@ -27,6 +27,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import proj4 from 'proj4';
 import inside from 'point-in-polygon';
+import keycode from 'keycode';
 
 require('../node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css');
 require('../node_modules/leaflet.markercluster/dist/leaflet.markercluster.js');
@@ -39,6 +40,9 @@ import {CustomCircleMarker} from './custom-markers.js';
 import {GeometryContext} from './context/geometry-context.jsx';
 // const Buffer = require('buffer').Buffer;
 // const Iconv  = require('iconv').Iconv;
+
+
+
 
 
 import {ADD_BEACON_TOOL, SELECT_GEOMETRY_TOOL, DEFINE_POLYGON_TOOL, MOVE_VERTEX_TOOL, REMOVE_TOOL} from './map-tools.js';
@@ -84,6 +88,7 @@ export default class Map extends React.Component {
   }
 
   handleClick = (e) => {
+    console.log('map::handleClick', e, e.latlng);
     this.props.updateCoordinates(e.latlng);
     switch (this.props.selectedTool) {
 
@@ -104,8 +109,8 @@ export default class Map extends React.Component {
         assert.fail('not handled 5');
       default:
         assert.fail('not handled 6');
-
     }
+    return true;
   }
 
   addBeacon = ({lat, lng}) => {
@@ -154,14 +159,12 @@ export default class Map extends React.Component {
 
   componentDidUnmount = () => {
     console.log('map::componentDidUnmount()');
-    window.removeEventListener ('keyup' , this.handleESCKey);
     window.removeEventListener ('resize', this.handleResize);
-    window.removeEventListener ('click' , this.handleClick);
+    this.map.off('click');
   }
 
   componentDidMount = () => {
     console.log('map::componentDidMount()');
-    window.addEventListener ('keyup', this.handleESCKey);
     window.addEventListener    ('resize', this.handleResize);
     this.map = L.map('map-id', {
       center: Athens,
@@ -175,9 +178,7 @@ export default class Map extends React.Component {
       this.map.on('mousemove', (e) => {
         this.props.updateCoordinates(e.latlng);
       })
-    this.map.on('click', (e)=>{
-      this.handleClick(e);
-    });
+    this.map.on('click', this.handleClick);
 
     L.control.layers(BaseLayersForLayerControl, this.layerGroups).addTo(this.map);
 
@@ -201,24 +202,25 @@ export default class Map extends React.Component {
       }
     } else {
       if ((prevProps.selectedTool !== DEFINE_POLYGON_TOOL) && (this.props.selectedTool === DEFINE_POLYGON_TOOL)) {
-        console.log('polygon tool was just selected - start monitoring ESC key');
-        // TODO
-      }
-      else if ((prevProps.selectedTool === DEFINE_POLYGON_TOOL) && (this.props.selectedTool !== DEFINE_POLYGON_TOOL)) {
-        console.log('polygon tool was just de-selected - stop monitoring ESC key');
-        // TODO
+        console.log('polygon tool was just selected - start monitoring keyUp');
+        window.addEventListener ('keyup', this.handleKeyUp);
+      } else if ((prevProps.selectedTool === DEFINE_POLYGON_TOOL) && (this.props.selectedTool !== DEFINE_POLYGON_TOOL)) {
+        console.log('polygon tool was just de-selected - stop monitoring keyUp');
+        window.removeEventListener ('keyup', this.handleKeyUp);
       }
     }
   }
 
-  handleESCKey = () => {
-    console.log('key up detected');
-    assert.strictEqual(this.props.selectedTool, DEFINE_POLYGON_TOOL);
-    const userDefinedGeometriesSoFar = _.cloneDeep(this.state.userDefinedGeometries);
-    userDefinedGeometriesSoFar.push(this.state.geometryUnderDefinition);
-    this.currentPolygon = null;
-    this.setState({userDefinedGeometries: userDefinedGeometriesSoFar
-      , geometryUnderDefinition: []});
+  handleKeyUp = (e) => {
+    console.log(`key up detected ${e.keyCode}`);
+    if (e.keyCode === keycode('ESC')) {
+      assert.strictEqual(this.props.selectedTool, DEFINE_POLYGON_TOOL);
+      const userDefinedGeometriesSoFar = _.cloneDeep(this.state.userDefinedGeometries);
+      userDefinedGeometriesSoFar.push(this.state.geometryUnderDefinition);
+      this.currentPolygon = null;
+      this.setState({userDefinedGeometries: userDefinedGeometriesSoFar
+                   , geometryUnderDefinition: []});
+    }
   }
 
   addTiles() {
@@ -380,12 +382,8 @@ export default class Map extends React.Component {
 
   
   configureLayerGroups() {
-    const zoomLevel = this.map.getZoom();
     for (let x in this.layerGroups) {
-      if (zoomLevel >= LayersConfiguration[x].minZoomLevel)
-        this.layerGroups[x].addTo(this.map);
-      else
-        this.map.removeLayer(this.layerGroups[x]);
+      this.layerGroups[x].addTo(this.map);
     }
   }
   
@@ -400,10 +398,8 @@ export default class Map extends React.Component {
   }
 
   clickOnCircleMarker = (e) => {
-    if (this.props.selectedTool === SELECT_TOOL) {
-      this.props.updateTarget(e.target.options.targetId);
-      console.log(`clickOnCircleMarker: ${Object.keys(e.target.options).join(', ')}`);
-    }
+    console.log('clickOnCircleMarker');
+    this.props.updateTarget(e.target.options.targetId);
   }
   
 }
