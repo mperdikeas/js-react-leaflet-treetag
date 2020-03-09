@@ -58,7 +58,7 @@ class Toolbox extends React.Component {
   
 
   render = () => {
-    console.log('toolbox', this.props);
+    console.log('toolbox::render()');
     const tools = [{icon:addBeacon , f: this.chooseAddBeacon}
                  , {icon:selectGeometry , f: this.chooseSelectGeometry}
                  , {icon:definePolygon, f: this.chooseDefinePolygon}

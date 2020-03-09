@@ -63,7 +63,7 @@ class App extends React.Component {
   }
 
   render() {
-    console.log('app::render()', this.context);
+    console.log('app::render()');
 
     const treeInformationPanel = (
       <TreeInformationPanel key={this.state.target}

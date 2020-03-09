@@ -61,12 +61,12 @@ export default class Map extends React.Component {
     console.log('Map::constructor is called');
     super(props);
     this.state = {
-      points: []
+      userDefinedGeometries: [],
+      geometryUnderDefinition: []
       };
   }
 
   getMapHeight = () => {
-    console.log('Map::getMapHeight():: context is: ', this.context)
     return this.context.screen.height - this.context.geometry.headerBarHeight
   }
 
@@ -84,6 +84,7 @@ export default class Map extends React.Component {
   }
 
   handleClick = (e) => {
+    this.props.updateCoordinates(e.latlng);
     switch (this.props.selectedTool) {
 
       case null:
@@ -123,32 +124,28 @@ export default class Map extends React.Component {
 
 
   selectGeometry = ({lat, lng}) => {
-    console.log(`points are ${this.state.points}`);
-    console.log(this.state.points);
-    const polygon = this.state.points.map( (e) => [e.lat, e.lng]);
+    const polygon = this.state.geometryUnderDefinition.map( (e) => [e.lat, e.lng]);
     const isInside = inside([lat, lng], polygon);
-    console.log(`point is inside polygon?  ${isInside}`);
   }
 
   addPointToPolygonUnderConstruction = ({lat, lng})=>{
-    this.setState({points: [...this.state.points, {lat, lng}]});
-    console.log('points are: ', this.state.points);
+    console.log('addPointToPolygonUnderConstruction');
+    this.setState({geometryUnderDefinition: [...this.state.geometryUnderDefinition, {lat, lng}]});
   }
 
   drawPolygon = () => {
-    console.log('drawpolygon', this.props.selectedTool, this.state.points);
     if (this.props.selectedTool===DEFINE_POLYGON_TOOL) {
+      console.log('updating polygon');
       if (this.currentPolygon!=null)
-        this.currentPolygon.setLatLngs(this.state.points);
+        this.currentPolygon.setLatLngs(this.state.geometryUnderDefinition);
       else
-        this.currentPolygon = L.polygon(this.state.points).addTo(this.map);
+        this.currentPolygon = L.polygon(this.state.geometryUnderDefinition).addTo(this.map);
     }
     if (false) {
       if (this.currentPolygon!=null)
         this.map.removeLayer(this.currentPolygon);
-      if ((this.props.selectedTool===DEFINE_POLYGON_TOOL) && (this.state.points.length!==0)) {
-        console.log('adding polygon to map');
-        this.currentPolygon = L.polygon(this.state.points).addTo(this.map);
+      if ((this.props.selectedTool===DEFINE_POLYGON_TOOL) && (this.state.geometryUnderDefinition.length!==0)) {
+        this.currentPolygon = L.polygon(this.state.geometryUnderDefinition).addTo(this.map);
       }
     }
   }
@@ -157,12 +154,15 @@ export default class Map extends React.Component {
 
   componentDidUnmount = () => {
     console.log('map::componentDidUnmount()');
-    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener ('keyup' , this.handleESCKey);
+    window.removeEventListener ('resize', this.handleResize);
+    window.removeEventListener ('click' , this.handleClick);
   }
 
   componentDidMount = () => {
     console.log('map::componentDidMount()');
-    window.addEventListener('resize', this.handleResize);
+    window.addEventListener ('keyup', this.handleESCKey);
+    window.addEventListener    ('resize', this.handleResize);
     this.map = L.map('map-id', {
       center: Athens,
       zoom: 12,
@@ -176,26 +176,11 @@ export default class Map extends React.Component {
         this.props.updateCoordinates(e.latlng);
       })
     this.map.on('click', (e)=>{
-      const {lat, lng} = e.latlng;
-      console.log(`You clicked the map at latitude: ${lat} and longitude ${lng}`);
       this.handleClick(e);
-      this.props.updateCoordinates(e.latlng);
     });
 
     L.control.layers(BaseLayersForLayerControl, this.layerGroups).addTo(this.map);
 
-    const recomputeLayerGroupsUponZoom = false;
-    if (recomputeLayerGroupsUponZoom) {
-      this.map.on('zoomend', () => {
-        this.configureLayerGroups();
-        if (this.map.getZoom() < 15){
-          this.map.removeLayer(this.layerGroups.circlesLG);
-        }
-        else {
-          this.map.addLayer(this.layerGroups.circlesLG);
-        }
-      });
-    }
     $('div.leaflet-control-container section.leaflet-control-layers-list div.leaflet-control-layers-overlays input.leaflet-control-layers-selector[type="checkbox"]').on('change', (e)=>{
       console.log('checkbox changed', e);
     });
@@ -204,15 +189,36 @@ export default class Map extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    console.log('map::componentDidUpdate');
     if (prevProps.tileProviderId!==this.props.tileProviderId) {
-      console.log(`tile provider change detected from ${prevProps.tileProviderId} to ${this.props.tileProviderId}`);
       this.addTiles();
     }
-    if (prevState.selectedTool === this.state.selectedTool) {
-      if (prevState.points.length !== this.state.points.length) {
+    if (prevProps.selectedTool === this.props.selectedTool) {
+      console.log('same tool');
+      if (prevState.geometryUnderDefinition.length !== this.state.geometryUnderDefinition.length) {
+        console.log('different geometry - need to drawPolygon');
         this.drawPolygon();
       }
+    } else {
+      if ((prevProps.selectedTool !== DEFINE_POLYGON_TOOL) && (this.props.selectedTool === DEFINE_POLYGON_TOOL)) {
+        console.log('polygon tool was just selected - start monitoring ESC key');
+        // TODO
+      }
+      else if ((prevProps.selectedTool === DEFINE_POLYGON_TOOL) && (this.props.selectedTool !== DEFINE_POLYGON_TOOL)) {
+        console.log('polygon tool was just de-selected - stop monitoring ESC key');
+        // TODO
+      }
     }
+  }
+
+  handleESCKey = () => {
+    console.log('key up detected');
+    assert.strictEqual(this.props.selectedTool, DEFINE_POLYGON_TOOL);
+    const userDefinedGeometriesSoFar = _.cloneDeep(this.state.userDefinedGeometries);
+    userDefinedGeometriesSoFar.push(this.state.geometryUnderDefinition);
+    this.currentPolygon = null;
+    this.setState({userDefinedGeometries: userDefinedGeometriesSoFar
+      , geometryUnderDefinition: []});
   }
 
   addTiles() {
@@ -385,9 +391,8 @@ export default class Map extends React.Component {
   
 
   render() {
-    console.log('map::render()', this.props, this.state);
+    console.log('map::render()');
     const viewportHeight = $(window).height();
-//    this.drawPolygon();
     return (
       <div id='map-id' style={{height: `${this.getMapHeight()}px`}}>
       </div>
