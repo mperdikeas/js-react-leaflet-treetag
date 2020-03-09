@@ -42,7 +42,7 @@ import {GeometryContext} from './context/geometry-context.jsx';
 // const Iconv  = require('iconv').Iconv;
 
 
-import {Athens, layerGroups} from './tree-markers.js';
+import {Athens, layerGroups, defaultMarkerStyle, targetId2Marker} from './tree-markers.js';
 
 
 import {ADD_BEACON_TOOL, SELECT_GEOMETRY_TOOL, DEFINE_POLYGON_TOOL, MOVE_VERTEX_TOOL, REMOVE_TOOL} from './map-tools.js';
@@ -66,8 +66,9 @@ export default class Map extends React.Component {
     super(props);
     this.state = {
       userDefinedGeometries: [],
-      geometryUnderDefinition: []
-      };
+      geometryUnderDefinition: [],
+      highlightedMarker: null
+    };
   }
 
   getMapHeight = () => {
@@ -208,6 +209,7 @@ export default class Map extends React.Component {
         window.removeEventListener ('keyup', this.handleKeyUp);
       }
     }
+    this.takeCareOfHighlightedMarker(prevState.highlightedMarker, this.state.highlightedMarker);
   }
 
   handleKeyUp = (e) => {
@@ -258,8 +260,27 @@ export default class Map extends React.Component {
 
   clickOnCircleMarker = (e) => {
     console.log('clickOnCircleMarker');
+    const targetId = e.target.options.targetId;
+    const marker = targetId2Marker[targetId];
+    console.log(marker.options);
+    this.setState({highlightedMarker: marker});
     this.props.updateTarget(e.target.options.targetId);
   }
+
+  takeCareOfHighlightedMarker(previousMarker, newMarker) {
+    if (previousMarker !== newMarker) {
+      if (previousMarker !== null) {
+        previousMarker.setStyle(defaultMarkerStyle);
+      }
+      if (newMarker !== null) {
+        newMarker.setStyle({
+          color : '#ff0000',
+          radius : 8
+        });
+      }
+    }
+  }
+
   
 }
 

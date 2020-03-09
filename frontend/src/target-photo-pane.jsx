@@ -185,7 +185,10 @@ export default class TargetPhotoPane extends React.Component {
   
   fetchPhoto() {
     console.log('fetchPhoto');
-    const targetId = Math.round(this.props.targetId*1000);
+    
+    const targetId = uuidToNumber(this.props.targetId);
+
+    console.log(`${this.props.targetId)} ---> ${targetId}`);
     const url = `https://127.0.0.1:8445/tree-cadaster-backend/jax-rs/main/feature/${targetId}/photos/elem/${this.state.currentPhotoIndx}`;
     console.log(`axios URL is: ${url}`);
     axios.get(url)
@@ -213,3 +216,6 @@ export default class TargetPhotoPane extends React.Component {
   }
 }
 
+function uuidToNumber(uuid) {
+  return uuid.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
+}
