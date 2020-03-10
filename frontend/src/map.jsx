@@ -169,7 +169,7 @@ export default class Map extends React.Component {
     window.addEventListener    ('resize', this.handleResize);
     this.map = L.map('map-id', {
       center: Athens,
-      zoom: 12,
+      zoom: 15,
       zoomControl: false
     });
     this.addTiles();
@@ -180,7 +180,7 @@ export default class Map extends React.Component {
       })
     this.map.on('click', this.handleClick);
 
-    L.control.layers(BaseLayersForLayerControl, layerGroups).addTo(this.map);
+    L.control.layers(BaseLayersForLayerControl).addTo(this.map);
 
     $('div.leaflet-control-container section.leaflet-control-layers-list div.leaflet-control-layers-overlays input.leaflet-control-layers-selector[type="checkbox"]').on('change', (e)=>{
       console.log('checkbox changed', e);
@@ -241,9 +241,10 @@ export default class Map extends React.Component {
   
   configureLayerGroups = () => {
     for (let x in layerGroups) {
-      layerGroups[x].addTo(this.map);
+      if (layerGroups[x].enabled)
+        layerGroups[x].layer.addTo(this.map);
     }
-    layerGroups.circleMarkersLG.eachLayer ( (marker)=>{
+    layerGroups.circleMarkersLG.layer.eachLayer ( (marker)=>{
       marker.on('click', this.clickOnCircleMarker);
     } );
 }
@@ -286,50 +287,9 @@ export default class Map extends React.Component {
 
 
 
-class LayerConfiguration {
-  constructor(minZoomLevel) {
-    this.minZoomLevel = minZoomLevel;
-  }
-}
-
-const LayersConfiguration = {
-  circleMarkersLG    : new LayerConfiguration(14),
-  circlesLG          : new LayerConfiguration(14),
-  treesLG            : new LayerConfiguration(13),
-  defaultMarkersLG   : new LayerConfiguration(13),
-  makiMarkersLG      : new LayerConfiguration(16),
-  markerClusterGroup : new LayerConfiguration(0),
-  heatMap            : new LayerConfiguration( 5)
-  //    , 'Καλλικρατικοί δήμοι'              : new LayerConfiguration( 0)
-};
-
-function generateCoordinatesInAthens(N) {
-  const rv = [];
-  const spanDegrees = 0.05;
-  
-  for (let i = 0; i < N; i++) {
-    rv.push([Athens[0]+(Math.random()-.5)*spanDegrees
-           , Athens[1]+(Math.random()-.5)*spanDegrees]);
-  }
-  return rv;
-}
-
-function randomItem(items) {
-  const rv = items[Math.floor(Math.random() * items.length)];
-  return rv;
-}
 
 
 
-
-
-
-function unpack(str) {
-  var codePoints = [];
-  for(var i = 0; i < str.length; i++)
-    codePoints.push( str.charCodeAt(i) );
-  return codePoints;
-};
 
 
 

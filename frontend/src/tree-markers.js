@@ -176,15 +176,15 @@ function randomItem(items) {
     return rv;
 }
 
-const layerGroups = {circleMarkersLG: circleMarkersLG
-                     , circleMarkersDefaultLG: circleMarkersDefaultLG
-                     , circlesLG: circlesLG
-                     , treesLG: treesLG
-                     , defaultMarkersLG: defaultMarkersLG
-                     , makiMarkersLG: makiMarkersLG
-                     , markerClusterGroup: markerClusterGroup
-                     , heatMap: heatMap
-                     , 'Καλλικρατικοί δήμοι': ota_Callicrates
+const layerGroups = {circleMarkersLG:          {layer: circleMarkersLG       , enabled:  true}
+                     , circleMarkersDefaultLG: {layer: circleMarkersDefaultLG, enabled: false}
+                     , circlesLG:              {layer: circlesLG             , enabled: false}
+                     , treesLG:                {layer: treesLG               , enabled: false}
+                     , defaultMarkersLG:       {layer: defaultMarkersLG      , enabled: false}
+                     , makiMarkersLG:          {layer: makiMarkersLG         , enabled: false}
+                     , markerClusterGroup:     {layer: markerClusterGroup    , enabled: false}
+                     , heatMap:                {layer: heatMap               , enabled: false}
+                     , 'Καλλικρατικοί δήμοι':  {layer: ota_Callicrates       , enabled: false}
                     };
 
 
