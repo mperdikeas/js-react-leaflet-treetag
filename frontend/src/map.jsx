@@ -32,6 +32,7 @@ import keycode from 'keycode';
 require('../node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css');
 require('../node_modules/leaflet.markercluster/dist/leaflet.markercluster.js');
 
+import {exactlyOne} from './util.js';
 import {BaseLayers, BaseLayersForLayerControl} from './baseLayers.js';
 import {DefaultIcon, TreeIcon}          from './icons.js';
 import rainbow from './rainbow.js';
@@ -45,7 +46,7 @@ import {GeometryContext} from './context/geometry-context.jsx';
 import {Athens, layerGroups, defaultMarkerStyle, targetId2Marker} from './tree-markers.js';
 
 
-import {ADD_BEACON_TOOL, SELECT_GEOMETRY_TOOL, DEFINE_POLYGON_TOOL, MOVE_VERTEX_TOOL, REMOVE_TOOL} from './map-tools.js';
+import {SELECT_TREE_TOOL, ADD_BEACON_TOOL, SELECT_GEOMETRY_TOOL, DEFINE_POLYGON_TOOL, MOVE_VERTEX_TOOL, REMOVE_TOOL} from './map-tools.js';
 
 
 // https://spatialreference.org/ref/epsg/2100/
@@ -201,15 +202,39 @@ export default class Map extends React.Component {
         this.drawPolygon();
       }
     } else {
-      if ((prevProps.selectedTool !== DEFINE_POLYGON_TOOL) && (this.props.selectedTool === DEFINE_POLYGON_TOOL)) {
-        console.log('polygon tool was just selected - start monitoring keyUp');
-        window.addEventListener ('keyup', this.handleKeyUp);
-      } else if ((prevProps.selectedTool === DEFINE_POLYGON_TOOL) && (this.props.selectedTool !== DEFINE_POLYGON_TOOL)) {
-        console.log('polygon tool was just de-selected - stop monitoring keyUp');
-        window.removeEventListener ('keyup', this.handleKeyUp);
-      }
+      let totalTransitionsFired = 0;
+      totalTransitionsFired += this.handleToolTransition_SELECT_TREE       (prevProps);
+      totalTransitionsFired += this.handleToolTransition_DEFINE_POLYGON    (prevProps);
+      assert.isAtMost(totalTransitionsFired, 2);
     }
     this.takeCareOfHighlightedMarker(prevState.highlightedMarker, this.state.highlightedMarker);
+  }
+  handleToolTransition_SELECT_TREE = (prevProps) => {
+    if (exactlyOne(prevProps.selectedTool == SELECT_TREE_TOOL), (this.props.selectedTool === SELECT_TREE_TOOL)) {
+      if (prevProps.selectedTool == SELECT_TREE_TOOL) {
+        console.log('select tree tool was just selected - re-enable marker listeners');
+        addClickListenersToMarkers();
+      } else  {
+        console.log('select tree tool was just deselected - disable marker listeners');
+        removeClickListenersFromMarkers();
+      }
+      return 1;
+    }
+    return 0;
+  }
+
+  
+  handleToolTransition_DEFINE_POLYGON = (prevProps) => {
+    if ((prevProps.selectedTool !== DEFINE_POLYGON_TOOL) && (this.props.selectedTool === DEFINE_POLYGON_TOOL)) {
+      console.log('polygon tool was just selected - start monitoring keyUp');
+      window.addEventListener ('keyup', this.handleKeyUp);
+      return 1;
+    } else if ((prevProps.selectedTool === DEFINE_POLYGON_TOOL) && (this.props.selectedTool !== DEFINE_POLYGON_TOOL)) {
+      console.log('polygon tool was just de-selected - stop monitoring keyUp');
+      window.removeEventListener ('keyup', this.handleKeyUp);
+      return 1;
+    }
+    return 0;
   }
 
   handleKeyUp = (e) => {
@@ -244,10 +269,19 @@ export default class Map extends React.Component {
       if (layerGroups[x].enabled)
         layerGroups[x].layer.addTo(this.map);
     }
+  }
+
+  addClickListenersToMarkers = () => {
     layerGroups.circleMarkersLG.layer.eachLayer ( (marker)=>{
       marker.on('click', this.clickOnCircleMarker);
     } );
-}
+  }
+
+  removeClickListenersFromMarkers = () => {
+    layerGroups.circleMarkersLG.layer.eachLayer ( (marker)=>{
+      marker.off('click');
+    } );
+  }
   
 
   render() {

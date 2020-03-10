@@ -17,6 +17,7 @@ import Map                      from './map.jsx';
 import TreeInformationPanel     from './tree-information-panel.jsx';
 import PointCoordinates         from './point-coordinates.jsx';
 import Toolbox                  from './toolbox.jsx';
+import {SELECT_TREE_TOOL}       from './map-tools.js';
 
 class App extends React.Component {
 
@@ -30,7 +31,7 @@ class App extends React.Component {
       , maximizedInfo: false
       , target: null
       , coords: null
-      , selectedTool: null
+      , selectedTool: SELECT_TREE_TOOL
     };
   }
 

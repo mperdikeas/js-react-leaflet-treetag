@@ -3,10 +3,26 @@ body {
 }
 
 .not-allowed {
-  
   cursor: not-allowed !important;
 }
 
 .hidden {
     display: none;
 }
+
+
+* {
+   cursor: url('../resources/hand-cursor.png') !important;
+}
+
+/*.leaflet-interactive {
+    cursor: url('../resources/hand-cursor.png') !important;
+}
+*/
+
+
+.not-selectable {
+    cursor: grab !important;
+}
+
+
