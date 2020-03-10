@@ -150,8 +150,7 @@ export default class TargetPhotoPane extends React.Component {
   }
 
   fetchNumOfPhotos() {
-    const targetId = Math.round(this.props.targetId*1000);
-    const url = `https://127.0.0.1:8445/tree-cadaster-backend/jax-rs/main/feature/${targetId}/photos/num`;
+    const url = urlForNumOfPhotos(this.props.targetId);
     console.log(`axios URL is: ${url}`);
     axios.get(url)
          .then(res => {
@@ -185,11 +184,7 @@ export default class TargetPhotoPane extends React.Component {
   
   fetchPhoto() {
     console.log('fetchPhoto');
-    
-    const targetId = uuidToNumber(this.props.targetId);
-
-    console.log(`${this.props.targetId)} ---> ${targetId}`);
-    const url = `https://127.0.0.1:8445/tree-cadaster-backend/jax-rs/main/feature/${targetId}/photos/elem/${this.state.currentPhotoIndx}`;
+    const url = urlForPhoto(this.props.targetId, this.state.currentPhotoIndx);
     console.log(`axios URL is: ${url}`);
     axios.get(url)
          .then(res => {
@@ -219,3 +214,20 @@ export default class TargetPhotoPane extends React.Component {
 function uuidToNumber(uuid) {
   return uuid.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
 }
+
+
+function urlForPhoto(targetId, indx) {
+  const effectiveTargetId = Math.abs(uuidToNumber(targetId));
+  const url = `${BASE_URL}/feature/${effectiveTargetId}/photos/elem/${indx}`;
+  return url;
+  }
+
+
+function urlForNumOfPhotos(targetId) {
+  const effectiveTargetId = Math.abs(uuidToNumber(targetId));
+  const url=`${BASE_URL}/feature/${effectiveTargetId}/photos/num`;
+  return url;
+  }
+
+
+const BASE_URL = 'https://127.0.0.1:8445/tree-cadaster-backend/jax-rs/main';

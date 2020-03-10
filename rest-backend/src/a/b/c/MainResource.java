@@ -155,6 +155,7 @@ public class MainResource {
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling getFeaturePhoto(%d, %d) from remote address [%s]"
                                        , featureId
+                                       , photoIndx
                                        , httpServletRequest.getRemoteAddr())
                          , t);
             return ResourceUtil.softFailureResponse(t);
@@ -202,7 +203,7 @@ public class MainResource {
         };
 
         final ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-        final String fname = photos[ (featureId*photoIndx + featureId + photoIndx) % photos.length];
+        final String fname = photos[ Math.abs((featureId*photoIndx + featureId + photoIndx)) % photos.length];
         final InputStream is = classloader.getResourceAsStream(String.format("photos/%s", fname));
         final BufferedImage image = ImageIO.read(is);
         final ByteArrayOutputStream baos = new ByteArrayOutputStream();
