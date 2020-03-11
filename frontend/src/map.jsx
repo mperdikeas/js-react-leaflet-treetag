@@ -96,6 +96,11 @@ export default class Map extends React.Component {
 
       case null:
         break;
+      case SELECT_TREE_TOOL:
+        console.log('select tree tool case');
+        break;
+        this.addBeacon(e.latlng);
+        break;        
       case ADD_BEACON_TOOL:
         this.addBeacon(e.latlng);
         break;
@@ -106,9 +111,9 @@ export default class Map extends React.Component {
         this.addPointToPolygonUnderConstruction(e.latlng);
         break;
       case MOVE_VERTEX_TOOL:
-        assert.fail('not handled 4');
+        break;
       case REMOVE_TOOL:
-        assert.fail('not handled 5');
+        break;
       default:
         assert.fail('not handled 6');
     }
@@ -186,7 +191,8 @@ export default class Map extends React.Component {
     $('div.leaflet-control-container section.leaflet-control-layers-list div.leaflet-control-layers-overlays input.leaflet-control-layers-selector[type="checkbox"]').on('change', (e)=>{
       console.log('checkbox changed', e);
     });
-
+    assert.strictEqual(this.props.selectedTool, SELECT_TREE_TOOL);
+    this.addClickListenersToMarkers();    
     
   }
 
@@ -202,6 +208,7 @@ export default class Map extends React.Component {
         this.drawPolygon();
       }
     } else {
+      console.log('xxx selected tool changed');
       let totalTransitionsFired = 0;
       totalTransitionsFired += this.handleToolTransition_SELECT_TREE       (prevProps);
       totalTransitionsFired += this.handleToolTransition_DEFINE_POLYGON    (prevProps);
@@ -209,14 +216,19 @@ export default class Map extends React.Component {
     }
     this.takeCareOfHighlightedMarker(prevState.highlightedMarker, this.state.highlightedMarker);
   }
+
+
   handleToolTransition_SELECT_TREE = (prevProps) => {
-    if (exactlyOne(prevProps.selectedTool == SELECT_TREE_TOOL), (this.props.selectedTool === SELECT_TREE_TOOL)) {
-      if (prevProps.selectedTool == SELECT_TREE_TOOL) {
-        console.log('select tree tool was just selected - re-enable marker listeners');
-        addClickListenersToMarkers();
+    console.log('xxx', prevProps.selectedTool, this.props.selectedTool);
+    if (exactlyOne(  (prevProps.selectedTool === SELECT_TREE_TOOL)
+                  , (this.props.selectedTool === SELECT_TREE_TOOL))) {
+      console.log('xxx foo');
+      if (this.props.selectedTool === SELECT_TREE_TOOL) {
+        console.log('xxx select tree tool was just selected - re-enable marker listeners');
+        this.addClickListenersToMarkers();
       } else  {
-        console.log('select tree tool was just deselected - disable marker listeners');
-        removeClickListenersFromMarkers();
+        console.log('xxx select tree tool was just deselected - disable marker listeners');
+        this.removeClickListenersFromMarkers();
       }
       return 1;
     }
@@ -272,12 +284,14 @@ export default class Map extends React.Component {
   }
 
   addClickListenersToMarkers = () => {
+    console.log('xxx adding click listeners to all trees');
     layerGroups.circleMarkersLG.layer.eachLayer ( (marker)=>{
       marker.on('click', this.clickOnCircleMarker);
     } );
   }
 
   removeClickListenersFromMarkers = () => {
+    console.log('xxx removing click listeners from all trees');
     layerGroups.circleMarkersLG.layer.eachLayer ( (marker)=>{
       marker.off('click');
     } );
