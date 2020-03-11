@@ -11,7 +11,10 @@ const HTMLWebpackPluginConfig = new HtmlWebpackPlugin({
 
 const config = {
     mode: 'production',
-    devtool: 'eval-source-map',
+    devtool: 'source-map',
+    devServer: {
+        contentBase: './dist'
+    },
     entry: './src/main.jsx',
     output: {
         path: path.resolve(__dirname, 'dist'),
