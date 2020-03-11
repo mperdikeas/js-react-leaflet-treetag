@@ -32,14 +32,38 @@ const defaultMarkerStyle = {
 
 const targetId2Marker = {};
 
-const circleMarkersLG = L.layerGroup(generateCoordinatesInAthens(N*1000).map( c=> {
-    const baseOptions = Object.assign({}, defaultMarkerStyle, {renderer: myRenderer});
-    const targetId = uuidv4();
-    const newOptions = {targetId};
-    const effectiveOptions = Object.assign({}, baseOptions, newOptions);
-    const marker = new CustomCircleMarker(c, effectiveOptions);
-    targetId2Marker[targetId] = marker;
-    return marker;
+const USE_CLASSICAL_MARKERS = false;
+
+const circleMarkersLG = L.layerGroup(generateCoordinatesInAthens(N*20).map( c=> {
+    if (USE_CLASSICAL_MARKERS) {
+        const options = {
+            icon: new DefaultIcon()
+            , renderer: myRenderer
+            , clickable: true
+            , draggable: false
+            , title: 'a tree'
+            , riseOnHover: true // rises on top of other markers
+            , riseOffset: 250
+        };
+        const marker = L.marker(c, options).bindPopup('a fucking tree');
+        return marker;
+    } else {
+        const useCanvasRenderer = true;
+        const baseOptions = (()=>{
+            if (useCanvasRenderer)
+                return Object.assign({}, defaultMarkerStyle, {renderer: myRenderer});
+            else
+                return Object.assign({}, defaultMarkerStyle);
+        })();
+
+        const targetId = uuidv4();
+        const newOptions = {targetId};
+        const effectiveOptions = Object.assign({}, baseOptions, newOptions);
+        //        const marker = new CustomCircleMarker(c, effectiveOptions);
+        const marker = new L.circleMarker(c, effectiveOptions);
+        targetId2Marker[targetId] = marker;
+        return marker;
+    }
 }));
 
 const circleMarkersDefaultLG = L.layerGroup(generateCoordinatesInAthens(N*30).map( c=> {
@@ -195,7 +219,7 @@ const layerGroups = {circleMarkersLG:          {layer: circleMarkersLG       , e
 // export Athens
 // export layerGroups
 
-export {Athens, layerGroups, defaultMarkerStyle, targetId2Marker}
+export {Athens, layerGroups, defaultMarkerStyle, targetId2Marker, USE_CLASSICAL_MARKERS}
 
 
 // const layerGroups = [{layer: circleMarkersLG

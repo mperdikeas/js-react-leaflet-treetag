@@ -21,7 +21,9 @@ body {
 */
 
 
+/* TODO: this is regrettably only useful for L.marker, not L.CircleMarker objects */
 .not-selectable {
+    cursor: move !important; /* fallback if grab cursor is not available */
     cursor: grab !important;
 }
 

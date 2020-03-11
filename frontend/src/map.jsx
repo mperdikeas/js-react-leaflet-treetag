@@ -43,7 +43,7 @@ import {GeometryContext} from './context/geometry-context.jsx';
 // const Iconv  = require('iconv').Iconv;
 
 
-import {Athens, layerGroups, defaultMarkerStyle, targetId2Marker} from './tree-markers.js';
+import {Athens, layerGroups, defaultMarkerStyle, targetId2Marker, USE_CLASSICAL_MARKERS} from './tree-markers.js';
 
 
 import {SELECT_TREE_TOOL, ADD_BEACON_TOOL, SELECT_GEOMETRY_TOOL, DEFINE_POLYGON_TOOL, MOVE_VERTEX_TOOL, REMOVE_TOOL} from './map-tools.js';
@@ -287,13 +287,26 @@ export default class Map extends React.Component {
     console.log('xxx adding click listeners to all trees');
     layerGroups.circleMarkersLG.layer.eachLayer ( (marker)=>{
       marker.on('click', this.clickOnCircleMarker);
-    } );
+      if (USE_CLASSICAL_MARKERS)
+        marker._icon.classList.remove('not-selectable');
+      else {
+        marker.options.interactive = true; // https://stackoverflow.com/a/60642381/274677
+        console.log(marker.options.interactive);
+        }
+    });
   }
 
   removeClickListenersFromMarkers = () => {
     console.log('xxx removing click listeners from all trees');
     layerGroups.circleMarkersLG.layer.eachLayer ( (marker)=>{
+      console.log(marker);
       marker.off('click');
+      if (USE_CLASSICAL_MARKERS) 
+        marker._icon.classList.add('not-selectable');
+      else {
+        marker.options.interactive = false; // https://stackoverflow.com/a/60642381/274677
+        console.log(marker.options.interactive);
+        }
     } );
   }
   
