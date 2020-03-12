@@ -59,8 +59,7 @@ const circleMarkersLG = L.layerGroup(generateCoordinatesInAthens(N*20).map( c=> 
         const targetId = uuidv4();
         const newOptions = {targetId};
         const effectiveOptions = Object.assign({}, baseOptions, newOptions);
-        //        const marker = new CustomCircleMarker(c, effectiveOptions);
-        const marker = new L.circleMarker(c, effectiveOptions);
+        const marker = new CustomCircleMarker(c, effectiveOptions);
         targetId2Marker[targetId] = marker;
         return marker;
     }
