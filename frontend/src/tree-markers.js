@@ -59,7 +59,13 @@ const circleMarkersLG = L.layerGroup(generateCoordinatesInAthens(N*20).map( c=> 
         const targetId = uuidv4();
         const newOptions = {targetId};
         const effectiveOptions = Object.assign({}, baseOptions, newOptions);
-        const marker = new CustomCircleMarker(c, effectiveOptions);
+        /*
+         *  There is no need to use a custom class to add just one option; adding
+         *  the option on a vanila L.circleMarker works just as well.
+         *
+         *  const marker = new CustomCircleMarker(c, effectiveOptions);
+         */
+        const marker = new L.circleMarker(c, effectiveOptions);
         targetId2Marker[targetId] = marker;
         return marker;
     }
