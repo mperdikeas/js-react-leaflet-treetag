@@ -67,10 +67,11 @@ class App extends React.Component {
     console.log('app::render()');
 
     const treeInformationPanel = (
-      <TreeInformationPanel key={this.state.target}
-                        target={this.state.target}
-                        maximized={this.state.maximizedInfo}
-                        toggleInfoPanel={this.toggleInfoPanel}/>
+      <TreeInformationPanel
+          selectedTool = {this.state.selectedTool}
+          target={this.state.target}
+          maximized={this.state.maximizedInfo}
+          toggleInfoPanel={this.toggleInfoPanel}/>
 
     );
 
