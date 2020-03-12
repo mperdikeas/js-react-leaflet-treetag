@@ -13,6 +13,8 @@ import keycode from 'keycode';
 require('../node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css');
 require('../node_modules/leaflet.markercluster/dist/leaflet.markercluster.js');
 
+const assert = require('chai').assert;
+
 import { v4 as uuidv4 } from 'uuid';
 
 import {DefaultIcon, TreeIcon} from './icons.js';
@@ -205,17 +207,31 @@ function randomItem(items) {
     return rv;
 }
 
-const layerGroups = {circleMarkersLG:          {layer: circleMarkersLG       , enabled:  true}
-                     , circleMarkersDefaultLG: {layer: circleMarkersDefaultLG, enabled: true}
-                     , circlesLG:              {layer: circlesLG             , enabled: true}
-                     , treesLG:                {layer: treesLG               , enabled: true}
-                     , defaultMarkersLG:       {layer: defaultMarkersLG      , enabled: false}
-                     , makiMarkersLG:          {layer: makiMarkersLG         , enabled: false}
-                     , markerClusterGroup:     {layer: markerClusterGroup    , enabled: false}
-                     , heatMap:                {layer: heatMap               , enabled: false}
-                     , 'Καλλικρατικοί δήμοι':  {layer: ota_Callicrates       , enabled: false}
+const layerGroupsPre = {circleMarkersLG:          {layer: circleMarkersLG       , available:  true, isInitiallyDisplayed: true}
+                        , circleMarkersDefaultLG: {layer: circleMarkersDefaultLG, available:  true, isInitiallyDisplayed: false}
+                        , circlesLG:              {layer: circlesLG             , available:  true, isInitiallyDisplayed: false}
+                        , treesLG:                {layer: treesLG               , available:  true, isInitiallyDisplayed: false}
+                        , defaultMarkersLG:       {layer: defaultMarkersLG      , available: false, isInitiallyDisplayed: null}
+                        , makiMarkersLG:          {layer: makiMarkersLG         , available: false, isInitiallyDisplayed: null}
+                        , markerClusterGroup:     {layer: markerClusterGroup    , available: false, isInitiallyDisplayed: null}
+                        , heatMap:                {layer: heatMap               , available: false, isInitiallyDisplayed: null}
+                        , 'Καλλικρατικοί δήμοι':  {layer: ota_Callicrates       , available: false, isInitiallyDisplayed: null}
                     };
 
+const layerGroups = ((layerGroups)=>{
+    const rv = {};
+    for (const prop in layerGroups) {
+        if (Object.prototype.hasOwnProperty.call(layerGroups, prop)) {
+            if (layerGroups[prop].available) {
+                rv[prop] = {isInitiallyDisplayed: layerGroups[prop].isInitiallyDisplayed
+                            , layer: layerGroups[prop].layer};
+                assert.isNotNull(layerGroups[prop].isInitiallyDisplayed);
+            } else
+                assert.isNull(layerGroups[prop].isInitiallyDisplayed);
+        }
+    }
+    return rv;
+})(layerGroupsPre);
 
 
 //exports.Athens = Athens;

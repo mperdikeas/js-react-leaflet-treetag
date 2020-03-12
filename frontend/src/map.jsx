@@ -162,6 +162,12 @@ export default class Map extends React.Component {
     }
   }
 
+  configureLayerGroups = () => {
+    for (let x in layerGroups) {
+      if (layerGroups[x].isInitiallyDisplayed)
+        layerGroups[x].layer.addTo(this.map);
+    }
+  }
 
 
   componentDidUnmount = () => {
@@ -180,13 +186,16 @@ export default class Map extends React.Component {
     });
     this.addTiles();
     this.configureLayerGroups();
+
+
     if (false)
       this.map.on('mousemove', (e) => {
         this.props.updateCoordinates(e.latlng);
       })
     this.map.on('click', this.handleClick);
 
-    L.control.layers(BaseLayersForLayerControl).addTo(this.map);
+    L.control.layers(BaseLayersForLayerControl
+                   , getAllLayers(layerGroups)).addTo(this.map);
 
     $('div.leaflet-control-container section.leaflet-control-layers-list div.leaflet-control-layers-overlays input.leaflet-control-layers-selector[type="checkbox"]').on('change', (e)=>{
       console.log('checkbox changed', e);
@@ -276,12 +285,6 @@ export default class Map extends React.Component {
   }
 
   
-  configureLayerGroups = () => {
-    for (let x in layerGroups) {
-      if (layerGroups[x].enabled)
-        layerGroups[x].layer.addTo(this.map);
-    }
-  }
 
   addClickListenersToMarkers = () => {
     console.log('xxx adding click listeners to all trees');
@@ -348,7 +351,17 @@ export default class Map extends React.Component {
 
 
 
-
+function getAllLayers(layerGroups) {
+  const rv = [];
+  for (const prop in layerGroups) {
+    if (layerGroups.hasOwnProperty(prop)) {
+      console.log(`xxx adding layer ${prop}`);
+      rv[prop] = layerGroups[prop].layer;
+//      console.log(`xxx ${layerGroups.layer}`);
+    }
+  }
+  return rv;
+}
 
 
 
