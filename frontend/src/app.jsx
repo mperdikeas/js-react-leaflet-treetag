@@ -33,11 +33,18 @@ class App extends React.Component {
       , target: null
       , coords: null
       , selectedTool: SELECT_TREE_TOOL
+      , userDefinedGeometries: []
+      , geometryUnderDefinition: []
     };
   }
 
+
+  addPointToPolygonUnderConstruction = ({lat, lng})=>{
+    this.setState({geometryUnderDefinition: [...this.state.geometryUnderDefinition, {lat, lng}]});
+  }
+  
+
   updateSelectedTool = (selectedTool) => {
-    console.log(selectedTool);
     if (selectedTool===this.state.selectedTool)
       this.setState({selectedTool: null});
     else
@@ -53,7 +60,6 @@ class App extends React.Component {
   }
 
   updateTarget = (targetId) => {
-    console.log(`app::updateTarget(${targetId}}`);
     this.setState({target: {targetId}});
   }
 
@@ -62,7 +68,6 @@ class App extends React.Component {
   }
 
   render() {
-    console.log('app::render()');
 
     const classesForMapDiv = Object.assign({'col-8': true, 'padding-0': true}
                                          , {hidden: this.state.maximizedInfo});
@@ -92,6 +97,10 @@ class App extends React.Component {
                      updateTarget={this.updateTarget}
                      updateCoordinates={this.updateCoordinates}
                      selectedTool={this.state.selectedTool}
+                     userDefinedGeometries={this.state.userDefinedGeometries}
+                     geometryUnderDefinition={this.state.geometryUnderDefinition}
+                     addPointToPolygonUnderConstruction={this.addPointToPolygonUnderConstruction}
+                     addPolygon={this.addPolygon}
                 />
               </div>
             </div>
@@ -102,8 +111,18 @@ class App extends React.Component {
     );
   }
 
+  addPolygon = () => {
+    console.log('app::addPolygon');
+    const userDefinedGeometriesSoFar = _.cloneDeep(this.state.userDefinedGeometries);
+    console.log(userDefinedGeometriesSoFar.length);
+    userDefinedGeometriesSoFar.push(this.state.geometryUnderDefinition);
+    console.log(userDefinedGeometriesSoFar.length);
+    this.setState({userDefinedGeometries: userDefinedGeometriesSoFar
+                 , geometryUnderDefinition: []});
+
+  }
+
   informationPanel = () => {
-    console.log(`app::informationPanel(): selectedTool is ${this.state.selectedTool}`);
     const treeInformationPanel = (
       <TreeInformationPanel
           target          = {this.state.target}
@@ -113,17 +132,11 @@ class App extends React.Component {
     );
     switch (this.state.selectedTool) {
       case DEFINE_POLYGON_TOOL:
-        console.log('case A');
         return (
           <InformationPanelGeometryDefinition/>
         );
       case SELECT_TREE_TOOL:
-        console.log('case B');
-        console.log(treeInformationPanel);
-        return treeInformationPanel;
       default:
-        console.log('case C');
-        console.log(treeInformationPanel);
         return treeInformationPanel;
     }
   }

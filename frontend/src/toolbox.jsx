@@ -64,7 +64,6 @@ class Toolbox extends React.Component {
   
 
   render = () => {
-    console.log('toolbox::render()');
     const tools = [ {icon:selectTree     , f: this.chooseSelectTree}
                   , {icon:addBeacon      , f: this.chooseAddBeacon}
                   , {icon:selectGeometry , f: this.chooseSelectGeometry}

@@ -24,9 +24,29 @@ class InformationPanelGeometryDefinition extends React.Component {
   }
 
   render() {
+    const style1 = {
+      backgroundColor: 'red',
+      padding: '2px'
+    };
+    const style2 = {
+      backgroundColor: 'blue',
+      padding: '2px'
+    };
     return (
       <div id='detailInformation' class='col-4 padding-0' style={{backgroundColor: 'lightgrey'}}>
-        Ορισμός Γεωμετρίας.
+        <div class='row no-gutters' style={style1}>
+          Έχετε ορίσει τις παρακάτω γεωμετρίες<br/>
+          <ul>
+            <li>name 1</li>
+            <li>name 2</li>
+            <li>name 3</li>
+            <li>name 4</li>
+          </ul>
+
+        </div>
+        <div class='row no-gutters' style={style2}>
+Γεωμετρία υπό ορισμό
+        </div>        
       </div>
     );
   }

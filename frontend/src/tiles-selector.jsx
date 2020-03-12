@@ -13,7 +13,6 @@ import 'leaflet/dist/leaflet.css';
 
 import {BaseLayers, BaseLayersForLayerControl} from './baseLayers.js';
 export default function TilesSelector(props) {
-  console.log('TilesSelector::render()');
   const options = [];
   for (let x in BaseLayers) {
     options.push(

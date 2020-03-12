@@ -65,8 +65,6 @@ export default class Map extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      userDefinedGeometries: [],
-      geometryUnderDefinition: [],
       highlightedMarker: null
     };
   }
@@ -105,7 +103,7 @@ export default class Map extends React.Component {
         this.selectGeometry(e.latlng);
         break;
       case DEFINE_POLYGON_TOOL:
-        this.addPointToPolygonUnderConstruction(e.latlng);
+        this.props.addPointToPolygonUnderConstruction(e.latlng);
         break;
       case MOVE_VERTEX_TOOL:
         break;
@@ -133,26 +131,22 @@ export default class Map extends React.Component {
 
 
   selectGeometry = ({lat, lng}) => {
-    const polygon = this.state.geometryUnderDefinition.map( (e) => [e.lat, e.lng]);
+    const polygon = this.props.geometryUnderDefinition.map( (e) => [e.lat, e.lng]);
     const isInside = inside([lat, lng], polygon);
-  }
-
-  addPointToPolygonUnderConstruction = ({lat, lng})=>{
-    this.setState({geometryUnderDefinition: [...this.state.geometryUnderDefinition, {lat, lng}]});
   }
 
   drawPolygon = () => {
     if (this.props.selectedTool===DEFINE_POLYGON_TOOL) {
       if (this.currentPolygon!=null)
-        this.currentPolygon.setLatLngs(this.state.geometryUnderDefinition);
+        this.currentPolygon.setLatLngs(this.props.geometryUnderDefinition);
       else
-        this.currentPolygon = L.polygon(this.state.geometryUnderDefinition).addTo(this.map);
+        this.currentPolygon = L.polygon(this.props.geometryUnderDefinition).addTo(this.map);
     }
     if (false) {
       if (this.currentPolygon!=null)
         this.map.removeLayer(this.currentPolygon);
-      if ((this.props.selectedTool===DEFINE_POLYGON_TOOL) && (this.state.geometryUnderDefinition.length!==0)) {
-        this.currentPolygon = L.polygon(this.state.geometryUnderDefinition).addTo(this.map);
+      if ((this.props.selectedTool===DEFINE_POLYGON_TOOL) && (this.props.geometryUnderDefinition.length!==0)) {
+        this.currentPolygon = L.polygon(this.props.geometryUnderDefinition).addTo(this.map);
       }
     }
   }
@@ -200,12 +194,12 @@ export default class Map extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log('map::componentDidUpdate');
     if (prevProps.tileProviderId!==this.props.tileProviderId) {
       this.addTiles();
     }
     if (prevProps.selectedTool === this.props.selectedTool) {
-      if (prevState.geometryUnderDefinition.length !== this.state.geometryUnderDefinition.length) {
+      if (prevProps.geometryUnderDefinition.length !== this.props.geometryUnderDefinition.length) {
+        console.log(`drawing polygon with ${this.props.geometryUnderDefinition.length} points defined`);
         this.drawPolygon();
       }
     } else {
@@ -224,6 +218,7 @@ export default class Map extends React.Component {
       if (this.props.selectedTool === SELECT_TREE_TOOL) {
         this.addClickListenersToMarkers();
       } else  {
+        console.log('removing marker click listeners');
         this.removeClickListenersFromMarkers();
       }
       return 1;
@@ -234,26 +229,21 @@ export default class Map extends React.Component {
   
   handleToolTransition_DEFINE_POLYGON = (prevProps) => {
     if ((prevProps.selectedTool !== DEFINE_POLYGON_TOOL) && (this.props.selectedTool === DEFINE_POLYGON_TOOL)) {
-      console.log('polygon tool was just selected - start monitoring keyUp');
       window.addEventListener ('keyup', this.handleKeyUp);
       return 1;
     } else if ((prevProps.selectedTool === DEFINE_POLYGON_TOOL) && (this.props.selectedTool !== DEFINE_POLYGON_TOOL)) {
-      console.log('polygon tool was just de-selected - stop monitoring keyUp');
       window.removeEventListener ('keyup', this.handleKeyUp);
       return 1;
     }
     return 0;
   }
 
+
   handleKeyUp = (e) => {
-    console.log(`key up detected ${e.keyCode}`);
     if (e.keyCode === keycode('ESC')) {
       assert.strictEqual(this.props.selectedTool, DEFINE_POLYGON_TOOL);
-      const userDefinedGeometriesSoFar = _.cloneDeep(this.state.userDefinedGeometries);
-      userDefinedGeometriesSoFar.push(this.state.geometryUnderDefinition);
       this.currentPolygon = null;
-      this.setState({userDefinedGeometries: userDefinedGeometriesSoFar
-                   , geometryUnderDefinition: []});
+      this.props.addPolygon();
     }
   }
 
@@ -294,7 +284,6 @@ export default class Map extends React.Component {
   
 
   render() {
-    console.log('map::render()');
     const viewportHeight = $(window).height();
     return (
       <div id='map-id' style={{height: `${this.getMapHeight()}px`}}>
@@ -303,10 +292,8 @@ export default class Map extends React.Component {
   }
 
   clickOnCircleMarker = (e) => {
-    console.log('clickOnCircleMarker');
     const targetId = e.target.options.targetId;
     const marker = targetId2Marker[targetId];
-    console.log(marker.options);
     this.setState({highlightedMarker: marker});
     this.props.updateTarget(e.target.options.targetId);
   }
@@ -324,8 +311,6 @@ export default class Map extends React.Component {
       }
     }
   }
-
-  
 }
 
 
@@ -334,9 +319,7 @@ function getAllLayers(layerGroups) {
   const rv = [];
   for (const prop in layerGroups) {
     if (layerGroups.hasOwnProperty(prop)) {
-      console.log(`xxx adding layer ${prop}`);
       rv[prop] = layerGroups[prop].layer;
-//      console.log(`xxx ${layerGroups.layer}`);
     }
   }
   return rv;
