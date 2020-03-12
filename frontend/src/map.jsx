@@ -63,7 +63,6 @@ export default class Map extends React.Component {
   static contextType = GeometryContext
   
   constructor(props) {
-    console.log('Map::constructor is called');
     super(props);
     this.state = {
       userDefinedGeometries: [],
@@ -90,14 +89,12 @@ export default class Map extends React.Component {
   }
 
   handleClick = (e) => {
-    console.log('map::handleClick', e, e.latlng);
     this.props.updateCoordinates(e.latlng);
     switch (this.props.selectedTool) {
 
       case null:
         break;
       case SELECT_TREE_TOOL:
-        console.log('select tree tool case');
         break;
         this.addBeacon(e.latlng);
         break;        
@@ -141,13 +138,11 @@ export default class Map extends React.Component {
   }
 
   addPointToPolygonUnderConstruction = ({lat, lng})=>{
-    console.log('addPointToPolygonUnderConstruction');
     this.setState({geometryUnderDefinition: [...this.state.geometryUnderDefinition, {lat, lng}]});
   }
 
   drawPolygon = () => {
     if (this.props.selectedTool===DEFINE_POLYGON_TOOL) {
-      console.log('updating polygon');
       if (this.currentPolygon!=null)
         this.currentPolygon.setLatLngs(this.state.geometryUnderDefinition);
       else
@@ -198,7 +193,6 @@ export default class Map extends React.Component {
                    , getAllLayers(layerGroups)).addTo(this.map);
 
     $('div.leaflet-control-container section.leaflet-control-layers-list div.leaflet-control-layers-overlays input.leaflet-control-layers-selector[type="checkbox"]').on('change', (e)=>{
-      console.log('checkbox changed', e);
     });
     assert.strictEqual(this.props.selectedTool, SELECT_TREE_TOOL);
     this.addClickListenersToMarkers();    
@@ -211,13 +205,10 @@ export default class Map extends React.Component {
       this.addTiles();
     }
     if (prevProps.selectedTool === this.props.selectedTool) {
-      console.log('same tool');
       if (prevState.geometryUnderDefinition.length !== this.state.geometryUnderDefinition.length) {
-        console.log('different geometry - need to drawPolygon');
         this.drawPolygon();
       }
     } else {
-      console.log('xxx selected tool changed');
       let totalTransitionsFired = 0;
       totalTransitionsFired += this.handleToolTransition_SELECT_TREE       (prevProps);
       totalTransitionsFired += this.handleToolTransition_DEFINE_POLYGON    (prevProps);
@@ -228,15 +219,11 @@ export default class Map extends React.Component {
 
 
   handleToolTransition_SELECT_TREE = (prevProps) => {
-    console.log('xxx', prevProps.selectedTool, this.props.selectedTool);
     if (exactlyOne(  (prevProps.selectedTool === SELECT_TREE_TOOL)
                   , (this.props.selectedTool === SELECT_TREE_TOOL))) {
-      console.log('xxx foo');
       if (this.props.selectedTool === SELECT_TREE_TOOL) {
-        console.log('xxx select tree tool was just selected - re-enable marker listeners');
         this.addClickListenersToMarkers();
       } else  {
-        console.log('xxx select tree tool was just deselected - disable marker listeners');
         this.removeClickListenersFromMarkers();
       }
       return 1;
@@ -273,13 +260,10 @@ export default class Map extends React.Component {
   addTiles() {
     const currentTileLayer = this.getCurrentTileLayer();
     if (currentTileLayer!==null) {
-      console.log('removing previous tile provider from map');
       this.map.removeLayer(currentTileLayer);
     }
     const {tileProviderId} = this.props;
-    console.log(`map::addTiles(): providerId is ${tileProviderId}`);
     const newBaseLayer = BaseLayers[tileProviderId].tileLayer;
-    console.log('adding new base layer', newBaseLayer);
     assert.isDefined(newBaseLayer);
     newBaseLayer.addTo(this.map);
   }
@@ -287,28 +271,23 @@ export default class Map extends React.Component {
   
 
   addClickListenersToMarkers = () => {
-    console.log('xxx adding click listeners to all trees');
     layerGroups.circleMarkersLG.layer.eachLayer ( (marker)=>{
       marker.on('click', this.clickOnCircleMarker);
       if (USE_CLASSICAL_MARKERS)
         marker._icon.classList.remove('not-selectable');
       else {
         marker.options.interactive = true; // https://stackoverflow.com/a/60642381/274677
-        console.log(marker.options.interactive);
         }
     });
   }
 
   removeClickListenersFromMarkers = () => {
-    console.log('xxx removing click listeners from all trees');
     layerGroups.circleMarkersLG.layer.eachLayer ( (marker)=>{
-      console.log(marker);
       marker.off('click');
       if (USE_CLASSICAL_MARKERS) 
         marker._icon.classList.add('not-selectable');
       else {
         marker.options.interactive = false; // https://stackoverflow.com/a/60642381/274677
-        console.log(marker.options.interactive);
         }
     } );
   }

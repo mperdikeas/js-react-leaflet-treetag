@@ -12,12 +12,13 @@ const assert = require('chai').assert;
 
 import {GeometryContext} from './context/geometry-context.jsx';
 
-import TilesSelector            from './tiles-selector.jsx';
-import Map                      from './map.jsx';
-import TreeInformationPanel     from './tree-information-panel.jsx';
-import PointCoordinates         from './point-coordinates.jsx';
-import Toolbox                  from './toolbox.jsx';
-import {SELECT_TREE_TOOL}       from './map-tools.js';
+import TilesSelector                           from './tiles-selector.jsx';
+import Map                                     from './map.jsx';
+import TreeInformationPanel                    from './information-panel-tree.jsx';
+import InformationPanelGeometryDefinition      from './information-panel-geometry-definition.jsx';
+import PointCoordinates                        from './point-coordinates.jsx';
+import Toolbox                                 from './toolbox.jsx';
+import {SELECT_TREE_TOOL, DEFINE_POLYGON_TOOL} from './map-tools.js';
 
 class App extends React.Component {
 
@@ -43,9 +44,6 @@ class App extends React.Component {
       this.setState({selectedTool});
   }
 
-  
-  
-
   updateCoordinates = (coords) => {
     this.setState({coords: coords});
   }
@@ -66,20 +64,12 @@ class App extends React.Component {
   render() {
     console.log('app::render()');
 
-    const treeInformationPanel = (
-      <TreeInformationPanel
-          selectedTool = {this.state.selectedTool}
-          target={this.state.target}
-          maximized={this.state.maximizedInfo}
-          toggleInfoPanel={this.toggleInfoPanel}/>
-
-    );
-
     const classesForMapDiv = Object.assign({'col-8': true, 'padding-0': true}
                                          , {hidden: this.state.maximizedInfo});
 
     const toolboxStyle = {flex: `0 0 ${this.context.toolboxTotalWidth()}px`
                         , backgroundColor: 'green'};
+
     return (
       <div class='container-fluid'>
         <div class='row no-gutters'>
@@ -106,12 +96,37 @@ class App extends React.Component {
               </div>
             </div>
           </div>
-          {treeInformationPanel}
+          {this.informationPanel()}
         </div>
       </div>
     );
   }
 
+  informationPanel = () => {
+    console.log(`app::informationPanel(): selectedTool is ${this.state.selectedTool}`);
+    const treeInformationPanel = (
+      <TreeInformationPanel
+          target          = {this.state.target}
+          maximized       = {this.state.maximizedInfo}
+          toggleInfoPanel = {this.toggleInfoPanel}
+      />
+    );
+    switch (this.state.selectedTool) {
+      case DEFINE_POLYGON_TOOL:
+        console.log('case A');
+        return (
+          <InformationPanelGeometryDefinition/>
+        );
+      case SELECT_TREE_TOOL:
+        console.log('case B');
+        console.log(treeInformationPanel);
+        return treeInformationPanel;
+      default:
+        console.log('case C');
+        console.log(treeInformationPanel);
+        return treeInformationPanel;
+    }
+  }
 }
 
 

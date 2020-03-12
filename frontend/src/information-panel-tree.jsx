@@ -16,8 +16,6 @@ import TargetDataPane     from './target-data-pane.jsx';
 import TargetPhotoPane    from './target-photo-pane.jsx';
 import TargetMetadataPane from './target-metadata-pane.jsx';
 
-import {SELECT_TREE_TOOL, ADD_BEACON_TOOL, SELECT_GEOMETRY_TOOL, DEFINE_POLYGON_TOOL, MOVE_VERTEX_TOOL, REMOVE_TOOL} from './map-tools.js';
-
 class TreeInformationPanel extends React.Component {
 
   constructor(props) {
@@ -55,27 +53,6 @@ class TreeInformationPanel extends React.Component {
   }
 
   render() {
-    console.log('TreeInformationPanel::render()');
-    switch (this.props.selectedTool) {
-      case SELECT_TREE_TOOL:
-        return this.renderForSelectTreeTool();
-      case DEFINE_POLYGON_TOOL:
-        return this.renderForDefinePolygonTool();
-      default:
-        assert.isDefined(this.props.selectedTool);
-        return this.renderForDefinePolygonTool();
-    }
-  }
-
-  renderForDefinePolygonTool = () => {
-    return (
-      <div id='detailInformation' class='col-4 padding-0' style={{backgroundColor: 'lightgrey'}}>
-        Ορισμός Γεωμετρίας
-      </div>
-    );
-  }
-      
-  renderForSelectTreeTool = () => {
     if (this.props.target===null) {
       return (
         <div id='detailInformation' class='col-4 padding-0' style={{backgroundColor: 'lightgrey'}}>
