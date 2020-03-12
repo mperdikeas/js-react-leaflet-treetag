@@ -206,9 +206,9 @@ function randomItem(items) {
 }
 
 const layerGroups = {circleMarkersLG:          {layer: circleMarkersLG       , enabled:  true}
-                     , circleMarkersDefaultLG: {layer: circleMarkersDefaultLG, enabled: false}
-                     , circlesLG:              {layer: circlesLG             , enabled: false}
-                     , treesLG:                {layer: treesLG               , enabled: false}
+                     , circleMarkersDefaultLG: {layer: circleMarkersDefaultLG, enabled: true}
+                     , circlesLG:              {layer: circlesLG             , enabled: true}
+                     , treesLG:                {layer: treesLG               , enabled: true}
                      , defaultMarkersLG:       {layer: defaultMarkersLG      , enabled: false}
                      , makiMarkersLG:          {layer: makiMarkersLG         , enabled: false}
                      , markerClusterGroup:     {layer: markerClusterGroup    , enabled: false}
