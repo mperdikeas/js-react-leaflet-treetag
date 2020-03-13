@@ -93,16 +93,15 @@ export default class Map extends React.Component {
       case null:
         break;
       case SELECT_TREE_TOOL:
-        break;
-        this.addBeacon(e.latlng);
         break;        
       case ADD_BEACON_TOOL:
-        this.addBeacon(e.latlng);
+        this.addBeacon(e.latlng, 20, 2000);
         break;
       case SELECT_GEOMETRY_TOOL:
         this.selectGeometry(e.latlng);
         break;
       case DEFINE_POLYGON_TOOL:
+        this.addBeacon(e.latlng, 10, 1000);
         this.props.addPointToPolygonUnderConstruction(e.latlng);
         break;
       case MOVE_VERTEX_TOOL:
@@ -115,9 +114,9 @@ export default class Map extends React.Component {
     return true;
   }
 
-  addBeacon = ({lat, lng}) => {
+  addBeacon = ({lat, lng}, size, durationMS) => {
     const pulsingIcon = L.icon.pulse(
-      {iconSize:[20,20]
+      {iconSize:[size,size]
      , color:'red'
      , animate: true
      , heartbeat: 0.4
@@ -126,7 +125,7 @@ export default class Map extends React.Component {
     marker.addTo(this.map);
     window.setTimeout(()=>{
       this.map.removeLayer(marker);
-    }, 2000);
+    }, durationMS);
   }
 
 
@@ -137,17 +136,18 @@ export default class Map extends React.Component {
 
   drawPolygon = () => {
     if (this.props.selectedTool===DEFINE_POLYGON_TOOL) {
+      const latestPoint = this.props.geometryUnderDefinition[this.props.geometryUnderDefinition.length-1];
+      console.log(latestPoint);
+      var circle = L.circle([latestPoint.lat, latestPoint.lng], {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.5,
+        radius: 10
+      }).addTo(this.map);
       if (this.currentPolygon!=null)
         this.currentPolygon.setLatLngs(this.props.geometryUnderDefinition);
       else
         this.currentPolygon = L.polygon(this.props.geometryUnderDefinition).addTo(this.map);
-    }
-    if (false) {
-      if (this.currentPolygon!=null)
-        this.map.removeLayer(this.currentPolygon);
-      if ((this.props.selectedTool===DEFINE_POLYGON_TOOL) && (this.props.geometryUnderDefinition.length!==0)) {
-        this.currentPolygon = L.polygon(this.props.geometryUnderDefinition).addTo(this.map);
-      }
     }
   }
 
@@ -198,10 +198,12 @@ export default class Map extends React.Component {
       this.addTiles();
     }
     if (prevProps.selectedTool === this.props.selectedTool) {
-      if (prevProps.geometryUnderDefinition.length !== this.props.geometryUnderDefinition.length) {
+      if ((prevProps.geometryUnderDefinition.length !== this.props.geometryUnderDefinition.length)
+          &&
+          (this.props.geometryUnderDefinition.length>0)) {
         console.log(`drawing polygon with ${this.props.geometryUnderDefinition.length} points defined`);
         this.drawPolygon();
-      }
+        }
     } else {
       let totalTransitionsFired = 0;
       totalTransitionsFired += this.handleToolTransition_SELECT_TREE       (prevProps);

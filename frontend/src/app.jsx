@@ -20,6 +20,7 @@ import PointCoordinates                        from './point-coordinates.jsx';
 import Toolbox                                 from './toolbox.jsx';
 import {SELECT_TREE_TOOL, DEFINE_POLYGON_TOOL} from './map-tools.js';
 import ModalDialog                             from './modal-dialog.jsx';
+import {geometriesValues, geometriesNames}     from './app-utils.js';
 
 class App extends React.Component {
 
@@ -98,7 +99,7 @@ class App extends React.Component {
                      updateTarget={this.updateTarget}
                      updateCoordinates={this.updateCoordinates}
                      selectedTool={this.state.selectedTool}
-                     userDefinedGeometries={this.state.userDefinedGeometries}
+                     userDefinedGeometries={geometriesValues(this.state.userDefinedGeometries)}
                      geometryUnderDefinition={this.state.geometryUnderDefinition}
                      addPointToPolygonUnderConstruction={this.addPointToPolygonUnderConstruction}
                      addPolygon={this.addPolygonDialog}
@@ -141,12 +142,11 @@ class App extends React.Component {
 
   addGeometry = (geometryName) => {
     console.log(`back at the app, with new geometry name: ${geometryName}`);
-    const userDefinedGeometriesSoFar = _.cloneDeep(this.state.userDefinedGeometries);
-    console.log(userDefinedGeometriesSoFar.length);
-    userDefinedGeometriesSoFar.push(this.state.geometryUnderDefinition);
-    console.log(userDefinedGeometriesSoFar.length);
+    const userDefinedGeometriesNew = _.cloneDeep(this.state.userDefinedGeometries);
+    userDefinedGeometriesNew.push({name: geometryName
+                                 , value: this.state.geometryUnderDefinition});
     this.setState({modalDialog: false
-                 , userDefinedGeometries: userDefinedGeometriesSoFar
+                 , userDefinedGeometries: userDefinedGeometriesNew
                  , geometryUnderDefinition: []});
   }
 
@@ -161,7 +161,9 @@ class App extends React.Component {
     switch (this.state.selectedTool) {
       case DEFINE_POLYGON_TOOL:
         return (
-          <InformationPanelGeometryDefinition/>
+          <InformationPanelGeometryDefinition
+              geometriesNames = {geometriesNames(this.state.userDefinedGeometries)}
+          />
         );
       case SELECT_TREE_TOOL:
       default:

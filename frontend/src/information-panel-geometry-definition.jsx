@@ -32,15 +32,19 @@ class InformationPanelGeometryDefinition extends React.Component {
       backgroundColor: 'blue',
       padding: '2px'
     };
+
+    const geometries = this.props.geometriesNames.map((x)=>{
+      return (
+        <li>{x}</li>
+      );
+    });
+    
     return (
       <div id='detailInformation' class='col-4 padding-0' style={{backgroundColor: 'lightgrey'}}>
         <div class='row no-gutters' style={style1}>
           Έχετε ορίσει τις παρακάτω γεωμετρίες<br/>
           <ul>
-            <li>name 1</li>
-            <li>name 2</li>
-            <li>name 3</li>
-            <li>name 4</li>
+            {geometries}
           </ul>
 
         </div>
