@@ -93,7 +93,7 @@ class Toolbox extends React.Component {
       );
       const unlinkedVersion = (
         <div class='col-12'>
-          <img src={el.icon} style={applicableStyle2}/>
+          <img src={el.icon} style={Object.assign({}, applicableStyle2, {opacity: 0.2})}/>
         </div>
       );
       if (this.props.geometryUnderDefinition) {
