@@ -19,6 +19,7 @@ import InformationPanelGeometryDefinition      from './information-panel-geometr
 import PointCoordinates                        from './point-coordinates.jsx';
 import Toolbox                                 from './toolbox.jsx';
 import {SELECT_TREE_TOOL, DEFINE_POLYGON_TOOL} from './map-tools.js';
+import ModalDialog                             from './modal-dialog.jsx';
 
 class App extends React.Component {
 
@@ -75,8 +76,8 @@ class App extends React.Component {
     const toolboxStyle = {flex: `0 0 ${this.context.toolboxTotalWidth()}px`
                         , backgroundColor: 'green'};
 
-    return (
-      <div class='container-fluid'>
+    const gui = (
+      <div class='container-fluid' key='main-gui-component'>
         <div class='row no-gutters'>
           <div class={cx(classesForMapDiv)}>
             <div class='row no-gutters justify-content-start align-items-center'
@@ -100,7 +101,7 @@ class App extends React.Component {
                      userDefinedGeometries={this.state.userDefinedGeometries}
                      geometryUnderDefinition={this.state.geometryUnderDefinition}
                      addPointToPolygonUnderConstruction={this.addPointToPolygonUnderConstruction}
-                     addPolygon={this.addPolygon}
+                     addPolygon={this.addPolygonDialog}
                 />
               </div>
             </div>
@@ -108,18 +109,45 @@ class App extends React.Component {
           {this.informationPanel()}
         </div>
       </div>
-    );
+    )
+
+    if (false) {
+      if (this.state.modalDialog)
+        return (
+          <ModalDialog addGeometry={this.addGeometry}>
+          {gui}
+        </ModalDialog>
+        )
+      else
+        return gui;
+    } else {
+      return (
+        <ModalDialog
+            displayModal={this.state.modalDialog}
+            addGeometry={this.addGeometry}
+        >
+          {gui}
+        </ModalDialog>
+      );
+    }
   }
 
-  addPolygon = () => {
-    console.log('app::addPolygon');
+  addPolygonDialog = () => {
+    console.log('app::addPolygonDialog');
+
+    this.setState({modalDialog: true});
+
+  }
+
+  addGeometry = (geometryName) => {
+    console.log(`back at the app, with new geometry name: ${geometryName}`);
     const userDefinedGeometriesSoFar = _.cloneDeep(this.state.userDefinedGeometries);
     console.log(userDefinedGeometriesSoFar.length);
     userDefinedGeometriesSoFar.push(this.state.geometryUnderDefinition);
     console.log(userDefinedGeometriesSoFar.length);
-    this.setState({userDefinedGeometries: userDefinedGeometriesSoFar
+    this.setState({modalDialog: false
+                 , userDefinedGeometries: userDefinedGeometriesSoFar
                  , geometryUnderDefinition: []});
-
   }
 
   informationPanel = () => {

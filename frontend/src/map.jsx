@@ -159,8 +159,8 @@ export default class Map extends React.Component {
   }
 
 
-  componentDidUnmount = () => {
-    console.log('map::componentDidUnmount()');
+  componentWillUnmount = () => {
+    console.log('map::componentWillUnmount()');
     window.removeEventListener ('resize', this.handleResize);
     this.map.off('click');
   }

@@ -26,7 +26,6 @@ function doStuff() {
             <App/>
           </GeometryContextProvider>
     , $('#app')[0]);
-  window.addEventListener('resize', this.handleResize);
 }
 
 function submitCredentials(username, password) {
