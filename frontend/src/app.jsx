@@ -92,7 +92,9 @@ class App extends React.Component {
               <div class='col' style={toolboxStyle}>
                 <Toolbox
                     selectedTool={this.state.selectedTool}            
-                    updateSelectedTool = {this.updateSelectedTool}/>
+                    updateSelectedTool = {this.updateSelectedTool}
+                    geometryUnderDefinition={this.state.geometryUnderDefinition.length>0}
+                />
               </div>
               <div class='col'>
                 <Map tileProviderId={this.state.tileProviderId}
