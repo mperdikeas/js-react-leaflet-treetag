@@ -47,10 +47,15 @@ class App extends React.Component {
   
 
   updateSelectedTool = (selectedTool) => {
-    if (selectedTool===this.state.selectedTool)
-      this.setState({selectedTool: null});
-    else
-      this.setState({selectedTool});
+    if (selectedTool===this.state.selectedTool) {
+      if (selectedTool === DEFINE_POLYGON_TOOL)
+        this.setState({deleteGeometryUnderDefinition: this.state.geometryUnderDefinition.length>0
+                     , selectedTool: null
+                     , geometryUnderDefinition: []});
+      else
+        this.setState({selectedTool: null});
+    } else
+      this.setState({selectedTool, deleteGeometryUnderDefinition: false});
   }
 
   updateCoordinates = (coords) => {
@@ -92,7 +97,9 @@ class App extends React.Component {
               <div class='col' style={toolboxStyle}>
                 <Toolbox
                     selectedTool={this.state.selectedTool}            
-                    updateSelectedTool = {this.updateSelectedTool}/>
+                    updateSelectedTool = {this.updateSelectedTool}
+                    geometryUnderDefinition={this.state.geometryUnderDefinition.length>0}
+                />
               </div>
               <div class='col'>
                 <Map tileProviderId={this.state.tileProviderId}
@@ -101,6 +108,7 @@ class App extends React.Component {
                      selectedTool={this.state.selectedTool}
                      userDefinedGeometries={geometriesValues(this.state.userDefinedGeometries)}
                      geometryUnderDefinition={this.state.geometryUnderDefinition}
+                     deleteGeometryUnderDefinition={this.state.deleteGeometryUnderDefinition}
                      addPointToPolygonUnderConstruction={this.addPointToPolygonUnderConstruction}
                      addPolygon={this.addPolygonDialog}
                 />

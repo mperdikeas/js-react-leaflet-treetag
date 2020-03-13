@@ -66,6 +66,7 @@ export default class Map extends React.Component {
     this.state = {
       highlightedMarker: null
     };
+    this.currentPolygonPoints = []
   }
 
   getMapHeight = () => {
@@ -134,7 +135,18 @@ export default class Map extends React.Component {
   }
 
   drawPolygon = () => {
+    console.log('drawPolygon');
     if (this.props.selectedTool===DEFINE_POLYGON_TOOL) {
+      console.log(`this.props.geometryUnderDefinition.length=${this.props.geometryUnderDefinition.length}`);
+
+      if (this.currentPolygon!=null) {
+        console.log(this.props.geometryUnderDefinition);
+        this.currentPolygon.setLatLngs(this.props.geometryUnderDefinition);
+      }
+      else {
+        this.currentPolygon = L.polygon(this.props.geometryUnderDefinition).addTo(this.map);
+      }
+
       const latestPoint = this.props.geometryUnderDefinition[this.props.geometryUnderDefinition.length-1];
       console.log(latestPoint);
       var circle = L.circle([latestPoint.lat, latestPoint.lng], {
@@ -143,10 +155,8 @@ export default class Map extends React.Component {
         fillOpacity: 0.5,
         radius: 10
       }).addTo(this.map);
-      if (this.currentPolygon!=null)
-        this.currentPolygon.setLatLngs(this.props.geometryUnderDefinition);
-      else
-        this.currentPolygon = L.polygon(this.props.geometryUnderDefinition).addTo(this.map);
+      this.currentPolygonPoints.push(circle);
+
     }
   }
 
@@ -193,6 +203,17 @@ export default class Map extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if (this.props.deleteGeometryUnderDefinition) {
+      console.log('deleting geometry under definition');
+      assert.strictEqual(this.props.selectedTool, null);
+      assert.isTrue(this.currentPolygon != null)
+      this.map.removeLayer(this.currentPolygon);
+      this.currentPolygon = null;
+      this.currentPolygonPoints.forEach( (x) => {
+        this.map.removeLayer(x);
+      });
+      this.currentPolygonPoints = [];
+    }
     if (prevProps.tileProviderId!==this.props.tileProviderId) {
       this.addTiles();
     }
@@ -293,6 +314,13 @@ export default class Map extends React.Component {
       return rv;
     })();
     const viewportHeight = $(window).height();
+    const style = (()=>{
+      const style = {height: `${this.getMapHeight()}px`};
+      if (this.props.selectedTool === DEFINE_POLYGON_TOOL) {
+        Object.assign(style, {cursor: 'crosshair'});
+      }
+      return style;
+    })();
     return (
       <div id='map-id' style={style}>
       </div>
