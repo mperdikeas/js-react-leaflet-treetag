@@ -41,8 +41,6 @@ const config = {
         ]
     },
     plugins: [HTMLWebpackPluginConfig],
-
-    
     node: {
         fs: "empty" // This is to account for what appears to be a bug: https://github.com/josephsavona/valuable/issues/9`
     },

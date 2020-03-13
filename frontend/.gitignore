@@ -5,6 +5,7 @@ dist/index.html
 dist/src
 dist/*.zip
 dist/oriaota.zip
+dist/resources/
 npm-debug.log*
 lib/
 *.war
