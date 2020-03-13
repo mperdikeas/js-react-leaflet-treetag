@@ -48,6 +48,7 @@ import {Athens, layerGroups, defaultMarkerStyle, targetId2Marker, USE_CLASSICAL_
 
 import {SELECT_TREE_TOOL, ADD_BEACON_TOOL, SELECT_GEOMETRY_TOOL, DEFINE_POLYGON_TOOL, MOVE_VERTEX_TOOL, REMOVE_TOOL} from './map-tools.js';
 
+import './css/map.css';
 
 // https://spatialreference.org/ref/epsg/2100/
 proj4.defs([
@@ -232,9 +233,11 @@ export default class Map extends React.Component {
   handleToolTransition_DEFINE_POLYGON = (prevProps) => {
     if ((prevProps.selectedTool !== DEFINE_POLYGON_TOOL) && (this.props.selectedTool === DEFINE_POLYGON_TOOL)) {
       window.addEventListener ('keyup', this.handleKeyUp);
+      L.DomUtil.addClass(this.map._container,'crosshair-cursor-enabled');
       return 1;
     } else if ((prevProps.selectedTool === DEFINE_POLYGON_TOOL) && (this.props.selectedTool !== DEFINE_POLYGON_TOOL)) {
       window.removeEventListener ('keyup', this.handleKeyUp);
+      L.DomUtil.removeClass(this.map._container,'crosshair-cursor-enabled');
       return 1;
     }
     return 0;
