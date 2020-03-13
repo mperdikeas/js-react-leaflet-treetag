@@ -11,12 +11,13 @@ const assert = require('chai').assert;
 
 require('./toolbox.css');
 
-import selectTree     from './resources/select-tree-32.png';
-import addBeacon      from './resources/add-beacon-32.png';
-import selectGeometry from './resources/select-geometry-32.png';
-import definePolygon  from './resources/polygon-tool-32.png';
-import remove         from './resources/andrew-cross-32.png';
-import moveVertex     from './resources/move-vertex-32.png';
+import selectTree               from './resources/select-tree-32.png';
+import addBeacon                from './resources/add-beacon-32.png';
+import selectGeometry           from './resources/select-geometry-32.png';
+import definePolygon            from './resources/polygon-tool-32.png';
+import definePolygonInProgress  from './resources/polygon-tool-in-progress-32.png';
+import remove                   from './resources/andrew-cross-32.png';
+import moveVertex               from './resources/move-vertex-32.png';
 
 import {SELECT_TREE_TOOL, ADD_BEACON_TOOL, SELECT_GEOMETRY_TOOL, DEFINE_POLYGON_TOOL, MOVE_VERTEX_TOOL, REMOVE_TOOL} from './map-tools.js';
 
@@ -67,7 +68,7 @@ class Toolbox extends React.Component {
     const tools = [ {icon:selectTree     , f: this.chooseSelectTree}
                   , {icon:addBeacon      , f: this.chooseAddBeacon}
                   , {icon:selectGeometry , f: this.chooseSelectGeometry}
-                  , {icon:definePolygon  , f: this.chooseDefinePolygon}
+                  , {icon: (this.props.geometryUnderDefinition?definePolygonInProgress:definePolygon)  , f: this.chooseDefinePolygon}
                   , {icon:moveVertex     , f: this.chooseMoveVertex}
                   , {icon:remove         , f: this.chooseRemove}];
     

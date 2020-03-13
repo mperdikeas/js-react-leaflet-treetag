@@ -48,12 +48,14 @@ class App extends React.Component {
 
   updateSelectedTool = (selectedTool) => {
     if (selectedTool===this.state.selectedTool) {
-      if (selectedTool === DEFINE_POLYGON_TOOL)
+      if (selectedTool === DEFINE_POLYGON_TOOL) {
+        console.log('case A');
         this.setState({deleteGeometryUnderDefinition: this.state.geometryUnderDefinition.length>0
                      , selectedTool: null
                      , geometryUnderDefinition: []});
-      else
-        this.setState({selectedTool: null});
+      } else {
+        console.log('case B');
+        this.setState({selectedTool: null, deleteGeometryUnderDefinition: false});
     } else
       this.setState({selectedTool, deleteGeometryUnderDefinition: false});
   }

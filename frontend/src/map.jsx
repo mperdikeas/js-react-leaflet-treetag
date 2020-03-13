@@ -144,7 +144,9 @@ export default class Map extends React.Component {
         this.currentPolygon.setLatLngs(this.props.geometryUnderDefinition);
       }
       else {
+        // start defining new polygon and clear currently accumulated points
         this.currentPolygon = L.polygon(this.props.geometryUnderDefinition).addTo(this.map);
+        this.currentPolygonPoints = [];
       }
 
       const latestPoint = this.props.geometryUnderDefinition[this.props.geometryUnderDefinition.length-1];
@@ -206,7 +208,7 @@ export default class Map extends React.Component {
     if (this.props.deleteGeometryUnderDefinition) {
       console.log('deleting geometry under definition');
       assert.strictEqual(this.props.selectedTool, null);
-      assert.isTrue(this.currentPolygon != null)
+      assert.isTrue(this.currentPolygon != null, 'this.currentPolygon is curiously null');
       this.map.removeLayer(this.currentPolygon);
       this.currentPolygon = null;
       this.currentPolygonPoints.forEach( (x) => {
@@ -307,20 +309,13 @@ export default class Map extends React.Component {
 
   render() {
     const style = (()=>{
-      let rv = {height: `${this.getMapHeight()}px`};
-      if (this.props.selectedTool === DEFINE_POLYGON_TOOL) {
-        rv = Object.assign(rv, {'cursor': 'crosshair'});
-      }
-      return rv;
-    })();
-    const viewportHeight = $(window).height();
-    const style = (()=>{
       const style = {height: `${this.getMapHeight()}px`};
       if (this.props.selectedTool === DEFINE_POLYGON_TOOL) {
         Object.assign(style, {cursor: 'crosshair'});
       }
       return style;
     })();
+
     return (
       <div id='map-id' style={style}>
       </div>
