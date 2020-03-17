@@ -9,17 +9,20 @@ import 'leaflet/dist/leaflet.css';
 import proj4 from 'proj4';
 import inside from 'point-in-polygon';
 import keycode from 'keycode';
-
 require('../node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css');
 require('../node_modules/leaflet.markercluster/dist/leaflet.markercluster.js');
+
 
 const assert = require('chai').assert;
 
 import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios';
 
 import {DefaultIcon, TreeIcon} from './icons.js';
 import {CustomCircleMarker}    from './custom-markers.js';
 import rainbow                 from './rainbow.js';
+import {BASE_URL}              from './constants.js';
+import {sca_fake_return}       from './util.js';
 
 const Athens = [37.98, 23.72];
 
@@ -36,7 +39,8 @@ const targetId2Marker = {};
 
 const USE_CLASSICAL_MARKERS = false;
 
-const circleMarkersLG = L.layerGroup(generateCoordinatesInAthens(N*20).map( c=> {
+const circleMarkersLG = L.layerGroup(getTrees(N*20).map( c0=> {
+    c = [c0.latitude, c0.longitude];
     if (USE_CLASSICAL_MARKERS) {
         const options = {
             icon: new DefaultIcon()
@@ -73,7 +77,7 @@ const circleMarkersLG = L.layerGroup(generateCoordinatesInAthens(N*20).map( c=> 
     }
 }));
 
-const circleMarkersDefaultLG = L.layerGroup(generateCoordinatesInAthens(N*30).map( c=> {
+const circleMarkersDefaultLG = L.layerGroup(generateRandomCoordinatesInAthens(N*30).map( c=> {
     const options = {
         renderer: myRenderer,
         color: '#00ff00',
@@ -82,7 +86,7 @@ const circleMarkersDefaultLG = L.layerGroup(generateCoordinatesInAthens(N*30).ma
     return L.circleMarker(c, options);
 }));
 
-const circlesLG = L.layerGroup(generateCoordinatesInAthens(N).map( c=> {
+const circlesLG = L.layerGroup(generateRandomCoordinatesInAthens(N).map( c=> {
     return L.circle(c, {
         renderer: myRenderer,
         color: 'red',
@@ -93,7 +97,7 @@ const circlesLG = L.layerGroup(generateCoordinatesInAthens(N).map( c=> {
 }));
 
 
-const treesLG = L.layerGroup(generateCoordinatesInAthens(N).map( c=> {
+const treesLG = L.layerGroup(generateRandomCoordinatesInAthens(N).map( c=> {
     const options = {
         icon: new TreeIcon()
         , clickable: true
@@ -105,7 +109,7 @@ const treesLG = L.layerGroup(generateCoordinatesInAthens(N).map( c=> {
     return L.marker(c, options).bindPopup('a fucking tree');
 }));
 
-const defaultMarkersLG = L.layerGroup(generateCoordinatesInAthens(N).map( c=> {
+const defaultMarkersLG = L.layerGroup(generateRandomCoordinatesInAthens(N).map( c=> {
     const options = {
         icon: new DefaultIcon()
         , clickable: true
@@ -117,7 +121,7 @@ const defaultMarkersLG = L.layerGroup(generateCoordinatesInAthens(N).map( c=> {
     return L.marker(c, options).bindPopup('a fucking tree');
 }));
 
-const makiMarkersLG = L.layerGroup(generateCoordinatesInAthens(N).map( c=> {
+const makiMarkersLG = L.layerGroup(generateRandomCoordinatesInAthens(N).map( c=> {
     const options = {
         icon: new L.MakiMarkers.Icon({icon: randomItem(['park', 'park-alt1', 'wetland', 'florist'])
                                       , color: rainbow(30, Math.floor(Math.random()*30))
@@ -142,7 +146,7 @@ const markerClusterGroup = (()=>{
             maxClusterRadius: 80
         }
     );
-    generateCoordinatesInAthens(1*100).forEach( c=> {
+    generateRandomCoordinatesInAthens(1*100).forEach( c=> {
         const options = {
             icon: new L.MakiMarkers.Icon({icon: randomItem(['park', 'park-alt1', 'wetland', 'florist'])
                                           , color: rainbow(30, Math.floor(Math.random()*30))
@@ -169,7 +173,7 @@ const heatMap = (()=> {
         , blur: 15   //amount of blur, 15 by default
         , gradient: {.4:"blue",.6:"cyan",.7:"lime",.8:"yellow",1:"red"} // color gradient config
     };
-    return L.heatLayer(generateCoordinatesInAthens(100)
+    return L.heatLayer(generateRandomCoordinatesInAthens(100)
                        , heatMapCfg);
 })();
 
@@ -191,7 +195,31 @@ const options = {
 const ota_Callicrates = L.shapefile(url, options);
 
 
-function generateCoordinatesInAthens(N) {
+function getTrees(N) {
+    const url = `${BASE_URL}/installation/1/getTrees`;
+    const allCookies = document.cookie;
+    console.log(`cookies read as ${allCookies}`);
+    axios.get(url, {headers: {
+        Cookie: allCookies
+    }} ).then(res => {
+        if (res.data.err != null) {
+            console.log('getTrees API call error');
+            assert.fail(res.data.err);
+            return sca_fake_return();
+        } else {
+            console.log('getTrees API call success');
+            console.log(res.data.t);
+            return res.data.t;
+        }
+    }).catch( err => {
+        console.log(err);
+        console.log(JSON.stringify(err));
+        assert.fail(err);
+    });
+}
+
+
+function generateRandomCoordinatesInAthens(N) {
     const rv = [];
     const spanDegrees = 0.05;
     

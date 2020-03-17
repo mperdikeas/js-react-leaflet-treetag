@@ -12,10 +12,15 @@ import './css/style.css';
 import {assert} from 'chai';
 import axios from 'axios';
 
+
+import GeometryContextProvider  from './context/geometry-context.jsx'
+import {BASE_URL}               from './constants.js';
+
+
 $(document).ready(doStuff);
 
 
-import GeometryContextProvider  from './context/geometry-context.jsx'
+
 
 function doStuff() {
   if (true)
@@ -30,7 +35,7 @@ function doStuff() {
 
 function submitCredentials(username, password) {
   console.log('submitCredentials');
-  const url = 'https://127.0.0.1:8445/tree-cadaster-backend/jax-rs/main/login';
+  const url = `${BASE_URL}/login`;
   axios.post(url, {
     username: username,
     password: password
@@ -51,7 +56,6 @@ function submitCredentials(username, password) {
   }).catch( err => {
     console.log(err);
     console.log(JSON.stringify(err));
-    console.log('6');
     assert.fail(err);
   });
 }
