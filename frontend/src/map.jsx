@@ -215,6 +215,7 @@ export default class Map extends React.Component {
         this.map.removeLayer(x);
       });
       this.currentPolygonPoints = [];
+      this.props.clearDeleteGeometryUnderDefinition();
     }
     if (prevProps.tileProviderId!==this.props.tileProviderId) {
       this.addTiles();

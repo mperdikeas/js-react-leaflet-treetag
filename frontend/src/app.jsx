@@ -55,10 +55,15 @@ class App extends React.Component {
                      , geometryUnderDefinition: []});
       } else {
         console.log('case B');
-        this.setState({selectedTool: null, deleteGeometryUnderDefinition: false});
+        this.setState({deleteGeometryUnderDefinition: false, selectedTool: null});
+      }
     } else
-      this.setState({selectedTool, deleteGeometryUnderDefinition: false});
+    this.setState({selectedTool, deleteGeometryUnderDefinition: false});
   }
+
+  clearDeleteGeometryUnderDefinition = ()=>{
+    this.setState({deleteGeometryUnderDefinition:false});
+    }
 
   updateCoordinates = (coords) => {
     this.setState({coords: coords});
@@ -111,6 +116,7 @@ class App extends React.Component {
                      userDefinedGeometries={geometriesValues(this.state.userDefinedGeometries)}
                      geometryUnderDefinition={this.state.geometryUnderDefinition}
                      deleteGeometryUnderDefinition={this.state.deleteGeometryUnderDefinition}
+                     clearDeleteGeometryUnderDefinition={this.clearDeleteGeometryUnderDefinition}
                      addPointToPolygonUnderConstruction={this.addPointToPolygonUnderConstruction}
                      addPolygon={this.addPolygonDialog}
                 />
