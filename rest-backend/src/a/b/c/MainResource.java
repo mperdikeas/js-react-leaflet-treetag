@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.Date;
 import java.util.Collections;
 import java.util.Arrays;
+import java.util.UUID;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import java.io.File;
@@ -113,6 +115,40 @@ public class MainResource {
                                   , System.identityHashCode(this)));
     }
 
+    @Path("/installation/{installationId}/getTrees/")
+    @GET 
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTrees(@Context final HttpServletRequest httpServletRequest
+                                        , @PathParam("installationId") final int installationId
+                                    ) {
+        try {
+            logger.info(String.format("getTrees(%d) ~*~ remote address: [%s]"
+                                      , installationId
+                                      , httpServletRequest.getRemoteAddr()));
+            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(getTrees()))).build();
+        } catch (Throwable t) {
+            logger.error(String.format("Problem when calling getTrees(%d) from remote address [%s]"
+                                       , installationId
+                                       , httpServletRequest.getRemoteAddr())
+                         , t);
+            return ResourceUtil.softFailureResponse(t);
+        }
+    }
+
+    private static List<BasicTreeInfo> getTrees() {
+        final List<BasicTreeInfo> rv = new ArrayList<>();
+        final int N = 100;
+        final Random r = new Random();
+        for (int i = 0; i < N ; i++) {
+            final double longAthens = 37;
+            final double latAthens = 42;
+            rv.add(new BasicTreeInfo(UUID.randomUUID().toString()
+                                     , new Coordinates(longAthens + (2*r.nextDouble()-1)
+                                                       , latAthens + (2*r.nextDouble()-1))));
+        }
+        return rv;
+    }
+        
 
     @Path("/feature/{featureId}/photos/num")
     @GET 
