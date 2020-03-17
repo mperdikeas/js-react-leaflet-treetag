@@ -81,7 +81,7 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(final ContainerRequestContext requestContext) throws IOException {
-        boolean SHORT_CIRCUIT = true;
+        boolean SHORT_CIRCUIT = false;
         if (SHORT_CIRCUIT)
             return;
         final Class<?> klass = resourceInfo.getResourceClass();

@@ -137,7 +137,7 @@ public class MainResource {
 
     private static List<BasicTreeInfo> getTrees() {
         final List<BasicTreeInfo> rv = new ArrayList<>();
-        final int N = 100;
+        final int N = 10;
         final Random r = new Random();
         for (int i = 0; i < N ; i++) {
             final double longAthens = 37;
