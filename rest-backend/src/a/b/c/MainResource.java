@@ -137,14 +137,15 @@ public class MainResource {
 
     private static List<BasicTreeInfo> getTrees() {
         final List<BasicTreeInfo> rv = new ArrayList<>();
-        final int N = 10;
+        final int N = 100;
         final Random r = new Random();
         for (int i = 0; i < N ; i++) {
-            final double longAthens = 37;
-            final double latAthens = 42;
+            final double longAthens = 23.72;
+            final double latAthens  = 37.98;
+            final double widthOfCoverageInDegrees = 0.05;
             rv.add(new BasicTreeInfo(UUID.randomUUID().toString()
-                                     , new Coordinates(longAthens + (2*r.nextDouble()-1)
-                                                       , latAthens + (2*r.nextDouble()-1))));
+                                     , new Coordinates(longAthens + (widthOfCoverageInDegrees*r.nextDouble()-widthOfCoverageInDegrees/2)
+                                                       , latAthens + (widthOfCoverageInDegrees*r.nextDouble()-widthOfCoverageInDegrees/2))));
         }
         return rv;
     }

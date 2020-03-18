@@ -45,12 +45,7 @@ const sleep = (milliseconds) => {
 
 const circleMarkersLG = ()=> {
 
-    if (false)
-    return sleep(500).then( ()=> {
-        return heatMap();
-    });
-
-    return getTrees(N*20).then( (data)=> {
+    return getTrees(N*50).then( (data)=> {
 
         const targetId2Marker = {};
         const layerGroup = L.layerGroup(data.map( ({treeId, coords})=> {
@@ -246,7 +241,11 @@ function getTrees(N) {
                         } else {
                             console.log('getTrees API call success');
                             console.log(res.data.t);
-                            return res.data.t;
+                            assert.isTrue(Array.isArray(res.data.t));
+                            if (res.data.t.length < N)
+                                return res.data.t;
+                            else
+                                return res.data.t.slice(0, N);
                         }
                     }).catch( err => {
                         console.log(err);
@@ -275,7 +274,7 @@ function randomItem(items) {
 const layerGroupsPre = {circleMarkersLG:          {layer: circleMarkersLG       , available:  true, isInitiallyDisplayed: true, containsMapOfTargetIds: true}
                         , circleMarkersDefaultLG: {layer: circleMarkersDefaultLG, available:  true, isInitiallyDisplayed: false, containsMapOfTargetIds: false}
                         , circlesLG:              {layer: circlesLG             , available:  true, isInitiallyDisplayed: false, containsMapOfTargetIds: false}
-                        , treesLG:                {layer: treesLG               , available:  true, isInitiallyDisplayed: true, containsMapOfTargetIds: false}
+                        , treesLG:                {layer: treesLG               , available:  true, isInitiallyDisplayed: false, containsMapOfTargetIds: false}
                         , defaultMarkersLG:       {layer: defaultMarkersLG      , available: false, isInitiallyDisplayed: null, containsMapOfTargetIds: false}
                         , makiMarkersLG:          {layer: makiMarkersLG         , available: false, isInitiallyDisplayed: null, containsMapOfTargetIds: false}
                         , markerClusterGroup:     {layer: markerClusterGroup    , available: false, isInitiallyDisplayed: null, containsMapOfTargetIds: false}

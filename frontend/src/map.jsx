@@ -177,30 +177,17 @@ export default class Map extends React.Component {
       zoomControl: false
     });
     this.addTiles();
-/*    if (false)
-      this.addLayerGroupsExceptPromisingLayers();
-    if (this.false)
-      this.handlePromisingLayers();*/
+    this.addLayerGroupsExceptPromisingLayers();
+    this.handlePromisingLayers();
 
-    if (true) {
-      const that = this;
-      layerGroups.circleMarkersLG.layer().then( ({targetId2Marker, layerGroup}) => {
-        console.log(layerGroup);
-        layerGroup.addTo(that.map);
-      });
-    } else layerGroups.circleMarkersLG.layer().then( (layer) => {
-      console.log('promise fullfilled');
-      layer.addTo(this.map);
-    });
-    
 
 /*    if (false)
       this.map.on('mousemove', (e) => {
         this.props.updateCoordinates(e.latlng);
       })*/
     this.map.on('click', this.handleClick);
-/*
-    if (false)
+
+    if (true)
     this.layersControl = L.control.layers(BaseLayersForLayerControl
                                         , getAllNonPromisingLayers(layerGroups)).addTo(this.map);
     if (false)
@@ -211,7 +198,7 @@ export default class Map extends React.Component {
           this.layersControl.addOverlay(x.layer, x.layerName);
         });
       });
-    */
+
 
     $('div.leaflet-control-container section.leaflet-control-layers-list div.leaflet-control-layers-overlays input.leaflet-control-layers-selector[type="checkbox"]').on('change', (e)=>{
     });
