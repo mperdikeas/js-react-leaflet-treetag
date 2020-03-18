@@ -190,7 +190,7 @@ export default class Map extends React.Component {
     if (true)
     this.layersControl = L.control.layers(BaseLayersForLayerControl
                                         , getAllNonPromisingLayers(layerGroups)).addTo(this.map);
-    if (false)
+    if (true)
       Promise.all(getAllPromisingLayers(layerGroups)).then( (xs) => {
         xs.forEach ( (x) => {
           console.log(x);
@@ -396,10 +396,10 @@ function getAllPromisingLayers(layerGroups) {
       if (layerGroups[prop].containsMapOfTargetIds) { // these are the promising layers
         console.log(`adding promising layer ${prop}`);
         const promise = layerGroups[prop].layer()
-                                         .then( (layer) => {
+                                         .then( ({targetId2Map, layerGroup}) => {
                                            console.log(`returning a layerGroup with the name ${prop}`);
                                            return {layerName: prop
-                                                 , layer: layer.markers};
+                                                 , layer: layerGroup};
                                          });
         rv.push(promise);
       }

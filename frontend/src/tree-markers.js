@@ -49,7 +49,6 @@ const circleMarkersLG = ()=> {
 
         const targetId2Marker = {};
         const layerGroup = L.layerGroup(data.map( ({treeId, coords})=> {
-            console.log(treeId, coords);
             let c = [coords.latitude, coords.longitude];
             const targetId = uuidv4();
             const baseOptions = {targetId};
@@ -89,7 +88,6 @@ const circleMarkersLG = ()=> {
                 return marker;
             }
         }));
-        console.log('markers is', layerGroup);
         return {targetId2Marker, layerGroup};
     });
 };
@@ -240,7 +238,6 @@ function getTrees(N) {
                             return sca_fake_return();
                         } else {
                             console.log('getTrees API call success');
-                            console.log(res.data.t);
                             assert.isTrue(Array.isArray(res.data.t));
                             if (res.data.t.length < N)
                                 return res.data.t;
