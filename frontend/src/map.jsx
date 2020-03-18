@@ -165,7 +165,7 @@ export default class Map extends React.Component {
   configureLayerGroups = () => {
     for (let x in layerGroups) {
       if (layerGroups[x].isInitiallyDisplayed)
-        layerGroups[x].layer.addTo(this.map);
+        layerGroups[x].layer().addTo(this.map);
     }
   }
 

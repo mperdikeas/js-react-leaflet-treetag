@@ -16,16 +16,21 @@ import axios from 'axios';
 import GeometryContextProvider  from './context/geometry-context.jsx'
 import {BASE_URL}               from './constants.js';
 
-
+console.log('xxxxxxxxxxxxx1');
 $(document).ready(doStuff);
 
 
-
+console.log('xxxxxxxxxxxxx');
 
 function doStuff() {
   if (true)
     submitCredentials('admin', 'pass');
+  else
+    doRender();
 
+}
+
+function doRender() {
   ReactDOM.render(
     <GeometryContextProvider>
       <App/>
@@ -48,6 +53,7 @@ function submitCredentials(username, password) {
       if (res.data.t.loginFailureReason===null) {
         setCookie('access_token', res.data.t.accessToken, 0);
         console.log('login was successful and cookie was set');
+        doRender();
       } else {
         console.log('login was unsuccessful');
         assert.fail(res.data.t.loginFailureReason);

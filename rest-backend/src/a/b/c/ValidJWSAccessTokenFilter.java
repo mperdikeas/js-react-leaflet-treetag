@@ -104,6 +104,141 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
             return;
         } 
 
+        final List<String> authorizationHeaders = Collections.list(request.getHeaders(HttpHeaders.AUTHORIZATION));
+        if (authorizationHeaders==null) {
+            final String msg = String.format("No %s headers were present (null case)"
+                                             , HttpHeaders.AUTHORIZATION);
+            abortUnauthorizedRequest(requestContext
+                                     , Response.Status.FORBIDDEN
+                                     , new AbortResponse("no-authorization-header-null"
+                                                         , msg));
+            return;
+        } else if (authorizationHeaders.size()==0) {
+            final String msg = String.format("No %s headers were present (0 element list case)"
+                                             , HttpHeaders.AUTHORIZATION);
+            abortUnauthorizedRequest(requestContext
+                                     , Response.Status.FORBIDDEN
+                                     , new AbortResponse("no-authorization-header-0"
+                                                         , msg));
+            return;
+        } else if (authorizationHeaders.size()>1) {
+            final String msg = String.format("Expected 1 %s headers yet encountered: %d. Thou art"
+                                             +" not supposed to use more than 1 %s header (%s)"
+                                             , HttpHeaders.AUTHORIZATION
+                                             , authorizationHeaders.size()
+                                             , HttpHeaders.AUTHORIZATION
+                                             , "https://stackoverflow.com/a/18967872/274677");
+            abortUnauthorizedRequest(requestContext
+                                     , Response.Status.BAD_REQUEST
+                                     , new AbortResponse("more-than-1-authorization-header"
+                                                         , msg));
+        }
+        Assert.assertEquals(1, authorizationHeaders.size());
+        final String authorizationHeader = authorizationHeaders.get(0);
+        final String[] authorizations = authorizationHeader.split(",");
+
+        logger.debug(String.format("[%d] authorizations present in [%s]"
+                                   , authorizations.length
+                                   , authorizationHeader));
+        boolean bearerAuthorizationFound = false;
+        String accessToken = null;
+        final String BEARER = "bearer";
+        for (int i = 0 ; i < authorizations.length ; i++) {
+            final String authorization = authorizations[i];
+            final String authorizationTr = authorization.trim();
+            logger.debug(String.format("trimmed authorization %d of %d from [%s] to [%s]"
+                                       , i
+                                       , authorizations.length
+                                       , authorization
+                                       , authorizationTr));
+            String nameValue[] = authorizationTr.split(" ");
+            if (nameValue.length!=2) {
+                final String msg = String.format("Unrecognized form: [%s] in the %d-th authorization"
+                                                 , authorizationTr
+                                                 , i);
+                abortUnauthorizedRequest(requestContext
+                                         , Response.Status.BAD_REQUEST
+                                         , new AbortResponse("unrec-authorization-format", msg));
+                return;
+            } else {
+                final String name  = nameValue[0].trim();
+                accessToken = nameValue[1].trim();
+                logger.debug(String.format("authorization name=[%s], value=[%s]"
+                                           , name
+                                           , accessToken));
+                if (name.toLowerCase().equals(BEARER)) {
+                    if (bearerAuthorizationFound) {
+                        final String msg = String.format("More than 1 [%s] authorizations are found in [%s] header: [%s]"
+                                                         , BEARER
+                                                         , HttpHeaders.AUTHORIZATION
+                                                         , authorizationHeader);
+                        abortUnauthorizedRequest(requestContext
+                                                 , Response.Status.BAD_REQUEST
+                                                 , new AbortResponse("more-than-1-bearer-authorizations", msg));
+                        return;
+                    } else {
+                        logger.debug(String.format("[%s] %s found with value [%s]"
+                                                   , BEARER
+                                                   , HttpHeaders.AUTHORIZATION
+                                                   , accessToken));
+                        bearerAuthorizationFound = true;
+
+                        // must match the value in the webmvc-login app
+                        final String secretKeySpecS = "eyJhbGdvcml0aG0iOiJIbWFjU0hBMjU2IiwiZW5jb2RlZEtleSI6InhUMzQ4ZWlXTmMvTVhoeE5ucXU5bG5ZUVBRdVB0WWlQbVM1UGpoc2wrY1FcdTAwM2QifQ==";
+                        final String username = JWTUtil.verifyJWS(secretKeySpecS, accessToken);
+
+                        if (username==null) {
+                            final String msg = String.format("%s %s access token [%s] was not validated"
+                                                             , BEARER
+                                                             , HttpHeaders.AUTHORIZATION
+                                                             , accessToken);
+                            abortUnauthorizedRequest(requestContext
+                                                     , Response.Status.FORBIDDEN
+                                                     , new AbortResponse("JWT-verif-failed"
+                                                                         , msg));
+                            return;
+                        }
+                    }
+                }
+            }
+        } // for (final int i = 0 ; i < authorizations.length ; i++) {
+        if (!bearerAuthorizationFound)  {
+            final String msg = String.format("No [%s] %s found"
+                                             , BEARER
+                                             , HttpHeaders.AUTHORIZATION);
+            abortUnauthorizedRequest(requestContext
+                                     , Response.Status.FORBIDDEN
+                                     , new AbortResponse("no-accesstoken-cookie-found"
+                                                         , msg));
+            return;                    
+        }
+    }
+    
+
+    public void filter_OLD_IMPLEMENTATION_USES_COOKIE_HEADER(final ContainerRequestContext requestContext) throws IOException {
+        boolean SHORT_CIRCUIT = false;
+        if (SHORT_CIRCUIT)
+            return;
+        final Class<?> klass = resourceInfo.getResourceClass();
+        final Method method =  resourceInfo.getResourceMethod();
+        System.out.printf("*****************************\n\n*************");
+        logger.debug(String.format("[inside class %s] HTTP verb is: [%s] - attempting to invoke method [%s] on class [%s]"
+                                   , this.getClass().getName()
+                                   , requestContext.getMethod()
+                                   , method.getName()
+                                   , klass.getName()));
+        if (protects(klass, method)) {
+            logger.debug(String.format("check for ST validity is triggered for method [%s] on class [%s]"
+                                       , method.getName()
+                                       , klass.getName()));    
+        } else {
+            logger.debug(String.format("check for ST validity is not enabled for method [%s] on class [%s] - letting the"
+                                       +" request proceed with reckless abandon"
+                                       , method.getName()
+                                       , klass.getName()));
+            return;
+        } 
+
         final List<String> cookieHeaders = Collections.list(request.getHeaders(HttpHeaders.COOKIE));
         if (cookieHeaders==null) {
             final String msg = String.format("No %s headers were present (null case)"

@@ -82,6 +82,7 @@ class App extends React.Component {
   }
 
   render() {
+    console.log('yyyyyyyyyyyyyy');
 
     const classesForMapDiv = Object.assign({'col-8': true, 'padding-0': true}
                                          , {hidden: this.state.maximizedInfo});

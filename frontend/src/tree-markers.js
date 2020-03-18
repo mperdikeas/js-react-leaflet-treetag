@@ -39,104 +39,115 @@ const targetId2Marker = {};
 
 const USE_CLASSICAL_MARKERS = false;
 
-const circleMarkersLG = L.layerGroup(getTrees(N*20).map( c0=> {
-    c = [c0.latitude, c0.longitude];
-    if (USE_CLASSICAL_MARKERS) {
+const circleMarkersLG = ()=> {
+    return L.layerGroup(getTrees(N*20).map( c0=> {
+        c = [c0.latitude, c0.longitude];
+        if (USE_CLASSICAL_MARKERS) {
+            const options = {
+                icon: new DefaultIcon()
+                , renderer: myRenderer
+                , clickable: true
+                , draggable: false
+                , title: 'a tree'
+                , riseOnHover: true // rises on top of other markers
+                , riseOffset: 250
+            };
+            const marker = L.marker(c, options).bindPopup('a fucking tree');
+            return marker;
+        } else {
+            const useCanvasRenderer = true;
+            const baseOptions = (()=>{
+                if (useCanvasRenderer)
+                    return Object.assign({}, defaultMarkerStyle, {renderer: myRenderer});
+                else
+                    return Object.assign({}, defaultMarkerStyle);
+            })();
+
+            const targetId = uuidv4();
+            const newOptions = {targetId};
+            const effectiveOptions = Object.assign({}, baseOptions, newOptions);
+            /*
+             *  There is no need to use a custom class to add just one option; adding
+             *  the option on a vanila L.circleMarker works just as well.
+             *
+             *  const marker = new CustomCircleMarker(c, effectiveOptions);
+             */
+            const marker = new L.circleMarker(c, effectiveOptions);
+            targetId2Marker[targetId] = marker;
+            return marker;
+        }
+    }));
+};
+
+const circleMarkersDefaultLG = () => {
+    return L.layerGroup(generateRandomCoordinatesInAthens(N*30).map( c=> {
+        const options = {
+            renderer: myRenderer,
+            color: '#00ff00',
+            radius: 8
+        };
+        return L.circleMarker(c, options);
+    }));
+};
+
+const circlesLG = () => {
+    return L.layerGroup(generateRandomCoordinatesInAthens(N).map( c=> {
+        return L.circle(c, {
+            renderer: myRenderer,
+            color: 'red',
+            fillColor: '#f03',
+            fillOpacity: 0.5,
+            radius: 8
+        });
+    }));
+};
+
+
+const treesLG = ()=>{
+    return L.layerGroup(generateRandomCoordinatesInAthens(N).map( c=> {
+        const options = {
+            icon: new TreeIcon()
+            , clickable: true
+            , draggable: true
+            , title: 'a tree'
+            , riseOnHover: true // rises on top of other markers
+            , riseOffset: 250
+        };
+        return L.marker(c, options).bindPopup('a fucking tree');
+    }));
+};
+
+const defaultMarkersLG = ()=>{
+    return L.layerGroup(generateRandomCoordinatesInAthens(N).map( c=> {
         const options = {
             icon: new DefaultIcon()
-            , renderer: myRenderer
             , clickable: true
             , draggable: false
             , title: 'a tree'
             , riseOnHover: true // rises on top of other markers
             , riseOffset: 250
         };
-        const marker = L.marker(c, options).bindPopup('a fucking tree');
-        return marker;
-    } else {
-        const useCanvasRenderer = true;
-        const baseOptions = (()=>{
-            if (useCanvasRenderer)
-                return Object.assign({}, defaultMarkerStyle, {renderer: myRenderer});
-            else
-                return Object.assign({}, defaultMarkerStyle);
-        })();
+        return L.marker(c, options).bindPopup('a fucking tree');
+    }));
+};
 
-        const targetId = uuidv4();
-        const newOptions = {targetId};
-        const effectiveOptions = Object.assign({}, baseOptions, newOptions);
-        /*
-         *  There is no need to use a custom class to add just one option; adding
-         *  the option on a vanila L.circleMarker works just as well.
-         *
-         *  const marker = new CustomCircleMarker(c, effectiveOptions);
-         */
-        const marker = new L.circleMarker(c, effectiveOptions);
-        targetId2Marker[targetId] = marker;
-        return marker;
-    }
-}));
+const makiMarkersLG = ()=>{
+    return L.layerGroup(generateRandomCoordinatesInAthens(N).map( c=> {
+        const options = {
+            icon: new L.MakiMarkers.Icon({icon: randomItem(['park', 'park-alt1', 'wetland', 'florist'])
+                                          , color: rainbow(30, Math.floor(Math.random()*30))
+                                          , size: randomItem(['s', 'm', 'l'])})
+            , clickable: false
+            , draggable: false
+            , title: 'a maki marker'
+            , riseOnHover: true // rises on top of other markers
+            , riseOffset: 250
+        };
+        return L.marker(c, options).bindPopup('a fucking tree');
+    }));
+};
 
-const circleMarkersDefaultLG = L.layerGroup(generateRandomCoordinatesInAthens(N*30).map( c=> {
-    const options = {
-        renderer: myRenderer,
-        color: '#00ff00',
-        radius: 8
-    };
-    return L.circleMarker(c, options);
-}));
-
-const circlesLG = L.layerGroup(generateRandomCoordinatesInAthens(N).map( c=> {
-    return L.circle(c, {
-        renderer: myRenderer,
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 0.5,
-        radius: 8
-    });
-}));
-
-
-const treesLG = L.layerGroup(generateRandomCoordinatesInAthens(N).map( c=> {
-    const options = {
-        icon: new TreeIcon()
-        , clickable: true
-        , draggable: true
-        , title: 'a tree'
-        , riseOnHover: true // rises on top of other markers
-        , riseOffset: 250
-    };
-    return L.marker(c, options).bindPopup('a fucking tree');
-}));
-
-const defaultMarkersLG = L.layerGroup(generateRandomCoordinatesInAthens(N).map( c=> {
-    const options = {
-        icon: new DefaultIcon()
-        , clickable: true
-        , draggable: false
-        , title: 'a tree'
-        , riseOnHover: true // rises on top of other markers
-        , riseOffset: 250
-    };
-    return L.marker(c, options).bindPopup('a fucking tree');
-}));
-
-const makiMarkersLG = L.layerGroup(generateRandomCoordinatesInAthens(N).map( c=> {
-    const options = {
-        icon: new L.MakiMarkers.Icon({icon: randomItem(['park', 'park-alt1', 'wetland', 'florist'])
-                                      , color: rainbow(30, Math.floor(Math.random()*30))
-                                      , size: randomItem(['s', 'm', 'l'])})
-        , clickable: false
-        , draggable: false
-        , title: 'a maki marker'
-        , riseOnHover: true // rises on top of other markers
-        , riseOffset: 250
-    };
-    return L.marker(c, options).bindPopup('a fucking tree');
-}));
-
-
-const markerClusterGroup = (()=>{
+const markerClusterGroup = ()=>{
     const rv = L.markerClusterGroup(
         {
             showCoverageOnHover: true,
@@ -160,11 +171,12 @@ const markerClusterGroup = (()=>{
         rv.addLayer(L.marker(c, options).bindPopup('a fucking tree'));
     });
     return rv;
-})();
+};
 
 
 
-const heatMap = (()=> {
+const heatMap = ()=>{
+
     const heatMapCfg = {
         minOpacity: 0.5
         , maxZoom: 19
@@ -175,24 +187,28 @@ const heatMap = (()=> {
     };
     return L.heatLayer(generateRandomCoordinatesInAthens(100)
                        , heatMapCfg);
-})();
-
-const url = require('../data/oriadhmwnkallikraths.zip');
-const options = {
-    onEachFeature: function(feature, layer) {
-        if (feature.properties) {
-            layer.bindPopup(Object.keys(feature.properties).map(function(k) {
-                return k + ": " + feature.properties[k];
-            }).join("<br />"), {
-                maxHeight: 200
-            });
-        }
-    }
-    , style: (feature)=>{
-        return  {color:"black",fillColor:"red",fillOpacity:.75};
-    }
 };
-const ota_Callicrates = L.shapefile(url, options);
+
+
+const ota_Callicrates = ()=>{
+    const url = require('../data/oriadhmwnkallikraths.zip');
+    const options = {
+        onEachFeature: function(feature, layer) {
+            if (feature.properties) {
+                layer.bindPopup(Object.keys(feature.properties).map(function(k) {
+                    return k + ": " + feature.properties[k];
+                }).join("<br />"), {
+                    maxHeight: 200
+                });
+            }
+        }
+        , style: (feature)=>{
+            return  {color:"black",fillColor:"red",fillOpacity:.75};
+        }
+    };
+    return L.shapefile(url, options);
+
+};
 
 
 function getTrees(N) {
