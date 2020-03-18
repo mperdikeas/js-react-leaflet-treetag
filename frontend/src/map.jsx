@@ -43,7 +43,7 @@ import {GeometryContext} from './context/geometry-context.jsx';
 // const Iconv  = require('iconv').Iconv;
 
 
-import {Athens, layerGroups, defaultMarkerStyle, targetId2Marker, USE_CLASSICAL_MARKERS} from './tree-markers.js';
+import {Athens, layerGroups, defaultMarkerStyle, USE_CLASSICAL_MARKERS} from './tree-markers.js';
 
 
 import {SELECT_TREE_TOOL, ADD_BEACON_TOOL, SELECT_GEOMETRY_TOOL, DEFINE_POLYGON_TOOL, MOVE_VERTEX_TOOL, REMOVE_TOOL} from './map-tools.js';
@@ -162,14 +162,6 @@ export default class Map extends React.Component {
     }
   }
 
-  configureLayerGroups = () => {
-    for (let x in layerGroups) {
-      if (layerGroups[x].isInitiallyDisplayed)
-        layerGroups[x].layer().addTo(this.map);
-    }
-  }
-
-
   componentWillUnmount = () => {
     console.log('map::componentWillUnmount()');
     window.removeEventListener ('resize', this.handleResize);
@@ -185,23 +177,75 @@ export default class Map extends React.Component {
       zoomControl: false
     });
     this.addTiles();
-    this.configureLayerGroups();
+/*    if (false)
+      this.addLayerGroupsExceptPromisingLayers();
+    if (this.false)
+      this.handlePromisingLayers();*/
 
+    if (true) {
+      const that = this;
+      layerGroups.circleMarkersLG.layer().then( ({targetId2Marker, layerGroup}) => {
+        console.log(layerGroup);
+        layerGroup.addTo(that.map);
+      });
+    } else layerGroups.circleMarkersLG.layer().then( (layer) => {
+      console.log('promise fullfilled');
+      layer.addTo(this.map);
+    });
+    
 
-    if (false)
+/*    if (false)
       this.map.on('mousemove', (e) => {
         this.props.updateCoordinates(e.latlng);
-      })
+      })*/
     this.map.on('click', this.handleClick);
-
-    L.control.layers(BaseLayersForLayerControl
-                   , getAllLayers(layerGroups)).addTo(this.map);
+/*
+    if (false)
+    this.layersControl = L.control.layers(BaseLayersForLayerControl
+                                        , getAllNonPromisingLayers(layerGroups)).addTo(this.map);
+    if (false)
+      Promise.all(getAllPromisingLayers(layerGroups)).then( (xs) => {
+        xs.forEach ( (x) => {
+          console.log(x);
+          console.log(`retrieved a promising layer with the name: ${x.layerName}`);
+          this.layersControl.addOverlay(x.layer, x.layerName);
+        });
+      });
+    */
 
     $('div.leaflet-control-container section.leaflet-control-layers-list div.leaflet-control-layers-overlays input.leaflet-control-layers-selector[type="checkbox"]').on('change', (e)=>{
     });
     assert.strictEqual(this.props.selectedTool, SELECT_TREE_TOOL);
-    this.addClickListenersToMarkers();    
-    
+  }
+
+
+  addLayerGroupsExceptPromisingLayers = () => {
+    for (let x in layerGroups) {
+      if (layerGroups[x].isInitiallyDisplayed) {
+        if (layerGroups[x].containsMapOfTargetIds) { // this is the only case where a promise is returned
+          ; // do nothing
+        } else layerGroups[x].layer().addTo(this.map); // in all other cases we get a frigging value, not a promise
+      }
+    }
+  }
+
+  handlePromisingLayers = () => {
+    for (let x in layerGroups) {
+      if (layerGroups[x].isInitiallyDisplayed) {
+        if (layerGroups[x].containsMapOfTargetIds) { // this is the only case where a promise is returned
+          const promise = layerGroups[x].layer();
+          promise.then( ({targetId2Marker, layerGroup}) => {
+            this.targetId2Marker = targetId2Marker;
+            console.log('retrieved targetdId2Marker and markers');
+            console.log(targetId2Marker);
+            console.log(layerGroup);
+            console.log(this.map);
+            layerGroup.addTo(this.map);
+            this.addClickListenersToMarkers(layerGroup);
+          }); // promise.then
+        }
+      }
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -285,14 +329,14 @@ export default class Map extends React.Component {
 
   
 
-  addClickListenersToMarkers = () => {
-    layerGroups.circleMarkersLG.layer.eachLayer ( (marker)=>{
+  addClickListenersToMarkers = (markers) => {
+    markers.eachLayer ( (marker)=>{
       marker.on('click', this.clickOnCircleMarker);
       if (USE_CLASSICAL_MARKERS)
         marker._icon.classList.remove('not-selectable');
       else {
         marker.options.interactive = true; // https://stackoverflow.com/a/60642381/274677
-        }
+      }
     });
   }
 
@@ -325,7 +369,7 @@ export default class Map extends React.Component {
 
   clickOnCircleMarker = (e) => {
     const targetId = e.target.options.targetId;
-    const marker = targetId2Marker[targetId];
+    const marker = this.targetId2Marker[targetId];
     this.setState({highlightedMarker: marker});
     this.props.updateTarget(e.target.options.targetId);
   }
@@ -347,11 +391,31 @@ export default class Map extends React.Component {
 
 
 
-function getAllLayers(layerGroups) {
+function getAllNonPromisingLayers(layerGroups) {
   const rv = [];
   for (const prop in layerGroups) {
     if (layerGroups.hasOwnProperty(prop)) {
-      rv[prop] = layerGroups[prop].layer;
+      if (!layerGroups[prop].containsMapOfTargetIds) // these are the non-promising layers
+        rv[prop] = layerGroups[prop].layer();
+    }
+  }
+  return rv;
+}
+
+function getAllPromisingLayers(layerGroups) {
+  const rv = [];
+  for (const prop in layerGroups) {
+    if (layerGroups.hasOwnProperty(prop)) {
+      if (layerGroups[prop].containsMapOfTargetIds) { // these are the promising layers
+        console.log(`adding promising layer ${prop}`);
+        const promise = layerGroups[prop].layer()
+                                         .then( (layer) => {
+                                           console.log(`returning a layerGroup with the name ${prop}`);
+                                           return {layerName: prop
+                                                 , layer: layer.markers};
+                                         });
+        rv.push(promise);
+      }
     }
   }
   return rv;

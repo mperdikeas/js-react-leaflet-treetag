@@ -1,3 +1,4 @@
+console.log('app.jsx ENTERING');
 const     _ = require('lodash');
 const     $ = require('jquery');
 window.$ = $; // make jquery available to other scripts (not really applicable in our case) and the console
@@ -193,3 +194,4 @@ class App extends React.Component {
 
 export default App;
 
+console.log('app.jsx EXITING');
