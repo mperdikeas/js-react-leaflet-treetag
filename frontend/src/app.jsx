@@ -102,8 +102,12 @@ class App extends React.Component {
               <div className="col-3">
                 <TilesSelector onTileProviderSelect={this.onTileProviderSelect}/> 
               </div>
-              <PointCoordinates coords={this.state.coords}/>
-              <UserControl/>
+              <div className='col-7'>
+                <PointCoordinates coords={this.state.coords}/>
+              </div>
+              <div className='col-2'>
+                <UserControl/>
+              </div>
             </div>
             <div className='row no-gutters'>
               <div className='col' style={toolboxStyle}>

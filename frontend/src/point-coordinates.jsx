@@ -25,24 +25,23 @@ export default function PointCoordinates({coords}) {
     const formatB = `${hgrs87lat.toPrecision(precisionB)}:${hgrs87long.toPrecision(precisionB)}`;
     return (
       <>
-      <div className="col-7">
-          <div className='row no-gutters'>
-              <div className="col-4">
-                 WGS84
-              </div>
-              <div className="col-8">
-                {formatA}
-              </div>
-          </div>
-          <div className='row no-gutters'>
-              <div className="col-4">
-                ΕΓΣΑ '87
-              </div>
-              <div className="col-8">
-                {formatB}
-              </div>
-          </div>
+      <div className='row no-gutters'>
+        <div className="col-4">
+          WGS84
+        </div>
+        <div className="col-8">
+          {formatA}
+        </div>
       </div>
+      <div className='row no-gutters'>
+        <div className="col-4">
+          ΕΓΣΑ '87
+        </div>
+        <div className="col-8">
+          {formatB}
+        </div>
+      </div>
+
       </>
     );
   }
