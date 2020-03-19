@@ -62,7 +62,8 @@ export default class Map extends React.Component {
     this.state = {
       highlightedMarker: null
     };
-    this.currentPolygonPoints = []
+    this.currentPolygonPoints = [];
+    this.clickableLayers = [];
   }
 
   getMapHeight = () => {
@@ -218,7 +219,8 @@ export default class Map extends React.Component {
             console.log(layerGroup);
             console.log(this.map);
             layerGroup.addTo(this.map);
-            this.addClickListenersToMarkers(layerGroup);
+            this.clickableLayers.push(layerGroup);
+            this.addClickListenersToMarkers();
             this.layersControl.addOverlay(layerGroup, x);
           }); // promise.then
         }
@@ -307,26 +309,30 @@ export default class Map extends React.Component {
 
   
 
-  addClickListenersToMarkers = (markers) => {
-    markers.eachLayer ( (marker)=>{
-      marker.on('click', this.clickOnCircleMarker);
-      if (USE_CLASSICAL_MARKERS)
-        marker._icon.classList.remove('not-selectable');
-      else {
-        marker.options.interactive = true; // https://stackoverflow.com/a/60642381/274677
-      }
-    });
+  addClickListenersToMarkers = () => {
+    this.clickableLayers.forEach( (markers) => {
+      markers.eachLayer ( (marker)=>{
+        marker.on('click', this.clickOnCircleMarker);
+        if (USE_CLASSICAL_MARKERS)
+          marker._icon.classList.remove('not-selectable');
+        else {
+          marker.options.interactive = true; // https://stackoverflow.com/a/60642381/274677
+        }
+      }); // eachLayer
+    }); // forEach
   }
 
   removeClickListenersFromMarkers = () => {
-    layerGroups.circleMarkersLG.layer.eachLayer ( (marker)=>{
-      marker.off('click');
-      if (USE_CLASSICAL_MARKERS) 
-        marker._icon.classList.add('not-selectable');
-      else {
-        marker.options.interactive = false; // https://stackoverflow.com/a/60642381/274677
+    this.clickableLayers.forEach( (markers) => {    
+      markers.eachLayer ( (marker)=>{
+        marker.off('click');
+        if (USE_CLASSICAL_MARKERS) 
+          marker._icon.classList.add('not-selectable');
+        else {
+          marker.options.interactive = false; // https://stackoverflow.com/a/60642381/274677
         }
-    } );
+      } ); // eachLayer
+    }); // forEach
   }
   
 
