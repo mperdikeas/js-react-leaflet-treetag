@@ -178,7 +178,7 @@ export default class Map extends React.Component {
     });
     this.addTiles();
     this.addLayerGroupsExceptPromisingLayers();
-    this.handlePromisingLayers();
+    this.addLayerGroupsForPromisingLayers();
     if (false)
       this.map.on('mousemove', (e) => {
         this.props.updateCoordinates(e.latlng);
@@ -207,7 +207,7 @@ export default class Map extends React.Component {
     this.layersControl = L.control.layers(BaseLayersForLayerControl, layersForControl).addTo(this.map);
   }
 
-  handlePromisingLayers = () => {
+  addLayerGroupsForPromisingLayers = () => {
     const layersForControl = {};
     for (let x in layerGroups) {
       if (layerGroups[x].isInitiallyDisplayed) {
