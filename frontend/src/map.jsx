@@ -179,26 +179,11 @@ export default class Map extends React.Component {
     this.addTiles();
     this.addLayerGroupsExceptPromisingLayers();
     this.handlePromisingLayers();
-
-
-/*    if (false)
+    if (false)
       this.map.on('mousemove', (e) => {
         this.props.updateCoordinates(e.latlng);
-      })*/
+      })
     this.map.on('click', this.handleClick);
-
-    if (true)
-    this.layersControl = L.control.layers(BaseLayersForLayerControl
-                                        , getAllNonPromisingLayers(layerGroups)).addTo(this.map);
-    if (true)
-      Promise.all(getAllPromisingLayers(layerGroups)).then( (xs) => {
-        xs.forEach ( (x) => {
-          console.log(x);
-          console.log(`retrieved a promising layer with the name: ${x.layerName}`);
-          this.layersControl.addOverlay(x.layer, x.layerName);
-        });
-      });
-
 
     $('div.leaflet-control-container section.leaflet-control-layers-list div.leaflet-control-layers-overlays input.leaflet-control-layers-selector[type="checkbox"]').on('change', (e)=>{
     });
@@ -207,28 +192,38 @@ export default class Map extends React.Component {
 
 
   addLayerGroupsExceptPromisingLayers = () => {
-    for (let x in layerGroups) {
-      if (layerGroups[x].isInitiallyDisplayed) {
-        if (layerGroups[x].containsMapOfTargetIds) { // this is the only case where a promise is returned
-          ; // do nothing
-        } else layerGroups[x].layer().addTo(this.map); // in all other cases we get a frigging value, not a promise
+    const layersForControl = {};
+    for (const x in layerGroups) {
+      if (layerGroups[x].containsMapOfTargetIds) { // this is the only case where a promise is returned
+        ; // do nothing
+      } else {
+        const layer = layerGroups[x].layer();
+        if (layerGroups[x].isInitiallyDisplayed) {
+          layer.addTo(this.map);
+        }
+        layersForControl[x] = layer;
       }
-    }
+    } // for
+    this.layersControl = L.control.layers(BaseLayersForLayerControl, layersForControl).addTo(this.map);
   }
 
   handlePromisingLayers = () => {
+    const layersForControl = {};
     for (let x in layerGroups) {
       if (layerGroups[x].isInitiallyDisplayed) {
         if (layerGroups[x].containsMapOfTargetIds) { // this is the only case where a promise is returned
           const promise = layerGroups[x].layer();
           promise.then( ({targetId2Marker, layerGroup}) => {
-            this.targetId2Marker = targetId2Marker;
+            this.targetId2Marker = Object.assign({}
+                                               , (this.targetId2Marker===null)?{}:this.targetId2Marker
+                                               , targetId2Marker);
             console.log('retrieved targetdId2Marker and markers');
             console.log(targetId2Marker);
             console.log(layerGroup);
             console.log(this.map);
             layerGroup.addTo(this.map);
             this.addClickListenersToMarkers(layerGroup);
+            this.layersControl.addOverlay(layerGroup, x);
           }); // promise.then
         }
       }
