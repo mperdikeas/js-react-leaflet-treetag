@@ -128,25 +128,15 @@ class App extends React.Component {
       </div>
     )
 
-    if (false) {
-      if (this.state.modalDialog)
-        return (
-          <ModalDialog addGeometry={this.addGeometry}>
-          {gui}
-        </ModalDialog>
-        )
-      else
-        return gui;
-    } else {
-      return (
-        <ModalDialog
-            displayModal={this.state.modalDialog}
-            addGeometry={this.addGeometry}
-        >
-          {gui}
-        </ModalDialog>
-      );
-    }
+    return (
+      <ModalDialog
+          displayModal={this.state.modalDialog}
+          addGeometry={this.addGeometry}
+      >
+        {gui}
+      </ModalDialog>
+    );
+
   }
 
   addPolygonDialog = () => {
