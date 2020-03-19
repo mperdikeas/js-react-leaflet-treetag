@@ -8,15 +8,14 @@ var      cx = require('classnames');
 
 import PropTypes from 'prop-types';
 
-const createReactClass = require('create-react-class');
 const assert = require('chai').assert;
+import axios from 'axios';
 
 const loading  = require('./resources/loading.gif');
 // require('../resources/down-arrow.png');
 import DownArrow from './resources/down-arrow.png';
 // const download = url('../resources/
-import axios from 'axios';
-
+import {sca_fake_return, readCookie} from './util.js';
 
 export default class TargetPhotoPane extends React.Component {
 
@@ -151,9 +150,12 @@ export default class TargetPhotoPane extends React.Component {
 
   fetchNumOfPhotos() {
     const url = urlForNumOfPhotos(this.props.targetId);
+    const token = readCookie('access_token');
+    console.log(`access token read as ${token}`);    
     console.log(`axios URL is: ${url}`);
-    axios.get(url)
-         .then(res => {
+    axios.get(url
+            , {headers: { Authorization: `Bearer ${token}` }}
+         ).then(res => {
            const {t, err} = res.data; // this is a ValueOrInternalServerExceptionData data type on the server side
            if (err===null) {
              const numOfPhotos = t;
@@ -184,10 +186,12 @@ export default class TargetPhotoPane extends React.Component {
   
   fetchPhoto() {
     console.log('fetchPhoto');
+    const token = readCookie('access_token');
     const url = urlForPhoto(this.props.targetId, this.state.currentPhotoIndx);
     console.log(`axios URL is: ${url}`);
-    axios.get(url)
-         .then(res => {
+    axios.get(url
+            , {headers: { Authorization: `Bearer ${token}` }}
+      ).then(res => {
            console.log(res);
            const {t: {photoBase64, instant}, err} = res.data; // this is a ValueOrInternalServerExceptionData data type on the server side
            if (err===null) {
