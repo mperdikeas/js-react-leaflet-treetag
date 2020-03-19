@@ -40,7 +40,6 @@ class App extends React.Component {
       , userDefinedGeometries: []
       , geometryUnderDefinition: []
       , modalType: 'login'
-      , loggedIn: false
       , logErrMsg: null
     };
   }
@@ -115,7 +114,7 @@ class App extends React.Component {
                 />
               </div>
               <div class='col'>
-                <Map loggedIn={this.state.loggedIn}
+                <Map loggedIn={this.props.loginContext.username!==null}
                      tileProviderId={this.state.tileProviderId}
                      updateTarget={this.updateTarget}
                      updateCoordinates={this.updateCoordinates}
@@ -190,7 +189,8 @@ class App extends React.Component {
         if (res.data.t.loginFailureReason===null) {
           setCookie('access_token', res.data.t.accessToken, 0);
           console.log('login was successful and cookie was set');
-          this.setState({modalType: null, loggedIn: true});
+          this.setState({modalType: null});
+          this.props.loginContext.updateLogin(username);
         } else {
           console.log('login was unsuccessful');
           this.setState({logErrMsg: res.data.t.loginFailureReason});

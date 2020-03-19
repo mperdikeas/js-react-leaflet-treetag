@@ -9,12 +9,8 @@ import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/style.css';
 
-import {assert} from 'chai';
-import axios from 'axios';
-
-
 import GeometryContextProvider  from './context/geometry-context.jsx'
-import {BASE_URL}               from './constants.js';
+import LoginContextProvider     from './context/login-context-provider.jsx'
 
 
 $(document).ready(doStuff);
@@ -25,9 +21,11 @@ function doStuff() {
 
 function doRender() {
   ReactDOM.render(
-    <GeometryContextProvider>
-      <App/>
-    </GeometryContextProvider>
+    <LoginContextProvider>
+      <GeometryContextProvider>
+        <App/>
+      </GeometryContextProvider>
+    </LoginContextProvider>
     , $('#app')[0]);
 }
 
