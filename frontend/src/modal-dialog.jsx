@@ -61,14 +61,14 @@ class ModalDialog extends React.Component {
   addGeometry = (ev) => {
     ev.preventDefault();    
     const geometryName = this.inputGeometryNameRef.current.value;
-    this.props.addGeometry(geometryName);
+    this.props.modalProps.addGeometry(geometryName);
   }
 
   login = (ev) => {
     ev.preventDefault();
     const username = this.inputUsernameRef.current.value;
     const password = this.inputPasswordRef.current.value;
-    this.props.login(username, password);
+    this.props.modalProps.login(username, password);
   }
 
     
@@ -92,10 +92,19 @@ class ModalDialog extends React.Component {
           </>
         )
       case 'login':
+        const logErrMsg = (()=>{
+          const msg = this.props.modalProps.logErrMsg
+          if (msg)
+            return <div style={{color: 'red'}}>{msg}</div>;
+          else
+            return null;
+        })();
+        console.log(logErrMsg);
         return (
           <>
           <dialog id="dialog" ref={this.ref}>
-            <form method="dialog" onSubmit={this.login}>
+              <form method="dialog" onSubmit={this.login}>
+              {logErrMsg}
               <p>Please provide your username and password</p>
               <label for='login-name-input'>Username</label>
               <input ref={this.inputUsernameRef} type='text' id='login-name-input'/><br/>

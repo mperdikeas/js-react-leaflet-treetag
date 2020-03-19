@@ -42,6 +42,7 @@ class App extends React.Component {
       , geometryUnderDefinition: []
       , modalType: 'login'
       , loggedIn: false
+      , logErrMsg: null
     };
   }
 
@@ -137,14 +138,26 @@ class App extends React.Component {
 
     return (
       <ModalDialog
-          modalType={this.state.modalType}
-          addGeometry={this.addGeometry}
-          login={this.login}
+          modalType   = {this.state.modalType}
+          modalProps  = {this.createPropertiesForModalType()}
       >
         {gui}
       </ModalDialog>
     );
 
+  }
+
+  createPropertiesForModalType = () => {
+    switch (this.state.modalType) {
+      case 'geometry-name':
+        return {addGeometry: this.addGeometry};
+      case 'login':
+        return {login: this.login, logErrMsg: this.state.logErrMsg};
+      case null:
+        return {};
+      default:
+        assert.fail(`unhandled modal type: ${this.state.modalType}`);
+    }
   }
 
   addPolygonDialog = () => {
@@ -181,7 +194,7 @@ class App extends React.Component {
           this.setState({modalType: null, loggedIn: true});
         } else {
           console.log('login was unsuccessful');
-          assert.fail(res.data.t.loginFailureReason);
+          this.setState({logErrMsg: res.data.t.loginFailureReason});
         }
       }
     }).catch( err => {
