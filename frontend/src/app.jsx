@@ -11,7 +11,7 @@ const assert = require('chai').assert;
 import axios from 'axios';
 
 import {GeometryContext} from './context/geometry-context.jsx';
-import {LoginContext}    from './context/login-context-provider.jsx';
+import {LoginContext}    from './context/login-context.jsx';
 
 import TilesSelector                           from './tiles-selector.jsx';
 import Map                                     from './map.jsx';

@@ -10,7 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/style.css';
 
 import GeometryContextProvider  from './context/geometry-context.jsx'
-import LoginContextProvider     from './context/login-context-provider.jsx'
+import LoginContextProvider     from './context/login-context.jsx'
 
 
 $(document).ready(doStuff);
