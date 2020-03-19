@@ -19,6 +19,18 @@ function sca_fake_return() {
     return 'returning this just to satisfy Static Code Analysis';
 }
 
+function setCookie(name, value, days) {
+  var expires = "";
+  if (days) {
+    var date = new Date();
+    date.setTime(date.getTime() + (days*24*60*60*1000));
+    expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+  console.log(`Cookie set as ${document.cookie}`);
+}
+
+
 function readCookie(name, panicIfMoreThanOnce, panicIfNotFound) {
     const c = document.cookie.split('; ');
     const cookies = {};
@@ -39,7 +51,8 @@ function readCookie(name, panicIfMoreThanOnce, panicIfNotFound) {
     return rv;
 }
 
-exports.theAnswer  = theAnswer;
-exports.exactlyOne = exactlyOne;
+exports.theAnswer       = theAnswer;
+exports.exactlyOne      = exactlyOne;
 exports.sca_fake_return = sca_fake_return;
-exports.readCookie = readCookie;
+exports.setCookie       = setCookie;
+exports.readCookie      = readCookie;

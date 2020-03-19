@@ -8,6 +8,7 @@ const React = require('react');
 var      cx = require('classnames');
 
 const assert = require('chai').assert;
+import axios from 'axios';
 
 import {GeometryContext} from './context/geometry-context.jsx';
 
@@ -20,6 +21,9 @@ import Toolbox                                 from './toolbox.jsx';
 import {SELECT_TREE_TOOL, DEFINE_POLYGON_TOOL} from './map-tools.js';
 import ModalDialog                             from './modal-dialog.jsx';
 import {geometriesValues, geometriesNames}     from './app-utils.js';
+import {BASE_URL}                              from './constants.js';
+import {setCookie}                             from './util.js';
+
 
 class App extends React.Component {
 
@@ -36,7 +40,8 @@ class App extends React.Component {
       , selectedTool: SELECT_TREE_TOOL
       , userDefinedGeometries: []
       , geometryUnderDefinition: []
-      , modalType: null
+      , modalType: 'login'
+      , loggedIn: false
     };
   }
 
@@ -110,7 +115,8 @@ class App extends React.Component {
                 />
               </div>
               <div class='col'>
-                <Map tileProviderId={this.state.tileProviderId}
+                <Map loggedIn={this.state.loggedIn}
+                     tileProviderId={this.state.tileProviderId}
                      updateTarget={this.updateTarget}
                      updateCoordinates={this.updateCoordinates}
                      selectedTool={this.state.selectedTool}
@@ -133,6 +139,7 @@ class App extends React.Component {
       <ModalDialog
           modalType={this.state.modalType}
           addGeometry={this.addGeometry}
+          login={this.login}
       >
         {gui}
       </ModalDialog>
@@ -155,6 +162,33 @@ class App extends React.Component {
     this.setState({modalType: null
                  , userDefinedGeometries: userDefinedGeometriesNew
                  , geometryUnderDefinition: []});
+  }
+
+  login = (username, password) => {
+    const url = `${BASE_URL}/login`;
+    axios.post(url, {
+      username: username,
+      password: password
+    }).then(res => {
+      if (res.data.err != null) {
+        console.log('login API call error');
+        assert.fail(res.data.err);
+      } else {
+        console.log('login API call success');
+        if (res.data.t.loginFailureReason===null) {
+          setCookie('access_token', res.data.t.accessToken, 0);
+          console.log('login was successful and cookie was set');
+          this.setState({modalType: null, loggedIn: true});
+        } else {
+          console.log('login was unsuccessful');
+          assert.fail(res.data.t.loginFailureReason);
+        }
+      }
+    }).catch( err => {
+      console.log(err);
+      console.log(JSON.stringify(err));
+      assert.fail(err);
+    });
   }
 
   informationPanel = () => {

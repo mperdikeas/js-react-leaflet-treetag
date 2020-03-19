@@ -175,7 +175,7 @@ export default class Map extends React.Component {
     });
     this.addTiles();
     this.addLayerGroupsExceptPromisingLayers();
-    this.addLayerGroupsForPromisingLayers();
+//    this.addLayerGroupsForPromisingLayers();
     if (false)
       this.map.on('mousemove', (e) => {
         this.props.updateCoordinates(e.latlng);
@@ -229,6 +229,8 @@ export default class Map extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if ((prevProps.loggedIn===false) && (this.props.loggedIn===true))
+      this.addLayerGroupsForPromisingLayers();
     if (this.props.deleteGeometryUnderDefinition) {
       console.log('deleting geometry under definition');
       assert.strictEqual(this.props.selectedTool, null);
@@ -374,36 +376,6 @@ export default class Map extends React.Component {
 }
 
 
-
-function getAllNonPromisingLayers(layerGroups) {
-  const rv = [];
-  for (const prop in layerGroups) {
-    if (layerGroups.hasOwnProperty(prop)) {
-      if (!layerGroups[prop].containsMapOfTargetIds) // these are the non-promising layers
-        rv[prop] = layerGroups[prop].layer();
-    }
-  }
-  return rv;
-}
-
-function getAllPromisingLayers(layerGroups) {
-  const rv = [];
-  for (const prop in layerGroups) {
-    if (layerGroups.hasOwnProperty(prop)) {
-      if (layerGroups[prop].containsMapOfTargetIds) { // these are the promising layers
-        console.log(`adding promising layer ${prop}`);
-        const promise = layerGroups[prop].layer()
-                                         .then( ({targetId2Map, layerGroup}) => {
-                                           console.log(`returning a layerGroup with the name ${prop}`);
-                                           return {layerName: prop
-                                                 , layer: layerGroup};
-                                         });
-        rv.push(promise);
-      }
-    }
-  }
-  return rv;
-}
 
 
 

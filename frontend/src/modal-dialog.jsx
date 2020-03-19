@@ -25,11 +25,17 @@ class ModalDialog extends React.Component {
   constructor(props) {
     super(props);
     this.ref = React.createRef();
-    this.inputRef = React.createRef();
+    this.inputGeometryNameRef = React.createRef();
+    this.inputUsernameRef     = React.createRef();
+    this.inputPasswordRef     = React.createRef();
   }
 
   componentDidMount() {
     console.log('ModalDialog::componentDidMount');
+    if (this.props.modalType==='login') {
+      const domElem = this.ref.current;
+      domElem.showModal();
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -39,18 +45,33 @@ class ModalDialog extends React.Component {
     }
   }
 
+  /*
   handleSubmit = (ev) => {
     ev.preventDefault();
     switch (this.props.modalType) {
       case 'geometry-name':
-        const geometryName = this.inputRef.current.value;
-        this.props.addGeometry(geometryName);
+
         break;
       default:
         assert.fail(`unrecognized modal type: ${this.props.modalType}`);
 
     } // switch
   }
+*/
+  addGeometry = (ev) => {
+    ev.preventDefault();    
+    const geometryName = this.inputGeometryNameRef.current.value;
+    this.props.addGeometry(geometryName);
+  }
+
+  login = (ev) => {
+    ev.preventDefault();
+    const username = this.inputUsernameRef.current.value;
+    const password = this.inputPasswordRef.current.value;
+    this.props.login(username, password);
+  }
+
+    
 
 
   render() {
@@ -60,16 +81,32 @@ class ModalDialog extends React.Component {
         return (
           <>
           <dialog id="dialog" ref={this.ref}>
-            <form method="dialog" onSubmit={this.handleSubmit}>
+            <form method="dialog" onSubmit={this.addGeometry}>
               <p>Please enter a name for this new geometry</p>
               <label for='geometry-name-input'>Name for the new geometry</label>
-              <input ref={this.inputRef} type='text' id='geometry-name-input'/><br/>
+              <input ref={this.inputGeometryNameRef} type='text' id='geometry-name-input'/><br/>
               <input type="submit" value="OK"/>
             </form>
           </dialog>
           {this.props.children}
           </>
         )
+      case 'login':
+        return (
+          <>
+          <dialog id="dialog" ref={this.ref}>
+            <form method="dialog" onSubmit={this.login}>
+              <p>Please provide your username and password</p>
+              <label for='login-name-input'>Username</label>
+              <input ref={this.inputUsernameRef} type='text' id='login-name-input'/><br/>
+              <label for='login-pass-input'>Password</label>
+              <input ref={this.inputPasswordRef} type='text' id='login-pass-input'/><br/>          
+              <input type="submit" value="OK"/>
+            </form>
+          </dialog>
+          {this.props.children}
+          </>
+          )
       case null:
         return (
           <>
