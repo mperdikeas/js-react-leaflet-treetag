@@ -374,19 +374,5 @@ class Map extends React.Component {
 }
 
 
-
-
-
-/*
-const withGeometryContext = (Component) => (
-  props => (
-    <GeometryContext.Consumer>
-      {context => <Component geometryContext={context} {...props} />}
-    </GeometryContext.Consumer>
-  )
-)
-*/
-
-
 export default wrapGeometryContext(Map);
 

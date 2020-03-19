@@ -25,7 +25,7 @@ export default function PointCoordinates({coords}) {
     const formatB = `${hgrs87lat.toPrecision(precisionB)}:${hgrs87long.toPrecision(precisionB)}`;
     return (
       <>
-      <div className="col-9">
+      <div className="col-7">
           <div className='row no-gutters'>
               <div className="col-4">
                  WGS84

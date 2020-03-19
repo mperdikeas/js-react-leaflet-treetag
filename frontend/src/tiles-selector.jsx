@@ -33,7 +33,7 @@ export default function TilesSelector(props) {
             data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="false">
-      Tiles provider
+      Υπόβαθρο
     </button>
     {dropDownMenu}    
     </>
