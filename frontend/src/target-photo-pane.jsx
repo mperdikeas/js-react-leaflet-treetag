@@ -6,8 +6,6 @@ const     $ = require('jquery');
 const React = require('react');
 var      cx = require('classnames');
 
-import PropTypes from 'prop-types';
-
 const assert = require('chai').assert;
 import axios from 'axios';
 

@@ -14,7 +14,7 @@
     
     <taskdef uri="http://net.sf.antcontrib"  resource="net/sf/antcontrib/antlib.xml"  classpath="ant-contrib-1.0b3.jar"/>
 
-    <target name="npm-install">
+    <target name="npm-install" description="install npm dependencies">
         <exec executable="npm" dir="${basedir}" failonerror="true">
             <arg value="install"/>
         </exec>

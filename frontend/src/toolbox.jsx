@@ -5,8 +5,6 @@ window.$ = $; // make jquery available to other scripts (not really applicable i
 const React = require('react');
 var      cx = require('classnames');
 
-import PropTypes from 'prop-types';
-
 const assert = require('chai').assert;
 
 require('./toolbox.css');

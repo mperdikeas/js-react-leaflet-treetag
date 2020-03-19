@@ -6,9 +6,6 @@ const     $ = require('jquery');
 const React = require('react');
 var      cx = require('classnames');
 
-import PropTypes from 'prop-types';
-
-const createReactClass = require('create-react-class');
 const assert = require('chai').assert;
 
 require('./css/information-panel.css');
