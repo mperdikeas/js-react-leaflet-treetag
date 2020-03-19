@@ -11,6 +11,7 @@ const assert = require('chai').assert;
 import axios from 'axios';
 
 import {GeometryContext} from './context/geometry-context.jsx';
+import {LoginContext}    from './context/login-context-provider.jsx';
 
 import TilesSelector                           from './tiles-selector.jsx';
 import Map                                     from './map.jsx';
@@ -233,6 +234,14 @@ const withGeometryContext = (Component) => (
   )
 )
 
-export default withGeometryContext(App);
+const withLoginContext = (Component) => (
+  props => (
+    <LoginContext.Consumer>
+      {context => <Component loginContext={context} {...props} />}
+    </LoginContext.Consumer>
+  )
+)
+
+export default withLoginContext(withGeometryContext(App));
 
 console.log('app.jsx EXITING');
