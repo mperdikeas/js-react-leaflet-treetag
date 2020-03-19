@@ -33,7 +33,7 @@ class ModalDialog extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (!prevProps.displayModal && this.props.displayModal) {
+    if (!prevProps.modalType && this.props.modalType) {
       const domElem = this.ref.current;
       domElem.showModal();
     }
@@ -41,32 +41,44 @@ class ModalDialog extends React.Component {
 
   handleSubmit = (ev) => {
     ev.preventDefault();
-    const geometryName = this.inputRef.current.value;
-    this.props.addGeometry(geometryName);
+    switch (this.props.modalType) {
+      case 'geometry-name':
+        const geometryName = this.inputRef.current.value;
+        this.props.addGeometry(geometryName);
+        break;
+      default:
+        assert.fail(`unrecognized modal type: ${this.props.modalType}`);
+
+    } // switch
   }
 
 
   render() {
-    if (this.props.displayModal)
-    return (
-      <>
-      <dialog id="dialog" ref={this.ref}>
-        <form method="dialog" onSubmit={this.handleSubmit}>
-          <p>Please enter a name for this new geometry</p>
-          <label for='geometry-name-input'>Name for the new geometry</label>
-          <input ref={this.inputRef} type='text' id='geometry-name-input'/><br/>
-          <input type="submit" value="OK"/>
-        </form>
-      </dialog>
-      {this.props.children}
-      </>
-    )
-    else return (
-      <>
-      {this.props.children}
-      </>
-    )
-      
+    switch (this.props.modalType) {
+
+      case 'geometry-name':
+        return (
+          <>
+          <dialog id="dialog" ref={this.ref}>
+            <form method="dialog" onSubmit={this.handleSubmit}>
+              <p>Please enter a name for this new geometry</p>
+              <label for='geometry-name-input'>Name for the new geometry</label>
+              <input ref={this.inputRef} type='text' id='geometry-name-input'/><br/>
+              <input type="submit" value="OK"/>
+            </form>
+          </dialog>
+          {this.props.children}
+          </>
+        )
+      case null:
+        return (
+          <>
+          {this.props.children}
+          </>
+        )
+      default:
+        assert.fail(`unrecognized modal type: ${this.props.modalType}`);
+    }
   }
 }
 

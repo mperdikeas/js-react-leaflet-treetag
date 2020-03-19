@@ -36,6 +36,7 @@ class App extends React.Component {
       , selectedTool: SELECT_TREE_TOOL
       , userDefinedGeometries: []
       , geometryUnderDefinition: []
+      , modalType: null
     };
   }
 
@@ -130,7 +131,7 @@ class App extends React.Component {
 
     return (
       <ModalDialog
-          displayModal={this.state.modalDialog}
+          modalType={this.state.modalType}
           addGeometry={this.addGeometry}
       >
         {gui}
@@ -142,7 +143,7 @@ class App extends React.Component {
   addPolygonDialog = () => {
     console.log('app::addPolygonDialog');
 
-    this.setState({modalDialog: true});
+    this.setState({modalType: 'geometry-name'});
 
   }
 
@@ -151,7 +152,7 @@ class App extends React.Component {
     const userDefinedGeometriesNew = _.cloneDeep(this.state.userDefinedGeometries);
     userDefinedGeometriesNew.push({name: geometryName
                                  , value: this.state.geometryUnderDefinition});
-    this.setState({modalDialog: false
+    this.setState({modalType: null
                  , userDefinedGeometries: userDefinedGeometriesNew
                  , geometryUnderDefinition: []});
   }
