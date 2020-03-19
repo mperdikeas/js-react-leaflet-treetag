@@ -53,10 +53,8 @@ proj4.defs([
 const WGS84  = 'EPSG:4326';
 const HGRS87 = 'EPSG:2100';
 
-export default class Map extends React.Component {
+class Map extends React.Component {
 
-  static contextType = GeometryContext
-  
   constructor(props) {
     super(props);
     this.state = {
@@ -67,7 +65,7 @@ export default class Map extends React.Component {
   }
 
   getMapHeight = () => {
-    return this.context.screen.height - this.context.geometry.headerBarHeight
+    return this.props.geometryContext.screen.height - this.props.geometryContext.geometry.headerBarHeight
   }
 
   getCurrentTileLayer = () => {
@@ -380,5 +378,14 @@ export default class Map extends React.Component {
 
 
 
+const withGeometryContext = (Component) => (
+  props => (
+    <GeometryContext.Consumer>
+      {context => <Component geometryContext={context} {...props} />}
+    </GeometryContext.Consumer>
+  )
+)
 
+
+export default withGeometryContext(Map);
 

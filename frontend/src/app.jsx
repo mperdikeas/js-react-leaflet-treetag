@@ -28,8 +28,6 @@ import {setCookie}                             from './util.js';
 class App extends React.Component {
 
 
-  static contextType = GeometryContext
-  
   constructor(props) {
     super(props);
     this.state = {
@@ -93,7 +91,7 @@ class App extends React.Component {
     const classesForMapDiv = Object.assign({'col-8': true, 'padding-0': true}
                                          , {hidden: this.state.maximizedInfo});
 
-    const toolboxStyle = {flex: `0 0 ${this.context.toolboxTotalWidth()}px`
+    const toolboxStyle = {flex: `0 0 ${this.props.geometryContext.toolboxTotalWidth()}px`
                         , backgroundColor: 'green'};
 
     const gui = (
@@ -101,7 +99,7 @@ class App extends React.Component {
         <div class='row no-gutters'>
           <div class={cx(classesForMapDiv)}>
             <div class='row no-gutters justify-content-start align-items-center'
-                 style={{height: `${this.context.headerBarHeight}px`}}>
+                 style={{height: `${this.props.geometryContext.headerBarHeight}px`}}>
               <div class="col-3">
                 <TilesSelector onTileProviderSelect={this.onTileProviderSelect}/> 
               </div>
@@ -134,7 +132,8 @@ class App extends React.Component {
           {this.informationPanel()}
         </div>
       </div>
-    )
+    );
+
 
     return (
       <ModalDialog
@@ -144,7 +143,6 @@ class App extends React.Component {
         {gui}
       </ModalDialog>
     );
-
   }
 
   createPropertiesForModalType = () => {
@@ -227,7 +225,14 @@ class App extends React.Component {
 }
 
 
+const withGeometryContext = (Component) => (
+  props => (
+    <GeometryContext.Consumer>
+      {context => <Component geometryContext={context} {...props} />}
+    </GeometryContext.Consumer>
+  )
+)
 
-export default App;
+export default withGeometryContext(App);
 
 console.log('app.jsx EXITING');
