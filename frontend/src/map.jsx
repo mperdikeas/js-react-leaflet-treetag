@@ -34,7 +34,7 @@ import {DefaultIcon, TreeIcon}          from './icons.js';
 import rainbow from './rainbow.js';
 
 import {CustomCircleMarker} from './custom-markers.js';
-import {GeometryContext} from './context/geometry-context.jsx';
+import {wrapGeometryContext} from './context/contexts-wrapper.jsx';
 // const Buffer = require('buffer').Buffer;
 // const Iconv  = require('iconv').Iconv;
 
@@ -377,7 +377,7 @@ class Map extends React.Component {
 
 
 
-
+/*
 const withGeometryContext = (Component) => (
   props => (
     <GeometryContext.Consumer>
@@ -385,7 +385,8 @@ const withGeometryContext = (Component) => (
     </GeometryContext.Consumer>
   )
 )
+*/
 
 
-export default withGeometryContext(Map);
+export default wrapGeometryContext(Map);
 

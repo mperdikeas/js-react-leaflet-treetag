@@ -32,21 +32,21 @@ class InformationPanelGeometryDefinition extends React.Component {
 
     const geometries = this.props.geometriesNames.map((x)=>{
       return (
-        <div class='row no-gutters' style={style1}>
+        <div key={x} className='row no-gutters' style={style1}>
           {x}
         </div>
       );
     });
     
     return (
-      <div id='detailInformation' class='col-4 padding-0' style={{backgroundColor: 'lightgrey'}}>
+      <div id='detailInformation' className='col-4 padding-0' style={{backgroundColor: 'lightgrey'}}>
         <div style={{backgroundColor: 'red'}}>
-          <div class='row no-gutters' style={style1}>
+          <div className='row no-gutters' style={style1}>
             Έχετε ορίσει τις παρακάτω γεωμετρίες
           </div>
           {geometries}
         </div>
-        <div class='row no-gutters' style={style2}>
+        <div className='row no-gutters' style={style2}>
             Γεωμετρία υπό ορισμό
         </div>        
       </div>

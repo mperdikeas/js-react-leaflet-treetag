@@ -10,9 +10,6 @@ var      cx = require('classnames');
 const assert = require('chai').assert;
 import axios from 'axios';
 
-import {GeometryContext} from './context/geometry-context.jsx';
-import {LoginContext}    from './context/login-context.jsx';
-
 import TilesSelector                           from './tiles-selector.jsx';
 import Map                                     from './map.jsx';
 import TreeInformationPanel                    from './information-panel-tree.jsx';
@@ -25,7 +22,7 @@ import UserControl                             from './user-control.jsx';
 import {geometriesValues, geometriesNames}     from './app-utils.js';
 import {BASE_URL}                              from './constants.js';
 import {setCookie}                             from './util.js';
-
+import wrapContexts                            from './context/contexts-wrapper.jsx';
 
 
 class App extends React.Component {
@@ -228,23 +225,6 @@ class App extends React.Component {
   }
 }
 
-
-const withGeometryContext = (Component) => (
-  props => (
-    <GeometryContext.Consumer>
-      {context => <Component geometryContext={context} {...props} />}
-    </GeometryContext.Consumer>
-  )
-)
-
-const withLoginContext = (Component) => (
-  props => (
-    <LoginContext.Consumer>
-      {context => <Component loginContext={context} {...props} />}
-    </LoginContext.Consumer>
-  )
-)
-
-export default withLoginContext(withGeometryContext(App));
+export default wrapContexts(App);
 
 console.log('app.jsx EXITING');

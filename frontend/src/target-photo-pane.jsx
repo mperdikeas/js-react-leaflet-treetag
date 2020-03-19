@@ -63,7 +63,7 @@ export default class TargetPhotoPane extends React.Component {
     console.log(`render(), state is: ${JSON.stringify(this.state)}`);
     if ((this.state.numOfPhotos === null) || ((this.state.numOfPhotos>0) && (this.state.photoBase64===null))) {
       return (
-        <img src={loading} class='img-fluid' alt='Please wait...'/>
+        <img src={loading} className='img-fluid' alt='Please wait...'/>
       );
 
     } else {
@@ -93,7 +93,7 @@ export default class TargetPhotoPane extends React.Component {
             return (
               <>
               <a href={`data:image/gif;base64,${photoBase64}`} download="tree-photo.jpg" style={style}>
-                <img src={`data:image;base64,${photoBase64}`} class='img-fluid' alt='Responsive image' style={style}/>
+                <img src={`data:image;base64,${photoBase64}`} className='img-fluid' alt='Responsive image' style={style}/>
               </a>
               </>
             );
@@ -120,7 +120,7 @@ export default class TargetPhotoPane extends React.Component {
         return (
           <>
           <div>photo of {this.props.targetId} taken on {photoBase64Instant.seconds}</div>
-          <div class='d-flex flex-row justify-content-between'>
+          <div className='d-flex flex-row justify-content-between'>
             <button type="button" disabled={firstImage} className={cx(prevButtonClasses)} onClick={this.prevImage}>prev</button>
             photo {currentPhotoIndx+1} of {numOfPhotos}
             <button type="button" disabled={lastImage} className={cx(nextButtonClasses)} onClick={this.nextImage}>next</button>

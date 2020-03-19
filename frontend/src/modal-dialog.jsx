@@ -83,7 +83,7 @@ class ModalDialog extends React.Component {
           <dialog id="dialog" ref={this.ref}>
             <form method="dialog" onSubmit={this.addGeometry}>
               <p>Please enter a name for this new geometry</p>
-              <label for='geometry-name-input'>Name for the new geometry</label>
+              <label htmlFor='geometry-name-input'>Name for the new geometry</label>
               <input ref={this.inputGeometryNameRef} type='text' id='geometry-name-input'/><br/>
               <input type="submit" value="OK"/>
             </form>
