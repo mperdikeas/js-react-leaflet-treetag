@@ -52,7 +52,7 @@ class TreeInformationPanel extends React.Component {
   render() {
     if (this.props.target===null) {
       return (
-        <div id='detailInformation' class='col-4 padding-0' style={{backgroundColor: 'lightgrey'}}>
+        <div id='detailInformation' className='col-4 padding-0' style={{backgroundColor: 'lightgrey'}}>
           click on a feature to see its information
         </div>
       );
@@ -68,27 +68,27 @@ class TreeInformationPanel extends React.Component {
       const klasses = Object.assign({'padding-0': true}
                                   , {'col-4': !this.props.maximized, 'col-12': this.props.maximized});
       return (
-        <div id='detail-information' class={cx(klasses)} style={{backgroundColor: 'lightgrey'}}>
-          <div class='row'>
-            <div class='col-6' style={{fontSize: '130%'}}>
+        <div id='detail-information' className={cx(klasses)} style={{backgroundColor: 'lightgrey'}}>
+          <div className='row'>
+            <div className='col-6' style={{fontSize: '130%'}}>
               info on&nbsp;
               <span style={{fontFamily: 'monospace'}}>{this.props.target.targetId}</span>
             </div>
-            <div class='col-6'>
-              <a id='toggle-info-panel' class={cx(defaultClasses)} href="#" onClick={this.props.toggleInfoPanel}>{toggleTxt}</a>
+            <div className='col-6'>
+              <a id='toggle-info-panel' className={cx(defaultClasses)} href="#" onClick={this.props.toggleInfoPanel}>{toggleTxt}</a>
             </div>
           </div>
-          <ul class="nav">
-            <li class="nav-item">
-              <a id='information' class={cx(informationClasses)} href="#" onClick={this.onInformation}>Πληροφορίες</a>
+          <ul className="nav">
+            <li className="nav-item">
+              <a id='information' className={cx(informationClasses)} href="#" onClick={this.onInformation}>Πληροφορίες</a>
             </li>
-            <li class="nav-item">
-              <a id='photos' class={cx(photoClasses)} href="#" onClick={this.onPhotos}>
+            <li className="nav-item">
+              <a id='photos' className={cx(photoClasses)} href="#" onClick={this.onPhotos}>
                 Φωτογραφίες
               </a>
             </li>
-            <li class="nav-item">
-              <a id='history' class={cx(historyClasses)} href="#" onClick={this.onHistory}>Ιστορικό</a>
+            <li className="nav-item">
+              <a id='history' className={cx(historyClasses)} href="#" onClick={this.onHistory}>Ιστορικό</a>
             </li>
           </ul>
           {paneToDisplay}

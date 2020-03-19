@@ -16,19 +16,19 @@ export default function TilesSelector(props) {
   const options = [];
   for (let x in BaseLayers) {
     options.push(
-      <a class="dropdown-item" onClick={()=>props.onTileProviderSelect(x)}>
+      <a key={x} className="dropdown-item" onClick={()=>props.onTileProviderSelect(x)}>
         {BaseLayers[x].friendlyName}
       </a>
     );
   }
   const dropDownMenu = (
-    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
       {options}
     </div>
   );
   return (
     <>
-    <button class="btn btn-primary dropdown-toggle"
+    <button className="btn btn-primary dropdown-toggle"
             type="button" id="dropdownMenuButton"
             data-toggle="dropdown"
             aria-haspopup="true"

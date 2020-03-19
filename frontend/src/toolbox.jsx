@@ -84,14 +84,14 @@ class Toolbox extends React.Component {
                                            , applicableStyle1
                                            , (idx===self.props.selectedTool)?{border: '3px solid red'}:{});
       const linkedVersion = (
-        <div class='col-12'>
+        <div key={idx} className='col-12'>
           <a href='/' onClick={el.f}>
             <img src={el.icon} style={applicableStyle2}/>
           </a>
         </div>
       );
       const unlinkedVersion = (
-        <div class='col-12'>
+        <div key={idx} className='col-12'>
           <img src={el.icon} style={Object.assign({}, applicableStyle2, {opacity: 0.2})}/>
         </div>
       );
@@ -106,7 +106,7 @@ class Toolbox extends React.Component {
     });
 
     return (
-      <div class='row no-gutters'>
+      <div className='row no-gutters'>
         {elems}
       </div>
     );

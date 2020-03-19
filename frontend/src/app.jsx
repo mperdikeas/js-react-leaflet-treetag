@@ -21,9 +21,11 @@ import PointCoordinates                        from './point-coordinates.jsx';
 import Toolbox                                 from './toolbox.jsx';
 import {SELECT_TREE_TOOL, DEFINE_POLYGON_TOOL} from './map-tools.js';
 import ModalDialog                             from './modal-dialog.jsx';
+import UserControl                             from './user-control.jsx';
 import {geometriesValues, geometriesNames}     from './app-utils.js';
 import {BASE_URL}                              from './constants.js';
 import {setCookie}                             from './util.js';
+
 
 
 class App extends React.Component {
@@ -95,25 +97,26 @@ class App extends React.Component {
                         , backgroundColor: 'green'};
 
     const gui = (
-      <div class='container-fluid' key='main-gui-component'>
-        <div class='row no-gutters'>
-          <div class={cx(classesForMapDiv)}>
-            <div class='row no-gutters justify-content-start align-items-center'
+      <div className='container-fluid' key='main-gui-component'>
+        <div className='row no-gutters'>
+          <div className={cx(classesForMapDiv)}>
+            <div className='row no-gutters justify-content-start align-items-center'
                  style={{height: `${this.props.geometryContext.headerBarHeight}px`}}>
-              <div class="col-3">
+              <div className="col-3">
                 <TilesSelector onTileProviderSelect={this.onTileProviderSelect}/> 
               </div>
               <PointCoordinates coords={this.state.coords}/>
+              <UserControl/>
             </div>
-            <div class='row no-gutters'>
-              <div class='col' style={toolboxStyle}>
+            <div className='row no-gutters'>
+              <div className='col' style={toolboxStyle}>
                 <Toolbox
                     selectedTool={this.state.selectedTool}            
                     updateSelectedTool = {this.updateSelectedTool}
                     geometryUnderDefinition={this.state.geometryUnderDefinition.length>0}
                 />
               </div>
-              <div class='col'>
+              <div className='col'>
                 <Map loggedIn={this.props.loginContext.username!==null}
                      tileProviderId={this.state.tileProviderId}
                      updateTarget={this.updateTarget}
