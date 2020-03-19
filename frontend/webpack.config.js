@@ -1,5 +1,8 @@
 'use strict';
-const path = require('path');
+
+const webpack = require('webpack');
+const path    = require('path');
+
 
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -9,8 +12,13 @@ const HTMLWebpackPluginConfig = new HtmlWebpackPlugin({
     inject: 'body'
 });
 
+const useDevelopmentMode = true;
+
+
+const mode = useDevelopmentMode?'development':'production';
+
 const config = {
-    mode: 'production',
+    mode: mode, // https://stackoverflow.com/a/51163094/274677
     devtool: 'source-map',
     devServer: {
         contentBase: './dist'
