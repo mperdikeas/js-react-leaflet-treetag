@@ -24,6 +24,22 @@ import {BASE_URL}                              from './constants.js';
 import {setCookie}                             from './util.js';
 import wrapContexts                            from './context/contexts-wrapper.jsx';
 
+// redux
+import { connect }          from 'react-redux';
+import {changeTileProvider} from './actions/index.js';
+
+
+const mapStateToProps = (state) => {
+  return {tileProviderId: state.tileProviderId};
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onTileProviderSelect : (tileProviderId) => dispatch(changeTileProvider(tileProviderId))
+    };
+  }
+
+
 
 class App extends React.Component {
 
@@ -31,8 +47,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tileProviderId: 'esri'
-      , maximizedInfo: false
+        maximizedInfo: false
       , target: null
       , coords: null
       , selectedTool: SELECT_TREE_TOOL
@@ -72,10 +87,6 @@ class App extends React.Component {
     this.setState({coords: coords});
   }
 
-  onTileProviderSelect = (tileProviderId) => {
-    this.setState({tileProviderId :tileProviderId});
-  }
-
   updateTarget = (targetId) => {
     this.setState({target: {targetId}});
   }
@@ -85,8 +96,6 @@ class App extends React.Component {
   }
 
   render() {
-    console.log('yyyyyyyyyyyyyy');
-
     const classesForMapDiv = Object.assign({'col-8': true, 'padding-0': true}
                                          , {hidden: this.state.maximizedInfo});
 
@@ -100,7 +109,7 @@ class App extends React.Component {
             <div className='row no-gutters justify-content-start align-items-center'
                  style={{height: `${this.props.geometryContext.headerBarHeight}px`}}>
               <div className="col-3">
-                <TilesSelector onTileProviderSelect={this.onTileProviderSelect}/> 
+                <TilesSelector onTileProviderSelect={this.props.onTileProviderSelect}/> 
               </div>
               <div className='col-7'>
                 <PointCoordinates coords={this.state.coords}/>
@@ -118,7 +127,7 @@ class App extends React.Component {
                 />
               </div>
               <div className='col'>
-                <Map tileProviderId={this.state.tileProviderId}
+                <Map tileProviderId={this.props.tileProviderId}
                      updateTarget={this.updateTarget}
                      updateCoordinates={this.updateCoordinates}
                      selectedTool={this.state.selectedTool}
@@ -228,6 +237,6 @@ class App extends React.Component {
   }
 }
 
-export default wrapContexts(App);
+export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(App));
 
 console.log('app.jsx EXITING');

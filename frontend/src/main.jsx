@@ -12,6 +12,8 @@ import './css/style.css';
 import GeometryContextProvider  from './context/geometry-context.jsx'
 import LoginContextProvider     from './context/login-context.jsx'
 
+import { Provider }             from "react-redux";
+import store                    from './store/index.js';
 
 $(document).ready(doStuff);
 
@@ -21,11 +23,13 @@ function doStuff() {
 
 function doRender() {
   ReactDOM.render(
-    <LoginContextProvider>
-      <GeometryContextProvider>
-        <App/>
-      </GeometryContextProvider>
-    </LoginContextProvider>
+    <Provider store={store}>
+      <LoginContextProvider>
+        <GeometryContextProvider>
+          <App/>
+        </GeometryContextProvider>
+      </LoginContextProvider>
+    </Provider>
     , $('#app')[0]);
 }
 
