@@ -34,7 +34,7 @@ import {DefaultIcon, TreeIcon}          from './icons.js';
 import rainbow from './rainbow.js';
 
 import {CustomCircleMarker} from './custom-markers.js';
-import {wrapGeometryContext} from './context/contexts-wrapper.jsx';
+import wrapContexts from './context/contexts-wrapper.jsx';
 // const Buffer = require('buffer').Buffer;
 // const Iconv  = require('iconv').Iconv;
 
@@ -227,7 +227,7 @@ class Map extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if ((prevProps.loggedIn===false) && (this.props.loggedIn===true))
+    if ((prevProps.loginContext.username===null) && (this.props.loginContext.username!==null))
       this.addLayerGroupsForPromisingLayers();
     if (this.props.deleteGeometryUnderDefinition) {
       console.log('deleting geometry under definition');
@@ -374,5 +374,5 @@ class Map extends React.Component {
 }
 
 
-export default wrapGeometryContext(Map);
+export default wrapContexts(Map);
 

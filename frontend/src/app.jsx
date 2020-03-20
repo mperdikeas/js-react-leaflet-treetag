@@ -118,8 +118,7 @@ class App extends React.Component {
                 />
               </div>
               <div className='col'>
-                <Map loggedIn={this.props.loginContext.username!==null}
-                     tileProviderId={this.state.tileProviderId}
+                <Map tileProviderId={this.state.tileProviderId}
                      updateTarget={this.updateTarget}
                      updateCoordinates={this.updateCoordinates}
                      selectedTool={this.state.selectedTool}
