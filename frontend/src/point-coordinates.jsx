@@ -12,12 +12,18 @@ proj4.defs([
 const WGS84  = 'EPSG:4326';
 const HGRS87 = 'EPSG:2100';
 
+// redux
+import { connect }          from 'react-redux';
 
-export default function PointCoordinates({coords}) {
-  if (coords===null)
+const mapStateToProps = (state) => {
+  return {latlng: state.latlng};
+};
+
+function PointCoordinates({latlng}) {
+  if (latlng===null)
     return null;
   else {
-    const {lat, lng} = coords;
+    const {lat, lng} = latlng;
     const precisionA = 8;
     const precisionB = 8;
     const formatA = `${lat.toPrecision(precisionA)}:${lng.toPrecision(precisionA)}`;
@@ -25,24 +31,28 @@ export default function PointCoordinates({coords}) {
     const formatB = `${hgrs87lat.toPrecision(precisionB)}:${hgrs87long.toPrecision(precisionB)}`;
     return (
       <>
-      <div className='row no-gutters'>
-        <div className="col-4">
-          WGS84
+      <div style={{fontSize: 12}}>
+        <div className='row no-gutters'>
+          <div className="col-4">
+            WGS84
+          </div>
+          <div className="col-8">
+            {formatA}
+          </div>
         </div>
-        <div className="col-8">
-          {formatA}
+        <div className='row no-gutters'>
+          <div className="col-4">
+            ΕΓΣΑ '87
+          </div>
+          <div className="col-8">
+            {formatB}
+          </div>
         </div>
       </div>
-      <div className='row no-gutters'>
-        <div className="col-4">
-          ΕΓΣΑ '87
-        </div>
-        <div className="col-8">
-          {formatB}
-        </div>
-      </div>
-
       </>
     );
   }
 }
+
+
+export default connect(mapStateToProps, null)(PointCoordinates);

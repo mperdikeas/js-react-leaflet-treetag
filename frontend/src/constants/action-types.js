@@ -1,1 +1,4 @@
 export const CHANGE_TILE_PROVIDER = "CHANGE_TILE_PROVIDER";
+export const UPDATE_MOUSE_COORDS  = "UPDATE_MOUSE_COORDS";
+
+// export const SELECT_TARGET        = "SELECT_TARGET";

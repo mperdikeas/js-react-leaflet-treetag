@@ -44,6 +44,16 @@ import {Athens, layerGroups, defaultMarkerStyle, USE_CLASSICAL_MARKERS} from './
 
 import {SELECT_TREE_TOOL, ADD_BEACON_TOOL, SELECT_GEOMETRY_TOOL, DEFINE_POLYGON_TOOL, MOVE_VERTEX_TOOL, REMOVE_TOOL} from './map-tools.js';
 
+import { connect }          from 'react-redux';
+import {updateMouseCoords}  from './actions/index.js';
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    updateCoordinates : (latlng) => dispatch(updateMouseCoords(latlng))
+    };
+  }
+
+
 // https://spatialreference.org/ref/epsg/2100/
 proj4.defs([
   [
@@ -173,8 +183,7 @@ class Map extends React.Component {
     });
     this.addTiles();
     this.addLayerGroupsExceptPromisingLayers();
-//    this.addLayerGroupsForPromisingLayers();
-    if (false)
+    if (true)
       this.map.on('mousemove', (e) => {
         this.props.updateCoordinates(e.latlng);
       })
@@ -374,5 +383,5 @@ class Map extends React.Component {
 }
 
 
-export default wrapContexts(Map);
+export default connect(null, mapDispatchToProps)(wrapContexts(Map));
 
