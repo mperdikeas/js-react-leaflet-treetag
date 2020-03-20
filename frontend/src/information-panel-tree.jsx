@@ -67,13 +67,19 @@ class TreeInformationPanel extends React.Component {
       const toggleTxt = this.props.maximized?'Ελαχιστοποίηση':'Μεγιστοποίηση';
       const klasses = Object.assign({'padding-0': true}
                                   , {'col-4': !this.props.maximized, 'col-12': this.props.maximized});
+
+      const tagReal = (<div className='col-6' style={{fontSize: '130%'}}>
+          info on&nbsp;
+          <span style={{fontFamily: 'monospace'}}>{this.props.target.targetId}</span>
+      </div>);
+      const tagDummy = (<div className='col-6' style={{fontSize: '130%'}}>
+          Tag #
+          <span style={{fontFamily: 'monospace'}}>198305193817</span>
+      </div>);
       return (
         <div id='detail-information' className={cx(klasses)} style={{backgroundColor: 'lightgrey'}}>
           <div className='row'>
-            <div className='col-6' style={{fontSize: '130%'}}>
-              info on&nbsp;
-              <span style={{fontFamily: 'monospace'}}>{this.props.target.targetId}</span>
-            </div>
+            {tagReal}
             <div className='col-6'>
               <a id='toggle-info-panel' className={cx(defaultClasses)} href="#" onClick={this.props.toggleInfoPanel}>{toggleTxt}</a>
             </div>

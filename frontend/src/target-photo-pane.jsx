@@ -117,13 +117,16 @@ export default class TargetPhotoPane extends React.Component {
                                                   disabled: lastImage,
                                                   'not-allowed':lastImage
                                                 });
+        const divActualDate = (<div>photo of {this.props.targetId} taken on {photoBase64Instant.seconds}</div>);
+        const divDummyDate = (<div>Ημερομηνία λήψης 2019-10-03</div>);
+        const prevNextStyle = {fontSize: 18, fontWeight: 'bold'};
         return (
           <>
-          <div>photo of {this.props.targetId} taken on {photoBase64Instant.seconds}</div>
+          {divActualDate}
           <div className='d-flex flex-row justify-content-between'>
-            <button type="button" disabled={firstImage} className={cx(prevButtonClasses)} onClick={this.prevImage}>prev</button>
-            photo {currentPhotoIndx+1} of {numOfPhotos}
-            <button type="button" disabled={lastImage} className={cx(nextButtonClasses)} onClick={this.nextImage}>next</button>
+            <button type="button" disabled={firstImage} className={cx(prevButtonClasses)} style={prevNextStyle} onClick={this.prevImage}>&lt;</button>
+            Φωτό {currentPhotoIndx+1} από {numOfPhotos}
+            <button type="button" disabled={lastImage} className={cx(nextButtonClasses)} style={prevNextStyle} onClick={this.nextImage}>&gt;</button>
           </div>
           {imageDiv}
           </>

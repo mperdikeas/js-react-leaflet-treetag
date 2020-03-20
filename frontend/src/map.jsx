@@ -370,7 +370,7 @@ class Map extends React.Component {
   takeCareOfHighlightedMarker(previousMarker, newMarker) {
     if (previousMarker !== newMarker) {
       if (previousMarker !== null) {
-        previousMarker.setStyle(defaultMarkerStyle);
+        previousMarker.setStyle(defaultMarkerStyle());
       }
       if (newMarker !== null) {
         newMarker.setStyle({

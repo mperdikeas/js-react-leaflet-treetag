@@ -137,7 +137,7 @@ public class MainResource {
 
     private static List<BasicTreeInfo> getTrees() {
         final List<BasicTreeInfo> rv = new ArrayList<>();
-        final int N = 100;
+        final int N = 10*1000;
         final Random r = new Random();
         for (int i = 0; i < N ; i++) {
             final double longAthens = 23.72;
@@ -184,7 +184,7 @@ public class MainResource {
                                       , featureId
                                       , photoIndx
                                       , httpServletRequest.getRemoteAddr()));
-            TimeUnit.MILLISECONDS.sleep(500);
+            TimeUnit.MILLISECONDS.sleep(200);
             final String photoBase64 = getPhotoBase64(featureId, photoIndx);
             final Instant photoInstant = getPhotoInstant(featureId);
             final FeaturePhoto featurePhoto = new FeaturePhoto(photoBase64, photoInstant);
@@ -205,6 +205,7 @@ public class MainResource {
     }
     private String getPhotoBase64(final int featureId, final int photoIndx) throws Exception {
         final String[] photos = new String[]{
+            "urban-olive-tree.jpeg",
             "olive-3687482__340.jpg",
             "olives-1752199__340.jpg", 
             "olive-tree-1973386__340.jpg", 

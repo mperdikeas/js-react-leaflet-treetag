@@ -31,9 +31,15 @@ const N = 10;
 
 const myRenderer = L.canvas({ padding: 0.5 });
 
-const defaultMarkerStyle = {
-    color: '#3388ff',
-    radius: 8
+let step = 0;
+
+const defaultMarkerStyle = ()=>{
+    const color = rainbow(20, step);
+    step+=1;
+    return {
+        color: color,
+        radius: 8
+    };
 };
 
 
@@ -71,9 +77,9 @@ const circleMarkersLG = ()=> {
                 const useCanvasRenderer = true;
                 const styleOptions = (()=>{
                     if (useCanvasRenderer)
-                        return Object.assign({}, defaultMarkerStyle, {renderer: myRenderer});
+                        return Object.assign({}, defaultMarkerStyle(), {renderer: myRenderer});
                     else
-                        return Object.assign({}, defaultMarkerStyle);
+                        return Object.assign({}, defaultMarkerStyle());
                 })();
 
                 const effectiveOptions = Object.assign({}, baseOptions, styleOptions);
