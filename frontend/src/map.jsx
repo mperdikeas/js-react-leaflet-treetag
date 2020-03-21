@@ -60,7 +60,7 @@ const mapStateToProps = (state) => {
     , mode: state.mode
     , userDefinedGeometries: state.userDefinedGeometries
     , geometryUnderDefinition: state.geometryUnderDefinition
-    , deleteGeometryUnderDefinition: state.flags.deleteGeometryUnderDefinition
+    , deleteGeometryUnderDefinition: state.flags.DELETE_GEOMETRY_UNDER_DEFINITION
   };
 };
 
