@@ -9,7 +9,7 @@ var      cx = require('classnames');
 const assert = require('chai').assert;
 
 require('./css/information-panel.css');
-import {geometriesValues, geometriesNames}     from './app-utils.js';
+// import {geometriesValues, geometriesNames}     from './app-utils.js';
 
 // redux
 import { connect }          from 'react-redux';
@@ -19,7 +19,7 @@ import {changeTileProvider} from './actions/index.js';
 
 const mapStateToProps = (state) => {
   return {
-    geometriesNames: geometriesNames(state.userDefinedGeometries)
+    geometriesNames: state.userDefinedGeometries.map(x => x.geometryName)
   }
 };
 
@@ -43,6 +43,7 @@ class InformationPanelGeometryDefinition extends React.Component {
     };
 
     const geometries = this.props.geometriesNames.map((x)=>{
+      console.log(`x is ${x}`);
       return (
         <div key={x} className='row no-gutters' style={style1}>
           {x}

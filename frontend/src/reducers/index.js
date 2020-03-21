@@ -4,7 +4,9 @@ import {CHANGE_TILE_PROVIDER
         , TOGGLE_MODE
         , CLEAR_FLAG
         , ADD_POINT_TO_POLYGON_UNDER_CONSTRUCTION
-        , DISPLAY_MODAL} from '../constants/action-types.js';
+        , DISPLAY_MODAL
+        , CLEAR_MODAL
+        , ADD_GEOMETRY} from '../constants/action-types.js';
 
 import {SELECT_TREE, DEFINE_POLYGON} from '../constants/modes.js';
 
@@ -52,6 +54,14 @@ function rootReducer(state = initialState, action) {
         // TODO - use this idiom: this.setState({geometryUnderDefinition: [...this.state.geometryUnderDefinition, {lat, lng}]});
     case DISPLAY_MODAL:
         return Object.assign({}, state, {modalType: action.payload.modalType});
+    case CLEAR_MODAL:
+        return Object.assign({}, state, {modalType: null});
+    case ADD_GEOMETRY:
+        return Object.assign({}, state, {modalType: null
+                                         , geometryUnderDefinition: []
+                                         , userDefinedGeometries: [...state.userDefinedGeometries
+                                                                   , {geometryName: action.payload.geometryName
+                                                                      , points: action.payload.points}]});
     default:
         return state;        
     }

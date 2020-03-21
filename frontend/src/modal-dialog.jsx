@@ -7,6 +7,8 @@ const React = require('react');
 var      cx = require('classnames');
 
 const assert = require('chai').assert;
+import axios from 'axios';
+import {setCookie}                             from './util.js';
 
 import {GeometryContext} from './context/geometry-context.jsx';
 
@@ -17,8 +19,29 @@ import InformationPanelGeometryDefinition      from './information-panel-geometr
 import PointCoordinates                        from './point-coordinates.jsx';
 import Toolbox                                 from './toolbox.jsx';
 import {SELECT_TREE_TOOL, DEFINE_POLYGON_TOOL} from './map-tools.js';
+import {BASE_URL}                              from './constants.js';
 
 import './css/modal-dialog.css'; // TODO: use React emotion for element-scoped CSS
+
+import wrapContexts from './context/contexts-wrapper.jsx';
+
+// redux
+import {  connect   }              from 'react-redux';
+import { clearModal, addGeometry } from './actions/index.js';
+
+
+const mapStateToProps = (state) => {
+  return {
+    modalType: state.modalType
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    clearModal : () => dispatch(clearModal())
+    , addGeometry: (geometryName) => dispatch(addGeometry(geometryName))
+    };
+}
 
 class ModalDialog extends React.Component {
 
@@ -28,6 +51,10 @@ class ModalDialog extends React.Component {
     this.inputGeometryNameRef = React.createRef();
     this.inputUsernameRef     = React.createRef();
     this.inputPasswordRef     = React.createRef();
+
+    this.state = {
+      logErrMsg: null
+    };    
   }
 
   componentDidMount() {
@@ -45,33 +72,48 @@ class ModalDialog extends React.Component {
     }
   }
 
-  /*
-  handleSubmit = (ev) => {
-    ev.preventDefault();
-    switch (this.props.modalType) {
-      case 'geometry-name':
-
-        break;
-      default:
-        assert.fail(`unrecognized modal type: ${this.props.modalType}`);
-
-    } // switch
-  }
-*/
   addGeometry = (ev) => {
     ev.preventDefault();    
     const geometryName = this.inputGeometryNameRef.current.value;
-    this.props.modalProps.addGeometry(geometryName);
+    this.props.addGeometry(geometryName);
   }
 
   login = (ev) => {
     ev.preventDefault();
     const username = this.inputUsernameRef.current.value;
     const password = this.inputPasswordRef.current.value;
-    this.props.modalProps.login(username, password);
+    this.doLogin(username, password);
   }
 
     
+  doLogin = (username, password) => {
+    const url = `${BASE_URL}/login`;
+    axios.post(url, {
+      username: username,
+      password: password
+    }).then(res => {
+      if (res.data.err != null) {
+        console.log('login API call error');
+        assert.fail(res.data.err);
+      } else {
+        console.log('login API call success');
+        if (res.data.t.loginFailureReason===null) {
+          setCookie('access_token', res.data.t.accessToken, 0);
+          console.log('login was successful and cookie was set');
+          this.props.clearModal();
+          this.props.loginContext.updateLogin(username);
+        } else {
+          console.log('login was unsuccessful');
+          this.setState({logErrMsg: res.data.t.loginFailureReason});
+        }
+      }
+    }).catch( err => {
+      console.log(err);
+      console.log(JSON.stringify(err));
+      assert.fail(err);
+    });
+  }
+
 
 
   render() {
@@ -93,7 +135,7 @@ class ModalDialog extends React.Component {
         )
       case 'login':
         const logErrMsg = (()=>{
-          const msg = this.props.modalProps.logErrMsg
+          const msg = this.state.logErrMsg
           if (msg)
             return <div style={{color: 'red'}}>{msg}</div>;
           else
@@ -128,6 +170,6 @@ class ModalDialog extends React.Component {
 }
 
 
+export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(ModalDialog));
 
-export default ModalDialog;
 

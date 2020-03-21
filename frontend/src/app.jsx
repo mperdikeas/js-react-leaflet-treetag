@@ -8,7 +8,7 @@ const React = require('react');
 var      cx = require('classnames');
 
 const assert = require('chai').assert;
-import axios from 'axios';
+//import axios from 'axios';
 
 import TilesSelector                           from './tiles-selector.jsx';
 import Map                                     from './map.jsx';
@@ -19,7 +19,7 @@ import Toolbox                                 from './toolbox.jsx';
 import {SELECT_TREE_TOOL, DEFINE_POLYGON_TOOL} from './map-tools.js';
 import ModalDialog                             from './modal-dialog.jsx';
 import UserControl                             from './user-control.jsx';
-import {BASE_URL}                              from './constants.js';
+//import {BASE_URL}                              from './constants.js';
 import {setCookie}                             from './util.js';
 import wrapContexts                            from './context/contexts-wrapper.jsx';
 import {SELECT_TREE, DEFINE_POLYGON, ADD_BEACON, SELECT_GEOMETRY} from './constants/modes.js';
@@ -141,15 +141,12 @@ class App extends React.Component {
 
 
     return (
-      <ModalDialog
-          modalType   = {this.props.modalType}
-          modalProps  = {this.createPropertiesForModalType()}
-      >
+      <ModalDialog>
         {gui}
       </ModalDialog>
     );
   }
-
+/*
   createPropertiesForModalType = () => {
     switch (this.state.modalType) {
       case 'geometry-name':
@@ -162,7 +159,7 @@ class App extends React.Component {
         assert.fail(`unhandled modal type: ${this.state.modalType}`);
     }
   }
-
+*/
 
 
   addGeometry = (geometryName) => {
@@ -175,6 +172,7 @@ class App extends React.Component {
                  , geometryUnderDefinition: []});
   }
 
+/*
   login = (username, password) => {
     const url = `${BASE_URL}/login`;
     axios.post(url, {
@@ -202,7 +200,7 @@ class App extends React.Component {
       assert.fail(err);
     });
   }
-
+*/
   informationPanel = () => {
     const treeInformationPanel = (
       <TreeInformationPanel

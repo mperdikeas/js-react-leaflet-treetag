@@ -4,4 +4,6 @@ export const TOGGLE_MODE          = "TOGGLE_MODE";
 export const CLEAR_FLAG           = "CLEAR_FLAG";
 export const ADD_POINT_TO_POLYGON_UNDER_CONSTRUCTION = "ADD_POINT_TO_POLYGON_UNDER_CONSTRUCTION";
 export const DISPLAY_MODAL        = "DISPLAY_MODAL";
+export const CLEAR_MODAL          = "CLEAR_MODAL";
+export const ADD_GEOMETRY         = "ADD_GEOMETRY";
 

@@ -1,10 +1,13 @@
-function geometriesValues(userDefinedGeometries) {
-    return userDefinedGeometries.map( (x)=>x.value );
+// TODO: REMOVE THIS FILE
+function geometriesPoints(userDefinedGeometries) {
+    return userDefinedGeometries.map( (x)=>x.points );
 }
 
 function geometriesNames(userDefinedGeometries) {
-    return userDefinedGeometries.map( (x)=>x.name );
+    return userDefinedGeometries
 }
 
 exports.geometriesValues = geometriesValues;
 exports.geometriesNames = geometriesNames;
+
+
