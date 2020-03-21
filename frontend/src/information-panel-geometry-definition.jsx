@@ -9,7 +9,19 @@ var      cx = require('classnames');
 const assert = require('chai').assert;
 
 require('./css/information-panel.css');
+import {geometriesValues, geometriesNames}     from './app-utils.js';
 
+// redux
+import { connect }          from 'react-redux';
+import {changeTileProvider} from './actions/index.js';
+
+
+
+const mapStateToProps = (state) => {
+  return {
+    geometriesNames: geometriesNames(state.userDefinedGeometries)
+  }
+};
 
 class InformationPanelGeometryDefinition extends React.Component {
 
@@ -55,5 +67,5 @@ class InformationPanelGeometryDefinition extends React.Component {
 }
       
 
-export default InformationPanelGeometryDefinition;
+export default connect(mapStateToProps, null)(InformationPanelGeometryDefinition);
 

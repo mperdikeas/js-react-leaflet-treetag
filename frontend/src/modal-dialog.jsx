@@ -106,9 +106,9 @@ class ModalDialog extends React.Component {
               {logErrMsg}
               <p>Please provide your username and password</p>
               <label htmlFor='login-name-input'>Username</label>
-              <input ref={this.inputUsernameRef} type='text' id='login-name-input'/><br/>
+              <input ref={this.inputUsernameRef} type='text' id='login-name-input' value='admin'/><br/>
               <label htmlFor='login-pass-input'>Password</label>
-              <input ref={this.inputPasswordRef} type='text' id='login-pass-input'/><br/>          
+              <input ref={this.inputPasswordRef} type='text' id='login-pass-input' value='pass'/><br/>
               <input type="submit" value="OK"/>
             </form>
           </dialog>

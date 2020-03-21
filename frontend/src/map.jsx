@@ -42,14 +42,33 @@ import wrapContexts from './context/contexts-wrapper.jsx';
 import {Athens, layerGroups, defaultMarkerStyle, USE_CLASSICAL_MARKERS} from './tree-markers.js';
 
 
-import {SELECT_TREE_TOOL, ADD_BEACON_TOOL, SELECT_GEOMETRY_TOOL, DEFINE_POLYGON_TOOL, MOVE_VERTEX_TOOL, REMOVE_TOOL} from './map-tools.js';
+// import {SELECT_TREE_TOOL, ADD_BEACON_TOOL, SELECT_GEOMETRY_TOOL, DEFINE_POLYGON_TOOL, MOVE_VERTEX_TOOL, REMOVE_TOOL} from './map-tools.js';
+
+import {SELECT_TREE, DEFINE_POLYGON, ADD_BEACON, SELECT_GEOMETRY} from './constants/modes.js';
 
 import { connect }          from 'react-redux';
-import {updateMouseCoords}  from './actions/index.js';
+import {updateMouseCoords
+      , clearFlag
+      , addPointToPolygonUnderConstruction
+      , displayModal}  from './actions/index.js';
+
+
+const mapStateToProps = (state) => {
+  return {
+    tileProviderId: state.tileProviderId
+    , mode: state.mode
+    , userDefinedGeometries: state.userDefinedGeometries
+    , geometryUnderDefinition: state.geometryUnderDefinition
+    , deleteGeometryUnderDefinition: state.flags.deleteGeometryUnderDefinition
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    updateCoordinates : (latlng) => dispatch(updateMouseCoords(latlng))
+    updateCoordinates                   : (latlng) => dispatch(updateMouseCoords(latlng))
+    , clearDeleteGeometryUnderDefinition: ()       => dispatch(clearFlag(DELETE_GEOMETRY_UNDER_DEFINITION))
+    , addPointToPolygonUnderConstruction: (latlng) => dispatch(addPointToPolygonUnderConstruction(latlng))
+    , displayAddPolygonDialog           : ()       => dispatch(displayModal('geometry-name'))
     };
   }
 
@@ -93,25 +112,27 @@ class Map extends React.Component {
 
   handleClick = (e) => {
     this.props.updateCoordinates(e.latlng);
-    switch (this.props.selectedTool) {
+    switch (this.props.mode) {
 
       case null:
         break;
-      case SELECT_TREE_TOOL:
+      case SELECT_TREE:
         break;        
-      case ADD_BEACON_TOOL:
+      case ADD_BEACON:
         this.addBeacon(e.latlng, 20, 2000);
         break;
-      case SELECT_GEOMETRY_TOOL:
+      case SELECT_GEOMETRY:
         this.selectGeometry(e.latlng);
         break;
-      case DEFINE_POLYGON_TOOL:
+      case DEFINE_POLYGON:
+        console.log(e);
+        console.log(e.latlng);
         this.addBeacon(e.latlng, 10, 1000);
         this.props.addPointToPolygonUnderConstruction(e.latlng);
         break;
-      case MOVE_VERTEX_TOOL:
+      case MOVE_VERTEX:
         break;
-      case REMOVE_TOOL:
+      case REMOVE:
         break;
       default:
         assert.fail('not handled 6');
@@ -141,7 +162,7 @@ class Map extends React.Component {
 
   drawPolygon = () => {
     console.log('drawPolygon');
-    if (this.props.selectedTool===DEFINE_POLYGON_TOOL) {
+    if (this.props.mode===DEFINE_POLYGON) {
       console.log(`this.props.geometryUnderDefinition.length=${this.props.geometryUnderDefinition.length}`);
 
       if (this.currentPolygon!=null) {
@@ -191,7 +212,7 @@ class Map extends React.Component {
 
     $('div.leaflet-control-container section.leaflet-control-layers-list div.leaflet-control-layers-overlays input.leaflet-control-layers-selector[type="checkbox"]').on('change', (e)=>{
     });
-    assert.strictEqual(this.props.selectedTool, SELECT_TREE_TOOL);
+    assert.strictEqual(this.props.mode, SELECT_TREE);
   }
 
 
@@ -240,7 +261,7 @@ class Map extends React.Component {
       this.addLayerGroupsForPromisingLayers();
     if (this.props.deleteGeometryUnderDefinition) {
       console.log('deleting geometry under definition');
-      assert.strictEqual(this.props.selectedTool, null);
+      assert.strictEqual(this.props.mode, null);
       assert.isTrue(this.currentPolygon != null, 'this.currentPolygon is curiously null');
       this.map.removeLayer(this.currentPolygon);
       this.currentPolygon = null;
@@ -253,7 +274,7 @@ class Map extends React.Component {
     if (prevProps.tileProviderId!==this.props.tileProviderId) {
       this.addTiles();
     }
-    if (prevProps.selectedTool === this.props.selectedTool) {
+    if (prevProps.mode === this.props.mode) {
       if ((prevProps.geometryUnderDefinition.length !== this.props.geometryUnderDefinition.length)
           &&
           (this.props.geometryUnderDefinition.length>0)) {
@@ -271,9 +292,9 @@ class Map extends React.Component {
 
 
   handleToolTransition_SELECT_TREE = (prevProps) => {
-    if (exactlyOne(  (prevProps.selectedTool === SELECT_TREE_TOOL)
-                  , (this.props.selectedTool === SELECT_TREE_TOOL))) {
-      if (this.props.selectedTool === SELECT_TREE_TOOL) {
+    if (exactlyOne(  (prevProps.mode === SELECT_TREE)
+                  , (this.props.mode === SELECT_TREE))) {
+      if (this.props.mode === SELECT_TREE) {
         this.addClickListenersToMarkers();
       } else  {
         console.log('removing marker click listeners');
@@ -286,10 +307,10 @@ class Map extends React.Component {
 
   
   handleToolTransition_DEFINE_POLYGON = (prevProps) => {
-    if ((prevProps.selectedTool !== DEFINE_POLYGON_TOOL) && (this.props.selectedTool === DEFINE_POLYGON_TOOL)) {
+    if ((prevProps.mode !== DEFINE_POLYGON) && (this.props.mode === DEFINE_POLYGON)) {
       window.addEventListener ('keyup', this.handleKeyUp);
       return 1;
-    } else if ((prevProps.selectedTool === DEFINE_POLYGON_TOOL) && (this.props.selectedTool !== DEFINE_POLYGON_TOOL)) {
+    } else if ((prevProps.mode === DEFINE_POLYGON) && (this.props.mode !== DEFINE_POLYGON)) {
       window.removeEventListener ('keyup', this.handleKeyUp);
       return 1;
     }
@@ -299,9 +320,9 @@ class Map extends React.Component {
 
   handleKeyUp = (e) => {
     if (e.keyCode === keycode('ESC')) {
-      assert.strictEqual(this.props.selectedTool, DEFINE_POLYGON_TOOL);
+      assert.strictEqual(this.props.mode, DEFINE_POLYGON);
       this.currentPolygon = null;
-      this.props.addPolygon();
+      this.props.displayAddPolygonDialog();
     }
   }
 
@@ -348,7 +369,7 @@ class Map extends React.Component {
   render() {
     const style = (()=>{
       const style = {height: `${this.getMapHeight()}px`};
-      if (this.props.selectedTool === DEFINE_POLYGON_TOOL) {
+      if (this.props.mode === DEFINE_POLYGON) {
         Object.assign(style, {cursor: 'crosshair'});
       }
       return style;
@@ -383,5 +404,5 @@ class Map extends React.Component {
 }
 
 
-export default connect(null, mapDispatchToProps)(wrapContexts(Map));
+export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(Map));
 

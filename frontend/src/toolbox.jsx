@@ -17,8 +17,29 @@ import definePolygonInProgress  from './resources/polygon-tool-in-progress-32.pn
 import remove                   from './resources/andrew-cross-32.png';
 import moveVertex               from './resources/move-vertex-32.png';
 
-import {SELECT_TREE_TOOL, ADD_BEACON_TOOL, SELECT_GEOMETRY_TOOL, DEFINE_POLYGON_TOOL, MOVE_VERTEX_TOOL, REMOVE_TOOL} from './map-tools.js';
+//import {SELECT_TREE_TOOL, ADD_BEACON_TOOL, SELECT_GEOMETRY_TOOL, DEFINE_POLYGON_TOOL, MOVE_VERTEX_TOOL, REMOVE_TOOL} from './map-tools.js';
 
+import {SELECT_TREE, ADD_BEACON, SELECT_GEOMETRY, DEFINE_POLYGON, MOVE_VERTEX, REMOVE} from './constants/modes.js';
+
+
+// redux
+import { connect }          from 'react-redux';
+import {toggleMode}         from './actions/index.js';
+
+
+const mapStateToProps = (state) => {
+  return {
+    mode: state.mode
+    , geometryUnderDefinition: state.geometryUnderDefinition.length>0
+
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    toggleMode : (mode) => dispatch(toggleMode(mode))
+    };
+  }
 
 
 class Toolbox extends React.Component {
@@ -33,42 +54,44 @@ class Toolbox extends React.Component {
 
   chooseSelectTree = (e) => {
     e.preventDefault();
-    this.props.updateSelectedTool(SELECT_TREE_TOOL);
+    this.props.toggleMode(SELECT_TREE);
   }
 
   chooseAddBeacon = (e) => {
     e.preventDefault();
-    this.props.updateSelectedTool(ADD_BEACON_TOOL);
+    this.props.toggleMode(ADD_BEACON);
   }
 
   chooseSelectGeometry = (e) => {
     e.preventDefault();
-    this.props.updateSelectedTool(SELECT_GEOMETRY_TOOL);
+    this.props.toggleMode(SELECT_GEOMETRY);
   }
 
   chooseDefinePolygon = (e) => {
     e.preventDefault();
-    this.props.updateSelectedTool(DEFINE_POLYGON_TOOL);
+    this.props.toggleMode(DEFINE_POLYGON);
   }
 
   chooseMoveVertex = (e) => {
     e.preventDefault();
-    this.props.updateSelectedTool(MOVE_VERTEX_TOOL);
+    this.props.toggleMode(MOVE_VERTEX);
   }
 
   chooseRemove = (e) => {
     e.preventDefault();
-    this.props.updateSelectedTool(REMOVE_TOOL);
+    this.props.toggleMode(REMOVE);
   }
   
 
   render = () => {
-    const tools = [ {icon:selectTree     , f: this.chooseSelectTree}
-                  , {icon:addBeacon      , f: this.chooseAddBeacon}
-                  , {icon:selectGeometry , f: this.chooseSelectGeometry}
-                  , {icon: (this.props.geometryUnderDefinition?definePolygonInProgress:definePolygon)  , f: this.chooseDefinePolygon}
-                  , {icon:moveVertex     , f: this.chooseMoveVertex}
-                  , {icon:remove         , f: this.chooseRemove}];
+    const tools = [ {icon:selectTree     , mode: SELECT_TREE, f: this.chooseSelectTree}
+                  , {icon:addBeacon      , mode: ADD_BEACON , f: this.chooseAddBeacon}
+                  , {icon:selectGeometry , mode: SELECT_GEOMETRY, f: this.chooseSelectGeometry}
+                  , {icon: (this.props.geometryUnderDefinition?definePolygonInProgress:definePolygon)
+                    , mode: DEFINE_POLYGON
+                   , f: this.chooseDefinePolygon}
+                  , {icon:moveVertex     , mode: MOVE_VERTEX, f: this.chooseMoveVertex}
+                  , {icon:remove         , mode: REMOVE     , f: this.chooseRemove}];
     
     const style = {display: 'block'
                  , margin: 'auto'
@@ -82,7 +105,7 @@ class Toolbox extends React.Component {
       const applicableStyle1 = (idx===0)?styleFirstIcon:styleSubsequentIcons;
       const applicableStyle2 = Object.assign({}
                                            , applicableStyle1
-                                           , (idx===self.props.selectedTool)?{border: '3px solid red'}:{});
+                                           , (el.mode===self.props.mode)?{border: '3px solid red'}:{});
       const linkedVersion = (
         <div key={idx} className='col-12'>
           <a href='/' onClick={el.f}>
@@ -96,7 +119,7 @@ class Toolbox extends React.Component {
         </div>
       );
       if (this.props.geometryUnderDefinition) {
-        if (idx===self.props.selectedTool)
+        if (el.mode===self.props.mode)
           return linkedVersion;
         else
           return unlinkedVersion;
@@ -114,6 +137,5 @@ class Toolbox extends React.Component {
 }
 
 
-
-export default Toolbox;
+export default connect(mapStateToProps, mapDispatchToProps)(Toolbox);
 

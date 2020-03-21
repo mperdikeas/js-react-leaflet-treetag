@@ -19,10 +19,10 @@ import Toolbox                                 from './toolbox.jsx';
 import {SELECT_TREE_TOOL, DEFINE_POLYGON_TOOL} from './map-tools.js';
 import ModalDialog                             from './modal-dialog.jsx';
 import UserControl                             from './user-control.jsx';
-import {geometriesValues, geometriesNames}     from './app-utils.js';
 import {BASE_URL}                              from './constants.js';
 import {setCookie}                             from './util.js';
 import wrapContexts                            from './context/contexts-wrapper.jsx';
+import {SELECT_TREE, DEFINE_POLYGON, ADD_BEACON, SELECT_GEOMETRY} from './constants/modes.js';
 
 // redux
 import { connect }          from 'react-redux';
@@ -30,7 +30,11 @@ import {changeTileProvider} from './actions/index.js';
 
 
 const mapStateToProps = (state) => {
-  return {tileProviderId: state.tileProviderId};
+  return {
+    tileProviderId: state.tileProviderId
+    , mode: state.mode
+    , modalType: state.modalType
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
@@ -49,34 +53,29 @@ class App extends React.Component {
     this.state = {
         maximizedInfo: false
       , target: null
-      , coords: null
-      , selectedTool: SELECT_TREE_TOOL
-      , userDefinedGeometries: []
-      , geometryUnderDefinition: []
-      , modalType: 'login'
       , logErrMsg: null
     };
   }
 
-
+/*
   addPointToPolygonUnderConstruction = ({lat, lng})=>{
     this.setState({geometryUnderDefinition: [...this.state.geometryUnderDefinition, {lat, lng}]});
   }
-  
-
-  updateSelectedTool = (selectedTool) => {
-    if (selectedTool===this.state.selectedTool) {
-      if (selectedTool === DEFINE_POLYGON_TOOL) {
+  */
+/*
+  updateSelectedTool = (mode) => {
+    if (mode===this.state.mode) {
+      if (mode === DEFINE_POLYGON_TOOL) {
         console.log('case A');
         this.setState({deleteGeometryUnderDefinition: this.state.geometryUnderDefinition.length>0
-                     , selectedTool: null
+                     , mode: null
                      , geometryUnderDefinition: []});
       } else {
         console.log('case B');
-        this.setState({deleteGeometryUnderDefinition: false, selectedTool: null});
+        this.setState({deleteGeometryUnderDefinition: false, mode: null});
       }
     } else
-    this.setState({selectedTool, deleteGeometryUnderDefinition: false});
+    this.setState({mode, deleteGeometryUnderDefinition: false});
   }
 
   clearDeleteGeometryUnderDefinition = ()=>{
@@ -86,7 +85,7 @@ class App extends React.Component {
   updateCoordinates = (coords) => {
     this.setState({coords: coords});
   }
-
+*/
   updateTarget = (targetId) => {
     this.setState({target: {targetId}});
   }
@@ -101,7 +100,13 @@ class App extends React.Component {
 
     const toolboxStyle = {flex: `0 0 ${this.props.geometryContext.toolboxTotalWidth()}px`
                         , backgroundColor: 'green'};
-
+    /*
+                <Toolbox
+                    mode={this.state.mode}            
+                    updateSelectedTool = {this.updateSelectedTool}
+                    geometryUnderDefinition={this.state.geometryUnderDefinition.length>0}
+                />
+    */
     const gui = (
       <div className='container-fluid' key='main-gui-component'>
         <div className='row no-gutters'>
@@ -112,7 +117,7 @@ class App extends React.Component {
                 <TilesSelector onTileProviderSelect={this.props.onTileProviderSelect}/> 
               </div>
               <div className='col-7'>
-                <PointCoordinates coords={this.state.coords}/>
+                <PointCoordinates/>
               </div>
               <div className='col-2'>
                 <UserControl/>
@@ -120,23 +125,11 @@ class App extends React.Component {
             </div>
             <div className='row no-gutters'>
               <div className='col' style={toolboxStyle}>
-                <Toolbox
-                    selectedTool={this.state.selectedTool}            
-                    updateSelectedTool = {this.updateSelectedTool}
-                    geometryUnderDefinition={this.state.geometryUnderDefinition.length>0}
-                />
+                <Toolbox/>
               </div>
               <div className='col'>
                 <Map tileProviderId={this.props.tileProviderId}
                      updateTarget={this.updateTarget}
-                     updateCoordinates={this.updateCoordinates}
-                     selectedTool={this.state.selectedTool}
-                     userDefinedGeometries={geometriesValues(this.state.userDefinedGeometries)}
-                     geometryUnderDefinition={this.state.geometryUnderDefinition}
-                     deleteGeometryUnderDefinition={this.state.deleteGeometryUnderDefinition}
-                     clearDeleteGeometryUnderDefinition={this.clearDeleteGeometryUnderDefinition}
-                     addPointToPolygonUnderConstruction={this.addPointToPolygonUnderConstruction}
-                     addPolygon={this.addPolygonDialog}
                 />
               </div>
             </div>
@@ -149,7 +142,7 @@ class App extends React.Component {
 
     return (
       <ModalDialog
-          modalType   = {this.state.modalType}
+          modalType   = {this.props.modalType}
           modalProps  = {this.createPropertiesForModalType()}
       >
         {gui}
@@ -170,12 +163,7 @@ class App extends React.Component {
     }
   }
 
-  addPolygonDialog = () => {
-    console.log('app::addPolygonDialog');
 
-    this.setState({modalType: 'geometry-name'});
-
-  }
 
   addGeometry = (geometryName) => {
     console.log(`back at the app, with new geometry name: ${geometryName}`);
@@ -223,14 +211,12 @@ class App extends React.Component {
           toggleInfoPanel = {this.toggleInfoPanel}
       />
     );
-    switch (this.state.selectedTool) {
-      case DEFINE_POLYGON_TOOL:
+    switch (this.props.mode) {
+      case DEFINE_POLYGON:
         return (
-          <InformationPanelGeometryDefinition
-              geometriesNames = {geometriesNames(this.state.userDefinedGeometries)}
-          />
+          <InformationPanelGeometryDefinition/>
         );
-      case SELECT_TREE_TOOL:
+      case SELECT_TREE:
       default:
         return treeInformationPanel;
     }
