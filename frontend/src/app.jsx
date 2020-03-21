@@ -1,4 +1,3 @@
-console.log('app.jsx ENTERING');
 const     _ = require('lodash');
 const     $ = require('jquery');
 window.$ = $; // make jquery available to other scripts (not really applicable in our case) and the console
@@ -8,7 +7,6 @@ const React = require('react');
 var      cx = require('classnames');
 
 const assert = require('chai').assert;
-//import axios from 'axios';
 
 import TilesSelector                           from './tiles-selector.jsx';
 import Map                                     from './map.jsx';
@@ -19,12 +17,12 @@ import Toolbox                                 from './toolbox.jsx';
 import {SELECT_TREE_TOOL, DEFINE_POLYGON_TOOL} from './map-tools.js';
 import ModalDialog                             from './modal-dialog.jsx';
 import UserControl                             from './user-control.jsx';
-//import {BASE_URL}                              from './constants.js';
+
 import {setCookie}                             from './util.js';
 import wrapContexts                            from './context/contexts-wrapper.jsx';
 import {SELECT_TREE, DEFINE_POLYGON, ADD_BEACON, SELECT_GEOMETRY} from './constants/modes.js';
 
-// redux
+// REDUX
 import { connect }          from 'react-redux';
 import {changeTileProvider} from './actions/index.js';
 
@@ -57,35 +55,6 @@ class App extends React.Component {
     };
   }
 
-/*
-  addPointToPolygonUnderConstruction = ({lat, lng})=>{
-    this.setState({geometryUnderDefinition: [...this.state.geometryUnderDefinition, {lat, lng}]});
-  }
-  */
-/*
-  updateSelectedTool = (mode) => {
-    if (mode===this.state.mode) {
-      if (mode === DEFINE_POLYGON_TOOL) {
-        console.log('case A');
-        this.setState({deleteGeometryUnderDefinition: this.state.geometryUnderDefinition.length>0
-                     , mode: null
-                     , geometryUnderDefinition: []});
-      } else {
-        console.log('case B');
-        this.setState({deleteGeometryUnderDefinition: false, mode: null});
-      }
-    } else
-    this.setState({mode, deleteGeometryUnderDefinition: false});
-  }
-
-  clearDeleteGeometryUnderDefinition = ()=>{
-    this.setState({deleteGeometryUnderDefinition:false});
-    }
-
-  updateCoordinates = (coords) => {
-    this.setState({coords: coords});
-  }
-*/
   updateTarget = (targetId) => {
     this.setState({target: {targetId}});
   }
@@ -100,13 +69,7 @@ class App extends React.Component {
 
     const toolboxStyle = {flex: `0 0 ${this.props.geometryContext.toolboxTotalWidth()}px`
                         , backgroundColor: 'green'};
-    /*
-                <Toolbox
-                    mode={this.state.mode}            
-                    updateSelectedTool = {this.updateSelectedTool}
-                    geometryUnderDefinition={this.state.geometryUnderDefinition.length>0}
-                />
-    */
+
     const gui = (
       <div className='container-fluid' key='main-gui-component'>
         <div className='row no-gutters'>
@@ -146,20 +109,6 @@ class App extends React.Component {
       </ModalDialog>
     );
   }
-/*
-  createPropertiesForModalType = () => {
-    switch (this.state.modalType) {
-      case 'geometry-name':
-        return {addGeometry: this.addGeometry};
-      case 'login':
-        return {login: this.login, logErrMsg: this.state.logErrMsg};
-      case null:
-        return {};
-      default:
-        assert.fail(`unhandled modal type: ${this.state.modalType}`);
-    }
-  }
-*/
 
 
   addGeometry = (geometryName) => {
@@ -172,35 +121,7 @@ class App extends React.Component {
                  , geometryUnderDefinition: []});
   }
 
-/*
-  login = (username, password) => {
-    const url = `${BASE_URL}/login`;
-    axios.post(url, {
-      username: username,
-      password: password
-    }).then(res => {
-      if (res.data.err != null) {
-        console.log('login API call error');
-        assert.fail(res.data.err);
-      } else {
-        console.log('login API call success');
-        if (res.data.t.loginFailureReason===null) {
-          setCookie('access_token', res.data.t.accessToken, 0);
-          console.log('login was successful and cookie was set');
-          this.setState({modalType: null});
-          this.props.loginContext.updateLogin(username);
-        } else {
-          console.log('login was unsuccessful');
-          this.setState({logErrMsg: res.data.t.loginFailureReason});
-        }
-      }
-    }).catch( err => {
-      console.log(err);
-      console.log(JSON.stringify(err));
-      assert.fail(err);
-    });
-  }
-*/
+
   informationPanel = () => {
     const treeInformationPanel = (
       <TreeInformationPanel
@@ -223,4 +144,3 @@ class App extends React.Component {
 
 export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(App));
 
-console.log('app.jsx EXITING');

@@ -42,8 +42,6 @@ import wrapContexts from './context/contexts-wrapper.jsx';
 import {Athens, layerGroups, defaultMarkerStyle, USE_CLASSICAL_MARKERS} from './tree-markers.js';
 
 
-// import {SELECT_TREE_TOOL, ADD_BEACON_TOOL, SELECT_GEOMETRY_TOOL, DEFINE_POLYGON_TOOL, MOVE_VERTEX_TOOL, REMOVE_TOOL} from './map-tools.js';
-
 import {SELECT_TREE, DEFINE_POLYGON, ADD_BEACON, SELECT_GEOMETRY} from './constants/modes.js';
 import {DELETE_GEOMETRY_UNDER_DEFINITION}                         from './constants/flags.js';
 
@@ -56,10 +54,10 @@ import {updateMouseCoords
 
 const mapStateToProps = (state) => {
   return {
-    tileProviderId: state.tileProviderId
-    , mode: state.mode
-    , userDefinedGeometries: state.userDefinedGeometries
-    , geometryUnderDefinition: state.geometryUnderDefinition
+    tileProviderId                 : state.tileProviderId
+    , mode                         : state.mode
+    , userDefinedGeometries        : state.userDefinedGeometries
+    , geometryUnderDefinition      : state.geometryUnderDefinition
     , deleteGeometryUnderDefinition: state.flags.DELETE_GEOMETRY_UNDER_DEFINITION
   };
 };
