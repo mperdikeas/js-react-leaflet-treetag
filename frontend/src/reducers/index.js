@@ -38,15 +38,20 @@ function rootReducer(state = initialState, action) {
             return Object.assign({}, state
                                  , {mode: null
                                     , geometryUnderDefinition: []
-                                    , flags: {deleteGeometryUnderDefinition: true}});
+                                    , flags: {DELETE_GEOMETRY_UNDER_DEFINITION: true}});
         else if (currentMode === action.payload.mode)
             return Object.assign({}, state, {mode: null});
         else
             return Object.assign({}, state, {mode: action.payload.mode});
     case CLEAR_FLAG:
         const flags = _.cloneDeep(state.flags);
+        console.log(`xxx, flags was`);
+        console.log(flags);
         flags[action.payload.flagToClear] = false;
-        return Object.assign({}, state, {flags});
+        const rv = Object.assign({}, state, {flags});
+        console.log(`xxx, flags became`);
+        console.log(flags);
+        return rv;
     case ADD_POINT_TO_POLYGON_UNDER_CONSTRUCTION:
         const geometryUnderDefinition = _.cloneDeep(state.geometryUnderDefinition);
         geometryUnderDefinition.push(action.payload.latlng);

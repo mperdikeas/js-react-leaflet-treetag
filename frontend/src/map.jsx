@@ -45,6 +45,7 @@ import {Athens, layerGroups, defaultMarkerStyle, USE_CLASSICAL_MARKERS} from './
 // import {SELECT_TREE_TOOL, ADD_BEACON_TOOL, SELECT_GEOMETRY_TOOL, DEFINE_POLYGON_TOOL, MOVE_VERTEX_TOOL, REMOVE_TOOL} from './map-tools.js';
 
 import {SELECT_TREE, DEFINE_POLYGON, ADD_BEACON, SELECT_GEOMETRY} from './constants/modes.js';
+import {DELETE_GEOMETRY_UNDER_DEFINITION}                         from './constants/flags.js';
 
 import { connect }          from 'react-redux';
 import {updateMouseCoords
