@@ -51,7 +51,6 @@ class App extends React.Component {
     this.state = {
         maximizedInfo: false
       , target: null
-      , logErrMsg: null
     };
   }
 
