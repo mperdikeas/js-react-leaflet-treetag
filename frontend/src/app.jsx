@@ -99,15 +99,6 @@ class App extends React.Component {
   }
 
 
-  addGeometry = (geometryName) => {
-    console.log(`back at the app, with new geometry name: ${geometryName}`);
-    const userDefinedGeometriesNew = _.cloneDeep(this.state.userDefinedGeometries);
-    userDefinedGeometriesNew.push({name: geometryName
-                                 , value: this.state.geometryUnderDefinition});
-    this.setState({modalType: null
-                 , userDefinedGeometries: userDefinedGeometriesNew
-                 , geometryUnderDefinition: []});
-  }
 
 
   informationPanel = () => {

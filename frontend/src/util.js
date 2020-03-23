@@ -6,7 +6,19 @@ function theAnswer() {
     return rv;
 }
 
-
+function allStrictEqual(xs) {
+    assert.isTrue(Array.isArray(xs));
+    if (xs.length <= 1)
+        return true;
+    else {
+        const n = xs.length;
+        for (let i = 1; i < n ; i++) {
+            if (xs[i]!==xs[0])
+                return false;
+        }
+        return true;
+    }
+}
 
 function exactlyOne(...theArgs) {
     const truthyCount = theArgs.reduce( (previous, current) => {
@@ -52,6 +64,7 @@ function readCookie(name, panicIfMoreThanOnce, panicIfNotFound) {
 }
 
 exports.theAnswer       = theAnswer;
+exports.allStrictEqual  = allStrictEqual;
 exports.exactlyOne      = exactlyOne;
 exports.sca_fake_return = sca_fake_return;
 exports.setCookie       = setCookie;
