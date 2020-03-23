@@ -12,7 +12,9 @@ export default (state = {DELETE_GEOMETRY_UNDER_DEFINITION: false}, actionAndStat
         flags[action.payload.flagToClear] = false;
         return flags;
     case TOGGLE_MODE:
-        if (allStrictEqual([actionAdditionalState.mode, action.payload.mode, DEFINE_POLYGON])) {
+        if ((allStrictEqual([actionAdditionalState.mode, action.payload.mode, DEFINE_POLYGON]))
+            &&
+            (actionAdditionalState.geometryUnderDefinitionExists)) {
             const flags = {...state};
             flags.DELETE_GEOMETRY_UNDER_DEFINITION = true;
             return flags;

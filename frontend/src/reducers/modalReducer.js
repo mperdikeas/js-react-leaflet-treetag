@@ -1,13 +1,16 @@
 import {DISPLAY_MODAL, CLEAR_MODAL, ADD_GEOMETRY} from '../constants/action-types.js';
 
-export default (state = 'login', action) => {
+import {MODAL_LOGIN, MODAL_ADD_GEOMETRY} from '../constants/modal-types.jsx';
+
+export default (state = {modal: {modalType: MODAL_LOGIN, modalProps: null}}, action) => {
     switch (action.type) {
     case DISPLAY_MODAL:
-        return action.payload.modalType;
-    case CLEAR_MODAL:
-        return null;
+        return {modal: {modalType: action.payload.modalType, modalProps: action.payload.modalProps}};
     case ADD_GEOMETRY:
-        return null;
+        return {modal: null};
+    case CLEAR_MODAL:
+        console.log('returning null in response to CLEAR_MODAL action');
+        return {modal: null};
     default:
         return state;
     }

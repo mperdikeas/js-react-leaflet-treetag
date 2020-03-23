@@ -44,6 +44,7 @@ import {Athens, layerGroups, defaultMarkerStyle, USE_CLASSICAL_MARKERS} from './
 
 import {SELECT_TREE, DEFINE_POLYGON, ADD_BEACON, SELECT_GEOMETRY} from './constants/modes.js';
 import {DELETE_GEOMETRY_UNDER_DEFINITION}                         from './constants/flags.js';
+import {MODAL_ADD_GEOMETRY}                                       from './constants/modal-types.jsx';
 
 import { connect }          from 'react-redux';
 import {updateMouseCoords
@@ -68,7 +69,7 @@ const mapDispatchToProps = (dispatch) => {
     updateCoordinates                   : (latlng)   => dispatch(updateMouseCoords(latlng))
     , clearDeleteGeometryUnderDefinition: ()         => dispatch(clearFlag(DELETE_GEOMETRY_UNDER_DEFINITION))
     , addPointToPolygonUnderConstruction: (latlng)   => dispatch(addPointToPolygonUnderConstruction(latlng))
-    , displayAddPolygonDialog           : ()         => dispatch(displayModal('geometry-name'))
+    , displayAddPolygonDialog           : ()         => dispatch(displayModal(MODAL_ADD_GEOMETRY))
     , updateTarget                      : (targetId) => dispatch(updateTarget(targetId))
     };
   }
@@ -173,6 +174,7 @@ class Map extends React.Component {
       else {
         // start defining new polygon and clear currently accumulated points
         this.currentPolygon = L.polygon(this.props.geometryUnderDefinition).addTo(this.map);
+        console.log('zzzz new polygon is defined');
         this.currentPolygonPoints = [];
       }
 
@@ -203,6 +205,7 @@ class Map extends React.Component {
       zoom: 15,
       zoomControl: false
     });
+    console.log('wwwwwww calling addtiles');
     this.addTiles();
     this.addLayerGroupsExceptPromisingLayers();
     if (true)
@@ -272,7 +275,9 @@ class Map extends React.Component {
       this.currentPolygonPoints = [];
       this.props.clearDeleteGeometryUnderDefinition();
     }
+    console.log(`zzzzzzzz ${prevProps.tileProviderId}, ${this.props.tileProviderId}`);
     if (prevProps.tileProviderId!==this.props.tileProviderId) {
+      throw new Error(42);
       this.addTiles();
     }
     if (prevProps.mode === this.props.mode) {

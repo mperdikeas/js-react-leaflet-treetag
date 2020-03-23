@@ -1,3 +1,4 @@
+const assert = require('chai').assert;
 import {CHANGE_TILE_PROVIDER
         , UPDATE_MOUSE_COORDS
         , TOGGLE_MODE
@@ -8,6 +9,7 @@ import {CHANGE_TILE_PROVIDER
         , ADD_GEOMETRY
         , TOGGLE_MAXIMIZE_INFO_PANEL
         , UPDATE_TARGET} from '../constants/action-types.js';
+import {isValidModalType} from '../constants/modal-types.jsx';
 
 export function changeTileProvider(tileProviderId) {
     return { type: CHANGE_TILE_PROVIDER, payload: {tileProviderId} };
@@ -30,7 +32,8 @@ export function addPointToPolygonUnderConstruction(latlng) {
 }
 
 export function displayModal(modalType) {
-    return {type: DISPLAY_MODAL, payload: {modalType}};
+    assert.isTrue(isValidModalType(modalType), `unrecognized modal type: ${modalType}`);
+    return {type: DISPLAY_MODAL, payload: {modalType, modalProps: null}};
 }
 
 export function clearModal() {

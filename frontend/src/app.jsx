@@ -15,7 +15,7 @@ import InformationPanelGeometryDefinition      from './information-panel-geometr
 import PointCoordinates                        from './point-coordinates.jsx';
 import Toolbox                                 from './toolbox.jsx';
 import {SELECT_TREE_TOOL, DEFINE_POLYGON_TOOL} from './map-tools.js';
-import ModalDialog                             from './modal-dialog.jsx';
+import ModalRoot                               from './modal-root.jsx';
 import UserControl                             from './user-control.jsx';
 
 import {setCookie}                             from './util.js';
@@ -92,9 +92,9 @@ class App extends React.Component {
 
 
     return (
-      <ModalDialog>
+      <ModalRoot>
         {gui}
-      </ModalDialog>
+      </ModalRoot>
     );
   }
 

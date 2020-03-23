@@ -26,7 +26,7 @@ import maximizedInfoPanelReducer      from './maximizedInfoPanelReducer.js';
 
 
 function rootReducer(state = {}, action) {
-    return {
+    const rv = {
         tileProviderId       : tileProviderReducer      (state.tileProviderId, action),
         latlng               : mouseCoordsReducer       (state.latlng, action),
         mode                 : toggleModeReducer        (state.mode, action),
@@ -34,15 +34,17 @@ function rootReducer(state = {}, action) {
         userDefinedGeometries: addGeometryReducer       (state.userDefinedGeometries, action),
         flags                : flagsReducer             (state.flags, embellishActionForFlagsReducer(action, state)),
         geometryUnderDefinition: geometryUnderDefinitionReducer(state.geometryUnderDefinition, embellishActionForGeometryUnderDefinitionReducer(action, state)),
-        modalType            : modalReducer             (state.modalType, action),
+        modal                : modalReducer             (state.modal, action),
         maximizedInfoPanel   : maximizedInfoPanelReducer(state.maximizedInfoPanel, action)
     };
+    return rv;
 };
 
 function embellishActionForFlagsReducer(action, state) {
     return {
         action: action
-        , state: {mode: state.mode}
+        , state: {mode: state.mode
+                  , geometryUnderDefinitionExists: state.geometryUnderDefinition && (state.geometryUnderDefinition.length > 0)}
     };
 }
 
