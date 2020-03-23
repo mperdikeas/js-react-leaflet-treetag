@@ -51,7 +51,7 @@ const sleep = (milliseconds) => {
 
 const circleMarkersLG = ()=> {
 
-    return getTrees(N*50).then( (data)=> {
+    return getTrees(N*1).then( (data)=> {
 
         const targetId2Marker = {};
         const layerGroup = L.layerGroup(data.map( ({treeId, coords})=> {

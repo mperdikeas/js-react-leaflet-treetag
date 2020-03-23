@@ -36,6 +36,8 @@ import rainbow from './rainbow.js';
 import {CustomCircleMarker} from './custom-markers.js';
 import wrapContexts from './context/contexts-wrapper.jsx';
 
+import {numOfLayersInLayerGroup} from './leaflet-util.js';
+
 // const Buffer = require('buffer').Buffer;
 // const Iconv  = require('iconv').Iconv;
 
@@ -94,7 +96,6 @@ class Map extends React.Component {
     };
     this.layerGroup = null;
     this.currentPolygon = null;
-    this.currentPolygonPoints = [];
     this.clickableLayers = [];
   }
 
@@ -178,24 +179,12 @@ class Map extends React.Component {
       // start defining new polygon and clear currently accumulated points
       this.currentPolygon = L.polygon(this.props.geometryUnderDefinition);
       this.layerGroup.addLayer(this.currentPolygon);
-
-      this.currentPolygonPoints = [];
       console.log('new polygon and overlay added to map');
     }
     else {
       this.currentPolygon.setLatLngs(this.props.geometryUnderDefinition);      
     }
 
-    const latestPoint = this.props.geometryUnderDefinition[this.props.geometryUnderDefinition.length-1];
-    console.log(latestPoint);
-    var circle = L.circle([latestPoint.lat, latestPoint.lng], {
-      color: 'red',
-      fillColor: '#f03',
-      fillOpacity: 0.5,
-      radius: 10
-    }).addTo(this.map);
-    this.layerGroup.addLayer(circle);
-    this.currentPolygonPoints.push(circle);
 
 }
 
@@ -275,14 +264,18 @@ class Map extends React.Component {
       assert.strictEqual(this.props.mode, null);
       assert.isTrue(this.currentPolygon != null, 'this.currentPolygon is curiously null');
       assert.isTrue(this.layerGroup     != null, 'this.layerGroup is curiously null');      
-      this.layersControl.removeLayer(this.layerGroup);
-      this.map.removeLayer(this.layerGroup);
+
+      if (numOfLayersInLayerGroup(this.layerGroup)===1) {
+        assert.strictEqual(this.currentPolygon, theOneAndOnlyLayerInLayerGroup(this.layerGroup));
+        // remove the entire layer group
+        this.layersControl.removeLayer(this.layerGroup);
+        this.map.removeLayer(this.layerGroup);        
+        this.layerGroup = null;
+      } else {
+        // keep the layer group; remove only the current polygon
+        this.layerGroup.removeLayer(this.currentPolygon);
+      }
       this.currentPolygon = null;
-      this.layerGroup = null;
-      this.currentPolygonPoints.forEach( (x) => {
-        this.map.removeLayer(x);
-      });
-      this.currentPolygonPoints = [];
       this.props.clearDeleteGeometryUnderDefinition();
     }
     if (prevProps.tileProviderId!==this.props.tileProviderId) {
