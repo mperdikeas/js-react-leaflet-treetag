@@ -5,7 +5,8 @@ import {CHANGE_TILE_PROVIDER
         , ADD_POINT_TO_POLYGON_UNDER_CONSTRUCTION
         , DISPLAY_MODAL
         , CLEAR_MODAL
-        , ADD_GEOMETRY} from '../constants/action-types.js';
+        , ADD_GEOMETRY
+        , TOGGLE_MAXIMIZE_INFO_PANEL} from '../constants/action-types.js';
 
 export function changeTileProvider(tileProviderId) {
     return { type: CHANGE_TILE_PROVIDER, payload: {tileProviderId} };
@@ -37,4 +38,9 @@ export function clearModal() {
 
 export function addGeometry(geometryName, points) {
     return {type: ADD_GEOMETRY, payload: {geometryName, points}};
+}
+
+export function toggleMaximizeInfoPanel() {
+    console.log('action dispatched');
+    return {type: TOGGLE_MAXIMIZE_INFO_PANEL, payload: null};
 }

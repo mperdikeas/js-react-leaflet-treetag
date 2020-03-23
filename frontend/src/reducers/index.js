@@ -6,7 +6,8 @@ import {CHANGE_TILE_PROVIDER
         , ADD_POINT_TO_POLYGON_UNDER_CONSTRUCTION
         , DISPLAY_MODAL
         , CLEAR_MODAL
-        , ADD_GEOMETRY} from '../constants/action-types.js';
+        , ADD_GEOMETRY
+        , TOGGLE_MAXIMIZE_INFO_PANEL} from '../constants/action-types.js';
 
 import {SELECT_TREE, DEFINE_POLYGON} from '../constants/modes.js';
 
@@ -22,6 +23,7 @@ const initialState = {
         DELETE_GEOMETRY_UNDER_DEFINITION: false
     }
     , modalType: 'login'
+    , maximizedInfoPanel: false
 };
 
 function rootReducer(state = initialState, action) {
@@ -67,6 +69,8 @@ function rootReducer(state = initialState, action) {
                                          , userDefinedGeometries: [...state.userDefinedGeometries
                                                                    , {geometryName: action.payload.geometryName
                                                                       , points: action.payload.points}]});
+    case TOGGLE_MAXIMIZE_INFO_PANEL:
+        return Object.assign({}, state, {maximizedInfoPanel: !state.maximizedInfoPanel});
     default:
         return state;        
     }

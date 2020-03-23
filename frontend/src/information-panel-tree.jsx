@@ -13,6 +13,23 @@ import TargetDataPane     from './target-data-pane.jsx';
 import TargetPhotoPane    from './target-photo-pane.jsx';
 import TargetMetadataPane from './target-metadata-pane.jsx';
 
+// REDUX
+import { connect }          from 'react-redux';
+import {toggleMaximizeInfoPanel}  from './actions/index.js';
+
+
+const mapStateToProps = (state) => {
+  return {
+    maximizedInfoPanel: state.maximizedInfoPanel
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    toggleMaximizeInfoPanel: ()=>dispatch(toggleMaximizeInfoPanel())
+    };
+}
+
 class TreeInformationPanel extends React.Component {
 
   constructor(props) {
@@ -64,9 +81,9 @@ class TreeInformationPanel extends React.Component {
       const historyClasses = Object.assign({}, defaultClasses, {'active': this.state.tab==='history'});
 
       const paneToDisplay = this.paneToDisplay();
-      const toggleTxt = this.props.maximized?'Ελαχιστοποίηση':'Μεγιστοποίηση';
+      const toggleTxt = this.props.maximizedInfoPanel?'Ελαχιστοποίηση':'Μεγιστοποίηση';
       const klasses = Object.assign({'padding-0': true}
-                                  , {'col-4': !this.props.maximized, 'col-12': this.props.maximized});
+                                  , {'col-4': !this.props.maximizedInfoPanel, 'col-12': this.props.maximizedInfoPanel});
 
       const tagReal = (<div className='col-6' style={{fontSize: '130%'}}>
           info on&nbsp;
@@ -81,7 +98,7 @@ class TreeInformationPanel extends React.Component {
           <div className='row'>
             {tagReal}
             <div className='col-6'>
-              <a id='toggle-info-panel' className={cx(defaultClasses)} href="#" onClick={this.props.toggleInfoPanel}>{toggleTxt}</a>
+              <a id='toggle-info-panel' className={cx(defaultClasses)} href="#" onClick={this.props.toggleMaximizeInfoPanel}>{toggleTxt}</a>
             </div>
           </div>
           <ul className="nav">
@@ -125,6 +142,5 @@ class TreeInformationPanel extends React.Component {
 
 
 
-
-export default TreeInformationPanel;
+export default connect(mapStateToProps, mapDispatchToProps)(TreeInformationPanel);
 

@@ -32,6 +32,7 @@ const mapStateToProps = (state) => {
     tileProviderId: state.tileProviderId
     , mode: state.mode
     , modalType: state.modalType
+    , maximizedInfoPanel: state.maximizedInfoPanel
   };
 };
 
@@ -49,8 +50,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-        maximizedInfo: false
-      , target: null
+      target: null
     };
   }
 
@@ -58,13 +58,10 @@ class App extends React.Component {
     this.setState({target: {targetId}});
   }
 
-  toggleInfoPanel = () => {
-    this.setState({maximizedInfo: !this.state.maximizedInfo});
-  }
 
   render() {
     const classesForMapDiv = Object.assign({'col-8': true, 'padding-0': true}
-                                         , {hidden: this.state.maximizedInfo});
+                                         , {hidden: this.props.maximizedInfoPanel});
 
     const toolboxStyle = {flex: `0 0 ${this.props.geometryContext.toolboxTotalWidth()}px`
                         , backgroundColor: 'green'};
@@ -125,8 +122,6 @@ class App extends React.Component {
     const treeInformationPanel = (
       <TreeInformationPanel
           target          = {this.state.target}
-          maximized       = {this.state.maximizedInfo}
-          toggleInfoPanel = {this.toggleInfoPanel}
       />
     );
     switch (this.props.mode) {
