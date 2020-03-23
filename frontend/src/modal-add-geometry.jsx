@@ -52,10 +52,8 @@ class ModalAddGeometry extends React.Component {
 
   componentDidMount() {
     console.log('ModalAddGeometry::componentDidMount');
-    if (this.props.modalType==='login') {
-      const domElem = this.ref.current;
-      domElem.showModal();
-    }
+    const domElem = this.ref.current;
+    domElem.showModal();
   }
 
   componentDidUpdate(prevProps, prevState) {
