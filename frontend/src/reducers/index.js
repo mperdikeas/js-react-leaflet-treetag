@@ -7,16 +7,20 @@ import {CHANGE_TILE_PROVIDER
         , DISPLAY_MODAL
         , CLEAR_MODAL
         , ADD_GEOMETRY
-        , TOGGLE_MAXIMIZE_INFO_PANEL} from '../constants/action-types.js';
+        , TOGGLE_MAXIMIZE_INFO_PANEL
+        , UPDATE_TARGET} from '../constants/action-types.js';
 
 import {SELECT_TREE, DEFINE_POLYGON} from '../constants/modes.js';
 
 import _ from 'lodash';
 
+const assert = require('chai').assert;
+
 const initialState = {
     tileProviderId: 'esri'
     , latlng: null
     , mode: SELECT_TREE
+    , targetId: null
     , userDefinedGeometries: []
     , geometryUnderDefinition: []
     , flags: {
@@ -71,6 +75,9 @@ function rootReducer(state = initialState, action) {
                                                                       , points: action.payload.points}]});
     case TOGGLE_MAXIMIZE_INFO_PANEL:
         return Object.assign({}, state, {maximizedInfoPanel: !state.maximizedInfoPanel});
+    case UPDATE_TARGET:
+        assert.strictEqual(state.mode, SELECT_TREE);
+        return Object.assign({}, state, {targetId: action.payload.targetId});
     default:
         return state;        
     }

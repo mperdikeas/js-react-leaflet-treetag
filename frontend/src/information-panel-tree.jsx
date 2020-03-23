@@ -21,6 +21,7 @@ import {toggleMaximizeInfoPanel}  from './actions/index.js';
 const mapStateToProps = (state) => {
   return {
     maximizedInfoPanel: state.maximizedInfoPanel
+    , targetId: state.targetId
   };
 };
 
@@ -67,14 +68,14 @@ class TreeInformationPanel extends React.Component {
   }
 
   render() {
-    if (this.props.target===null) {
+    if (this.props.targetId===null) {
       return (
         <div id='detailInformation' className='col-4 padding-0' style={{backgroundColor: 'lightgrey'}}>
           click on a feature to see its information
         </div>
       );
     } else {
-      console.log(`tab is  ${this.state.tab}, targetId is: ${this.props.target.targetId}`);
+      console.log(`tab is  ${this.state.tab}, targetId is: ${this.props.targetId}`);
       const defaultClasses = {'nav-link': true};
       const informationClasses = Object.assign({}, defaultClasses, {'active': this.state.tab==='information'});
       const photoClasses = Object.assign({}, defaultClasses, {'active': this.state.tab==='photos'});
@@ -87,7 +88,7 @@ class TreeInformationPanel extends React.Component {
 
       const tagReal = (<div className='col-6' style={{fontSize: '130%'}}>
           info on&nbsp;
-          <span style={{fontFamily: 'monospace'}}>{this.props.target.targetId}</span>
+          <span style={{fontFamily: 'monospace'}}>{this.props.targetId}</span>
       </div>);
       const tagDummy = (<div className='col-6' style={{fontSize: '130%'}}>
           Tag #
@@ -123,15 +124,15 @@ class TreeInformationPanel extends React.Component {
     switch (this.state.tab) {
       case 'information':
         return (
-          <TargetDataPane targetId={this.props.target.targetId}/>
+          <TargetDataPane targetId={this.props.targetId}/>
         );
       case 'photos':
         return (
-          <TargetPhotoPane targetId={this.props.target.targetId}/>                
+          <TargetPhotoPane targetId={this.props.targetId}/>                
         );
       case 'history':
         return (
-          <TargetMetadataPane targetId={this.props.target.targetId}/>
+          <TargetMetadataPane targetId={this.props.targetId}/>
         );
       default:
         assert.fail(`unhandled case [${this.state.tab}]`);

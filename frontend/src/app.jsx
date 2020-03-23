@@ -49,14 +49,8 @@ class App extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      target: null
-    };
   }
 
-  updateTarget = (targetId) => {
-    this.setState({target: {targetId}});
-  }
 
 
   render() {
@@ -87,9 +81,7 @@ class App extends React.Component {
                 <Toolbox/>
               </div>
               <div className='col'>
-                <Map tileProviderId={this.props.tileProviderId}
-                     updateTarget={this.updateTarget}
-                />
+                <Map tileProviderId={this.props.tileProviderId}/>
               </div>
             </div>
           </div>
@@ -120,9 +112,7 @@ class App extends React.Component {
 
   informationPanel = () => {
     const treeInformationPanel = (
-      <TreeInformationPanel
-          target          = {this.state.target}
-      />
+      <TreeInformationPanel/>
     );
     switch (this.props.mode) {
       case DEFINE_POLYGON:

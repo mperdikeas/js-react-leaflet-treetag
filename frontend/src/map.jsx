@@ -49,7 +49,8 @@ import { connect }          from 'react-redux';
 import {updateMouseCoords
       , clearFlag
       , addPointToPolygonUnderConstruction
-      , displayModal}  from './actions/index.js';
+      , displayModal
+      , updateTarget}  from './actions/index.js';
 
 
 const mapStateToProps = (state) => {
@@ -64,10 +65,11 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    updateCoordinates                   : (latlng) => dispatch(updateMouseCoords(latlng))
-    , clearDeleteGeometryUnderDefinition: ()       => dispatch(clearFlag(DELETE_GEOMETRY_UNDER_DEFINITION))
-    , addPointToPolygonUnderConstruction: (latlng) => dispatch(addPointToPolygonUnderConstruction(latlng))
-    , displayAddPolygonDialog           : ()       => dispatch(displayModal('geometry-name'))
+    updateCoordinates                   : (latlng)   => dispatch(updateMouseCoords(latlng))
+    , clearDeleteGeometryUnderDefinition: ()         => dispatch(clearFlag(DELETE_GEOMETRY_UNDER_DEFINITION))
+    , addPointToPolygonUnderConstruction: (latlng)   => dispatch(addPointToPolygonUnderConstruction(latlng))
+    , displayAddPolygonDialog           : ()         => dispatch(displayModal('geometry-name'))
+    , updateTarget                      : (targetId) => dispatch(updateTarget(targetId))
     };
   }
 

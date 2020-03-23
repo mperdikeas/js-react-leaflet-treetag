@@ -8,8 +8,18 @@ var      cx = require('classnames');
 
 const assert = require('chai').assert;
 
+// REDUX
+import { connect }          from 'react-redux';
 
-export default class TargetMetadataPane extends React.Component {
+const mapStateToProps = (state) => {
+  return {
+    targetId: state.targetId
+  };
+};
+
+
+
+class TargetMetadataPane extends React.Component {
 
     constructor(props) {
         super(props);
@@ -35,3 +45,5 @@ export default class TargetMetadataPane extends React.Component {
         );
     }
 }
+
+export default connect(mapStateToProps)(TargetMetadataPane);

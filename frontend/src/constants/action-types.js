@@ -7,4 +7,5 @@ export const DISPLAY_MODAL                           = "DISPLAY_MODAL";
 export const CLEAR_MODAL                             = "CLEAR_MODAL";
 export const ADD_GEOMETRY                            = "ADD_GEOMETRY";
 export const TOGGLE_MAXIMIZE_INFO_PANEL              = "TOGGLE_MAXIMIZE_INFO_PANEL";
+export const UPDATE_TARGET                           = "UPDATE_TARGET";
 

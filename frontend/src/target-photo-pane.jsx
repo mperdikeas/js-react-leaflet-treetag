@@ -15,7 +15,19 @@ import DownArrow from './resources/down-arrow.png';
 // const download = url('../resources/
 import {sca_fake_return, readCookie} from './util.js';
 
-export default class TargetPhotoPane extends React.Component {
+
+// REDUX
+import { connect }          from 'react-redux';
+
+const mapStateToProps = (state) => {
+  return {
+    targetId: state.targetId
+  };
+};
+
+
+
+class TargetPhotoPane extends React.Component {
 
   constructor(props) {
     super(props);
@@ -236,3 +248,5 @@ function urlForNumOfPhotos(targetId) {
 
 
 const BASE_URL = 'https://127.0.0.1:8445/tree-cadaster-backend/jax-rs/main';
+
+export default connect(mapStateToProps)(TargetPhotoPane);

@@ -9,7 +9,17 @@ var      cx = require('classnames');
 const assert = require('chai').assert;
 
 
-export default class TargetDataPane extends React.Component {
+// REDUX
+import { connect }          from 'react-redux';
+
+const mapStateToProps = (state) => {
+  return {
+    targetId: state.targetId
+  };
+};
+
+
+class TargetDataPane extends React.Component {
 
     constructor(props) {
         super(props);
@@ -35,3 +45,8 @@ export default class TargetDataPane extends React.Component {
         );
     }
 }
+
+
+export default connect(mapStateToProps)(TargetDataPane);
+
+

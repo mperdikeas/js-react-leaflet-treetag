@@ -6,7 +6,8 @@ import {CHANGE_TILE_PROVIDER
         , DISPLAY_MODAL
         , CLEAR_MODAL
         , ADD_GEOMETRY
-        , TOGGLE_MAXIMIZE_INFO_PANEL} from '../constants/action-types.js';
+        , TOGGLE_MAXIMIZE_INFO_PANEL
+        , UPDATE_TARGET} from '../constants/action-types.js';
 
 export function changeTileProvider(tileProviderId) {
     return { type: CHANGE_TILE_PROVIDER, payload: {tileProviderId} };
@@ -41,6 +42,9 @@ export function addGeometry(geometryName, points) {
 }
 
 export function toggleMaximizeInfoPanel() {
-    console.log('action dispatched');
     return {type: TOGGLE_MAXIMIZE_INFO_PANEL, payload: null};
+}
+
+export function updateTarget(targetId) {
+    return {type: UPDATE_TARGET, payload: {targetId}};
 }
