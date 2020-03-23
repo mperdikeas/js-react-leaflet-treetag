@@ -57,6 +57,9 @@ import {updateMouseCoords
       , updateTarget}  from './actions/index.js';
 
 
+const tentativePolygonStyle = {weight: 2, dashArray: '6'};
+
+
 const mapStateToProps = (state) => {
   return {
     tileProviderId                 : state.tileProviderId
@@ -72,7 +75,7 @@ const mapDispatchToProps = (dispatch) => {
     updateCoordinates                   : (latlng)   => dispatch(updateMouseCoords(latlng))
     , clearDeleteGeometryUnderDefinition: ()         => dispatch(clearFlag(DELETE_GEOMETRY_UNDER_DEFINITION))
     , addPointToPolygonUnderConstruction: (latlng)   => dispatch(addPointToPolygonUnderConstruction(latlng))
-    , displayAddPolygonDialog           : ()         => dispatch(displayModal(MODAL_ADD_GEOMETRY))
+    , displayAddPolygonDialog           : (polygon)  => dispatch(displayModal(MODAL_ADD_GEOMETRY, polygon))
     , updateTarget                      : (targetId) => dispatch(updateTarget(targetId))
     };
   }
@@ -176,8 +179,7 @@ class Map extends React.Component {
         this.layersControl.addOverlay(this.layerGroup, 'custom layer');        
         console.log('new layerGroup added to maps and control');
       }
-      // start defining new polygon and clear currently accumulated points
-      this.currentPolygon = L.polygon(this.props.geometryUnderDefinition);
+      this.currentPolygon = L.polygon(this.props.geometryUnderDefinition, tentativePolygonStyle);
       this.layerGroup.addLayer(this.currentPolygon);
       console.log('new polygon and overlay added to map');
     }
@@ -328,8 +330,9 @@ class Map extends React.Component {
   handleKeyUp = (e) => {
     if (e.keyCode === keycode('ESC')) {
       assert.strictEqual(this.props.mode, DEFINE_POLYGON);
+      const currentPolygonPointer = this.currentPolygon;
       this.currentPolygon = null;
-      this.props.displayAddPolygonDialog();
+      this.props.displayAddPolygonDialog(currentPolygonPointer);
     }
   }
 

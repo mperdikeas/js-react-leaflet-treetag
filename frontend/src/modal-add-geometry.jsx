@@ -46,6 +46,7 @@ class ModalAddGeometry extends React.Component {
 
   constructor(props) {
     super(props);
+    console.log(props);
     this.ref = React.createRef();
     this.inputGeometryNameRef = React.createRef();
   }
@@ -66,6 +67,7 @@ class ModalAddGeometry extends React.Component {
   addGeometry = (ev) => {
     ev.preventDefault();    
     const geometryName = this.inputGeometryNameRef.current.value;
+    this.props.polygon.setStyle({weight: 3, dashArray: null});
     this.props.addGeometry(geometryName);
   }
 

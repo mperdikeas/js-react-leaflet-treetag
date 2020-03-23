@@ -31,9 +31,10 @@ export function addPointToPolygonUnderConstruction(latlng) {
     return {type: ADD_POINT_TO_POLYGON_UNDER_CONSTRUCTION, payload: {latlng}};
 }
 
-export function displayModal(modalType) {
+export function displayModal(modalType, polygon) {
+    console.log('dispatching modal');
     assert.isTrue(isValidModalType(modalType), `unrecognized modal type: ${modalType}`);
-    return {type: DISPLAY_MODAL, payload: {modalType, modalProps: null}};
+    return {type: DISPLAY_MODAL, payload: {modalType, modalProps: {polygon}}};
 }
 
 export function clearModal() {
