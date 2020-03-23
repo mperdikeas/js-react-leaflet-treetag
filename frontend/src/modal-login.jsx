@@ -61,7 +61,7 @@ class ModalLogin extends React.Component {
     domElem.showModal();
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate2(prevProps, prevState) {
     if (!prevProps.modal.modalType && this.props.modal.modalType) {
       const domElem = this.ref.current;
       domElem.showModal();
@@ -115,6 +115,16 @@ class ModalLogin extends React.Component {
       else
         return null;
     })();
+    const {nameInput, passInput} = (()=>{
+      const useHardcodedValues = true;
+      if (useHardcodedValues)
+        return {nameInput: <><input ref={this.inputUsernameRef} type='text' id='login-name-input' value='admin'/><br/></>
+              , passInput: <><input ref={this.inputPasswordRef} type='text' id='login-pass-input' value='pass'/><br/></>};
+      else return {nameInput: <><input ref={this.inputUsernameRef} type='text' id='login-name-input' /><br/></>
+                 , passInput: <><input ref={this.inputPasswordRef} type='text' id='login-pass-input' /><br/></>};
+      
+
+      })();
     return (
       <>
       <dialog id="dialog" ref={this.ref}>
@@ -122,9 +132,9 @@ class ModalLogin extends React.Component {
           {logErrMsg}
           <p>Please provide your username and password</p>
           <label htmlFor='login-name-input'>Username</label>
-          <input ref={this.inputUsernameRef} type='text' id='login-name-input' value='admin'/><br/>
+          {nameInput}
           <label htmlFor='login-pass-input'>Password</label>
-          <input ref={this.inputPasswordRef} type='text' id='login-pass-input' value='pass'/><br/>
+          {passInput}
           <input type="submit" value="OK"/>
         </form>
       </dialog>

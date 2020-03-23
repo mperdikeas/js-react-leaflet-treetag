@@ -56,7 +56,7 @@ class ModalAddGeometry extends React.Component {
     domElem.showModal();
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate2(prevProps, prevState) {
     if (!prevProps.modalType && this.props.modalType) {
       const domElem = this.ref.current;
       domElem.showModal();
