@@ -31,18 +31,18 @@ export function addPointToPolygonUnderConstruction(latlng) {
     return {type: ADD_POINT_TO_POLYGON_UNDER_CONSTRUCTION, payload: {latlng}};
 }
 
-export function displayModal(modalType, polygon) {
+export function displayModal(modalType, modalProps) {
     console.log('dispatching modal');
     assert.isTrue(isValidModalType(modalType), `unrecognized modal type: ${modalType}`);
-    return {type: DISPLAY_MODAL, payload: {modalType, modalProps: {polygon}}};
+    return {type: DISPLAY_MODAL, payload: {modalType, modalProps}};
 }
 
 export function clearModal() {
     return {type: CLEAR_MODAL};
 }
 
-export function addGeometry(geometryName, points) {
-    return {type: ADD_GEOMETRY, payload: {geometryName, points}};
+export function addGeometry(polygonId, geometryName, polygon) {
+    return {type: ADD_GEOMETRY, payload: {polygonId, geometryName, polygon}};
 }
 
 export function toggleMaximizeInfoPanel() {

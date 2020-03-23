@@ -44,7 +44,7 @@ function embellishActionForFlagsReducer(action, state) {
     return {
         action: action
         , state: {mode: state.mode
-                  , geometryUnderDefinitionExists: state.geometryUnderDefinition && (state.geometryUnderDefinition.length > 0)}
+                  , geometryUnderDefinitionExists: state.geometryUnderDefinition && (state.geometryUnderDefinition.points.length > 0)}
     };
 }
 

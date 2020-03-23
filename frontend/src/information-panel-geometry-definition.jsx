@@ -19,7 +19,7 @@ import {changeTileProvider} from './actions/index.js';
 
 const mapStateToProps = (state) => {
   return {
-    geometriesNames: state.userDefinedGeometries.map(x => x.geometryName)
+    userDefinedGeometries: state.userDefinedGeometries
   }
 };
 
@@ -42,10 +42,10 @@ class InformationPanelGeometryDefinition extends React.Component {
       padding: '2px'
     };
 
-    const geometries = this.props.geometriesNames.map((x)=>{
+    const geometries = this.props.userDefinedGeometries.map((x)=>{
       return (
-        <div key={x} className='row no-gutters' style={style1}>
-          {x}
+        <div key={x.polygonId} className='row no-gutters' style={style1}>
+          {x.geometryName}
         </div>
       );
     });

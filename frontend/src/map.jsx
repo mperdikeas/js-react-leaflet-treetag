@@ -75,7 +75,7 @@ const mapDispatchToProps = (dispatch) => {
     updateCoordinates                   : (latlng)   => dispatch(updateMouseCoords(latlng))
     , clearDeleteGeometryUnderDefinition: ()         => dispatch(clearFlag(DELETE_GEOMETRY_UNDER_DEFINITION))
     , addPointToPolygonUnderConstruction: (latlng)   => dispatch(addPointToPolygonUnderConstruction(latlng))
-    , displayAddPolygonDialog           : (polygon)  => dispatch(displayModal(MODAL_ADD_GEOMETRY, polygon))
+    , displayAddPolygonDialog           : (polygonId, polygon)  => dispatch(displayModal(MODAL_ADD_GEOMETRY, {polygonId, polygon}))
     , updateTarget                      : (targetId) => dispatch(updateTarget(targetId))
     };
   }
@@ -166,7 +166,7 @@ class Map extends React.Component {
 
 
   selectGeometry = ({lat, lng}) => {
-    const polygon = this.props.geometryUnderDefinition.map( (e) => [e.lat, e.lng]);
+    const polygon = this.props.geometryUnderDefinition.points.map( (e) => [e.lat, e.lng]);
     const isInside = inside([lat, lng], polygon);
   }
 
@@ -179,12 +179,15 @@ class Map extends React.Component {
         this.layersControl.addOverlay(this.layerGroup, 'custom layer');        
         console.log('new layerGroup added to maps and control');
       }
-      this.currentPolygon = L.polygon(this.props.geometryUnderDefinition, tentativePolygonStyle);
+      this.currentPolygon = L.polygon(this.props.geometryUnderDefinition.points
+                                    , Object.assign({}
+                                                 , {polygonId: this.props.geometryUnderDefinition.polygonId}
+                                                 , tentativePolygonStyle));
       this.layerGroup.addLayer(this.currentPolygon);
       console.log('new polygon and overlay added to map');
     }
     else {
-      this.currentPolygon.setLatLngs(this.props.geometryUnderDefinition);      
+      this.currentPolygon.setLatLngs(this.props.geometryUnderDefinition.points);      
     }
 
 
@@ -284,10 +287,11 @@ class Map extends React.Component {
       this.addTiles();
     }
     if (allStrictEqual([prevProps.mode, this.props.mode, DEFINE_POLYGON])) {
-      if ((prevProps.geometryUnderDefinition.length !== this.props.geometryUnderDefinition.length)
+      if ((prevProps.geometryUnderDefinition.points.length !== this.props.geometryUnderDefinition.points.length)
           &&
-          (this.props.geometryUnderDefinition.length>0)) {
-        console.log(`drawing polygon with ${this.props.geometryUnderDefinition.length} points defined`);
+          (this.props.geometryUnderDefinition.points.length>0)) {
+        assert.strictEqual(prevProps.geometryUnderDefinition.points.length+1, this.props.geometryUnderDefinition.points.length);
+        console.log(`drawing polygon with ${this.props.geometryUnderDefinition.points.length} points defined`);
         this.drawPolygon();
         }
     } else {
@@ -332,7 +336,8 @@ class Map extends React.Component {
       assert.strictEqual(this.props.mode, DEFINE_POLYGON);
       const currentPolygonPointer = this.currentPolygon;
       this.currentPolygon = null;
-      this.props.displayAddPolygonDialog(currentPolygonPointer);
+      this.props.displayAddPolygonDialog(this.props.geometryUnderDefinition.polygonId
+                                       , currentPolygonPointer);
     }
   }
 

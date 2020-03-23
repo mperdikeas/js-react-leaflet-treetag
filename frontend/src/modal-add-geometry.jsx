@@ -38,7 +38,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addGeometry: (geometryName) => dispatch(addGeometry(geometryName))
+    addGeometry: (polygonId, geometryName, polygon) => dispatch(addGeometry(polygonId
+                                                                          , geometryName
+                                                                          , polygon))
     };
 }
 
@@ -68,7 +70,7 @@ class ModalAddGeometry extends React.Component {
     ev.preventDefault();    
     const geometryName = this.inputGeometryNameRef.current.value;
     this.props.polygon.setStyle({weight: 3, dashArray: null});
-    this.props.addGeometry(geometryName);
+    this.props.addGeometry(this.props.polygonId, geometryName, this.props.polygon);
   }
 
 
