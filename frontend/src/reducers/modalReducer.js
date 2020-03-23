@@ -1,6 +1,6 @@
 import {DISPLAY_MODAL, CLEAR_MODAL, ADD_GEOMETRY} from '../constants/action-types.js';
 
-import {MODAL_LOGIN, MODAL_ADD_GEOMETRY} from '../constants/modal-types.jsx';
+import {MODAL_LOGIN, MODAL_ADD_GEOMETRY} from '../constants/modal-types.js';
 
 export default (state = {modal: {modalType: MODAL_LOGIN, modalProps: null}}, action) => {
     switch (action.type) {

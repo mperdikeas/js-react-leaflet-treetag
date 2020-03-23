@@ -43,7 +43,6 @@ class InformationPanelGeometryDefinition extends React.Component {
     };
 
     const geometries = this.props.geometriesNames.map((x)=>{
-      console.log(`x is ${x}`);
       return (
         <div key={x} className='row no-gutters' style={style1}>
           {x}

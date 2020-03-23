@@ -28,13 +28,14 @@ import keycode from 'keycode';
 require('../node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css');
 require('../node_modules/leaflet.markercluster/dist/leaflet.markercluster.js');
 
-import {exactlyOne} from './util.js';
+import {exactlyOne, allStrictEqual} from './util.js';
 import {BaseLayers, BaseLayersForLayerControl} from './baseLayers.js';
 import {DefaultIcon, TreeIcon}          from './icons.js';
 import rainbow from './rainbow.js';
 
 import {CustomCircleMarker} from './custom-markers.js';
 import wrapContexts from './context/contexts-wrapper.jsx';
+
 // const Buffer = require('buffer').Buffer;
 // const Iconv  = require('iconv').Iconv;
 
@@ -44,7 +45,7 @@ import {Athens, layerGroups, defaultMarkerStyle, USE_CLASSICAL_MARKERS} from './
 
 import {SELECT_TREE, DEFINE_POLYGON, ADD_BEACON, SELECT_GEOMETRY} from './constants/modes.js';
 import {DELETE_GEOMETRY_UNDER_DEFINITION}                         from './constants/flags.js';
-import {MODAL_ADD_GEOMETRY}                                       from './constants/modal-types.jsx';
+import {MODAL_ADD_GEOMETRY}                                       from './constants/modal-types.js';
 
 import { connect }          from 'react-redux';
 import {updateMouseCoords
@@ -91,6 +92,8 @@ class Map extends React.Component {
     this.state = {
       highlightedMarker: null
     };
+    this.layerGroup = null;
+    this.currentPolygon = null;
     this.currentPolygonPoints = [];
     this.clickableLayers = [];
   }
@@ -149,10 +152,11 @@ class Map extends React.Component {
      , animate: true
      , heartbeat: 0.4
       });
-    const marker = L.marker([lat, lng],{icon: pulsingIcon}).addTo(this.map);
+    const marker = L.marker([lat, lng],{icon: pulsingIcon});
     marker.addTo(this.map);
     window.setTimeout(()=>{
       this.map.removeLayer(marker);
+      console.log('marker is removed');
     }, durationMS);
   }
 
@@ -163,33 +167,37 @@ class Map extends React.Component {
   }
 
   drawPolygon = () => {
-    console.log('drawPolygon');
-    if (this.props.mode===DEFINE_POLYGON) {
-      console.log(`this.props.geometryUnderDefinition.length=${this.props.geometryUnderDefinition.length}`);
-
-      if (this.currentPolygon!=null) {
-        console.log(this.props.geometryUnderDefinition);
-        this.currentPolygon.setLatLngs(this.props.geometryUnderDefinition);
+    assert.strictEqual(this.props.mode, DEFINE_POLYGON);
+    if (this.currentPolygon==null) {
+      if (this.layerGroup===null) {
+        this.layerGroup = L.layerGroup();
+        this.map.addLayer(this.layerGroup);
+        this.layersControl.addOverlay(this.layerGroup, 'custom layer');        
+        console.log('new layerGroup added to maps and control');
       }
-      else {
-        // start defining new polygon and clear currently accumulated points
-        this.currentPolygon = L.polygon(this.props.geometryUnderDefinition).addTo(this.map);
-        console.log('zzzz new polygon is defined');
-        this.currentPolygonPoints = [];
-      }
+      // start defining new polygon and clear currently accumulated points
+      this.currentPolygon = L.polygon(this.props.geometryUnderDefinition);
+      this.layerGroup.addLayer(this.currentPolygon);
 
-      const latestPoint = this.props.geometryUnderDefinition[this.props.geometryUnderDefinition.length-1];
-      console.log(latestPoint);
-      var circle = L.circle([latestPoint.lat, latestPoint.lng], {
-        color: 'red',
-        fillColor: '#f03',
-        fillOpacity: 0.5,
-        radius: 10
-      }).addTo(this.map);
-      this.currentPolygonPoints.push(circle);
-
+      this.currentPolygonPoints = [];
+      console.log('new polygon and overlay added to map');
     }
-  }
+    else {
+      this.currentPolygon.setLatLngs(this.props.geometryUnderDefinition);      
+    }
+
+    const latestPoint = this.props.geometryUnderDefinition[this.props.geometryUnderDefinition.length-1];
+    console.log(latestPoint);
+    var circle = L.circle([latestPoint.lat, latestPoint.lng], {
+      color: 'red',
+      fillColor: '#f03',
+      fillOpacity: 0.5,
+      radius: 10
+    }).addTo(this.map);
+    this.layerGroup.addLayer(circle);
+    this.currentPolygonPoints.push(circle);
+
+}
 
   componentWillUnmount = () => {
     console.log('map::componentWillUnmount()');
@@ -264,23 +272,23 @@ class Map extends React.Component {
     if ((prevProps.loginContext.username===null) && (this.props.loginContext.username!==null))
       this.addLayerGroupsForPromisingLayers();
     if (this.props.deleteGeometryUnderDefinition) {
-      console.log('deleting geometry under definition');
       assert.strictEqual(this.props.mode, null);
       assert.isTrue(this.currentPolygon != null, 'this.currentPolygon is curiously null');
-      this.map.removeLayer(this.currentPolygon);
+      assert.isTrue(this.layerGroup     != null, 'this.layerGroup is curiously null');      
+      this.layersControl.removeLayer(this.layerGroup);
+      this.map.removeLayer(this.layerGroup);
       this.currentPolygon = null;
+      this.layerGroup = null;
       this.currentPolygonPoints.forEach( (x) => {
         this.map.removeLayer(x);
       });
       this.currentPolygonPoints = [];
       this.props.clearDeleteGeometryUnderDefinition();
     }
-    console.log(`zzzzzzzz ${prevProps.tileProviderId}, ${this.props.tileProviderId}`);
     if (prevProps.tileProviderId!==this.props.tileProviderId) {
-      throw new Error(42);
       this.addTiles();
     }
-    if (prevProps.mode === this.props.mode) {
+    if (allStrictEqual([prevProps.mode, this.props.mode, DEFINE_POLYGON])) {
       if ((prevProps.geometryUnderDefinition.length !== this.props.geometryUnderDefinition.length)
           &&
           (this.props.geometryUnderDefinition.length>0)) {

@@ -9,7 +9,7 @@ import {CHANGE_TILE_PROVIDER
         , ADD_GEOMETRY
         , TOGGLE_MAXIMIZE_INFO_PANEL
         , UPDATE_TARGET} from '../constants/action-types.js';
-import {isValidModalType} from '../constants/modal-types.jsx';
+import {isValidModalType} from '../constants/modal-types.js';
 
 export function changeTileProvider(tileProviderId) {
     return { type: CHANGE_TILE_PROVIDER, payload: {tileProviderId} };

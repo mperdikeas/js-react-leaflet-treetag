@@ -28,7 +28,7 @@ import wrapContexts from './context/contexts-wrapper.jsx';
 import ModalLogin       from './modal-login.jsx';
 import ModalAddGeometry from './modal-add-geometry.jsx';
 
-import {MODAL_LOGIN, MODAL_ADD_GEOMETRY} from './constants/modal-types.jsx';
+import {MODAL_LOGIN, MODAL_ADD_GEOMETRY} from './constants/modal-types.js';
 
 const MODAL_COMPONENTS = {
   MODAL_LOGIN: ModalLogin,
