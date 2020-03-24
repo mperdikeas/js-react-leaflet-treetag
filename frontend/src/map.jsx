@@ -222,6 +222,46 @@ class Map extends React.Component {
     this.map.off('click');
   }
 
+
+  installNewDrawWorkspace = (featureGroup) => {
+    if (this.drawnItems!==undefined) {
+      assert.isNotNull(this.drawnItems);
+      this.drawnItems.clearLayers();
+      this.layersControl.removeLayer(this.drawnItems);
+      this.map.removeLayer(this.drawnItems);
+      this.map.removeControl(this.drawControl);
+    }
+    
+    this.drawnItems = featureGroup;
+    this.layersControl.addOverlay(this.drawnItems, 'επιφάνεια εργασίας');      
+    globalSet(GSN.LEAFLET_DRAWN_ITEMS, this.drawnItems);
+    this.map.addLayer(this.drawnItems);
+    this.drawControl = new L.Control.Draw({
+      draw: {
+        polyline: true,
+        circleMarker: true,
+        rectangle: true,
+        marker: true,
+        polygon: {
+          shapeOptions: {
+            color: 'purple'
+          },
+          allowIntersection: false,
+          drawError: {
+            color: 'orange',
+            timeout: 1000
+          },
+          showArea: true,
+          metric: true
+        }
+      },
+      edit: {
+        featureGroup: this.drawnItems
+      }
+    });
+    this.map.addControl(this.drawControl);
+  }
+
   componentDidMount = () => {
 
 
@@ -249,36 +289,8 @@ class Map extends React.Component {
     this.addTiles();
     this.addLayerGroupsExceptPromisingLayers();
 
-    
-    this.drawnItems = new L.FeatureGroup();
-    globalSet(GSN.LEAFLET_DRAWN_ITEMS, this.drawnItems);
-    
-    this.map.addLayer(this.drawnItems);
-    this.layersControl.addOverlay(this.drawnItems, 'επιφάνεια εργασίας');
-    this.drawControl = new L.Control.Draw({
-      draw: {
-        polyline: true,
-        circleMarker: true,
-        rectangle: true,
-        marker: true,
-        polygon: {
-          shapeOptions: {
-            color: 'purple'
-          },
-          allowIntersection: false,
-          drawError: {
-            color: 'orange',
-            timeout: 1000
-          },
-          showArea: true,
-          metric: true
-        }
-      },
-      edit: {
-        featureGroup: this.drawnItems
-      }
-    });
-    this.map.addControl(this.drawControl);
+    this.installNewDrawWorkspace(new L.FeatureGroup());
+
     this.map.on('draw:created', (e) => {
       const type = e.layerType,
             layer = e.layer;
@@ -361,45 +373,7 @@ class Map extends React.Component {
     if (!prevProps.insertGeoJSONIntoWorkspace && this.props.insertGeoJSONIntoWorkspace) {
       console.log('map - I have to insert GeoJSON into the draw workspace');
       const geoJSON = this.props.insertGeoJSONIntoWorkspace; // the flag is a geoJSON object in this case
-      console.log(geoJSON);
-
-//////////
-      this.drawnItems.clearLayers();
-      this.layersControl.removeLayer(this.drawnItems);
-      this.map.removeLayer(this.drawnItems);
-      this.map.removeControl(this.drawControl);
-      
-      this.drawnItems = L.geoJSON(geoJSON);
-      this.layersControl.addOverlay(this.drawnItems, 'επιφάνεια εργασίας');      
-      globalSet(GSN.LEAFLET_DRAWN_ITEMS, this.drawnItems);
-      this.map.addLayer(this.drawnItems);
-      this.drawControl = new L.Control.Draw({
-        draw: {
-          polyline: true,
-          circleMarker: true,
-          rectangle: true,
-          marker: true,
-          polygon: {
-            shapeOptions: {
-              color: 'purple'
-            },
-            allowIntersection: false,
-            drawError: {
-              color: 'orange',
-              timeout: 1000
-            },
-            showArea: true,
-            metric: true
-          }
-        },
-        edit: {
-          featureGroup: this.drawnItems
-        }
-      });
-      this.map.addControl(this.drawControl);
-
-//////////
-
+      this.installNewDrawWorkspace(L.geoJSON(geoJSON));
       this.props.clearInsertGeoJSONIntoWorkspaceFlag();
     } else if (prevProps.insertGeoJSONIntoWorkspace && !this.props.insertGeoJSONIntoWorkspace) {
       console.log('map - insert GeoJSON into the draw workspace flag is cleared');
