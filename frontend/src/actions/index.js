@@ -12,6 +12,8 @@ import {CHANGE_TILE_PROVIDER
         , UPDATE_TARGET} from '../constants/action-types.js';
 import {isValidModalType} from '../constants/modal-types.js';
 
+import {CT_UNIT} from '../constants.js';
+
 export function changeTileProvider(tileProviderId) {
     return { type: CHANGE_TILE_PROVIDER, payload: {tileProviderId} };
 }
@@ -28,8 +30,11 @@ export function clearFlag(flagToClear) {
     return {type: CLEAR_FLAG, payload: {flagToClear}};
 }
 
-export function setFlag(flagToSet) {
-    return {type: SET_FLAG, payload: {flagToSet}};
+export function setFlag(flagToSet, flagValue=CT_UNIT) {
+    assert.isNotNull(flagValue);
+    assert.isDefined(flagValue);
+    console.log(`dispatching flag [${flagToSet}] with flag value [${flagValue}]`); 
+    return {type: SET_FLAG, payload: {flagToSet, flagValue}};
 }
 
 export function addPointToPolygonUnderConstruction(latlng) {

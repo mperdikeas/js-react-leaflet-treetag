@@ -64,9 +64,17 @@ class ModalSaveWorkspaceToDisk extends React.Component {
   saveOverlay = (ev) => {
     ev.preventDefault();    
     const overlayName = this.overlayNameRef.current.value;
-    localStorage.setItem('workspace', JSON.stringify({name: overlayName
-                                                   , geoJSON: this.props.geoJSON}));
-    console.log(`overlay with name [${overlayName}] is now saved`);
+    const workspacesJSON = localStorage.getItem('workspaces');
+    const workspaces = ((workspacesJSON)=>{
+      if (workspacesJSON===null)
+        return [];
+      else
+        return JSON.parse(workspacesJSON);
+    })(workspacesJSON);
+    workspaces.push({name: overlayName
+                   , geoJSON: this.props.geoJSON});
+    localStorage.setItem('workspaces', JSON.stringify(workspaces));
+    console.log(`overlay with name [${overlayName}] is now saved; ${workspaces.length} workspaces in local storage`);
     this.props.overlayIsNowSaved();
   }
 
@@ -77,7 +85,7 @@ class ModalSaveWorkspaceToDisk extends React.Component {
       <dialog id="dialog" ref={this.ref}>
         <form method="dialog" onSubmit={this.saveOverlay}>
           <p>Enter a name for this overlay</p>
-          <label htmlFor='overlay-name-input'>Name for the new geometry</label>
+          <label htmlFor='overlay-name-input'>Name for the overlay</label>
           <input ref={this.overlayNameRef} type='text' id='overlay-name-input'/><br/>
           <input type="submit" value="OK"/>
         </form>

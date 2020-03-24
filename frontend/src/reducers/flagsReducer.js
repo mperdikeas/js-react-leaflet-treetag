@@ -13,13 +13,13 @@ export default (state = initialState, actionAndState) => {
     case SET_FLAG: {
         const flags = {...state};
         console.log(flags);
-        flags[action.payload.flagToSet] = true;
+        flags[action.payload.flagToSet] = action.payload.flagValue;
         return flags;
     }
     case CLEAR_FLAG: {
         const flags = {...state};
         console.log(flags);
-        flags[action.payload.flagToClear] = false;
+        flags[action.payload.flagToClear] = null;
         return flags;
     }
     case TOGGLE_MODE: {

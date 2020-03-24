@@ -56,9 +56,16 @@ import '../node_modules/leaflet-measure/dist/leaflet-measure.css';
 import {Athens, layerGroups, defaultMarkerStyle, USE_CLASSICAL_MARKERS} from './tree-markers.js';
 
 
-import {SELECT_TREE, DEFINE_POLYGON, ADD_BEACON, SELECT_GEOMETRY} from './constants/modes.js';
-import {DELETE_GEOMETRY_UNDER_DEFINITION, CLEAR_DRAW_WORKSPACE}   from './constants/flags.js';
-import {MODAL_ADD_GEOMETRY}                                       from './constants/modal-types.js';
+import {SELECT_TREE
+      , DEFINE_POLYGON
+      , ADD_BEACON
+      , SELECT_GEOMETRY} from './constants/modes.js';
+
+import {DELETE_GEOMETRY_UNDER_DEFINITION
+      , CLEAR_DRAW_WORKSPACE
+      , INSERT_GEOJSON_INTO_WORKSPACE} from './constants/flags.js';
+
+import {MODAL_ADD_GEOMETRY} from './constants/modal-types.js';
 
 import { connect }          from 'react-redux';
 import {updateMouseCoords
@@ -79,6 +86,7 @@ const mapStateToProps = (state) => {
     , geometryUnderDefinition      : state.geometryUnderDefinition
     , deleteGeometryUnderDefinition: state.flags[DELETE_GEOMETRY_UNDER_DEFINITION]
     , clearDrawWorkspace           : state.flags[CLEAR_DRAW_WORKSPACE]
+    , insertGeoJSONIntoWorkspace   : state.flags[INSERT_GEOJSON_INTO_WORKSPACE]
   };
 };
 
@@ -86,6 +94,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     updateCoordinates                   : (latlng)   => dispatch(updateMouseCoords(latlng))
     , clearDrawWorkspaceFlag            : ()         => dispatch(clearFlag(CLEAR_DRAW_WORKSPACE))
+    , clearInsertGeoJSONIntoWorkspaceFlag: ()        => dispatch(clearFlag(INSERT_GEOJSON_INTO_WORKSPACE))
     , clearDeleteGeometryUnderDefinition: ()         => dispatch(clearFlag(DELETE_GEOMETRY_UNDER_DEFINITION))
     , addPointToPolygonUnderConstruction: (latlng)   => dispatch(addPointToPolygonUnderConstruction(latlng))
     , displayAddPolygonDialog           : (polygonId, polygon)  => dispatch(displayModal(MODAL_ADD_GEOMETRY, {polygonId, polygon}))
@@ -347,6 +356,54 @@ class Map extends React.Component {
     } else if (prevProps.clearDrawWorkspace && !this.props.clearDrawWorkspace) {
       console.log('map - clear draw workspace flag is cleared');
     }
+
+
+    if (!prevProps.insertGeoJSONIntoWorkspace && this.props.insertGeoJSONIntoWorkspace) {
+      console.log('map - I have to insert GeoJSON into the draw workspace');
+      const geoJSON = this.props.insertGeoJSONIntoWorkspace; // the flag is a geoJSON object in this case
+      console.log(geoJSON);
+
+//////////
+      this.drawnItems.clearLayers();
+      this.layersControl.removeLayer(this.drawnItems);
+      this.map.removeLayer(this.drawnItems);
+      this.map.removeControl(this.drawControl);
+      
+      this.drawnItems = L.geoJSON(geoJSON);
+      this.layersControl.addOverlay(this.drawnItems, 'επιφάνεια εργασίας');      
+      globalSet(GSN.LEAFLET_DRAWN_ITEMS, this.drawnItems);
+      this.map.addLayer(this.drawnItems);
+      this.drawControl = new L.Control.Draw({
+        draw: {
+          polyline: true,
+          circleMarker: true,
+          rectangle: true,
+          marker: true,
+          polygon: {
+            shapeOptions: {
+              color: 'purple'
+            },
+            allowIntersection: false,
+            drawError: {
+              color: 'orange',
+              timeout: 1000
+            },
+            showArea: true,
+            metric: true
+          }
+        },
+        edit: {
+          featureGroup: this.drawnItems
+        }
+      });
+      this.map.addControl(this.drawControl);
+
+//////////
+
+      this.props.clearInsertGeoJSONIntoWorkspaceFlag();
+    } else if (prevProps.insertGeoJSONIntoWorkspace && !this.props.insertGeoJSONIntoWorkspace) {
+      console.log('map - insert GeoJSON into the draw workspace flag is cleared');
+    }    
     
     if ((prevProps.loginContext.username===null) && (this.props.loginContext.username!==null))
       this.addLayerGroupsForPromisingLayers();
