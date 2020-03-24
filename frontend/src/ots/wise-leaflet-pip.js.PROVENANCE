@@ -1,0 +1,9 @@
+Used the following:
+
+    wget https://cdn.rawgit.com/hayeswise/Leaflet.PointInPolygon/v1.0.0/wise-leaflet-pip.js
+
+... based on instructions found in:
+
+    https://github.com/hayeswise/Leaflet.PointInPolygon
+
+

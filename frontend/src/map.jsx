@@ -22,6 +22,9 @@ const assert = require('chai').assert;
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
+
+import './ots/wise-leaflet-pip.js';
+
 import 'leaflet-draw';
 import 'leaflet-draw/dist/leaflet.draw.css';
 //import '../node_modules/leaflet-draw/dist/leaflet.draw.js';
@@ -262,6 +265,27 @@ class Map extends React.Component {
     this.map.addControl(this.drawControl);
   }
 
+  calculateTreesWithinLayer = () => {
+    console.log('calculateTreesWithinLayer');
+    let count = 0;
+    this.drawnItems.eachLayer( (layer) => {
+      this.clickableLayers.forEach( (markers) => {
+        markers.eachLayer ( (marker)=>{
+          if (layer instanceof L.Polygon) {
+            if (layer.contains(marker.getLatLng())) {
+              count++;
+            }
+          } else if (layer instanceof L.Circle) {
+            if (layer.getLatLng().distanceTo(marker.getLatLng()) <= layer.getRadius()) {
+              count++;
+            }
+          }
+        });
+      });
+    });
+    console.log(`${count} trees within layer`);
+  }
+
   componentDidMount = () => {
 
 
@@ -300,9 +324,11 @@ class Map extends React.Component {
       console.log(this.drawnItems.toGeoJSON(7));
     });
 
-
-
-
+    const eventsToTriggerCounting = ['draw:created', 'draw:edited', 'draw:saved'
+                                   , 'draw:deleted'];
+    eventsToTriggerCounting.forEach( (v) => {
+      this.map.on(v, this.calculateTreesWithinLayer);
+      });
 
     
     if (true)
