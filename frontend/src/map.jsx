@@ -46,6 +46,8 @@ import {numOfLayersInLayerGroup} from './leaflet-util.js';
 // const Buffer = require('buffer').Buffer;
 // const Iconv  = require('iconv').Iconv;
 
+import {GSN, globalSet} from './globalStore.js';
+
 import '../node_modules/leaflet-measure/dist/leaflet-measure.en.js';
 import '../node_modules/leaflet-measure/dist/leaflet-measure.css';
 
@@ -55,7 +57,7 @@ import {Athens, layerGroups, defaultMarkerStyle, USE_CLASSICAL_MARKERS} from './
 
 
 import {SELECT_TREE, DEFINE_POLYGON, ADD_BEACON, SELECT_GEOMETRY} from './constants/modes.js';
-import {DELETE_GEOMETRY_UNDER_DEFINITION}                         from './constants/flags.js';
+import {DELETE_GEOMETRY_UNDER_DEFINITION, CLEAR_DRAW_WORKSPACE}   from './constants/flags.js';
 import {MODAL_ADD_GEOMETRY}                                       from './constants/modal-types.js';
 
 import { connect }          from 'react-redux';
@@ -75,13 +77,15 @@ const mapStateToProps = (state) => {
     , mode                         : state.mode
     , userDefinedGeometries        : state.userDefinedGeometries
     , geometryUnderDefinition      : state.geometryUnderDefinition
-    , deleteGeometryUnderDefinition: state.flags.DELETE_GEOMETRY_UNDER_DEFINITION
+    , deleteGeometryUnderDefinition: state.flags[DELETE_GEOMETRY_UNDER_DEFINITION]
+    , clearDrawWorkspace           : state.flags[CLEAR_DRAW_WORKSPACE]
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     updateCoordinates                   : (latlng)   => dispatch(updateMouseCoords(latlng))
+    , clearDrawWorkspaceFlag            : ()         => dispatch(clearFlag(CLEAR_DRAW_WORKSPACE))
     , clearDeleteGeometryUnderDefinition: ()         => dispatch(clearFlag(DELETE_GEOMETRY_UNDER_DEFINITION))
     , addPointToPolygonUnderConstruction: (latlng)   => dispatch(addPointToPolygonUnderConstruction(latlng))
     , displayAddPolygonDialog           : (polygonId, polygon)  => dispatch(displayModal(MODAL_ADD_GEOMETRY, {polygonId, polygon}))
@@ -212,93 +216,69 @@ class Map extends React.Component {
   componentDidMount = () => {
 
 
-    const leafletDrawBasicControl = false;
-    const leafletDrawEditControl = true;
-    
     console.log('map::componentDidMount()');
     window.addEventListener    ('resize', this.handleResize);
     this.map = L.map('map-id', {
-      drawControl: leafletDrawBasicControl,
       center: Athens,
       zoom: 15,
       zoomControl: false
     });
 
-/*
+    const options = {position: 'topleft'
+                   , primaryLengthUnit: 'meters'
+                   , secondaryLengthUnit: 'kilometers'
+                   , primaryAreaUnit: 'sqmeters'
+                   , secondaryAreaUnit: 'hectares'
+                  ,  decPoint: ','
+                   , thousandsSep: '.'
+                   , activeColor: '#A1EB0E'
+                   , completedColor: '#DEAE09'};
+    const measureControl = new L.Control.Measure(options);
+    measureControl.addTo(this.map);
 
-    this.map.on('draw:created', function (e) {
-      var type = e.layerType,
-          layer = e.layer;
-      if (type === 'polygon') {
-        var area = L.GeometryUtil.geodesicArea(layer.getLatLngs());
-        console.log(`ddddddddddd ${area}`);
-      }
-    });
-    */
-    const enableMeasureControl = true;
-    if (enableMeasureControl) {
-      const options = {position: 'topleft'
-                     , primaryLengthUnit: 'meters'
-                     , secondaryLengthUnit: 'kilometers'
-                     , primaryAreaUnit: 'sqmeters'
-                     , secondaryAreaUnit: 'hectares'
-                    ,  decPoint: ','
-                     , thousandsSep: '.'
-                     , activeColor: '#A1EB0E'
-                     , completedColor: '#DEAE09'};
-      const measureControl = new L.Control.Measure(options);
-      measureControl.addTo(this.map);
-    }
 
-    
-    console.log('wwwwwww calling addtiles');
     this.addTiles();
     this.addLayerGroupsExceptPromisingLayers();
 
-    if (leafletDrawEditControl) {
-      const drawnItems = new L.FeatureGroup();
-      console.log('drawnItems');
-      console.log(drawnItems);
-      this.map.addLayer(drawnItems);
-      this.layersControl.addOverlay(drawnItems, 'Leaflet draw layer');
-      var drawControl = new L.Control.Draw({
-        draw: {
-          polyline: true,
-          circleMarker: true,
-          rectangle: true,
-          marker: true,
-          polygon: {
-            shapeOptions: {
-              color: 'purple'
-            },
-            allowIntersection: false,
-            drawError: {
-              color: 'orange',
-              timeout: 1000
-            },
-            showArea: true,
-            metric: true
-          }
-        },
-        edit: {
-          featureGroup: drawnItems
+    
+    this.drawnItems = new L.FeatureGroup();
+    globalSet(GSN.LEAFLET_DRAWN_ITEMS, this.drawnItems);
+    
+    this.map.addLayer(this.drawnItems);
+    this.layersControl.addOverlay(this.drawnItems, 'επιφάνεια εργασίας');
+    this.drawControl = new L.Control.Draw({
+      draw: {
+        polyline: true,
+        circleMarker: true,
+        rectangle: true,
+        marker: true,
+        polygon: {
+          shapeOptions: {
+            color: 'purple'
+          },
+          allowIntersection: false,
+          drawError: {
+            color: 'orange',
+            timeout: 1000
+          },
+          showArea: true,
+          metric: true
         }
-      });
-      this.map.addControl(drawControl);
+      },
+      edit: {
+        featureGroup: this.drawnItems
+      }
+    });
+    this.map.addControl(this.drawControl);
+    this.map.on('draw:created', (e) => {
+      const type = e.layerType,
+            layer = e.layer;
+      this.drawnItems.addLayer(layer);
+      if (type==='polygon')
+        console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
+      console.log(this.drawnItems.toGeoJSON(7));
+    });
 
-      this.map.on('draw:created', (e) => {
-        const type = e.layerType,
-              layer = e.layer;
-        drawnItems.addLayer(layer);
-        if (type==='polygon')
-          console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
-
-        console.log(drawnItems.toGeoJSON(7));
-        drawnItems.eachLayer( (layer)=>{
-          console.log('layer object');
-          });
-      });
-    }
 
 
 
@@ -357,6 +337,16 @@ class Map extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+    if ((prevProps.loginContext.username===null) && (this.props.loginContext.username!==null))
+      this.addLayerGroupsForPromisingLayers();
+
+    if (!prevProps.clearDrawWorkspace && this.props.clearDrawWorkspace) {
+      console.log('map - I have to clear the draw workspace');
+      
+    } else if (prevProps.clearDrawWorkspace && !this.props.clearDrawWorkspace) {
+      console.log('map - clear draw workspace flag is cleared');
+    }
+    
     if ((prevProps.loginContext.username===null) && (this.props.loginContext.username!==null))
       this.addLayerGroupsForPromisingLayers();
     if (this.props.deleteGeometryUnderDefinition) {

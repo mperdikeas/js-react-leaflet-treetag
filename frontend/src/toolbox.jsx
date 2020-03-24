@@ -9,6 +9,8 @@ const assert = require('chai').assert;
 
 require('./toolbox.css');
 
+import saveWorkspaceToDisk      from './resources/save-workspace-to-disk-32.png';
+import uploadLayerToCloud       from './resources/upload-layer-to-cloud-32.png';
 import selectTree               from './resources/select-tree-32.png';
 import addBeacon                from './resources/add-beacon-32.png';
 import selectGeometry           from './resources/select-geometry-32.png';
@@ -24,8 +26,10 @@ import {SELECT_TREE, ADD_BEACON, SELECT_GEOMETRY, DEFINE_POLYGON, MOVE_VERTEX, R
 
 // redux
 import { connect }          from 'react-redux';
-import {toggleMode}         from './actions/index.js';
+import {toggleMode, displayModal}         from './actions/index.js';
 
+import {MDL_SAVE_WS_2_DSK} from './constants/modal-types.js';
+import {GSN, globalGet} from './globalStore.js';
 
 const mapStateToProps = (state) => {
   return {
@@ -38,6 +42,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     toggleMode : (mode) => dispatch(toggleMode(mode))
+    , saveWorkspaceToDisk: (geoJSON) => dispatch(displayModal(MDL_SAVE_WS_2_DSK, {geoJSON}))
+    , uploadLayerToCloud: () => dispatch(displayModal())
     };
   }
 
@@ -50,6 +56,22 @@ class Toolbox extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
+  }
+
+
+  saveWorkspaceToDisk = (e) => {
+    console.log('save workspace to disk');
+    e.preventDefault();
+    const drawnItems = globalGet(GSN.LEAFLET_DRAWN_ITEMS);
+    const geoJSON = drawnItems.toGeoJSON(7);
+    this.props.saveWorkspaceToDisk(geoJSON);
+  }
+
+
+  chooseUploadLayerToCloud = (e) => {
+    e.preventDefault();
+    const drawnItems = globalGet(GSN.LEAFLET_DRAWN_ITEMS);
+    console.log('toolbox', drawnItems.toGeoJSON(7));
   }
 
   chooseSelectTree = (e) => {
@@ -84,7 +106,9 @@ class Toolbox extends React.Component {
   
 
   render = () => {
-    const tools = [ {icon:selectTree     , mode: SELECT_TREE, f: this.chooseSelectTree}
+    const tools = [{icon:saveWorkspaceToDisk , mode: null, f: this.saveWorkspaceToDisk}
+                 , {icon:uploadLayerToCloud , mode: null, f: this.chooseUploadLayerToCloud}
+                  , {icon:selectTree     , mode: SELECT_TREE, f: this.chooseSelectTree}
                   , {icon:addBeacon      , mode: ADD_BEACON , f: this.chooseAddBeacon}
                   , {icon:selectGeometry , mode: SELECT_GEOMETRY, f: this.chooseSelectGeometry}
                   , {icon: (this.props.geometryUnderDefinition?definePolygonInProgress:definePolygon)

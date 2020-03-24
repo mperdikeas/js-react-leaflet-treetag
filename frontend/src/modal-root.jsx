@@ -25,14 +25,16 @@ import './css/modal-dialog.css'; // TODO: use React emotion for element-scoped C
 
 import wrapContexts from './context/contexts-wrapper.jsx';
 
-import ModalLogin       from './modal-login.jsx';
-import ModalAddGeometry from './modal-add-geometry.jsx';
+import ModalLogin               from './modal-login.jsx';
+import ModalAddGeometry         from './modal-add-geometry.jsx';
+import ModalSaveWorkspaceToDisk from './modal-save-workspace-to-disk.jsx';
 
-import {MODAL_LOGIN, MODAL_ADD_GEOMETRY} from './constants/modal-types.js';
+import {MODAL_LOGIN, MODAL_ADD_GEOMETRY, MDL_SAVE_WS_2_DSK} from './constants/modal-types.js';
 
 const MODAL_COMPONENTS = {
   MODAL_LOGIN: ModalLogin,
-  MODAL_ADD_GEOMETRY: ModalAddGeometry
+  MODAL_ADD_GEOMETRY: ModalAddGeometry,
+  MDL_SAVE_WS_2_DSK: ModalSaveWorkspaceToDisk
 };
 
 

@@ -20,50 +20,54 @@ import PointCoordinates                        from './point-coordinates.jsx';
 import Toolbox                                 from './toolbox.jsx';
 import {SELECT_TREE_TOOL, DEFINE_POLYGON_TOOL} from './map-tools.js';
 import {BASE_URL}                              from './constants.js';
-
+import {CLEAR_DRAW_WORKSPACE}                  from './constants/flags.js';
 import './css/modal-dialog.css'; // TODO: use React emotion for element-scoped CSS
 
 import wrapContexts from './context/contexts-wrapper.jsx';
 
 // redux
 import {  connect   }              from 'react-redux';
-import { clearModal, addGeometry } from './actions/index.js';
+import { clearModal, setFlag } from './actions/index.js';
 
 
 const mapStateToProps = (state) => {
   return {
-    modal: state.modal
+    modal: state.modal.modalProps
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addGeometry: (polygonId, geometryName, polygon) => dispatch(addGeometry(polygonId
-                                                                          , geometryName
-                                                                          , polygon))
-    };
+    overlayIsNowSaved: () => {
+      dispatch(clearModal());
+      dispatch(setFlag(CLEAR_DRAW_WORKSPACE));
+    }
+  };
 }
 
-class ModalAddGeometry extends React.Component {
+class ModalSaveWorkspaceToDisk extends React.Component {
 
   constructor(props) {
     super(props);
     console.log(props);
     this.ref = React.createRef();
-    this.inputGeometryNameRef = React.createRef();
+    this.overlayNameRef = React.createRef();
   }
 
   componentDidMount() {
     console.log('ModalAddGeometry::componentDidMount');
+    console.log(this.props);
     const domElem = this.ref.current;
     domElem.showModal();
   }
 
-  addGeometry = (ev) => {
+  saveOverlay = (ev) => {
     ev.preventDefault();    
-    const geometryName = this.inputGeometryNameRef.current.value;
-    this.props.polygon.setStyle({weight: 3, dashArray: null});
-    this.props.addGeometry(this.props.polygonId, geometryName, this.props.polygon);
+    const overlayName = this.overlayNameRef.current.value;
+    localStorage.setItem('workspace', JSON.stringify({name: overlayName
+                                                   , geoJSON: this.props.geoJSON}));
+    console.log(`overlay with name [${overlayName}] is now saved`);
+    this.props.overlayIsNowSaved();
   }
 
 
@@ -71,10 +75,10 @@ class ModalAddGeometry extends React.Component {
     return (
       <>
       <dialog id="dialog" ref={this.ref}>
-        <form method="dialog" onSubmit={this.addGeometry}>
-          <p>Please enter a name for this new geometry</p>
-          <label htmlFor='geometry-name-input'>Name for the new geometry</label>
-          <input ref={this.inputGeometryNameRef} type='text' id='geometry-name-input'/><br/>
+        <form method="dialog" onSubmit={this.saveOverlay}>
+          <p>Enter a name for this overlay</p>
+          <label htmlFor='overlay-name-input'>Name for the new geometry</label>
+          <input ref={this.overlayNameRef} type='text' id='overlay-name-input'/><br/>
           <input type="submit" value="OK"/>
         </form>
       </dialog>
@@ -85,6 +89,6 @@ class ModalAddGeometry extends React.Component {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(ModalAddGeometry));
+export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(ModalSaveWorkspaceToDisk));
 
 

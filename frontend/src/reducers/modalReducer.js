@@ -6,7 +6,7 @@ export default (state = {modal: {modalType: MODAL_LOGIN, modalProps: null}}, act
     switch (action.type) {
     case DISPLAY_MODAL:
         return {modal: {modalType: action.payload.modalType, modalProps: action.payload.modalProps}};
-    case ADD_GEOMETRY:
+    case ADD_GEOMETRY: // TODO: I don't think this is used anymore
         return {modal: null};
     case CLEAR_MODAL:
         console.log('returning null in response to CLEAR_MODAL action');

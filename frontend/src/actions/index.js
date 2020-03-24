@@ -2,6 +2,7 @@ const assert = require('chai').assert;
 import {CHANGE_TILE_PROVIDER
         , UPDATE_MOUSE_COORDS
         , TOGGLE_MODE
+        , SET_FLAG
         , CLEAR_FLAG
         , ADD_POINT_TO_POLYGON_UNDER_CONSTRUCTION
         , DISPLAY_MODAL
@@ -27,13 +28,17 @@ export function clearFlag(flagToClear) {
     return {type: CLEAR_FLAG, payload: {flagToClear}};
 }
 
+export function setFlag(flagToSet) {
+    return {type: SET_FLAG, payload: {flagToSet}};
+}
+
 export function addPointToPolygonUnderConstruction(latlng) {
     return {type: ADD_POINT_TO_POLYGON_UNDER_CONSTRUCTION, payload: {latlng}};
 }
 
 export function displayModal(modalType, modalProps) {
     console.log('dispatching modal');
-    assert.isTrue(isValidModalType(modalType), `unrecognized modal type: ${modalType}`);
+    assert.isTrue(isValidModalType(modalType), `unrecognized modal type: [${modalType}]`);
     return {type: DISPLAY_MODAL, payload: {modalType, modalProps}};
 }
 

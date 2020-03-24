@@ -1,17 +1,28 @@
-import {CLEAR_FLAG, TOGGLE_MODE} from '../constants/action-types.js';
+import {SET_FLAG, CLEAR_FLAG, TOGGLE_MODE} from '../constants/action-types.js';
 import {allStrictEqual} from '../util.js';
 import {DEFINE_POLYGON} from '../constants/modes.js';
 
+const initialState = {
+    DELETE_GEOMETRY_UNDER_DEFINITION: false
+    , CLEAR_DRAW_WORKSPACE: false
+};
 
-export default (state = {DELETE_GEOMETRY_UNDER_DEFINITION: false}, actionAndState) => {
+export default (state = initialState, actionAndState) => {
     const {action, state: actionAdditionalState} = actionAndState;
     switch (action.type) {
-    case CLEAR_FLAG:
+    case SET_FLAG: {
+        const flags = {...state};
+        console.log(flags);
+        flags[action.payload.flagToClear] = true;
+        return flags;
+    }
+    case CLEAR_FLAG: {
         const flags = {...state};
         console.log(flags);
         flags[action.payload.flagToClear] = false;
         return flags;
-    case TOGGLE_MODE:
+    }
+    case TOGGLE_MODE: {
         if ((allStrictEqual([actionAdditionalState.mode, action.payload.mode, DEFINE_POLYGON]))
             &&
             (actionAdditionalState.geometryUnderDefinitionExists)) {
@@ -19,7 +30,9 @@ export default (state = {DELETE_GEOMETRY_UNDER_DEFINITION: false}, actionAndStat
             flags.DELETE_GEOMETRY_UNDER_DEFINITION = true;
             return flags;
         }
-    default:
+    }
+    default: {
         return state;
     }
+    } // switch
 }
