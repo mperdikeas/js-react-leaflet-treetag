@@ -21,6 +21,11 @@ const assert = require('chai').assert;
 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+
+import 'leaflet-draw';
+import 'leaflet-draw/dist/leaflet.draw.css';
+//import '../node_modules/leaflet-draw/dist/leaflet.draw.js';
+
 import proj4 from 'proj4';
 import inside from 'point-in-polygon';
 import keycode from 'keycode';
@@ -191,7 +196,8 @@ class Map extends React.Component {
       console.log('new polygon and overlay added to map');
     }
     else {
-      this.currentPolygon.setLatLngs(this.props.geometryUnderDefinition.points);      
+      this.currentPolygon.setLatLngs(this.props.geometryUnderDefinition.points);
+      console.log(`area is ${L.GeometryUtil.geodesicArea(this.currentPolygon.getLatLngs())}`);
     }
 
 
@@ -204,14 +210,31 @@ class Map extends React.Component {
   }
 
   componentDidMount = () => {
+
+
+    const leafletDrawBasicControl = false;
+    const leafletDrawEditControl = true;
+    
     console.log('map::componentDidMount()');
     window.addEventListener    ('resize', this.handleResize);
     this.map = L.map('map-id', {
+      drawControl: leafletDrawBasicControl,
       center: Athens,
       zoom: 15,
       zoomControl: false
     });
 
+/*
+
+    this.map.on('draw:created', function (e) {
+      var type = e.layerType,
+          layer = e.layer;
+      if (type === 'polygon') {
+        var area = L.GeometryUtil.geodesicArea(layer.getLatLngs());
+        console.log(`ddddddddddd ${area}`);
+      }
+    });
+    */
     const enableMeasureControl = true;
     if (enableMeasureControl) {
       const options = {position: 'topleft'
@@ -231,6 +254,56 @@ class Map extends React.Component {
     console.log('wwwwwww calling addtiles');
     this.addTiles();
     this.addLayerGroupsExceptPromisingLayers();
+
+    if (leafletDrawEditControl) {
+      const drawnItems = new L.FeatureGroup();
+      console.log('drawnItems');
+      console.log(drawnItems);
+      this.map.addLayer(drawnItems);
+      this.layersControl.addOverlay(drawnItems, 'Leaflet draw layer');
+      var drawControl = new L.Control.Draw({
+        draw: {
+          polyline: true,
+          circleMarker: true,
+          rectangle: true,
+          marker: true,
+          polygon: {
+            shapeOptions: {
+              color: 'purple'
+            },
+            allowIntersection: false,
+            drawError: {
+              color: 'orange',
+              timeout: 1000
+            },
+            showArea: true,
+            metric: true
+          }
+        },
+        edit: {
+          featureGroup: drawnItems
+        }
+      });
+      this.map.addControl(drawControl);
+
+      this.map.on('draw:created', (e) => {
+        const type = e.layerType,
+              layer = e.layer;
+        drawnItems.addLayer(layer);
+        if (type==='polygon')
+          console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
+
+        console.log(drawnItems.toGeoJSON(7));
+        drawnItems.eachLayer( (layer)=>{
+          console.log('layer object');
+          });
+      });
+    }
+
+
+
+
+    
     if (true)
       this.map.on('mousemove', (e) => {
         this.props.updateCoordinates(e.latlng);

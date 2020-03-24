@@ -45,7 +45,17 @@ const config = {
             },{
                 test: /.*data\/.*\.zip/,
                 loader: 'file-loader'
-            },
+            },{ // https://github.com/bhovhannes/svg-url-loader
+                test: /\.svg$/,
+                use: [
+                    {
+                        loader: 'svg-url-loader',
+                        options: {
+                            limit: 10000
+                        }
+                    },
+                ]
+            }
         ]
     },
     plugins: [HTMLWebpackPluginConfig],

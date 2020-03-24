@@ -15,6 +15,8 @@ import LoginContextProvider     from './context/login-context.jsx'
 import { Provider }             from "react-redux";
 import store                    from './store/index.js';
 
+import 'leaflet-draw';
+
 $(document).ready(doStuff);
 
 function doStuff() {

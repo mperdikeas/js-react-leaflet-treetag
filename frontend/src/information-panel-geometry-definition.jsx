@@ -16,7 +16,7 @@ import L from 'leaflet';
 // import {geometriesValues, geometriesNames}     from './app-utils.js';
 
 //import '../node_modules/leaflet-draw/dist/leaflet.draw.js';
-import 'leaflet-draw';
+
 
 
 // redux
