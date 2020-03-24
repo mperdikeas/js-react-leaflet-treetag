@@ -15,6 +15,10 @@ import L from 'leaflet';
 
 // import {geometriesValues, geometriesNames}     from './app-utils.js';
 
+//import '../node_modules/leaflet-draw/dist/leaflet.draw.js';
+import 'leaflet-draw';
+
+
 // redux
 import { connect }          from 'react-redux';
 import {changeTileProvider} from './actions/index.js';
@@ -47,6 +51,9 @@ class InformationPanelGeometryDefinition extends React.Component {
     };
 
     const geometries = this.props.userDefinedGeometries.map((x)=>{
+      console.log(x.polygon);
+      const area = L.GeometryUtil.geodesicArea(x.polygon.getLatLngs());
+      console.log(`area is ${area}`);
       return (
         <div key={x.polygonId} className='row no-gutters' style={style1}>
           {x.geometryName}: {L.GeometryUtil.geodesicArea(x.polygon.getLatLngs())} εμβαδόν
