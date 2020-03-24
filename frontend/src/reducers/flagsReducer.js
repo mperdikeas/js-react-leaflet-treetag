@@ -13,7 +13,7 @@ export default (state = initialState, actionAndState) => {
     case SET_FLAG: {
         const flags = {...state};
         console.log(flags);
-        flags[action.payload.flagToClear] = true;
+        flags[action.payload.flagToSet] = true;
         return flags;
     }
     case CLEAR_FLAG: {

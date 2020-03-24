@@ -342,7 +342,8 @@ class Map extends React.Component {
 
     if (!prevProps.clearDrawWorkspace && this.props.clearDrawWorkspace) {
       console.log('map - I have to clear the draw workspace');
-      
+      this.drawnItems.clearLayers();
+      this.props.clearDrawWorkspaceFlag();
     } else if (prevProps.clearDrawWorkspace && !this.props.clearDrawWorkspace) {
       console.log('map - clear draw workspace flag is cleared');
     }
