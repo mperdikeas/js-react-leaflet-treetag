@@ -9,6 +9,10 @@ var      cx = require('classnames');
 const assert = require('chai').assert;
 
 require('./css/information-panel.css');
+
+import L from 'leaflet';
+//import '../node_modules/leaflet-geometryutil/src/leaflet.geometryutil.js';
+
 // import {geometriesValues, geometriesNames}     from './app-utils.js';
 
 // redux
@@ -45,7 +49,7 @@ class InformationPanelGeometryDefinition extends React.Component {
     const geometries = this.props.userDefinedGeometries.map((x)=>{
       return (
         <div key={x.polygonId} className='row no-gutters' style={style1}>
-          {x.geometryName}
+          {x.geometryName}: {L.GeometryUtil.geodesicArea(x.polygon.getLatLngs())} εμβαδόν
         </div>
       );
     });

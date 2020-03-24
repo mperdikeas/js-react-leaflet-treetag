@@ -41,6 +41,10 @@ import {numOfLayersInLayerGroup} from './leaflet-util.js';
 // const Buffer = require('buffer').Buffer;
 // const Iconv  = require('iconv').Iconv;
 
+import '../node_modules/leaflet-measure/dist/leaflet-measure.en.js';
+import '../node_modules/leaflet-measure/dist/leaflet-measure.css';
+
+
 
 import {Athens, layerGroups, defaultMarkerStyle, USE_CLASSICAL_MARKERS} from './tree-markers.js';
 
@@ -207,6 +211,23 @@ class Map extends React.Component {
       zoom: 15,
       zoomControl: false
     });
+
+    const enableMeasureControl = true;
+    if (enableMeasureControl) {
+      const options = {position: 'topleft'
+                     , primaryLengthUnit: 'meters'
+                     , secondaryLengthUnit: 'kilometers'
+                     , primaryAreaUnit: 'sqmeters'
+                     , secondaryAreaUnit: 'hectares'
+                    ,  decPoint: ','
+                     , thousandsSep: '.'
+                     , activeColor: '#A1EB0E'
+                     , completedColor: '#DEAE09'};
+      const measureControl = new L.Control.Measure(options);
+      measureControl.addTo(this.map);
+    }
+
+    
     console.log('wwwwwww calling addtiles');
     this.addTiles();
     this.addLayerGroupsExceptPromisingLayers();
