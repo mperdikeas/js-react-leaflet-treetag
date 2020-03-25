@@ -265,23 +265,30 @@ class Map extends React.Component {
     this.map.addControl(this.drawControl);
   }
 
-  calculateTreesWithinLayer = () => {
-    console.log('calculateTreesWithinLayer');
+  countTreesInLayer = (layer) => {
+    let count = 0;
+    this.clickableLayers.forEach( (markers) => {
+      markers.eachLayer ( (marker)=>{
+        if (layer instanceof L.Polygon) {
+          if (layer.contains(marker.getLatLng())) {
+            count++;
+          }
+        } else if (layer instanceof L.Circle) {
+          if (layer.getLatLng().distanceTo(marker.getLatLng()) <= layer.getRadius()) {
+            count++;
+          }
+        }
+      });
+    });
+    return count;
+  }
+  
+
+  countTreesInDrawWorkspace = () => {
+    console.log('countTreesInDrawWorkspace');
     let count = 0;
     this.drawnItems.eachLayer( (layer) => {
-      this.clickableLayers.forEach( (markers) => {
-        markers.eachLayer ( (marker)=>{
-          if (layer instanceof L.Polygon) {
-            if (layer.contains(marker.getLatLng())) {
-              count++;
-            }
-          } else if (layer instanceof L.Circle) {
-            if (layer.getLatLng().distanceTo(marker.getLatLng()) <= layer.getRadius()) {
-              count++;
-            }
-          }
-        });
-      });
+      count += this.countTreesInLayer(layer);
     });
     console.log(`${count} trees within layer`);
   }
@@ -319,15 +326,17 @@ class Map extends React.Component {
       const type = e.layerType,
             layer = e.layer;
       this.drawnItems.addLayer(layer);
-      if (type==='polygon')
+      if (type==='polygon') {
         console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
-      console.log(this.drawnItems.toGeoJSON(7));
+        const treesInPolygon = this.countTreesInLayer(layer);
+        layer.bindPopup(`<b>${treesInPolygon}</b><br>10 ελιές, 20 εσπεριδοεϊδή.`).openPopup();
+        }
     });
 
     const eventsToTriggerCounting = ['draw:created', 'draw:edited', 'draw:saved'
                                    , 'draw:deleted'];
     eventsToTriggerCounting.forEach( (v) => {
-      this.map.on(v, this.calculateTreesWithinLayer);
+      this.map.on(v, this.countTreesInDrawWorkspace);
       });
 
     
