@@ -384,7 +384,7 @@ class Map extends React.Component {
             console.log(this.map);
             layerGroup.addTo(this.map);
             this.clickableLayers.push(layerGroup);
-            this.addClickListenersToMarkers();
+            this.addClickListenersToMarkersOnLayer(layerGroup);
             this.layersControl.addOverlay(layerGroup, x);
           }); // promise.then
         }
@@ -504,18 +504,24 @@ class Map extends React.Component {
   
 
   addClickListenersToMarkers = () => {
-    this.clickableLayers.forEach( (markers) => {
-      markers.eachLayer ( (marker)=>{
-        marker.on('click', this.clickOnCircleMarker);
-        if (USE_CLASSICAL_MARKERS)
-          marker._icon.classList.remove('not-selectable');
-        else {
-          marker.options.interactive = true; // https://stackoverflow.com/a/60642381/274677
-        }
-      }); // eachLayer
-    }); // forEach
+    console.log('addClickListenersToMarkers');
+    this.clickableLayers.forEach( (layer) => {
+      this.addClickListenersToMarkersOnLayer(layer);
+    });
   }
 
+  addClickListenersToMarkersOnLayer = (layer) => {
+    layer.eachLayer ( (marker)=>{
+      marker.on('click', this.clickOnCircleMarker);
+      console.log('addClickListenersToMarkers : A');
+      if (USE_CLASSICAL_MARKERS)
+        marker._icon.classList.remove('not-selectable');
+      else {
+        marker.options.interactive = true; // https://stackoverflow.com/a/60642381/274677
+      }
+    }); // eachLayer
+  }
+  
   removeClickListenersFromMarkers = () => {
     this.clickableLayers.forEach( (markers) => {    
       markers.eachLayer ( (marker)=>{

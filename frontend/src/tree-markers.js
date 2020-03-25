@@ -1,4 +1,5 @@
 console.log('tree-markers.js ENTERING');
+// TODO: I am quite confident that there's a lot of junk / unused imports here
 require('./ots/leaflet-heat.js');
 window.shp=require('shpjs');
 require('./ots/leaflet.shpfile.js');
