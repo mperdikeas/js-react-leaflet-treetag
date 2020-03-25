@@ -108,16 +108,15 @@ public final class JWTUtil {
         return rv;
     }
     
-    // return username if JWS is still valid, null otherwise
-    public static String verifyJWS(final String algoAndSecretKeyEncoded
+    public static Claims verifyJWS(final String algoAndSecretKeyEncoded
                                     , final String jws) {
         final Date now          = new Date();
         final SecretKey key = stringToSecretKey(algoAndSecretKeyEncoded);
         try {
             final Jws<Claims> claimsHB = Jwts.parser().setSigningKey(key).parseClaimsJws(jws);
+
             final Claims claims = claimsHB.getBody();
-            final String subject = claims.getSubject();
-            return subject;
+            return claims;
         } catch (final ExpiredJwtException e) {
             System.out.printf("claims are now expired\n\n\n");
             return null;

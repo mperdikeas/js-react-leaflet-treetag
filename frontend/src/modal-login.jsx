@@ -47,6 +47,7 @@ class ModalLogin extends React.Component {
   constructor(props) {
     super(props);
     this.ref = React.createRef();
+    this.inputInstallationRef = React.createRef();
     this.inputUsernameRef     = React.createRef();
     this.inputPasswordRef     = React.createRef();
 
@@ -71,15 +72,17 @@ class ModalLogin extends React.Component {
 
   login = (ev) => {
     ev.preventDefault();
-    const username = this.inputUsernameRef.current.value;
-    const password = this.inputPasswordRef.current.value;
-    this.doLogin(username, password);
+    const installation = this.inputInstallationRef.current.value;
+    const username     = this.inputUsernameRef.current.value;
+    const password     = this.inputPasswordRef.current.value;
+    this.doLogin(installation, username, password);
   }
 
     
-  doLogin = (username, password) => {
+  doLogin = (installation, username, password) => {
     const url = `${BASE_URL}/login`;
     axios.post(url, {
+      installation: installation,
       username: username,
       password: password
     }).then(res => {
@@ -115,12 +118,15 @@ class ModalLogin extends React.Component {
       else
         return null;
     })();
-    const {nameInput, passInput} = (()=>{
+    const {installationInput, nameInput, passInput} = (()=>{
       const useHardcodedValues = true;
       if (useHardcodedValues)
-        return {nameInput: <><input ref={this.inputUsernameRef} type='text' id='login-name-input' value='admin'/><br/></>
+        return {installationInput: <><input ref={this.inputInstallationRef} type='text' id='installation-input' value='a1'/><br/></>
+          , nameInput: <><input ref={this.inputUsernameRef} type='text' id='login-name-input' value='admin'/><br/></>
               , passInput: <><input ref={this.inputPasswordRef} type='text' id='login-pass-input' value='pass'/><br/></>};
-      else return {nameInput: <><input ref={this.inputUsernameRef} type='text' id='login-name-input' /><br/></>
+      else return {
+        installationInput: <><input ref={this.inputInstallationRef} type='text' id='installation-input' /><br/></>
+        , nameInput: <><input ref={this.inputUsernameRef} type='text' id='login-name-input' /><br/></>
                  , passInput: <><input ref={this.inputPasswordRef} type='text' id='login-pass-input' /><br/></>};
       
 
@@ -130,7 +136,9 @@ class ModalLogin extends React.Component {
       <dialog id="dialog" ref={this.ref}>
         <form method="dialog" onSubmit={this.login}>
           {logErrMsg}
-          <p>Please provide your username and password</p>
+          <p>Please provide installation name,  username and password</p>
+          <label htmlFor='installation-input'>Installation</label>
+          {installationInput}
           <label htmlFor='login-name-input'>Username</label>
           {nameInput}
           <label htmlFor='login-pass-input'>Password</label>

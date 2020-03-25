@@ -115,27 +115,46 @@ public class MainResource {
                                   , System.identityHashCode(this)));
     }
 
-    @Path("/installation/{installationId}/getTrees/")
+    @Path("/installation/{installationId}/getTreesConfiguration/")
     @GET 
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTrees(@Context final HttpServletRequest httpServletRequest
-                                        , @PathParam("installationId") final int installationId
-                                    ) {
+    public Response getTreesConfiguration(@Context final HttpServletRequest httpServletRequest) {
         try {
-            logger.info(String.format("getTrees(%d) ~*~ remote address: [%s]"
-                                      , installationId
+            logger.info(String.format("getTreesConfiguration(%d) ~*~ remote address: [%s]"
                                       , httpServletRequest.getRemoteAddr()));
-            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(getTrees()))).build();
+            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(getTreesConfiguration()))).build();
         } catch (Throwable t) {
-            logger.error(String.format("Problem when calling getTrees(%d) from remote address [%s]"
-                                       , installationId
+            logger.error(String.format("Problem when calling getTreesConfiguration() from remote address [%s]"
                                        , httpServletRequest.getRemoteAddr())
                          , t);
             return ResourceUtil.softFailureResponse(t);
         }
     }
 
-    private static List<BasicTreeInfo> getTrees() {
+    private static List<BasicTreeInfo> getTreesConfiguration() {
+        return null;
+    }
+
+    
+    @Path("/installation/getTrees/")
+    @GET 
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getTrees(@Context final HttpServletRequest httpServletRequest) {
+        String methodInfo = null;
+        try {
+            final String installation = (String) httpServletRequest.getAttribute("installation");
+            methodInfo = String.format("getTrees() ~*~ installation: [%s], remote address: [%s]"
+                                                    , installation
+                                                    , httpServletRequest.getRemoteAddr());
+            logger.info(methodInfo);
+            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(getTrees(installation)))).build();
+        } catch (Throwable t) {
+            logger.error(String.format("%s - shit happened", methodInfo), t);
+            return ResourceUtil.softFailureResponse(t);
+        }
+    }
+
+    private static List<BasicTreeInfo> getTrees(final String installation) {
         final List<BasicTreeInfo> rv = new ArrayList<>();
         final int N = 10*1000;
         final Random r = new Random();
@@ -144,6 +163,7 @@ public class MainResource {
             final double latAthens  = 37.98;
             final double widthOfCoverageInDegrees = 0.05;
             rv.add(new BasicTreeInfo(UUID.randomUUID().toString()
+                                     , r.nextInt(30)
                                      , new Coordinates(longAthens + (widthOfCoverageInDegrees*r.nextDouble()-widthOfCoverageInDegrees/2)
                                                        , latAthens + (widthOfCoverageInDegrees*r.nextDouble()-widthOfCoverageInDegrees/2))));
         }

@@ -110,17 +110,20 @@ public class LoginResource {
                                   , loginCredentialsJSON));
         final LoginCredentials loginCredentials = GsonHelper.fromJson(loginCredentialsJSON
                                                                       , LoginCredentials.class);
-        String username = loginCredentials.username;
-        String password = loginCredentials.password;
+
+        final String installation     = loginCredentials.installation;
+        final String username         = loginCredentials.username;
+        final String password         = loginCredentials.password;
 
         try {
-            logger.info(String.format("login(%s, %s) ~*~ remote address: [%s]"
+            logger.info(String.format("login(%s, %s, %s) ~*~ remote address: [%s]"
+                                      , installation
                                       , username
                                       , password
                                       , httpServletRequest.getRemoteAddr()));
             LoginResult loginResult;
-            if ((username.equals("admin")) && (password.equals("pass")))
-                loginResult = new LoginResult(null, accessTokenFromUsername(username));
+            if (installation.equals("a1") && username.equals("admin") && password.equals("pass"))
+                loginResult = new LoginResult(null, accessToken(installation, username));
             else
                 loginResult = new LoginResult("login-fail", null);
             
@@ -135,7 +138,8 @@ public class LoginResource {
         }
     }
 
-    private static final String accessTokenFromUsername(final String username) {
+    private static final String accessToken(final String installation
+                                            , final String username) {
         /*    provenance of [secretKeyS]
          *
          *        ~/demo-spa-and-web-services-with-jwt-auth-type-01/console-utils/generate-secret-key
@@ -145,6 +149,7 @@ public class LoginResource {
         final SecretKey secretKey = JWTUtil.stringToSecretKey(secretKeySpecS);
         return Jwts.builder()
             .setSubject(username)
+            .claim("installation", installation)
             .setExpiration(createExpirationDate())
             .signWith(secretKey).compact();
     }
@@ -171,6 +176,7 @@ final class LoginResult {
 }
 
 final class LoginCredentials {
+    public String installation;
     public String username;
     public String password;
 }

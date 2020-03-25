@@ -49,6 +49,7 @@ import com.google.common.base.Throwables;
 import a.b.c.InterAppConstants;
 import a.b.gson.GsonHelper;
 
+import io.jsonwebtoken.Claims;
 
 public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
     
@@ -185,9 +186,10 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
 
                         // must match the value in the webmvc-login app
                         final String secretKeySpecS = "eyJhbGdvcml0aG0iOiJIbWFjU0hBMjU2IiwiZW5jb2RlZEtleSI6InhUMzQ4ZWlXTmMvTVhoeE5ucXU5bG5ZUVBRdVB0WWlQbVM1UGpoc2wrY1FcdTAwM2QifQ==";
-                        final String username = JWTUtil.verifyJWS(secretKeySpecS, accessToken);
-
-                        if (username==null) {
+                        final Claims claims = JWTUtil.verifyJWS(secretKeySpecS, accessToken);
+                        final String installation = (String) claims.get("installation");
+                        requestContext.setProperty("installation", installation);
+                        if (claims==null) {
                             final String msg = String.format("%s %s access token [%s] was not validated"
                                                              , BEARER
                                                              , HttpHeaders.AUTHORIZATION
@@ -314,9 +316,9 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
 
                         // must match the value in the webmvc-login app
                         final String secretKeySpecS = "eyJhbGdvcml0aG0iOiJIbWFjU0hBMjU2IiwiZW5jb2RlZEtleSI6InhUMzQ4ZWlXTmMvTVhoeE5ucXU5bG5ZUVBRdVB0WWlQbVM1UGpoc2wrY1FcdTAwM2QifQ==";
-                        final String username = JWTUtil.verifyJWS(secretKeySpecS, accessToken);
+                        final Claims claims = JWTUtil.verifyJWS(secretKeySpecS, accessToken);
 
-                        if (username==null) {
+                        if (claims==null) {
                             final String msg = String.format("%s [%s] was not validated"
                                                              , InterAppConstants.JWT_COOKIE_NAME
                                                              , accessToken);

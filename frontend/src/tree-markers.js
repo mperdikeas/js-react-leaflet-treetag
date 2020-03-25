@@ -232,7 +232,7 @@ const ota_Callicrates = ()=>{
 
 
 function getTrees(N) {
-    const url = `${BASE_URL}/installation/1/getTrees`;
+    const url = `${BASE_URL}/installation/getTrees`;
     const token = readCookie('access_token');
     console.log(`access token read as ${token}`);
     return axios.get(url
