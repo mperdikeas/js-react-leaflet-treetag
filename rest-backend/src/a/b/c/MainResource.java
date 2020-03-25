@@ -117,7 +117,7 @@ public class MainResource {
                                   , System.identityHashCode(this)));
     }
 
-    @Path("/installation/{installationId}/getTreesConfiguration/")
+    @Path("/getTreesConfiguration/")
     @GET 
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTreesConfiguration(@Context final HttpServletRequest httpServletRequest) {
@@ -138,7 +138,7 @@ public class MainResource {
     }
 
     
-    @Path("/installation/getTrees/")
+    @Path("/getTrees/")
     @GET 
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTrees(@Context final HttpServletRequest httpServletRequest) {
