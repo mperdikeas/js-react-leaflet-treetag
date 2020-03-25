@@ -414,8 +414,6 @@ class Map extends React.Component {
       console.log('map - insert GeoJSON into the draw workspace flag is cleared');
     }    
     
-    if ((prevProps.loginContext.username===null) && (this.props.loginContext.username!==null))
-      this.addLayerGroupsForPromisingLayers();
     if (this.props.deleteGeometryUnderDefinition) {
       assert.strictEqual(this.props.mode, null);
       assert.isTrue(this.currentPolygon != null, 'this.currentPolygon is curiously null');

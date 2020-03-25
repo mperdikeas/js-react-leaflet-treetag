@@ -275,7 +275,6 @@ function randomItem(items) {
 }
 
 const layerGroupsPre = {circleMarkersLG:          {layer: circleMarkersLG       , available:  true, isInitiallyDisplayed: true, containsMapOfTargetIds: true}
-                        , circleMarkersLG2:       {layer: circleMarkersLG       , available:  true, isInitiallyDisplayed: true, containsMapOfTargetIds: true}
                         , circleMarkersDefaultLG: {layer: circleMarkersDefaultLG, available:  true, isInitiallyDisplayed: false, containsMapOfTargetIds: false}
                         , circlesLG:              {layer: circlesLG             , available:  true, isInitiallyDisplayed: false, containsMapOfTargetIds: false}
                         , treesLG:                {layer: treesLG               , available:  true, isInitiallyDisplayed: false, containsMapOfTargetIds: false}
@@ -303,19 +302,6 @@ const layerGroups = ((layerGroups)=>{
 })(layerGroupsPre);
 
 
-//exports.Athens = Athens;
-//exports.layerGroups = layerGroups;
-
-// export Athens
-// export layerGroups
-
-
-
 export {Athens, layerGroups, defaultMarkerStyle, USE_CLASSICAL_MARKERS}
-
-
-// const layerGroups = [{layer: circleMarkersLG
-
-// export {circleMarkersLG, circlesLG, treesLG, defaultMarkersLG, makiMarkersLG, markerClusterGroup}
 
 console.log('tree-markers.js EXITING');
