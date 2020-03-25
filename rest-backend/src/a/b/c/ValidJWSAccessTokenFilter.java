@@ -51,6 +51,8 @@ import a.b.gson.GsonHelper;
 
 import io.jsonwebtoken.Claims;
 
+import a.b.c.constants.Installation;
+
 public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
     
     private final List<? extends Class<?>>   guardedClasses;
@@ -187,8 +189,9 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
                         // must match the value in the webmvc-login app
                         final String secretKeySpecS = "eyJhbGdvcml0aG0iOiJIbWFjU0hBMjU2IiwiZW5jb2RlZEtleSI6InhUMzQ4ZWlXTmMvTVhoeE5ucXU5bG5ZUVBRdVB0WWlQbVM1UGpoc2wrY1FcdTAwM2QifQ==";
                         final Claims claims = JWTUtil.verifyJWS(secretKeySpecS, accessToken);
-                        final String installation = (String) claims.get("installation");
-                        requestContext.setProperty("installation", installation);
+                        final String installation = Installation.getFromClaims(claims);
+
+                        Installation.setInContainerRequestContext(requestContext, installation);
                         if (claims==null) {
                             final String msg = String.format("%s %s access token [%s] was not validated"
                                                              , BEARER

@@ -86,6 +86,8 @@ import java.util.concurrent.TimeUnit;
 
 import java.time.temporal.ChronoUnit;
 
+import a.b.c.constants.Installation;
+
 
 // To support the Singleton annotation in a Tomcat 8.5 container see: http://stackoverflow.com/a/19003725/274677
 //@Singleton
@@ -142,7 +144,7 @@ public class MainResource {
     public Response getTrees(@Context final HttpServletRequest httpServletRequest) {
         String methodInfo = null;
         try {
-            final String installation = (String) httpServletRequest.getAttribute("installation");
+            final String installation = Installation.getFromServletRequest(httpServletRequest);
             methodInfo = String.format("getTrees() ~*~ installation: [%s], remote address: [%s]"
                                                     , installation
                                                     , httpServletRequest.getRemoteAddr());

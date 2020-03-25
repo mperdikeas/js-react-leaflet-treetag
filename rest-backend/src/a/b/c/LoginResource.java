@@ -71,6 +71,7 @@ import io.jsonwebtoken.Jwts;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
+import a.b.c.constants.Installation;
 
 // To support the Singleton annotation in a Tomcat 8.5 container see: http://stackoverflow.com/a/19003725/274677
 //@Singleton
@@ -149,7 +150,7 @@ public class LoginResource {
         final SecretKey secretKey = JWTUtil.stringToSecretKey(secretKeySpecS);
         return Jwts.builder()
             .setSubject(username)
-            .claim("installation", installation)
+            .claim(Installation.JWT_CLAIM, installation)
             .setExpiration(createExpirationDate())
             .signWith(secretKey).compact();
     }
