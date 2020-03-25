@@ -54,10 +54,10 @@ const circleMarkersLG = ()=> {
     return getTrees(N*1).then( (data)=> {
 
         const targetId2Marker = {};
-        const layerGroup = L.layerGroup(data.map( ({treeId, coords})=> {
+        const layerGroup = L.layerGroup(data.map( ({id, coords})=> {
+            assert.isTrue(id != null);
             let c = [coords.latitude, coords.longitude];
-            const targetId = uuidv4();
-            const baseOptions = {targetId};
+            const baseOptions = {targetId: id};
             if (USE_CLASSICAL_MARKERS) {
                 const options = Object.assign({}
                                               , baseOptions
@@ -71,7 +71,7 @@ const circleMarkersLG = ()=> {
                                                   , riseOffset: 250
                                               });
                 const marker = L.marker(c, options).bindPopup('a fucking tree');
-                targetId2Marker[targetId] = marker;
+                targetId2Marker[id] = marker;
                 return marker;
             } else {
                 const useCanvasRenderer = true;
@@ -90,7 +90,7 @@ const circleMarkersLG = ()=> {
                  *  const marker = new CustomCircleMarker(c, effectiveOptions);
                  */
                 const marker = new L.circleMarker(c, effectiveOptions);
-                targetId2Marker[targetId] = marker;
+                targetId2Marker[id] = marker;
                 return marker;
             }
         }));
