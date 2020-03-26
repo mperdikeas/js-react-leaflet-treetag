@@ -1,5 +1,9 @@
 // TODO: I am quite confident that there's a lot of junk / unused imports here
 import L from 'leaflet';
+global.shp=require('shpjs');
+require('./ots/leaflet.shpfile.js');
+
+
 import proj4 from 'proj4';
 
 const assert = require('chai').assert;
@@ -46,7 +50,7 @@ function from_kind2layer_to_layer2kinds(kind2layer) {
     return rv;
 }
 
-const circleMarkersLG = ()=> {
+const treeOverlays = ()=> {
     return getTreesConfiguration().then( (treeConfiguration) => {
         console.log(treeConfiguration);
         const overlays = {};
@@ -97,7 +101,7 @@ const circleMarkersLG = ()=> {
 
 
 
-const ota_Callicrates = ()=>{
+const ota_Callicrates = (()=>{
     const url = require('../data/oriadhmwnkallikraths.zip');
     const options = {
         onEachFeature: function(feature, layer) {
@@ -114,8 +118,7 @@ const ota_Callicrates = ()=>{
         }
     };
     return L.shapefile(url, options);
-
-};
+})();
 
 
 function getTrees(N) {
@@ -156,27 +159,5 @@ function generateRandomCoordinatesInAthens(N) {
     return rv;
 }
 
-function randomItem(items) {
-    const rv = items[Math.floor(Math.random() * items.length)];
-    return rv;
-}
 
-const layerGroupsPre = {circleMarkersLG:          {layer: circleMarkersLG       , isInitiallyDisplayed: true, containsMapOfTargetIds: true}
-                        , 'Καλλικρατικοί δήμοι':  {layer: ota_Callicrates       , isInitiallyDisplayed: true, containsMapOfTargetIds: false}
-                    };
-
-const layerGroups = ((layerGroups)=>{
-    const rv = {};
-    for (const prop in layerGroups) {
-        if (Object.prototype.hasOwnProperty.call(layerGroups, prop)) {
-            rv[prop] = {isInitiallyDisplayed: layerGroups[prop].isInitiallyDisplayed
-                        , layer: layerGroups[prop].layer
-                        , containsMapOfTargetIds: layerGroups[prop].containsMapOfTargetIds};
-        }
-    }
-    return rv;
-})(layerGroupsPre);
-
-
-export {Athens, layerGroups, defaultMarkerStyle}
-
+export {Athens, ota_Callicrates, treeOverlays, defaultMarkerStyle}

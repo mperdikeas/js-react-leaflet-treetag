@@ -72,6 +72,13 @@ function uniqValues(xs) {
     return xs.filter( onlyUnique );
 }
 
+function randomItem(items) {
+    assert.isTrue(Array.isArray(items));    
+    const rv = items[Math.floor(Math.random() * items.length)];
+    return rv;
+}
+
+
 exports.theAnswer         = theAnswer;
 exports.allStrictEqual    = allStrictEqual;
 exports.exactlyOne        = exactlyOne;
@@ -79,3 +86,4 @@ exports.sca_fake_return   = sca_fake_return;
 exports.setCookie         = setCookie;
 exports.readCookie        = readCookie;
 exports.uniqValues        = uniqValues;
+exports.randomItem        = randomItem;

@@ -56,7 +56,7 @@ import '../node_modules/leaflet-measure/dist/leaflet-measure.css';
 
 
 
-import {Athens, layerGroups, defaultMarkerStyle} from './tree-markers.js';
+import {Athens, ota_Callicrates, treeOverlays, defaultMarkerStyle} from './tree-markers.js';
 
 
 import {SELECT_TREE
@@ -353,46 +353,29 @@ class Map extends React.Component {
 
 
   addLayerGroupsExceptPromisingLayers = () => {
-    const layersForControl = {};
-    for (const x in layerGroups) {
-      if (layerGroups[x].containsMapOfTargetIds) { // this is the only case where a promise is returned
-        ; // do nothing
-      } else {
-        const layer = layerGroups[x].layer();
-        if (layerGroups[x].isInitiallyDisplayed) {
-          layer.addTo(this.map);
-        }
-        layersForControl[x] = layer;
-      }
-    } // for
-    this.layersControl = L.control.layers(BaseLayersForLayerControl, layersForControl).addTo(this.map);
+    const overlays = {};
+    overlays['Καλλικράτης'] = ota_Callicrates;
+    this.layersControl = L.control.layers(BaseLayersForLayerControl, overlays).addTo(this.map);
   }
 
   addLayerGroupsForPromisingLayers = () => {
-    const layersForControl = {};
-    for (let x in layerGroups) {
-      if (layerGroups[x].isInitiallyDisplayed) {
-        if (layerGroups[x].containsMapOfTargetIds) { // this is the only case where a promise is returned
-          const promise = layerGroups[x].layer();
-          promise.then( ({targetId2Marker, overlays}) => {
-            for (const layerName in overlays) {
-              const layerGroup = overlays[layerName];
-              this.targetId2Marker = Object.assign({}
-                                                 , (this.targetId2Marker===null)?{}:this.targetId2Marker
-                                                 , targetId2Marker);
-              console.log('retrieved targetdId2Marker and markers');
-              console.log(targetId2Marker);
-              console.log(layerGroup);
-              console.log(this.map);
-              layerGroup.addTo(this.map);
-              this.clickableLayers.push(layerGroup);
-              this.addClickListenersToMarkersOnLayer(layerGroup);
-              this.layersControl.addOverlay(layerGroup, layerName);
-            }
-          }); // promise.then
-        }
+    const promise = treeOverlays();
+    promise.then(({targetId2Marker, overlays}) => {
+      for (const layerName in overlays) {
+        const layerGroup = overlays[layerName];
+        this.targetId2Marker = Object.assign({}
+                                           , (this.targetId2Marker===null)?{}:this.targetId2Marker
+                                           , targetId2Marker);
+        console.log('retrieved targetdId2Marker and markers');
+        console.log(targetId2Marker);
+        console.log(layerGroup);
+        console.log(this.map);
+        layerGroup.addTo(this.map);
+        this.clickableLayers.push(layerGroup);
+        this.addClickListenersToMarkersOnLayer(layerGroup);
+        this.layersControl.addOverlay(layerGroup, layerName);
       }
-    }
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
