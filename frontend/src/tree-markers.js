@@ -36,13 +36,8 @@ const N = 10;
 
 const myRenderer = L.canvas({ padding: 0.5 });
 
-let step = 0;
-
 const defaultMarkerStyle = ()=>{
-    const color = rainbow(20, step);
-    step+=1;
     return {
-        color: color,
         radius: 8
     };
 };
@@ -81,10 +76,12 @@ const circleMarkersLG = ()=> {
                     assert.isTrue(Array.isArray(kindsInThisLayer));
                     const rv = kindsInThisLayer.includes(kind);
                     return rv;
-                }).map( ({id, coords})=> {
+                }).map( ({id, kind, coords})=> {
                     assert.isTrue(id != null);
                     let c = [coords.latitude, coords.longitude];
-                    const baseOptions = {targetId: id};
+                    const color = treeConfiguration.kind2color[kind];
+                    console.log(`color is ${color}`);
+                    const baseOptions = {targetId: id, color};
                     if (USE_CLASSICAL_MARKERS) {
                         const options = Object.assign({}
                                                       , baseOptions
