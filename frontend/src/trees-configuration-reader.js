@@ -19,6 +19,7 @@ export default function getTreesConfiguration() {
                             return sca_fake_return();
                         } else {
                             console.log('getTreesConfiguration API call success');
+                            console.log(res.data);
                             return res.data.t;
                         }
                     }).catch( err => {

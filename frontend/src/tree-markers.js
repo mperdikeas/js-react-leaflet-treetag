@@ -26,6 +26,8 @@ import rainbow                       from './rainbow.js';
 import {BASE_URL}                    from './constants.js';
 import {sca_fake_return, readCookie} from './util.js';
 
+import getTreesConfiguration from './trees-configuration-reader.js';
+
 const Athens = [37.98, 23.72];
 
 const N = 10;
@@ -51,51 +53,53 @@ const sleep = (milliseconds) => {
 };
 
 const circleMarkersLG = ()=> {
+    return getTreesConfiguration().then( (treeConfiguration) => {
+        console.log(treeConfiguration);
+        return getTrees(N*1).then( (data)=> {
 
-    return getTrees(N*1).then( (data)=> {
+            const targetId2Marker = {};
+            const layerGroup = L.layerGroup(data.map( ({id, coords})=> {
+                assert.isTrue(id != null);
+                let c = [coords.latitude, coords.longitude];
+                const baseOptions = {targetId: id};
+                if (USE_CLASSICAL_MARKERS) {
+                    const options = Object.assign({}
+                                                  , baseOptions
+                                                  , {
+                                                      icon: new DefaultIcon()
+                                                      , renderer: myRenderer
+                                                      , clickable: true
+                                                      , draggable: false
+                                                      , title: 'a tree'
+                                                      , riseOnHover: true // rises on top of other markers
+                                                      , riseOffset: 250
+                                                  });
+                    const marker = L.marker(c, options).bindPopup('a fucking tree');
+                    targetId2Marker[id] = marker;
+                    return marker;
+                } else {
+                    const useCanvasRenderer = true;
+                    const styleOptions = (()=>{
+                        if (useCanvasRenderer)
+                            return Object.assign({}, defaultMarkerStyle(), {renderer: myRenderer});
+                        else
+                            return Object.assign({}, defaultMarkerStyle());
+                    })();
 
-        const targetId2Marker = {};
-        const layerGroup = L.layerGroup(data.map( ({id, coords})=> {
-            assert.isTrue(id != null);
-            let c = [coords.latitude, coords.longitude];
-            const baseOptions = {targetId: id};
-            if (USE_CLASSICAL_MARKERS) {
-                const options = Object.assign({}
-                                              , baseOptions
-                                              , {
-                                                  icon: new DefaultIcon()
-                                                  , renderer: myRenderer
-                                                  , clickable: true
-                                                  , draggable: false
-                                                  , title: 'a tree'
-                                                  , riseOnHover: true // rises on top of other markers
-                                                  , riseOffset: 250
-                                              });
-                const marker = L.marker(c, options).bindPopup('a fucking tree');
-                targetId2Marker[id] = marker;
-                return marker;
-            } else {
-                const useCanvasRenderer = true;
-                const styleOptions = (()=>{
-                    if (useCanvasRenderer)
-                        return Object.assign({}, defaultMarkerStyle(), {renderer: myRenderer});
-                    else
-                        return Object.assign({}, defaultMarkerStyle());
-                })();
-
-                const effectiveOptions = Object.assign({}, baseOptions, styleOptions);
-                /*
-                 *  There is no need to use a custom class to add just one option; adding
-                 *  the option on a vanila L.circleMarker works just as well.
-                 *
-                 *  const marker = new CustomCircleMarker(c, effectiveOptions);
-                 */
-                const marker = new L.circleMarker(c, effectiveOptions);
-                targetId2Marker[id] = marker;
-                return marker;
-            }
-        }));
-        return {targetId2Marker, layerGroup};
+                    const effectiveOptions = Object.assign({}, baseOptions, styleOptions);
+                    /*
+                     *  There is no need to use a custom class to add just one option; adding
+                     *  the option on a vanila L.circleMarker works just as well.
+                     *
+                     *  const marker = new CustomCircleMarker(c, effectiveOptions);
+                     */
+                    const marker = new L.circleMarker(c, effectiveOptions);
+                    targetId2Marker[id] = marker;
+                    return marker;
+                }
+            }));
+            return {targetId2Marker, layerGroup};
+        });
     });
 };
 

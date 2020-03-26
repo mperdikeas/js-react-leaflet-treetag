@@ -121,20 +121,22 @@ public class MainResource {
     @GET 
     @Produces(MediaType.APPLICATION_JSON)
     public Response getTreesConfiguration(@Context final HttpServletRequest httpServletRequest) {
+        String methodInfo = null;
         try {
-            logger.info(String.format("getTreesConfiguration(%d) ~*~ remote address: [%s]"
-                                      , httpServletRequest.getRemoteAddr()));
-            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(getTreesConfiguration()))).build();
+            final String installation = Installation.getFromServletRequest(httpServletRequest);
+            methodInfo = String.format("getTreesConfiguration() ~*~ installation: [%s], remote address: [%s]"
+                                                    , installation
+                                                    , httpServletRequest.getRemoteAddr());
+            logger.info(methodInfo);            
+            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(getTreesConfiguration(installation)))).build();
         } catch (Throwable t) {
-            logger.error(String.format("Problem when calling getTreesConfiguration() from remote address [%s]"
-                                       , httpServletRequest.getRemoteAddr())
-                         , t);
+            logger.error(String.format("%s - shit happened", methodInfo), t);
             return ResourceUtil.softFailureResponse(t);
         }
     }
 
-    private static List<BasicTreeInfo> getTreesConfiguration() {
-        return null;
+    private static TreesConfiguration getTreesConfiguration(final String installation) {
+        return TreesConfiguration.example();
     }
 
     
@@ -156,6 +158,9 @@ public class MainResource {
         }
     }
 
+        
+
+    
     private static List<BasicTreeInfo> getTrees(final String installation) {
         final List<BasicTreeInfo> rv = new ArrayList<>();
         final int N = 10*1000;
