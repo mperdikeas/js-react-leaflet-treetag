@@ -28,7 +28,8 @@ import {changeTileProvider} from './actions/index.js';
 
 const mapStateToProps = (state) => {
   return {
-    tileProviderId: state.tileProviderId
+    isTargetSelected: state.targetId !== null
+    , tileProviderId: state.tileProviderId
     , modalType: state.modalType
     , maximizedInfoPanel: state.maximizedInfoPanel
   };
@@ -52,16 +53,19 @@ class App extends React.Component {
 
 
   render() {
-    const classesForMapDiv = Object.assign({'col-8': true, 'padding-0': true}
+    const classesForMapDiv = Object.assign({'col-8': this.props.isTargetSelected
+                                            , 'col-12': !this.props.isTargetSelected
+                                          , 'padding-0': true}
                                          , {hidden: this.props.maximizedInfoPanel});
-
+    const classesForMapDivValue = cx(classesForMapDiv);
+    console.log(`classes are ${classesForMapDivValue}`);
     const toolboxStyle = {flex: `0 0 ${this.props.geometryContext.toolboxTotalWidth()}px`
                         , backgroundColor: 'green'};
 
     const gui = (
       <div className='container-fluid' key='main-gui-component'>
         <div className='row no-gutters'>
-          <div className={cx(classesForMapDiv)}>
+          <div className={classesForMapDivValue}>
             <div className='row no-gutters justify-content-start align-items-center'
                  style={{height: `${this.props.geometryContext.headerBarHeight}px`}}>
               <div className="col-3">
@@ -103,7 +107,7 @@ class App extends React.Component {
     const treeInformationPanel = (
       <TreeInformationPanel/>
     );
-    if (this.props.targetId)
+    if (this.props.isTargetSelected)
       return treeInformationPanel;
     else
       return null;
