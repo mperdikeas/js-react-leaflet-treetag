@@ -12,13 +12,7 @@ import {setCookie}                             from './util.js';
 
 import {GeometryContext} from './context/geometry-context.jsx';
 
-import TilesSelector                           from './tiles-selector.jsx';
 import Map                                     from './map.jsx';
-import TreeInformationPanel                    from './information-panel-tree.jsx';
-import InformationPanelGeometryDefinition      from './information-panel-geometry-definition.jsx';
-import PointCoordinates                        from './point-coordinates.jsx';
-import Toolbox                                 from './toolbox.jsx';
-import {SELECT_TREE_TOOL, DEFINE_POLYGON_TOOL} from './map-tools.js';
 import {BASE_URL}                              from './constants.js';
 
 import './css/modal-dialog.css'; // TODO: use React emotion for element-scoped CSS
@@ -26,18 +20,15 @@ import './css/modal-dialog.css'; // TODO: use React emotion for element-scoped C
 import wrapContexts from './context/contexts-wrapper.jsx';
 
 import ModalLogin                    from './modal-login.jsx';
-import ModalAddGeometry              from './modal-add-geometry.jsx';
 import ModalSaveWorkspaceToDisk      from './modal-save-workspace-to-disk.jsx';
 import ModalInsertGeoJSONToWorkspace from './modal-insert-geoJSON-workspace.jsx';
 
 import {MODAL_LOGIN
-      , MODAL_ADD_GEOMETRY
       , MDL_SAVE_WS_2_DSK
       , MDL_INS_GJSON_2_WS} from './constants/modal-types.js';
 
 const MODAL_COMPONENTS = {
   MODAL_LOGIN: ModalLogin,
-  MODAL_ADD_GEOMETRY: ModalAddGeometry,
   MDL_SAVE_WS_2_DSK: ModalSaveWorkspaceToDisk,
   MDL_INS_GJSON_2_WS: ModalInsertGeoJSONToWorkspace
 };

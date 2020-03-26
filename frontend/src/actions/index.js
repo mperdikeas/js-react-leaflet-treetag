@@ -1,6 +1,5 @@
 const assert = require('chai').assert;
-import {CHANGE_TILE_PROVIDER
-        , UPDATE_MOUSE_COORDS
+import {UPDATE_MOUSE_COORDS
         , SET_FLAG
         , CLEAR_FLAG
         , DISPLAY_MODAL
@@ -10,10 +9,6 @@ import {CHANGE_TILE_PROVIDER
 import {isValidModalType} from '../constants/modal-types.js';
 
 import {CT_UNIT} from '../constants.js';
-
-export function changeTileProvider(tileProviderId) {
-    return { type: CHANGE_TILE_PROVIDER, payload: {tileProviderId} };
-}
 
 export function updateMouseCoords(latlng) {
     return { type: UPDATE_MOUSE_COORDS, payload: {latlng} };

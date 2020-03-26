@@ -1,4 +1,3 @@
-export const CHANGE_TILE_PROVIDER                    = "CHANGE_TILE_PROVIDER";
 export const UPDATE_MOUSE_COORDS                     = "UPDATE_MOUSE_COORDS";
 export const SET_FLAG                                = "SET_FLAG";
 export const CLEAR_FLAG                              = "CLEAR_FLAG";
