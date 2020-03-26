@@ -68,7 +68,7 @@ import { connect }          from 'react-redux';
 import {updateMouseCoords
       , clearFlag
       , displayModal
-      , updateTarget}  from './actions/index.js';
+      , toggleTarget}  from './actions/index.js';
 
 
 const tentativePolygonStyle = {weight: 2, dashArray: '6'};
@@ -88,7 +88,7 @@ const mapDispatchToProps = (dispatch) => {
     , clearDrawWorkspaceFlag            : ()         => dispatch(clearFlag(CLEAR_DRAW_WORKSPACE))
     , clearInsertGeoJSONIntoWorkspaceFlag: ()        => dispatch(clearFlag(INSERT_GEOJSON_INTO_WORKSPACE))
     , displayAddPolygonDialog           : (polygonId, polygon)  => dispatch(displayModal(MODAL_ADD_GEOMETRY, {polygonId, polygon}))
-    , updateTarget                      : (targetId) => dispatch(updateTarget(targetId))
+    , toggleTarget                      : (targetId) => dispatch(toggleTarget(targetId))
     };
   }
 
@@ -232,7 +232,6 @@ class Map extends React.Component {
     measureControl.addTo(this.map);
 
 
-    this.addTiles();
     this.addLayerGroupsExceptPromisingLayers();
 
     this.installNewDrawWorkspace(new L.FeatureGroup());
@@ -270,6 +269,7 @@ class Map extends React.Component {
     const overlays = {};
     overlays['Καλλικράτης'] = ota_Callicrates;
     this.layersControl = L.control.layers(BaseLayersForLayerControl, overlays).addTo(this.map);
+    BaseLayersForLayerControl.ESRI.addTo(this.map);
   }
 
   addLayerGroupsForPromisingLayers = () => {
@@ -319,19 +319,6 @@ class Map extends React.Component {
 
 
 
-  addTiles() {
-    const currentTileLayer = this.getCurrentTileLayer();
-    if (currentTileLayer!==null) {
-      this.map.removeLayer(currentTileLayer);
-    }
-    const {tileProviderId} = this.props;
-    const newBaseLayer = BaseLayers[tileProviderId].tileLayer;
-    assert.isDefined(newBaseLayer);
-    newBaseLayer.addTo(this.map);
-  }
-
-  
-
   addClickListenersToMarkers = () => {
     console.log('addClickListenersToMarkers');
     this.clickableLayers.forEach( (layer) => {
@@ -369,7 +356,7 @@ class Map extends React.Component {
     const targetId = e.target.options.targetId;
     const marker = this.targetId2Marker[targetId];
     this.setState({highlightedMarker: marker});
-    this.props.updateTarget(e.target.options.targetId);
+    this.props.toggleTarget(e.target.options.targetId);
   }
 
   takeCareOfHighlightedMarker(previousMarker, newMarker) {
