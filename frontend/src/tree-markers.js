@@ -34,12 +34,15 @@ const defaultMarkerStyle = ()=>{
 };
 
 
+function extractLayerNames(configuration) {
+    return uniqValues(Object.values(configuration).map(x=>x.layer));
+}
 
-function from_kind2layer_to_layer2kinds(kind2layer) {
+function from_kind2layer_to_layer2kinds(configuration) {
     const rv = {};
-    const layers = uniqValues(Object.values(kind2layer));
-    for (let kind in kind2layer) {
-        const layer = kind2layer[kind];
+    const layers = extractLayerNames(configuration);
+    for (let kind in configuration) {
+        const layer = configuration[kind].layer;
         let kinds = rv[layer];
         if (kinds===undefined) {
             rv[layer] = [];
@@ -54,9 +57,9 @@ const treeOverlays = ()=> {
     return getTreesConfiguration().then( (treeConfiguration) => {
         console.log(treeConfiguration);
         const overlays = {};
-        const overlayNames = uniqValues(Object.values(treeConfiguration.kind2layer));
+        const overlayNames = extractLayerNames(treeConfiguration);
         console.log(overlayNames);
-        const layer2kinds = from_kind2layer_to_layer2kinds(treeConfiguration.kind2layer);
+        const layer2kinds = from_kind2layer_to_layer2kinds(treeConfiguration);
         return getTrees(N*100).then( (data)=> {
             const targetId2Marker = {};
             overlayNames.forEach( (overlayName) => {
@@ -68,7 +71,7 @@ const treeOverlays = ()=> {
                 }).map( ({id, kind, coords})=> {
                     assert.isTrue(id != null);
                     let c = [coords.latitude, coords.longitude];
-                    const color = treeConfiguration.kind2color[kind];
+                    const color = treeConfiguration[kind].color;
                     const baseOptions = {targetId: id, color};
 
                     const useCanvasRenderer = true;

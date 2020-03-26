@@ -127,16 +127,17 @@ public class MainResource {
             methodInfo = String.format("getTreesConfiguration() ~*~ installation: [%s], remote address: [%s]"
                                                     , installation
                                                     , httpServletRequest.getRemoteAddr());
-            logger.info(methodInfo);            
-            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(getTreesConfiguration(installation)))).build();
+            logger.info(methodInfo);
+            final TreeConfigurations x = getTreesConfiguration(installation);
+            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(x.value))).build();
         } catch (Throwable t) {
             logger.error(String.format("%s - shit happened", methodInfo), t);
             return ResourceUtil.softFailureResponse(t);
         }
     }
 
-    private static TreesConfiguration getTreesConfiguration(final String installation) {
-        return TreesConfiguration.example();
+    private static TreeConfigurations getTreesConfiguration(final String installation) {
+        return TreeConfigurations.example();
     }
 
     
