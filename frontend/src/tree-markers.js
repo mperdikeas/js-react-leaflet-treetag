@@ -69,7 +69,6 @@ const treeOverlays = ()=> {
                     assert.isTrue(id != null);
                     let c = [coords.latitude, coords.longitude];
                     const color = treeConfiguration.kind2color[kind];
-                    console.log(`color is ${color}`);
                     const baseOptions = {targetId: id, color};
 
                     const useCanvasRenderer = true;

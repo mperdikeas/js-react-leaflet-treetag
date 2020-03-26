@@ -313,10 +313,7 @@ class Map extends React.Component {
     } else if (prevProps.insertGeoJSONIntoWorkspace && !this.props.insertGeoJSONIntoWorkspace) {
       console.log('map - insert GeoJSON into the draw workspace flag is cleared');
     }    
- if (false)
-    if (prevProps.tileProviderId!==this.props.tileProviderId) {
-      this.addTiles();
-    }
+
     this.takeCareOfHighlightedMarker(prevState.highlightedMarker, this.state.highlightedMarker);
   }
 
