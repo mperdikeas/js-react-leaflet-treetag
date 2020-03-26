@@ -63,9 +63,19 @@ function readCookie(name, panicIfMoreThanOnce, panicIfNotFound) {
     return rv;
 }
 
-exports.theAnswer       = theAnswer;
-exports.allStrictEqual  = allStrictEqual;
-exports.exactlyOne      = exactlyOne;
-exports.sca_fake_return = sca_fake_return;
-exports.setCookie       = setCookie;
-exports.readCookie      = readCookie;
+function uniqValues(xs) {
+    assert.isTrue(Array.isArray(xs));
+    function onlyUnique(value, index, self) { 
+        return self.indexOf(value) === index;
+    }
+
+    return xs.filter( onlyUnique );
+}
+
+exports.theAnswer         = theAnswer;
+exports.allStrictEqual    = allStrictEqual;
+exports.exactlyOne        = exactlyOne;
+exports.sca_fake_return   = sca_fake_return;
+exports.setCookie         = setCookie;
+exports.readCookie        = readCookie;
+exports.uniqValues        = uniqValues;

@@ -374,18 +374,21 @@ class Map extends React.Component {
       if (layerGroups[x].isInitiallyDisplayed) {
         if (layerGroups[x].containsMapOfTargetIds) { // this is the only case where a promise is returned
           const promise = layerGroups[x].layer();
-          promise.then( ({targetId2Marker, layerGroup}) => {
-            this.targetId2Marker = Object.assign({}
-                                               , (this.targetId2Marker===null)?{}:this.targetId2Marker
-                                               , targetId2Marker);
-            console.log('retrieved targetdId2Marker and markers');
-            console.log(targetId2Marker);
-            console.log(layerGroup);
-            console.log(this.map);
-            layerGroup.addTo(this.map);
-            this.clickableLayers.push(layerGroup);
-            this.addClickListenersToMarkersOnLayer(layerGroup);
-            this.layersControl.addOverlay(layerGroup, x);
+          promise.then( ({targetId2Marker, overlays}) => {
+            for (const layerName in overlays) {
+              const layerGroup = overlays[layerName];
+              this.targetId2Marker = Object.assign({}
+                                                 , (this.targetId2Marker===null)?{}:this.targetId2Marker
+                                                 , targetId2Marker);
+              console.log('retrieved targetdId2Marker and markers');
+              console.log(targetId2Marker);
+              console.log(layerGroup);
+              console.log(this.map);
+              layerGroup.addTo(this.map);
+              this.clickableLayers.push(layerGroup);
+              this.addClickListenersToMarkersOnLayer(layerGroup);
+              this.layersControl.addOverlay(layerGroup, layerName);
+            }
           }); // promise.then
         }
       }
