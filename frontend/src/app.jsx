@@ -20,7 +20,6 @@ import UserControl                             from './user-control.jsx';
 
 import {setCookie}                             from './util.js';
 import wrapContexts                            from './context/contexts-wrapper.jsx';
-import {SELECT_TREE, DEFINE_POLYGON, ADD_BEACON, SELECT_GEOMETRY} from './constants/modes.js';
 
 // REDUX
 import { connect }          from 'react-redux';
@@ -30,7 +29,6 @@ import {changeTileProvider} from './actions/index.js';
 const mapStateToProps = (state) => {
   return {
     tileProviderId: state.tileProviderId
-    , mode: state.mode
     , modalType: state.modalType
     , maximizedInfoPanel: state.maximizedInfoPanel
   };
@@ -105,15 +103,10 @@ class App extends React.Component {
     const treeInformationPanel = (
       <TreeInformationPanel/>
     );
-    switch (this.props.mode) {
-      case DEFINE_POLYGON:
-        return (
-          <InformationPanelGeometryDefinition/>
-        );
-      case SELECT_TREE:
-      default:
-        return treeInformationPanel;
-    }
+    if (this.props.targetId)
+      return treeInformationPanel;
+    else
+      return null;
   }
 }
 

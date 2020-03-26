@@ -59,13 +59,7 @@ import '../node_modules/leaflet-measure/dist/leaflet-measure.css';
 import {Athens, ota_Callicrates, treeOverlays, defaultMarkerStyle} from './tree-markers.js';
 
 
-import {SELECT_TREE
-      , DEFINE_POLYGON
-      , ADD_BEACON
-      , SELECT_GEOMETRY} from './constants/modes.js';
-
-import {DELETE_GEOMETRY_UNDER_DEFINITION
-      , CLEAR_DRAW_WORKSPACE
+import {CLEAR_DRAW_WORKSPACE
       , INSERT_GEOJSON_INTO_WORKSPACE} from './constants/flags.js';
 
 import {MODAL_ADD_GEOMETRY} from './constants/modal-types.js';
@@ -73,7 +67,6 @@ import {MODAL_ADD_GEOMETRY} from './constants/modal-types.js';
 import { connect }          from 'react-redux';
 import {updateMouseCoords
       , clearFlag
-      , addPointToPolygonUnderConstruction
       , displayModal
       , updateTarget}  from './actions/index.js';
 
@@ -84,10 +77,6 @@ const tentativePolygonStyle = {weight: 2, dashArray: '6'};
 const mapStateToProps = (state) => {
   return {
     tileProviderId                 : state.tileProviderId
-    , mode                         : state.mode
-    , userDefinedGeometries        : state.userDefinedGeometries
-    , geometryUnderDefinition      : state.geometryUnderDefinition
-    , deleteGeometryUnderDefinition: state.flags[DELETE_GEOMETRY_UNDER_DEFINITION]
     , clearDrawWorkspace           : state.flags[CLEAR_DRAW_WORKSPACE]
     , insertGeoJSONIntoWorkspace   : state.flags[INSERT_GEOJSON_INTO_WORKSPACE]
   };
@@ -98,8 +87,6 @@ const mapDispatchToProps = (dispatch) => {
     updateCoordinates                   : (latlng)   => dispatch(updateMouseCoords(latlng))
     , clearDrawWorkspaceFlag            : ()         => dispatch(clearFlag(CLEAR_DRAW_WORKSPACE))
     , clearInsertGeoJSONIntoWorkspaceFlag: ()        => dispatch(clearFlag(INSERT_GEOJSON_INTO_WORKSPACE))
-    , clearDeleteGeometryUnderDefinition: ()         => dispatch(clearFlag(DELETE_GEOMETRY_UNDER_DEFINITION))
-    , addPointToPolygonUnderConstruction: (latlng)   => dispatch(addPointToPolygonUnderConstruction(latlng))
     , displayAddPolygonDialog           : (polygonId, polygon)  => dispatch(displayModal(MODAL_ADD_GEOMETRY, {polygonId, polygon}))
     , updateTarget                      : (targetId) => dispatch(updateTarget(targetId))
     };
@@ -146,78 +133,9 @@ class Map extends React.Component {
 
   handleClick = (e) => {
     this.props.updateCoordinates(e.latlng);
-    switch (this.props.mode) {
-
-      case null:
-        break;
-      case SELECT_TREE:
-        break;        
-      case ADD_BEACON:
-        this.addBeacon(e.latlng, 20, 2000);
-        break;
-      case SELECT_GEOMETRY:
-        this.selectGeometry(e.latlng);
-        break;
-      case DEFINE_POLYGON:
-        console.log(e);
-        console.log(e.latlng);
-        this.addBeacon(e.latlng, 10, 1000);
-        this.props.addPointToPolygonUnderConstruction(e.latlng);
-        break;
-      case MOVE_VERTEX:
-        break;
-      case REMOVE:
-        break;
-      default:
-        assert.fail('not handled 6');
-    }
     return true;
   }
 
-  addBeacon = ({lat, lng}, size, durationMS) => {
-    const pulsingIcon = L.icon.pulse(
-      {iconSize:[size,size]
-     , color:'red'
-     , animate: true
-     , heartbeat: 0.4
-      });
-    const marker = L.marker([lat, lng],{icon: pulsingIcon});
-    marker.addTo(this.map);
-    window.setTimeout(()=>{
-      this.map.removeLayer(marker);
-      console.log('marker is removed');
-    }, durationMS);
-  }
-
-
-  selectGeometry = ({lat, lng}) => {
-    const polygon = this.props.geometryUnderDefinition.points.map( (e) => [e.lat, e.lng]);
-    const isInside = inside([lat, lng], polygon);
-  }
-
-  drawPolygon = () => {
-    assert.strictEqual(this.props.mode, DEFINE_POLYGON);
-    if (this.currentPolygon==null) {
-      if (this.layerGroup===null) {
-        this.layerGroup = L.layerGroup();
-        this.map.addLayer(this.layerGroup);
-        this.layersControl.addOverlay(this.layerGroup, 'custom layer');        
-        console.log('new layerGroup added to maps and control');
-      }
-      this.currentPolygon = L.polygon(this.props.geometryUnderDefinition.points
-                                    , Object.assign({}
-                                                 , {polygonId: this.props.geometryUnderDefinition.polygonId}
-                                                 , tentativePolygonStyle));
-      this.layerGroup.addLayer(this.currentPolygon);
-      console.log('new polygon and overlay added to map');
-    }
-    else {
-      this.currentPolygon.setLatLngs(this.props.geometryUnderDefinition.points);
-      console.log(`area is ${L.GeometryUtil.geodesicArea(this.currentPolygon.getLatLngs())}`);
-    }
-
-
-}
 
   componentWillUnmount = () => {
     console.log('map::componentWillUnmount()');
@@ -348,7 +266,6 @@ class Map extends React.Component {
 
     $('div.leaflet-control-container section.leaflet-control-layers-list div.leaflet-control-layers-overlays input.leaflet-control-layers-selector[type="checkbox"]').on('change', (e)=>{
     });
-    assert.strictEqual(this.props.mode, SELECT_TREE);
   }
 
 
@@ -421,60 +338,10 @@ class Map extends React.Component {
     if (prevProps.tileProviderId!==this.props.tileProviderId) {
       this.addTiles();
     }
-    if (allStrictEqual([prevProps.mode, this.props.mode, DEFINE_POLYGON])) {
-      if ((prevProps.geometryUnderDefinition.points.length !== this.props.geometryUnderDefinition.points.length)
-          &&
-          (this.props.geometryUnderDefinition.points.length>0)) {
-        assert.strictEqual(prevProps.geometryUnderDefinition.points.length+1, this.props.geometryUnderDefinition.points.length);
-        console.log(`drawing polygon with ${this.props.geometryUnderDefinition.points.length} points defined`);
-        this.drawPolygon();
-        }
-    } else {
-      let totalTransitionsFired = 0;
-      totalTransitionsFired += this.handleToolTransition_SELECT_TREE       (prevProps);
-      totalTransitionsFired += this.handleToolTransition_DEFINE_POLYGON    (prevProps);
-      assert.isAtMost(totalTransitionsFired, 2);
-    }
     this.takeCareOfHighlightedMarker(prevState.highlightedMarker, this.state.highlightedMarker);
   }
 
 
-  handleToolTransition_SELECT_TREE = (prevProps) => {
-    if (exactlyOne(  (prevProps.mode === SELECT_TREE)
-                  , (this.props.mode === SELECT_TREE))) {
-      if (this.props.mode === SELECT_TREE) {
-        this.addClickListenersToMarkers();
-      } else  {
-        console.log('removing marker click listeners');
-        this.removeClickListenersFromMarkers();
-      }
-      return 1;
-    }
-    return 0;
-  }
-
-  
-  handleToolTransition_DEFINE_POLYGON = (prevProps) => {
-    if ((prevProps.mode !== DEFINE_POLYGON) && (this.props.mode === DEFINE_POLYGON)) {
-      window.addEventListener ('keyup', this.handleKeyUp);
-      return 1;
-    } else if ((prevProps.mode === DEFINE_POLYGON) && (this.props.mode !== DEFINE_POLYGON)) {
-      window.removeEventListener ('keyup', this.handleKeyUp);
-      return 1;
-    }
-    return 0;
-  }
-
-
-  handleKeyUp = (e) => {
-    if (e.keyCode === keycode('ESC')) {
-      assert.strictEqual(this.props.mode, DEFINE_POLYGON);
-      const currentPolygonPointer = this.currentPolygon;
-      this.currentPolygon = null;
-      this.props.displayAddPolygonDialog(this.props.geometryUnderDefinition.polygonId
-                                       , currentPolygonPointer);
-    }
-  }
 
   addTiles() {
     const currentTileLayer = this.getCurrentTileLayer();
@@ -515,14 +382,7 @@ class Map extends React.Component {
   
 
   render() {
-    const style = (()=>{
-      const style = {height: `${this.getMapHeight()}px`};
-      if (this.props.mode === DEFINE_POLYGON) {
-        Object.assign(style, {cursor: 'crosshair'});
-      }
-      return style;
-    })();
-
+    const style = {height: `${this.getMapHeight()}px`};
     return (
       <div id='map-id' style={style}>
       </div>
