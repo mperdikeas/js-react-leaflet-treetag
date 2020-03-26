@@ -87,7 +87,7 @@ class App extends React.Component {
               </div>
             </div>
           </div>
-          {this.informationPanel()}
+          {this.props.isTargetSelected?<TreeInformationPanel/>:null}
         </div>
       </div>
     );
@@ -98,19 +98,6 @@ class App extends React.Component {
         {gui}
       </ModalRoot>
     );
-  }
-
-
-
-
-  informationPanel = () => {
-    const treeInformationPanel = (
-      <TreeInformationPanel/>
-    );
-    if (this.props.isTargetSelected)
-      return treeInformationPanel;
-    else
-      return null;
   }
 }
 
