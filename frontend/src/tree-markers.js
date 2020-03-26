@@ -50,9 +50,20 @@ const defaultMarkerStyle = ()=>{
 
 const USE_CLASSICAL_MARKERS = false;
 
-const sleep = (milliseconds) => {
-    return new Promise(resolve => setTimeout(resolve, milliseconds));
-};
+function from_kind2layer_to_layer2kinds(kind2layer) {
+    const rv = {};
+    const layers = uniqValues(Object.values(kind2layer));
+    for (let kind in kind2layer) {
+        const layer = kind2layer[kind];
+        let kinds = rv[layer];
+        if (kinds===undefined) {
+            rv[layer] = [];
+            kinds = rv[layer];
+        }
+        kinds.push(parseInt(kind));
+    }
+    return rv;
+}
 
 const circleMarkersLG = ()=> {
     return getTreesConfiguration().then( (treeConfiguration) => {
@@ -60,12 +71,17 @@ const circleMarkersLG = ()=> {
         const overlays = {};
         const overlayNames = uniqValues(Object.values(treeConfiguration.kind2layer));
         console.log(overlayNames);
-        return getTrees(N*1).then( (data)=> {
+        const layer2kinds = from_kind2layer_to_layer2kinds(treeConfiguration.kind2layer);
+        return getTrees(N*100).then( (data)=> {
             const targetId2Marker = {};
             overlayNames.forEach( (overlayName) => {
                 console.log(`filtering for ${overlayName}`);
-                const layerGroup = L.layerGroup(data.filter(({kind})=>kind===overlayName).map( ({id, coords})=> {
-                    assert.fail(42);
+                const layerGroup = L.layerGroup(data.filter(({kind})=>{
+                    const kindsInThisLayer = layer2kinds[overlayName];
+                    assert.isTrue(Array.isArray(kindsInThisLayer));
+                    const rv = kindsInThisLayer.includes(kind);
+                    return rv;
+                }).map( ({id, coords})=> {
                     assert.isTrue(id != null);
                     let c = [coords.latitude, coords.longitude];
                     const baseOptions = {targetId: id};
