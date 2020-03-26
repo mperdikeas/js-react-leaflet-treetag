@@ -212,9 +212,6 @@ class Map extends React.Component {
   }
 
   componentDidMount = () => {
-
-
-    console.log('map::componentDidMount()');
     window.addEventListener    ('resize', this.handleResize);
     this.map = L.map('map-id', {
       center: Athens,
@@ -316,25 +313,7 @@ class Map extends React.Component {
     } else if (prevProps.insertGeoJSONIntoWorkspace && !this.props.insertGeoJSONIntoWorkspace) {
       console.log('map - insert GeoJSON into the draw workspace flag is cleared');
     }    
-    
-    if (this.props.deleteGeometryUnderDefinition) {
-      assert.strictEqual(this.props.mode, null);
-      assert.isTrue(this.currentPolygon != null, 'this.currentPolygon is curiously null');
-      assert.isTrue(this.layerGroup     != null, 'this.layerGroup is curiously null');      
-
-      if (numOfLayersInLayerGroup(this.layerGroup)===1) {
-        assert.strictEqual(this.currentPolygon, theOneAndOnlyLayerInLayerGroup(this.layerGroup));
-        // remove the entire layer group
-        this.layersControl.removeLayer(this.layerGroup);
-        this.map.removeLayer(this.layerGroup);        
-        this.layerGroup = null;
-      } else {
-        // keep the layer group; remove only the current polygon
-        this.layerGroup.removeLayer(this.currentPolygon);
-      }
-      this.currentPolygon = null;
-      this.props.clearDeleteGeometryUnderDefinition();
-    }
+ if (false)
     if (prevProps.tileProviderId!==this.props.tileProviderId) {
       this.addTiles();
     }
