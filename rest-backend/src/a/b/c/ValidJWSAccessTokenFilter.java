@@ -85,7 +85,7 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
 
         final List<String> authorizationHeaders = Collections.list(request.getHeaders(HttpHeaders.AUTHORIZATION));
         if ((authorizationHeaders==null) || (authorizationHeaders.size()==0)) {
-            final String msg = (authorizationHeaders==null)?"null case":"0 elements list ase";
+            final String msg = (authorizationHeaders==null)?"null case":"0 elements list case";
             throw new BearerAuthorizationHeaderException(BearerAuthorizationFailureMode.NO_AUTHORIZATION_HEADERS_AT_ALL, msg);
         }
 
@@ -172,25 +172,30 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
             final String accessToken = getBearerAuthorizationHeader(logger, request);
             // must match the value in the webmvc-login app
             final String secretKeySpecS = "eyJhbGdvcml0aG0iOiJIbWFjU0hBMjU2IiwiZW5jb2RlZEtleSI6InhUMzQ4ZWlXTmMvTVhoeE5ucXU5bG5ZUVBRdVB0WWlQbVM1UGpoc2wrY1FcdTAwM2QifQ==";
-            final Claims claims = JWTUtil.verifyJWS(secretKeySpecS, accessToken);
-            final String installation = Installation.getFromClaims(claims);
+            try {
+                final Claims claims = JWTUtil.verifyJWS(secretKeySpecS, accessToken);
+                final String installation = Installation.getFromClaims(claims);
 
-            Installation.setInContainerRequestContext(requestContext, installation);
-            if (claims==null) {
-                final String msg = String.format("Bearer % access token [%s] was not validated"
+                Installation.setInContainerRequestContext(requestContext, installation);
+
+            } catch (final Throwable t) {
+                final String msg = String.format("JWT Bearer %s access token [%s] was not verified. Error msg is [%s]. Stack trace is: %s"
                                                  , HttpHeaders.AUTHORIZATION
-                                                 , accessToken);
+                                                 , accessToken
+                                                 , t.getMessage()
+                                                 , Throwables.getStackTraceAsString(t));
                 abortUnauthorizedRequest(requestContext
                                          , Response.Status.FORBIDDEN
                                          , new AbortResponse(BearerAuthorizationFailureMode.JWT_VERIFICATION_FAILED.code
                                                              , msg));
                 return;
-            }            
+            }
         } catch (BearerAuthorizationHeaderException exc) {
             abortUnauthorizedRequest(requestContext
                                      , Response.Status.FORBIDDEN
                                      , new AbortResponse(exc.mode.code
                                                          , exc.msg));
+            return;
         }
     }
     

@@ -8,7 +8,7 @@ import {sca_fake_return, readCookie} from './util.js';
 
 export default function getTreesConfiguration() {
     const url = `${BASE_URL}/getTreesConfiguration`;
-    const token = readCookie('access_token');
+    const token = readCookie('access_token', true, true);
     console.log(`access token read as ${token}`);
     return axios.get(url
                      , {headers: { Authorization: `Bearer ${token}` }}

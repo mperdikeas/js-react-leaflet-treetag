@@ -1,1 +1,0 @@
-curl -k https://127.0.0.1:8445/tree-cadaster-backend/jax-rs/main/installation/1/getTrees -b access_token=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTU4NDQ2MjI0MH0.0ZGwWa0-yU0ebwtRfPOXDQ9xrTuw7ueT6XJxdpBQ7kg

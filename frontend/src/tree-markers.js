@@ -70,7 +70,6 @@ const circleMarkersLG = ()=> {
         return getTrees(N*100).then( (data)=> {
             const targetId2Marker = {};
             overlayNames.forEach( (overlayName) => {
-                console.log(`filtering for ${overlayName}`);
                 const layerGroup = L.layerGroup(data.filter(({kind})=>{
                     const kindsInThisLayer = layer2kinds[overlayName];
                     assert.isTrue(Array.isArray(kindsInThisLayer));
@@ -262,7 +261,7 @@ const ota_Callicrates = ()=>{
 
 function getTrees(N) {
     const url = `${BASE_URL}/getTrees`;
-    const token = readCookie('access_token');
+    const token = readCookie('access_token', true, true);
     console.log(`access token read as ${token}`);
     return axios.get(url
                      , {headers: { Authorization: `Bearer ${token}` }}

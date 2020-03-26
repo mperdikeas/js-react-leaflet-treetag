@@ -165,7 +165,7 @@ class TargetPhotoPane extends React.Component {
 
   fetchNumOfPhotos() {
     const url = urlForNumOfPhotos(this.props.targetId);
-    const token = readCookie('access_token');
+    const token = readCookie('access_token', true, true);
     console.log(`access token read as ${token}`);    
     console.log(`axios URL is: ${url}`);
     axios.get(url
@@ -201,7 +201,7 @@ class TargetPhotoPane extends React.Component {
   
   fetchPhoto() {
     console.log('fetchPhoto');
-    const token = readCookie('access_token');
+    const token = readCookie('access_token', true, true);
     const url = urlForPhoto(this.props.targetId, this.state.currentPhotoIndx);
     console.log(`axios URL is: ${url}`);
     axios.get(url

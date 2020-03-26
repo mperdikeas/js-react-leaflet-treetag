@@ -109,18 +109,13 @@ public final class JWTUtil {
     }
     
     public static Claims verifyJWS(final String algoAndSecretKeyEncoded
-                                    , final String jws) {
+                                    , final String jws) throws ExpiredJwtException {
         final Date now          = new Date();
         final SecretKey key = stringToSecretKey(algoAndSecretKeyEncoded);
-        try {
-            final Jws<Claims> claimsHB = Jwts.parser().setSigningKey(key).parseClaimsJws(jws);
 
-            final Claims claims = claimsHB.getBody();
-            return claims;
-        } catch (final ExpiredJwtException e) {
-            System.out.printf("claims are now expired\n\n\n");
-            return null;
-        } 
+        final Jws<Claims> claimsHB = Jwts.parser().setSigningKey(key).parseClaimsJws(jws);
 
+        final Claims claims = claimsHB.getBody();
+        return claims;
     }
 }
