@@ -56,7 +56,7 @@ import '../node_modules/leaflet-measure/dist/leaflet-measure.css';
 
 
 
-import {Athens, layerGroups, defaultMarkerStyle, USE_CLASSICAL_MARKERS} from './tree-markers.js';
+import {Athens, layerGroups, defaultMarkerStyle} from './tree-markers.js';
 
 
 import {SELECT_TREE
@@ -517,11 +517,7 @@ class Map extends React.Component {
     layer.eachLayer ( (marker)=>{
       marker.on('click', this.clickOnCircleMarker);
       console.log('addClickListenersToMarkers : A');
-      if (USE_CLASSICAL_MARKERS)
-        marker._icon.classList.remove('not-selectable');
-      else {
-        marker.options.interactive = true; // https://stackoverflow.com/a/60642381/274677
-      }
+      marker.options.interactive = true; // https://stackoverflow.com/a/60642381/274677
     }); // eachLayer
   }
   
@@ -529,11 +525,7 @@ class Map extends React.Component {
     this.clickableLayers.forEach( (markers) => {    
       markers.eachLayer ( (marker)=>{
         marker.off('click');
-        if (USE_CLASSICAL_MARKERS) 
-          marker._icon.classList.add('not-selectable');
-        else {
-          marker.options.interactive = false; // https://stackoverflow.com/a/60642381/274677
-        }
+        marker.options.interactive = false; // https://stackoverflow.com/a/60642381/274677
       } ); // eachLayer
     }); // forEach
   }
