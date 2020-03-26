@@ -64,20 +64,22 @@ class App extends React.Component {
 
     const gui = (
       <div className='container-fluid' key='main-gui-component'>
-        <div className='row no-gutters'>
+
+        <div className='row no-gutters justify-content-start align-items-center'
+             style={{height: `${this.props.geometryContext.headerBarHeight}px`}}>
+          <div className="col-3">
+            <TilesSelector onTileProviderSelect={this.props.onTileProviderSelect}/> 
+          </div>
+          <div className='col-7'>
+            <PointCoordinates/>
+          </div>
+          <div className='col-2'>
+            <UserControl/>
+          </div>
+        </div>
+
+        <div className=  'row no-gutters'>
           <div className={classesForMapDivValue}>
-            <div className='row no-gutters justify-content-start align-items-center'
-                 style={{height: `${this.props.geometryContext.headerBarHeight}px`}}>
-              <div className="col-3">
-                <TilesSelector onTileProviderSelect={this.props.onTileProviderSelect}/> 
-              </div>
-              <div className='col-7'>
-                <PointCoordinates/>
-              </div>
-              <div className='col-2'>
-                <UserControl/>
-              </div>
-            </div>
             <div className='row no-gutters'>
               <div className='col' style={toolboxStyle}>
                 <Toolbox/>
