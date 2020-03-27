@@ -13,15 +13,17 @@ import toggleTargetReducer            from './toggleTargetReducer.js';
 import flagsReducer                   from './flagsReducer.js';
 import modalReducer                   from './modalReducer.js';
 import maximizedInfoPanelReducer      from './maximizedInfoPanelReducer.js';
+import paneToOpenInfoPanelReducer     from './paneToOpenInfoPanelReducer.js';
 
 
 function rootReducer(state = {}, action) {
     const rv = {
-        latlng               : mouseCoordsReducer       (state.latlng, action),
-        targetId             : toggleTargetReducer      (state.targetId, action),
-        flags                : flagsReducer             (state.flags, action),
-        modal                : modalReducer             (state.modal, action),
-        maximizedInfoPanel   : maximizedInfoPanelReducer(state.maximizedInfoPanel, action)
+        latlng               : mouseCoordsReducer          (state.latlng, action),
+        targetId             : toggleTargetReducer         (state.targetId, action),
+        flags                : flagsReducer                (state.flags, action),
+        modal                : modalReducer                (state.modal, action),
+        maximizedInfoPanel   : maximizedInfoPanelReducer   (state.maximizedInfoPanel, action),
+        paneToOpenInfoPanel  : paneToOpenInfoPanelReducer  (state.paneToOpenInfoPanel, action)
     };
     return rv;
 };

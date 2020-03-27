@@ -5,4 +5,5 @@ export const DISPLAY_MODAL                           = "DISPLAY_MODAL";
 export const CLEAR_MODAL                             = "CLEAR_MODAL";
 export const TOGGLE_MAXIMIZE_INFO_PANEL              = "TOGGLE_MAXIMIZE_INFO_PANEL";
 export const TOGGLE_TARGET                           = "TOGGLE_TARGET";
+export const SET_PANE_TO_OPEN_INFO_PANEL             = "SET_PANE_TO_OPEN_INFO_PANEL";
 

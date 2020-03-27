@@ -5,7 +5,9 @@ import {UPDATE_MOUSE_COORDS
         , DISPLAY_MODAL
         , CLEAR_MODAL
         , TOGGLE_MAXIMIZE_INFO_PANEL
-        , TOGGLE_TARGET} from '../constants/action-types.js';
+        , TOGGLE_TARGET
+        , SET_PANE_TO_OPEN_INFO_PANEL} from '../constants/action-types.js';
+
 import {isValidModalType} from '../constants/modal-types.js';
 
 import {CT_UNIT} from '../constants.js';
@@ -41,4 +43,8 @@ export function toggleMaximizeInfoPanel() {
 
 export function toggleTarget(targetId) {
     return {type: TOGGLE_TARGET, payload: {targetId}};
+}
+
+export function setPaneToOpenInfoPanel(pane) {
+    return {type: SET_PANE_TO_OPEN_INFO_PANEL, payload: {pane}};
 }

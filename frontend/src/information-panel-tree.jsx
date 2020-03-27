@@ -15,19 +15,21 @@ import TargetMetadataPane from './target-metadata-pane.jsx';
 
 // REDUX
 import { connect }          from 'react-redux';
-import {toggleMaximizeInfoPanel}  from './actions/index.js';
-
+import {toggleMaximizeInfoPanel, setPaneToOpenInfoPanel}  from './actions/index.js';
+import {INFORMATION, PHOTOS, HISTORY} from './constants/information-panel-panes.js';
 
 const mapStateToProps = (state) => {
   return {
     maximizedInfoPanel: state.maximizedInfoPanel
     , targetId: state.targetId
+    , tab: state.paneToOpenInfoPanel
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     toggleMaximizeInfoPanel: ()=>dispatch(toggleMaximizeInfoPanel())
+    , setPaneToOpenInfoPanel: (pane) => dispatch(setPaneToOpenInfoPanel(pane))
     };
 }
 
@@ -36,13 +38,6 @@ class TreeInformationPanel extends React.Component {
   constructor(props) {
     console.log('InformationPanel:: constructor');
     super(props);
-    this.state = {
-      tab: 'information'
-    };
-    this.onInformation = this.onInformation.bind(this);
-    this.onPhotos      = this.onPhotos     .bind(this);
-    this.onHistory     = this.onHistory    .bind(this);
-    this.paneToDisplay = this.paneToDisplay.bind(this);
   }
 
   componentDidMount() {
@@ -55,16 +50,16 @@ class TreeInformationPanel extends React.Component {
     console.log('TreeInformationPanel: unmounting...');
   }
 
-  onInformation() {
-    this.setState({tab: 'information'});
+  onInformation = () => {
+    this.props.setPaneToOpenInfoPanel(INFORMATION);
   }
 
-  onPhotos() {
-    this.setState({tab: 'photos'});
+  onPhotos = () => {
+    this.props.setPaneToOpenInfoPanel(PHOTOS);
   }
 
-  onHistory() {
-    this.setState({tab: 'history'});
+  onHistory = () => {
+    this.props.setPaneToOpenInfoPanel(HISTORY);
   }
 
   render() {
@@ -75,11 +70,11 @@ class TreeInformationPanel extends React.Component {
         </div>
       );
     } else {
-      console.log(`tab is  ${this.state.tab}, targetId is: ${this.props.targetId}`);
+      console.log(`tab is  ${this.props.tab}, targetId is: ${this.props.targetId}`);
       const defaultClasses = {'nav-link': true};
-      const informationClasses = Object.assign({}, defaultClasses, {'active': this.state.tab==='information'});
-      const photoClasses = Object.assign({}, defaultClasses, {'active': this.state.tab==='photos'});
-      const historyClasses = Object.assign({}, defaultClasses, {'active': this.state.tab==='history'});
+      const informationClasses = Object.assign({}, defaultClasses, {'active': this.props.tab===INFORMATION});
+      const photoClasses = Object.assign({}, defaultClasses, {'active': this.props.tab===PHOTOS});
+      const historyClasses = Object.assign({}, defaultClasses, {'active': this.props.tab===HISTORY});
 
       const paneToDisplay = this.paneToDisplay();
       const toggleTxt = this.props.maximizedInfoPanel?'Ελαχιστοποίηση':'Μεγιστοποίηση';
@@ -120,22 +115,22 @@ class TreeInformationPanel extends React.Component {
       );
     }
   }
-  paneToDisplay() {
-    switch (this.state.tab) {
-      case 'information':
+  paneToDisplay = () => {
+    switch (this.props.tab) {
+      case INFORMATION:
         return (
           <TargetDataPane targetId={this.props.targetId}/>
         );
-      case 'photos':
+      case PHOTOS:
         return (
           <TargetPhotoPane targetId={this.props.targetId}/>                
         );
-      case 'history':
+      case HISTORY:
         return (
           <TargetMetadataPane targetId={this.props.targetId}/>
         );
       default:
-        assert.fail(`unhandled case [${this.state.tab}]`);
+        assert.fail(`unhandled case [${this.props.tab}]`);
         return null; // SCA
     }
   }
