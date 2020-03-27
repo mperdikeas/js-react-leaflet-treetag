@@ -105,13 +105,13 @@ const HGRS87 = 'EPSG:2100';
 class Map extends React.Component {
 
   constructor(props) {
-    super(props);
+    super(props);/*
     this.state = {
       highlightedMarker: null
-    };
+    };*/
     this.layerGroup = null;
-    this.currentPolygon = null;
     this.clickableLayers = [];
+    this.highlightedMarker = null;
   }
 
   getMapHeight = () => {
@@ -218,6 +218,7 @@ class Map extends React.Component {
       zoom: 15,
       zoomControl: false
     });
+    this.map.doubleClickZoom.disable();
 
     const options = {position: 'topleft'
                    , primaryLengthUnit: 'meters'
@@ -314,7 +315,7 @@ class Map extends React.Component {
       console.log('map - insert GeoJSON into the draw workspace flag is cleared');
     }    
 
-    this.takeCareOfHighlightedMarker(prevState.highlightedMarker, this.state.highlightedMarker);
+
   }
 
 
@@ -353,25 +354,34 @@ class Map extends React.Component {
   }
 
   clickOnCircleMarker = (e) => {
-    const targetId = e.target.options.targetId;
-    const marker = this.targetId2Marker[targetId];
-    this.setState({highlightedMarker: marker});
+    
+    const installNewHighlightingMarker = (coords, targetId) => {
+      const options = {radius: 20, color: 'black', weight: 5, interactive: false};
+      const marker = L.circleMarker(coords, options);
+      this.highlightedMarker = {marker, targetId};
+      this.highlightedMarker.marker.addTo(this.map);
+      this.highlightedMarker.marker.bringToBack();
+    };
+
+    const targetId = e.target.options.targetId;    
+    const coords = this.targetId2Marker[targetId].getLatLng();
+
+    
+    if (this.highlightedMarker === null) {
+      installNewHighlightingMarker(coords, targetId);
+    } else {
+      if (this.highlightedMarker.targetId === targetId) {
+        this.highlightedMarker.marker.removeFrom(this.map);
+        this.highlightedMarker = null;
+      } else {
+        this.highlightedMarker.marker.removeFrom(this.map);
+        installNewHighlightingMarker(coords, targetId);
+      }
+    }
     this.props.toggleTarget(e.target.options.targetId);
   }
 
-  takeCareOfHighlightedMarker(previousMarker, newMarker) {
-    if (previousMarker !== newMarker) {
-      if (previousMarker !== null) {
-        previousMarker.setStyle(defaultMarkerStyle());
-      }
-      if (newMarker !== null) {
-        newMarker.setStyle({
-          color : '#ff0000',
-          radius : 8
-        });
-      }
-    }
-  }
+
 }
 
 
