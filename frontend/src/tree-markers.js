@@ -23,7 +23,6 @@ import getTreesConfiguration from './trees-configuration-reader.js';
 
 const Athens = [37.98, 23.72];
 
-const N = 10;
 
 const myRenderer = L.canvas({ padding: 0.5 });
 
@@ -60,7 +59,7 @@ const treeOverlays = ()=> {
         const overlayNames = extractLayerNames(treeConfiguration);
         console.log(overlayNames);
         const layer2kinds = from_kind2layer_to_layer2kinds(treeConfiguration);
-        return getTrees(N*100).then( (data)=> {
+        return getTrees(100).then( (data)=> {
             const targetId2Marker = {};
             overlayNames.forEach( (overlayName) => {
                 const layerGroup = L.layerGroup(data.filter(({kind})=>{
