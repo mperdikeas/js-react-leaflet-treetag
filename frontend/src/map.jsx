@@ -361,6 +361,7 @@ class Map extends React.Component {
       this.highlightedMarker = {marker, targetId};
       this.highlightedMarker.marker.addTo(this.map);
       this.highlightedMarker.marker.bringToBack();
+      this.map.setView(coords, this.map.getZoom());
     };
 
     const targetId = e.target.options.targetId;    
