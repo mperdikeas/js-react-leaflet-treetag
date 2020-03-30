@@ -12,6 +12,12 @@ function getAccessToken() {
 
 function createAxiosAuthHeader() {
     const accessToken = getAccessToken();
+    assert.isDefined(accessToken, `access token [${ACCESS_TOKEN_KEY}] was read `
+                     +`from the session storage as undefined. This is impossible `
+                     +`given session storage contract`);
+    assert.isNotNull(accessToken, `access token [${ACCESS_TOKEN_KEY}] was read `
+                     +`from the session storage as null. This indicates a bug `
+                     +`in my application`);
     return {
         Authorization: `Bearer ${accessToken}`
     };

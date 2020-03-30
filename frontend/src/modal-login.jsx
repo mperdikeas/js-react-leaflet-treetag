@@ -7,7 +7,7 @@ const React = require('react');
 var      cx = require('classnames');
 
 const assert = require('chai').assert;
-import axios from 'axios';
+
 import {BASE_URL}                              from './constants.js';
 
 import {storeAccessToken} from './access-token-util.js';
@@ -15,6 +15,8 @@ import {storeAccessToken} from './access-token-util.js';
 import './css/modal-dialog.css'; // TODO: use React emotion for element-scoped CSS
 
 import wrapContexts from './context/contexts-wrapper.jsx';
+
+import {axiosPlain} from './axios-setup.js';
 
 // redux
 import {  connect   } from 'react-redux';
@@ -64,7 +66,7 @@ class ModalLogin extends React.Component {
     
   doLogin = (installation, username, password) => {
     const url = `${BASE_URL}/login`;
-    axios.post(url, {
+    axiosPlain.post(url, {
       installation: installation,
       username: username,
       password: password

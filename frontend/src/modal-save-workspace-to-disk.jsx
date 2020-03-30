@@ -7,7 +7,6 @@ const React = require('react');
 var      cx = require('classnames');
 
 const assert = require('chai').assert;
-import axios from 'axios';
 
 import {CLEAR_DRAW_WORKSPACE}                  from './constants/flags.js';
 import './css/modal-dialog.css'; // TODO: use React emotion for element-scoped CSS

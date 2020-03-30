@@ -7,7 +7,7 @@ const React = require('react');
 var      cx = require('classnames');
 
 const assert = require('chai').assert;
-import axios from 'axios';
+
 
 const loading  = require('./resources/loading.gif');
 // require('../resources/down-arrow.png');
@@ -17,7 +17,7 @@ import {sca_fake_return} from './util.js';
 
 import {BASE_URL} from './constants.js';
 
-import {createAxiosAuthHeader} from './access-token-util.js';
+import {axiosAuth} from './axios-setup.js';
 
 
 // REDUX
@@ -168,7 +168,7 @@ class TargetPhotoPane extends React.Component {
   fetchNumOfPhotos() {
     const url = urlForNumOfPhotos(this.props.targetId);
     console.log(`axios URL is: ${url}`);
-    axios.get(url
+    axiosAuth.get(url
 //            , {headers: createAxiosAuthHeader()}
          ).then(res => {
            const {t, err} = res.data; // this is a ValueOrInternalServerExceptionData data type on the server side
@@ -202,7 +202,7 @@ class TargetPhotoPane extends React.Component {
   fetchPhoto() {
     console.log('fetchPhoto');
     const url = urlForPhoto(this.props.targetId, this.state.currentPhotoIndx);
-    axios.get(url
+    axiosAuth.get(url
 //            , {headers: createAxiosAuthHeader()}
       ).then(res => {
            console.log(res);

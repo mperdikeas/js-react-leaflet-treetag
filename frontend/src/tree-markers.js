@@ -9,7 +9,7 @@ import proj4 from 'proj4';
 const assert = require('chai').assert;
 
 import { v4 as uuidv4 } from 'uuid';
-import axios from 'axios';
+
 
 import {DefaultIcon, TreeIcon}       from './icons.js';
 import {CustomCircleMarker}          from './custom-markers.js';
@@ -17,8 +17,8 @@ import rainbow                       from './rainbow.js';
 import {BASE_URL}                    from './constants.js';
 import {sca_fake_return
         , uniqValues}                from './util.js';
+import {axiosAuth} from './axios-setup.js';
 
-import {createAxiosAuthHeader} from './access-token-util.js';
 
 import getTreesConfiguration from './trees-configuration-reader.js';
 
@@ -125,7 +125,7 @@ const ota_Callicrates = (()=>{
 
 function getTrees(N) {
     const url = `${BASE_URL}/getTrees`;
-    return axios.get(url
+    return axiosAuth.get(url
 //                     , {headers: createAxiosAuthHeader()}
                     ).then(res => {
                         if (res.data.err != null) {
