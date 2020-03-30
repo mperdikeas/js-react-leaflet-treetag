@@ -10,6 +10,8 @@ const assert = require('chai').assert;
 import axios from 'axios';
 import {BASE_URL}                              from './constants.js';
 
+import {storeAccessToken} from './access-token-util.js';
+
 import './css/modal-dialog.css'; // TODO: use React emotion for element-scoped CSS
 
 import wrapContexts from './context/contexts-wrapper.jsx';
@@ -80,8 +82,7 @@ class ModalLogin extends React.Component {
       } else {
         console.log('login API call success');
         if (res.data.t.loginFailureReason===null) {
-          window.sessionStorage.setItem('access_token', res.data.t.accessToken);
-          console.log('login was successful and cookie was set');
+          storeAccessToken(res.data.t.accessToken);
           this.props.clearModal();
           this.props.loginContext.updateLogin(username);
         } else {

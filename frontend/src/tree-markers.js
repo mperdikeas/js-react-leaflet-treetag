@@ -18,6 +18,8 @@ import {BASE_URL}                    from './constants.js';
 import {sca_fake_return
         , uniqValues}                from './util.js';
 
+import {createAxiosAuthHeader} from './access-token-util.js';
+
 import getTreesConfiguration from './trees-configuration-reader.js';
 
 const Athens = [37.98, 23.72];
@@ -123,10 +125,8 @@ const ota_Callicrates = (()=>{
 
 function getTrees(N) {
     const url = `${BASE_URL}/getTrees`;
-    const token = window.sessionStorage.getItem('access_token');
-    console.log(`access token read as ${token}`);
     return axios.get(url
-                     , {headers: { Authorization: `Bearer ${token}` }}
+                     , {headers: createAxiosAuthHeader()}
                     ).then(res => {
                         if (res.data.err != null) {
                             console.log('getTrees API call error');

@@ -17,6 +17,8 @@ import {sca_fake_return} from './util.js';
 
 import {BASE_URL} from './constants.js';
 
+import {createAxiosAuthHeader} from './access-token-util.js';
+
 
 // REDUX
 import { connect } from 'react-redux';
@@ -165,11 +167,9 @@ class TargetPhotoPane extends React.Component {
 
   fetchNumOfPhotos() {
     const url = urlForNumOfPhotos(this.props.targetId);
-    const token = window.sessionStorage.getItem('access_token');
-    console.log(`access token read as ${token}`);    
     console.log(`axios URL is: ${url}`);
     axios.get(url
-            , {headers: { Authorization: `Bearer ${token}` }}
+            , {headers: createAxiosAuthHeader()}
          ).then(res => {
            const {t, err} = res.data; // this is a ValueOrInternalServerExceptionData data type on the server side
            if (err===null) {
@@ -201,11 +201,9 @@ class TargetPhotoPane extends React.Component {
   
   fetchPhoto() {
     console.log('fetchPhoto');
-    const token = window.sessionStorage.getItem('access_token');
     const url = urlForPhoto(this.props.targetId, this.state.currentPhotoIndx);
-    console.log(`axios URL is: ${url}`);
     axios.get(url
-            , {headers: { Authorization: `Bearer ${token}` }}
+            , {headers: createAxiosAuthHeader()}
       ).then(res => {
            console.log(res);
            const {t: {photoBase64, instant}, err} = res.data; // this is a ValueOrInternalServerExceptionData data type on the server side
