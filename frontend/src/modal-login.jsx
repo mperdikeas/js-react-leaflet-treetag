@@ -8,8 +8,6 @@ var      cx = require('classnames');
 
 const assert = require('chai').assert;
 import axios from 'axios';
-import {setCookie}                             from './util.js';
-
 import {BASE_URL}                              from './constants.js';
 
 import './css/modal-dialog.css'; // TODO: use React emotion for element-scoped CSS
@@ -82,7 +80,7 @@ class ModalLogin extends React.Component {
       } else {
         console.log('login API call success');
         if (res.data.t.loginFailureReason===null) {
-          setCookie('access_token', res.data.t.accessToken, 0);
+          window.sessionStorage.setItem('access_token', res.data.t.accessToken);
           console.log('login was successful and cookie was set');
           this.props.clearModal();
           this.props.loginContext.updateLogin(username);

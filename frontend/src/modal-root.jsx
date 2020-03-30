@@ -8,7 +8,6 @@ var      cx = require('classnames');
 
 const assert = require('chai').assert;
 import axios from 'axios';
-import {setCookie}                             from './util.js';
 
 import {GeometryContext} from './context/geometry-context.jsx';
 

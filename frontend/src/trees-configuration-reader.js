@@ -2,13 +2,13 @@ const assert = require('chai').assert;
 import axios from 'axios';
 
 import {BASE_URL}                    from './constants.js';
-import {sca_fake_return, readCookie} from './util.js';
+import {sca_fake_return} from './util.js';
 
 
 
 export default function getTreesConfiguration() {
     const url = `${BASE_URL}/getTreesConfiguration`;
-    const token = readCookie('access_token', true, true);
+    const token = window.sessionStorage.getItem('access_token');
     console.log(`access token read as ${token}`);
     return axios.get(url
                      , {headers: { Authorization: `Bearer ${token}` }}

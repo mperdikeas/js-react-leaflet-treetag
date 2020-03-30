@@ -13,7 +13,7 @@ const loading  = require('./resources/loading.gif');
 // require('../resources/down-arrow.png');
 import DownArrow from './resources/down-arrow.png';
 // const download = url('../resources/
-import {sca_fake_return, readCookie} from './util.js';
+import {sca_fake_return} from './util.js';
 
 import {BASE_URL} from './constants.js';
 
@@ -165,7 +165,7 @@ class TargetPhotoPane extends React.Component {
 
   fetchNumOfPhotos() {
     const url = urlForNumOfPhotos(this.props.targetId);
-    const token = readCookie('access_token', true, true);
+    const token = window.sessionStorage.getItem('access_token');
     console.log(`access token read as ${token}`);    
     console.log(`axios URL is: ${url}`);
     axios.get(url
@@ -201,7 +201,7 @@ class TargetPhotoPane extends React.Component {
   
   fetchPhoto() {
     console.log('fetchPhoto');
-    const token = readCookie('access_token', true, true);
+    const token = window.sessionStorage.getItem('access_token');
     const url = urlForPhoto(this.props.targetId, this.state.currentPhotoIndx);
     console.log(`axios URL is: ${url}`);
     axios.get(url

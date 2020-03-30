@@ -16,7 +16,6 @@ import {CustomCircleMarker}          from './custom-markers.js';
 import rainbow                       from './rainbow.js';
 import {BASE_URL}                    from './constants.js';
 import {sca_fake_return
-        , readCookie
         , uniqValues}                from './util.js';
 
 import getTreesConfiguration from './trees-configuration-reader.js';
@@ -124,7 +123,7 @@ const ota_Callicrates = (()=>{
 
 function getTrees(N) {
     const url = `${BASE_URL}/getTrees`;
-    const token = readCookie('access_token', true, true);
+    const token = window.sessionStorage.getItem('access_token');
     console.log(`access token read as ${token}`);
     return axios.get(url
                      , {headers: { Authorization: `Bearer ${token}` }}
