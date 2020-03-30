@@ -11,7 +11,7 @@ import {createAxiosAuthHeader} from './access-token-util.js';
 export default function getTreesConfiguration() {
     const url = `${BASE_URL}/getTreesConfiguration`;
     return axios.get(url
-                     , {headers: createAxiosAuthHeader()}
+//                     , {headers: createAxiosAuthHeader()}
                     ).then(res => {
                         if (res.data.err != null) {
                             console.log('getTreesConfiguration API call error');

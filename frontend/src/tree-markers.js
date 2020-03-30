@@ -126,7 +126,7 @@ const ota_Callicrates = (()=>{
 function getTrees(N) {
     const url = `${BASE_URL}/getTrees`;
     return axios.get(url
-                     , {headers: createAxiosAuthHeader()}
+//                     , {headers: createAxiosAuthHeader()}
                     ).then(res => {
                         if (res.data.err != null) {
                             console.log('getTrees API call error');

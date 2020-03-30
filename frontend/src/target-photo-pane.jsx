@@ -169,7 +169,7 @@ class TargetPhotoPane extends React.Component {
     const url = urlForNumOfPhotos(this.props.targetId);
     console.log(`axios URL is: ${url}`);
     axios.get(url
-            , {headers: createAxiosAuthHeader()}
+//            , {headers: createAxiosAuthHeader()}
          ).then(res => {
            const {t, err} = res.data; // this is a ValueOrInternalServerExceptionData data type on the server side
            if (err===null) {
@@ -203,7 +203,7 @@ class TargetPhotoPane extends React.Component {
     console.log('fetchPhoto');
     const url = urlForPhoto(this.props.targetId, this.state.currentPhotoIndx);
     axios.get(url
-            , {headers: createAxiosAuthHeader()}
+//            , {headers: createAxiosAuthHeader()}
       ).then(res => {
            console.log(res);
            const {t: {photoBase64, instant}, err} = res.data; // this is a ValueOrInternalServerExceptionData data type on the server side

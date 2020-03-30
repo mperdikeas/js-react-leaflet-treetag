@@ -17,6 +17,8 @@ import store                    from './store/index.js';
 
 import 'leaflet-draw';
 
+import './axios-setup.js';
+
 $(document).ready(doStuff);
 
 function doStuff() {

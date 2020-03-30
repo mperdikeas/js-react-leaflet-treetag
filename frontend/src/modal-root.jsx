@@ -7,7 +7,6 @@ const React = require('react');
 var      cx = require('classnames');
 
 const assert = require('chai').assert;
-import axios from 'axios';
 
 import {GeometryContext} from './context/geometry-context.jsx';
 
