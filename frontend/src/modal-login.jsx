@@ -52,13 +52,6 @@ class ModalLogin extends React.Component {
     domElem.showModal();
   }
 
-  componentDidUpdate2(prevProps, prevState) {
-    if (!prevProps.modal.modalType && this.props.modal.modalType) {
-      const domElem = this.ref.current;
-      domElem.showModal();
-    }
-  }
-
 
   login = (ev) => {
     ev.preventDefault();
