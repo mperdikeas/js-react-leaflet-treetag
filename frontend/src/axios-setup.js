@@ -8,8 +8,13 @@ axiosAuth.interceptors.request.use(config => {
     Object.assign(config.headers, createAxiosAuthHeader());
     return config;
 }, error => {
-    // handle the error
-    return Promise.reject(error);
+    /* TODO: curiously the below code does not get executed even when shit happens
+     *       e.g. when I manually clear the sessionStorage
+     */
+    return Promise.reject(`error: [${error}] while assigning auth header`
+                          +` to axios request - this can only happen if`
+                          +` the access token is not present in the session`
+                          +` storage (e.g. maybe it was cleared manually?)`);
 });
 
 //export axiosPlain;// = axiosPlain;
