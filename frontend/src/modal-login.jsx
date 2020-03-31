@@ -8,7 +8,7 @@ var      cx = require('classnames');
 
 const assert = require('chai').assert;
 
-import {BASE_URL}                              from './constants.js';
+
 
 import {storeAccessToken} from './access-token-util.js';
 
@@ -65,7 +65,7 @@ class ModalLogin extends React.Component {
 
     
   doLogin = (installation, username, password) => {
-    const url = `${BASE_URL}/login`;
+    const url = '/login';
     axiosPlain.post(url, {
       installation: installation,
       username: username,

@@ -1,14 +1,13 @@
 const assert = require('chai').assert;
 
 
-import {BASE_URL}                    from './constants.js';
 import {sca_fake_return} from './util.js';
 
 import {axiosAuth} from './axios-setup.js';
 
 
 export default function getTreesConfiguration() {
-    const url = `${BASE_URL}/getTreesConfiguration`;
+    const url = '/getTreesConfiguration';
     return axiosAuth.get(url
 //                     , {headers: createAxiosAuthHeader()}
                     ).then(res => {

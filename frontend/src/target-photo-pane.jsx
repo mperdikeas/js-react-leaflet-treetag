@@ -15,7 +15,6 @@ import DownArrow from './resources/down-arrow.png';
 // const download = url('../resources/
 import {sca_fake_return} from './util.js';
 
-import {BASE_URL} from './constants.js';
 
 import {axiosAuth} from './axios-setup.js';
 
@@ -235,14 +234,14 @@ function uuidToNumber(uuid) {
 
 function urlForPhoto(targetId, indx) {
   const effectiveTargetId = Math.abs(uuidToNumber(targetId));
-  const url = `${BASE_URL}/feature/${effectiveTargetId}/photos/elem/${indx}`;
+  const url = `/feature/${effectiveTargetId}/photos/elem/${indx}`;
   return url;
   }
 
 
 function urlForNumOfPhotos(targetId) {
   const effectiveTargetId = Math.abs(uuidToNumber(targetId));
-  const url=`${BASE_URL}/feature/${effectiveTargetId}/photos/num`;
+  const url=`/feature/${effectiveTargetId}/photos/num`;
   return url;
   }
 

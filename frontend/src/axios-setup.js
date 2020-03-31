@@ -1,8 +1,11 @@
 import axios from 'axios';
 import {createAxiosAuthHeader} from './access-token-util.js';
+import {BASE_URL}              from './constants.js';
 
-const axiosPlain = axios.create();
-const axiosAuth = axios.create();
+
+const config = {baseURL: BASE_URL};
+const axiosPlain = axios.create(config);
+const axiosAuth  = axios.create(config);
 
 axiosAuth.interceptors.request.use(config => {
     Object.assign(config.headers, createAxiosAuthHeader());

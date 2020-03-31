@@ -14,7 +14,6 @@ import { v4 as uuidv4 } from 'uuid';
 import {DefaultIcon, TreeIcon}       from './icons.js';
 import {CustomCircleMarker}          from './custom-markers.js';
 import rainbow                       from './rainbow.js';
-import {BASE_URL}                    from './constants.js';
 import {sca_fake_return
         , uniqValues}                from './util.js';
 import {axiosAuth} from './axios-setup.js';
@@ -124,7 +123,7 @@ const ota_Callicrates = (()=>{
 
 
 function getTrees(N) {
-    const url = `${BASE_URL}/getTrees`;
+    const url = '/getTrees';
     return axiosAuth.get(url
 //                     , {headers: createAxiosAuthHeader()}
                     ).then(res => {

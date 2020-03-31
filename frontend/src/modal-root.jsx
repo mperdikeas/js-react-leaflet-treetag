@@ -11,7 +11,6 @@ const assert = require('chai').assert;
 import {GeometryContext} from './context/geometry-context.jsx';
 
 import Map                                     from './map.jsx';
-import {BASE_URL}                              from './constants.js';
 
 import './css/modal-dialog.css'; // TODO: use React emotion for element-scoped CSS
 
