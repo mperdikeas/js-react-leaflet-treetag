@@ -21,10 +21,12 @@ function rootReducer(state = {}, action) {
         latlng               : mouseCoordsReducer          (state.latlng, action),
         targetId             : toggleTargetReducer         (state.targetId, action),
         flags                : flagsReducer                (state.flags, action),
-        modal                : modalReducer                (state.modal, action),
+        modals               : modalReducer                (state.modals, action),
         maximizedInfoPanel   : maximizedInfoPanelReducer   (state.maximizedInfoPanel, action),
         paneToOpenInfoPanel  : paneToOpenInfoPanelReducer  (state.paneToOpenInfoPanel, action)
     };
+    console.log('root state follows');
+    console.log(rv);
     return rv;
 };
 

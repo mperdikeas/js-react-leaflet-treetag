@@ -34,10 +34,9 @@ export function displayModal(modalType, modalProps) {
     return {type: DISPLAY_MODAL, payload: {modalType, modalProps}};
 }
 
-export function clearModal(f=null) {
+export function clearModal() {
     console.log('clearModal action');
-    console.log(f);
-    return {type: CLEAR_MODAL, payload: {followUpFunction: f}};
+    return {type: CLEAR_MODAL, payload: null};
 }
 
 export function toggleMaximizeInfoPanel() {

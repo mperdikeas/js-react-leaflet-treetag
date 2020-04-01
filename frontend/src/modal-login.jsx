@@ -31,7 +31,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    clearModal : (f) => dispatch(clearModal(f))
+    clearModal : () => dispatch(clearModal())
   };
 }
 
@@ -78,7 +78,7 @@ class ModalLogin extends React.Component {
         console.log('login API call success');
         if (res.data.t.loginFailureReason===null) {
           storeAccessToken(res.data.t.accessToken);
-          this.props.clearModal(this.props.followUpFunction);
+          this.props.clearModal();
           this.props.loginContext.updateLogin(username);
         } else {
           console.log('login was unsuccessful');

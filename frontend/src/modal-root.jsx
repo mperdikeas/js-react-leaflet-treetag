@@ -36,27 +36,31 @@ const MODAL_COMPONENTS = {
 import {  connect   }              from 'react-redux';
 import { clearModal, addGeometry } from './actions/index.js';
 
-const mapStateToProps = (state) => {
-  return state.modal;
+const mapStateToProps = (modals) => {
+  return modals;
 };
 
 
-const ModalRoot = ({modal, children}) => {
-  if (modal === null) {
-    console.log('modal root is cleared !!');
+const ModalRoot = ({modals, children}) => {
+  console.log(modals);
+  if (modals.length === null) {
+    console.log('no modals left to display');
     return (<>
       {children}
       </>
     )
   } else {
-    const {modalType, modalProps} = modal;
-    const SpecificModal = MODAL_COMPONENTS[modalType]
-    console.log(`rendering modal for ${modalType}`);
+    const specificModals = modals.map( (modal, idx) => {
+      const {modalType, modalProps} = modal;
+      const SpecificModal = MODAL_COMPONENTS[modalType]
+      return <SpecificModal key={idx} {...modalProps}/>
+    } );
+
+    console.log(`rendering ${modals.length} modals`);
     return (
       <>
-          <SpecificModal {...modalProps}>
-          </SpecificModal>
-          {children}
+      {specificModals}
+      {children}
       </>
     );
   }
