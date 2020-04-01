@@ -37,7 +37,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     displayModalLogin: (func)  => {
       console.log('asdfasdfasdf');
-      const modalProps = {f: func};
+      const modalProps = {followUpFunction: func};
       console.log('xxxxxxxxxx '+JSON.stringify(modalProps));
       dispatch(displayModal(MODAL_LOGIN, modalProps));
 
