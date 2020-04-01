@@ -56,6 +56,7 @@ class ModalLogin extends React.Component {
 
 
   login = (ev) => {
+    console.log('modal-login::login');
     ev.preventDefault();
     const installation = this.inputInstallationRef.current.value;
     const username     = this.inputUsernameRef.current.value;
@@ -117,7 +118,7 @@ class ModalLogin extends React.Component {
       })();
     return (
       <>
-      <dialog id="dialog" ref={this.ref}>
+      <dialog style={this.props.style} id="dialog" ref={this.ref}>
         <form method="dialog" onSubmit={this.login}>
           {logErrMsg}
           <p>Please provide installation name,  username and password</p>

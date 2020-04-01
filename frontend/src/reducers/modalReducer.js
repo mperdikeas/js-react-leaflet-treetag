@@ -14,7 +14,7 @@ export default (modals = [{modalType: MODAL_LOGIN, modalProps: null}], action) =
         return {modal: null};
     }
     case CLEAR_MODAL: {
-        console.log('xxxxxxxxxxxx modalreducer');
+        console.log(`xxxxxxxxxxxx modalreducer ${modals.length} modals`);
         const modals2 = [...modals];
         const modalToClose =modals2.pop();
         console.log(modalToClose);
