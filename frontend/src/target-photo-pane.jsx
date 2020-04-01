@@ -191,7 +191,8 @@ class TargetPhotoPane extends React.Component {
     console.log(`fetchNumOfPhotos, axios URL is: ${url}`);
     axiosAuth.get(url
     ).then(res => {
-      /* This is a ValueOrInternalServerExceptionData data type on the server side
+      /* SSE-1585746250
+       * This is a ValueOrInternalServerExceptionData data type on the server side
        *
        * public class InternalServerExceptionData {
        *
@@ -220,20 +221,25 @@ class TargetPhotoPane extends React.Component {
       console.log(JSON.stringify(err));
       console.log(err);
       if (err.response && err.response.data) {
-        console.log('xxxxxxxxxxxxx2a');
+        /* SSE-1585746388
+         * Here the shape of the error response is {code, msg}
+         * final class ValidJWSAccessTokenFilter#AbortResponse {
+         *    public final String code;
+         *    public final String msg;
+         *  ...
+         */
         switch(err.response.data.code) {
           case 'JWT-verif-failed':
             this.setState({loadingNumOfPhotos: false
                          , error: {message: 'JWT verif. failed (likely expired?)'
-                                 , details: null}});
+                                 , details: err.response.data.msg}});
             break;
           default:
             this.setState({loadingNumOfPhotos: false
                          , error: {message: 'unexpected error code'
-                                 , details: `unexpected error code: ${err.response.data.code}`}});
+                                 , details: `unexpected error code: ${err.response.data.code}, msg=${err.response.data.msg}`}});
         }
       } else {
-        console.log('xxxxxxxxxxxxx2b');
         this.setState({loadingNumOfPhotos: false
                      , error: {message: 'unexpected error - likely a bug'
                              , details: JSON.stringify(err)}});
@@ -248,7 +254,7 @@ class TargetPhotoPane extends React.Component {
       //            , {headers: createAxiosAuthHeader()}
     ).then(res => {
       console.log(res);
-      const {t: {photoBase64, instant}, err} = res.data; // this is a ValueOrInternalServerExceptionData data type on the server side
+      const {t: {photoBase64, instant}, err} = res.data; // corr-id: SSE-1585746250
       if (err===null) {
         this.setState({ loadingPhoto: false, photoBase64: photoBase64, photoBase64Instant: instant, error: null});
       } else {
@@ -260,19 +266,20 @@ class TargetPhotoPane extends React.Component {
     }).catch( err => {
       console.log(err);
       if (err.response && err.response.data) {
+        // corr-id: SSE-1585746388
         switch(err.response.data.code) {
           case 'JWT-verif-failed':
+            console.log('case JWT-verif-failed');
             this.setState({loadingPhoto: false
                          , error: {message: 'JWT verif. failed (likely expired?)'
-                                 , details: null}});
+                                 , details: err.response.data.msg}});
             break;
           default:
             this.setState({loadingPhoto: false
                          , error: {message: 'unexpected error code'
-                                 , details: `unexpected error code: ${err.response.data.code}`}});
+                                 , details: `unexpected error code: ${err.response.data.code}, msg=${err.response.data.msg}`}});
         }
       } else {
-        console.log('xxxxxxxxxxxxx1');
         this.setState({loadingPhoto: false
                      , error: {message: 'unexpected error - likely a bug'
                              , details: JSON.stringify(err)}});
