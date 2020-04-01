@@ -10,6 +10,16 @@ export default (state = {modal: {modalType: MODAL_LOGIN, modalProps: null}}, act
         return {modal: null};
     case CLEAR_MODAL:
         console.log('returning null in response to CLEAR_MODAL action');
+        console.log(action.payload.followUpFunction);
+        if (action.payload) {
+            if (action.payload.followUpFunction) {
+                console.log('calling follow up function');
+                action.payload.followUpFunction();
+            } else
+                console.log('no follow up function upon clear modal');
+        } else {
+            throw `unrecognized shape for the payload of action [${CLEAR_MODAL}]`;
+        }
         return {modal: null};
     default:
         return state;

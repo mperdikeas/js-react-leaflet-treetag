@@ -28,13 +28,16 @@ export function setFlag(flagToSet, flagValue=CT_UNIT) {
 }
 
 export function displayModal(modalType, modalProps) {
-    console.log('dispatching modal');
+    console.log(modalProps);
+    console.log(`asdfadfasd displayModal(${modalType}, ${JSON.stringify(modalProps)}`);
     assert.isTrue(isValidModalType(modalType), `unrecognized modal type: [${modalType}]`);
     return {type: DISPLAY_MODAL, payload: {modalType, modalProps}};
 }
 
-export function clearModal() {
-    return {type: CLEAR_MODAL};
+export function clearModal(f=null) {
+    console.log('clearModal action');
+    console.log(f);
+    return {type: CLEAR_MODAL, payload: {followUpFunction: f}};
 }
 
 export function toggleMaximizeInfoPanel() {

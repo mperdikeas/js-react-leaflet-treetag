@@ -22,11 +22,29 @@ import {axiosAuth} from './axios-setup.js';
 // REDUX
 import { connect } from 'react-redux';
 
+import {MODAL_LOGIN} from './constants/modal-types.js';
+
+import {displayModal} from './actions/index.js';
+
+
 const mapStateToProps = (state) => {
   return {
     targetId: state.targetId
   };
 };
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    displayModalLogin: (func)  => {
+      console.log('asdfasdfasdf');
+      const modalProps = {f: func};
+      console.log('xxxxxxxxxx '+JSON.stringify(modalProps));
+      dispatch(displayModal(MODAL_LOGIN, modalProps));
+
+      }
+    };
+  }
+
 
 
 
@@ -187,6 +205,7 @@ class TargetPhotoPane extends React.Component {
   }
 
   fetchNumOfPhotos = () => {
+    console.log('fetchNumOfPhotos');
     const url = urlForNumOfPhotos(this.props.targetId);
     console.log(`fetchNumOfPhotos, axios URL is: ${url}`);
     axiosAuth.get(url
@@ -230,6 +249,7 @@ class TargetPhotoPane extends React.Component {
          */
         switch(err.response.data.code) {
           case 'JWT-verif-failed':
+            this.props.displayModalLogin( ()=>{this.fetchNumOfPhotos();} );
             this.setState({loadingNumOfPhotos: false
                          , error: {message: 'JWT verif. failed (likely expired?)'
                                  , details: err.response.data.msg}});
@@ -270,6 +290,7 @@ class TargetPhotoPane extends React.Component {
         switch(err.response.data.code) {
           case 'JWT-verif-failed':
             console.log('case JWT-verif-failed');
+            this.props.displayModalLogin( ()=>{this.fetchPhoto();});
             this.setState({loadingPhoto: false
                          , error: {message: 'JWT verif. failed (likely expired?)'
                                  , details: err.response.data.msg}});
@@ -307,4 +328,4 @@ function urlForNumOfPhotos(targetId) {
 }
 
 
-export default connect(mapStateToProps)(TargetPhotoPane);
+export default connect(mapStateToProps, mapDispatchToProps)(TargetPhotoPane);
