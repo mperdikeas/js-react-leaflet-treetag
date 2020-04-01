@@ -105,7 +105,8 @@ public class LoginResource {
     @Path("/login")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public final Response login(@Context final HttpServletRequest httpServletRequest
+    public final Response login(@Context javax.ws.rs.core.Application _app
+                                , @Context final HttpServletRequest httpServletRequest
                                 , String loginCredentialsJSON) {
         logger.info(String.format("/login POST JSON payload is %s"
                                   , loginCredentialsJSON));
@@ -123,7 +124,9 @@ public class LoginResource {
                                       , password
                                       , httpServletRequest.getRemoteAddr()));
             LoginResult loginResult;
-            if (installation.equals("a1") && username.equals("admin") && password.equals("pass"))
+            final JaxRsApplication app = (JaxRsApplication) _app;
+            //            if (installation.equals("a1") && username.equals("admin") && password.equals("pass"))
+            if (app.checkCredentials(installation, username, password))
                 loginResult = new LoginResult(null, accessToken(installation, username));
             else
                 loginResult = new LoginResult("login-fail", null);
@@ -156,7 +159,7 @@ public class LoginResource {
     }
 
     private static Date createExpirationDate() {
-        final int VALIDITY_FOR_JWT_AUTHORIZATION_SECS = 300;
+        final int VALIDITY_FOR_JWT_AUTHORIZATION_SECS = 7;
         final LocalDateTime x = LocalDateTime.now().plusSeconds(VALIDITY_FOR_JWT_AUTHORIZATION_SECS);
         final Date rv = Date.from( x.atZone( ZoneId.systemDefault()).toInstant() );
         return rv;
