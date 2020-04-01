@@ -78,8 +78,6 @@ class ModalLogin extends React.Component {
         console.log('login API call success');
         if (res.data.t.loginFailureReason===null) {
           storeAccessToken(res.data.t.accessToken);
-          console.log(`modal-login: calling clearModal`);
-          console.log(this.props.followUpFunction);
           this.props.clearModal(this.props.followUpFunction);
           this.props.loginContext.updateLogin(username);
         } else {
