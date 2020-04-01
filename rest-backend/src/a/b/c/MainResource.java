@@ -189,6 +189,7 @@ public class MainResource {
             logger.info(String.format("getFeaturePhotosNum(%d) ~*~ remote address: [%s]"
                                       , featureId
                                       , httpServletRequest.getRemoteAddr()));
+            TimeUnit.MILLISECONDS.sleep(200);
             return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(featureId % 5))).build();
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling getFeaturePhotosNum(%d) from remote address [%s]"

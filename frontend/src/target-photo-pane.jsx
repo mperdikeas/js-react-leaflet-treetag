@@ -34,9 +34,7 @@ class TargetPhotoPane extends React.Component {
 
   constructor(props) {
     super(props);
-    this.nextImage        = this.nextImage          .bind(this);
-    this.prevImage        = this.prevImage          .bind(this);
-    this.state            = this.getInitialState();
+    this.state = this.getInitialState();
   }
 
   getInitialState = () => {
@@ -54,13 +52,13 @@ class TargetPhotoPane extends React.Component {
      */
   }
 
-  prevImage() {
+  prevImage = () => {
     this.setState({loadingPhoto: true
                  , currentPhotoIndx: this.state.currentPhotoIndx-1
                  , photoBase64: null});
   }
   
-  nextImage() {
+  nextImage = () => {
     this.setState({loadingPhoto: true
                  , currentPhotoIndx: this.state.currentPhotoIndx+1
                  , photoBase64: null});
@@ -91,14 +89,20 @@ class TargetPhotoPane extends React.Component {
   }
 
   render() {
-    if (this.state.loadingNumOfPhotos) { // || ((this.state.numOfPhotos>0) && (this.state.photoBase64===null))) {
-        return (
-          <img src={loading} className='img-fluid' alt='Retrieving # of photos...'/>
+    if (this.state.loadingNumOfPhotos) {
+      return (
+        <>
+        <img src={loading} className='img-fluid' alt='Retrieving # of photos...'/>
+        <div>Retrieving number of photos</div>
+        </>
         );
 
     } else if (this.state.loadingPhoto) {
-        return (
-          <img src={loading} className='img-fluid' alt='Retrieving photo ...'/>
+      return (
+        <>
+        <img src={loading} className='img-fluid' alt='Retrieving photo ...'/>
+        <div>Retrieving photo</div>
+        </>
         );
     } else {
       console.log('not loading state');
@@ -201,7 +205,7 @@ class TargetPhotoPane extends React.Component {
         const numOfPhotos = t;
         const currentPhotoIndx = numOfPhotos>0?0:null;
         this.setState({ loadingNumOfPhotos: false
-                      , loadingPhoto: true
+                      , loadingPhoto: numOfPhotos>0
                       , numOfPhotos: numOfPhotos
                       , currentPhotoIndx: currentPhotoIndx
                       , photoBase64: null
