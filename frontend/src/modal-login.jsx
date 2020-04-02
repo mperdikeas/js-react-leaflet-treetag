@@ -13,10 +13,15 @@ import wrapContexts from './context/contexts-wrapper.jsx';
 
 import {axiosPlain} from './axios-setup.js';
 
+
 // redux
 import {  connect   } from 'react-redux';
 import { clearModal } from './actions/index.js';
 
+
+
+
+import LoginForm from './modal-login-form.jsx';
 
 const mapStateToProps = (state) => {
   return {
@@ -35,9 +40,6 @@ class ModalLogin extends React.Component {
   constructor(props) {
     super(props);
     this.ref = React.createRef();
-    this.inputInstallationRef = React.createRef();
-    this.inputUsernameRef     = React.createRef();
-    this.inputPasswordRef     = React.createRef();
 
     this.state = {
       logErrMsg: null
@@ -51,17 +53,8 @@ class ModalLogin extends React.Component {
   }
 
 
-  login = (ev) => {
-    console.log('modal-login::login');
-    ev.preventDefault();
-    const installation = this.inputInstallationRef.current.value;
-    const username     = this.inputUsernameRef.current.value;
-    const password     = this.inputPasswordRef.current.value;
-    this.doLogin(installation, username, password);
-  }
-
-    
   doLogin = (installation, username, password) => {
+    console.log(`modal-login::doLogin(${installation}, ${username}, ${password}`);
     const url = '/login';
     axiosPlain.post(url, {
       installation: installation,
@@ -111,10 +104,10 @@ class ModalLogin extends React.Component {
                  , passInput: <><input ref={this.inputPasswordRef} type='text' id='login-pass-input' /><br/></>};
       
 
-      })();
-    return (
-      <>
-      <dialog style={this.props.style} id='dialog' ref={this.ref}>
+    })();
+
+    const oldForm = (
+
         <form method="dialog" onSubmit={this.login}>
           {logErrMsg}
           <p>Please provide installation name,  username and password</p>
@@ -126,6 +119,13 @@ class ModalLogin extends React.Component {
           {passInput}
           <input type="submit" value="OK"/>
         </form>
+    );
+
+    const newForm = (<LoginForm doLogin={this.doLogin}/>);
+    return (
+      <>
+      <dialog style={this.props.style} id='dialog' ref={this.ref}>
+        {newForm}
       </dialog>
       {this.props.children}
       </>
