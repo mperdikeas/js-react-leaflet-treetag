@@ -1,5 +1,3 @@
-const     _ = require('lodash');
-const     $ = require('jquery');
 const React = require('react');
 import proj4 from 'proj4';
 

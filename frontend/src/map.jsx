@@ -1,4 +1,3 @@
-require('./css/style.css');
 require('./ots/leaflet-heat.js');
 
 require('@ansur/leaflet-pulse-icon/dist/L.Icon.Pulse.css');
@@ -8,11 +7,6 @@ require('@ansur/leaflet-pulse-icon/dist/L.Icon.Pulse.js');
 
 window.shp=require('shpjs');
 require('./ots/leaflet.shpfile.js');
-
-
-const     _ = require('lodash');
-const     $ = require('jquery');
-window.$ = $; // make jquery available to other scripts (not really applicable in our case) and the console
 
 
 const React = require('react');

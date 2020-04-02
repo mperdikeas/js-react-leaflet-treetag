@@ -1,8 +1,3 @@
-const     _ = require('lodash');
-const     $ = require('jquery');
-window.$ = $; // make jquery available to other scripts (not really applicable in our case) and the console
-
-
 const React = require('react');
 var      cx = require('classnames');
 

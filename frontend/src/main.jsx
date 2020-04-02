@@ -1,4 +1,6 @@
 const     $ = require('jquery');
+window.$ = $; // make jquery available to other scripts (not really applicable in our case) and the console
+require('jquery-ui-bundle'); // https://stackoverflow.com/a/39230057/274677
 import React    from 'react';
 import ReactDOM from 'react-dom';
 import App      from './app.jsx';

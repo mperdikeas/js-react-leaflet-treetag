@@ -1,9 +1,3 @@
-const     _ = require('lodash');
-const     $ = require('jquery');
-require('jquery-ui-bundle'); // https://stackoverflow.com/a/39230057/274677
-window.$ = $; // make jquery available to other scripts (not really applicable in our case) and the console
-
-
 const React = require('react');
 var      cx = require('classnames');
 

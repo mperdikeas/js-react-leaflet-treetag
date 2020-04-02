@@ -1,8 +1,3 @@
-require('./css/style.css');
-const     _ = require('lodash');
-const     $ = require('jquery');
-
-
 const React = require('react');
 var      cx = require('classnames');
 
