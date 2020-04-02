@@ -19,7 +19,7 @@ class GeometryContextProvider extends React.Component {
           , border: 1
           , horizMargin: 5
           }
-        , headerBarHeight: 50
+        , headerBarHeight: 40
       }
     };
     this.handleResize = _.throttle(this.handleResize.bind(this), 250);    

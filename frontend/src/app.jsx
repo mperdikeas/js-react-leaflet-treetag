@@ -47,11 +47,13 @@ class App extends React.Component {
     const toolboxStyle = {flex: `0 0 ${this.props.geometryContext.toolboxTotalWidth()}px`
                         , backgroundColor: 'green'};
 
+    const headerBarHeight = this.props.geometryContext.geometry.headerBarHeight;
+    const containerStyleOverrides = {paddingRight: 0, paddingLeft: 0};
     const gui = (
-      <div className='container-fluid' key='main-gui-component'>
+      <div className='container-fluid' key='main-gui-component' style={containerStyleOverrides}>
 
         <div className='row no-gutters justify-content-start align-items-center'
-             style={{height: `${this.props.geometryContext.headerBarHeight}px`}}>
+             style={{height: `${headerBarHeight}px`}}>
           <div className='col-10'>
             <PointCoordinates/>
           </div>
