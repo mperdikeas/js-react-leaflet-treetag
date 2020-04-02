@@ -1,5 +1,6 @@
 const     _ = require('lodash');
 const     $ = require('jquery');
+require('jquery-ui-bundle'); // https://stackoverflow.com/a/39230057/274677
 window.$ = $; // make jquery available to other scripts (not really applicable in our case) and the console
 
 
@@ -52,6 +53,7 @@ class ModalLogin extends React.Component {
   componentDidMount() {
     const domElem = this.ref.current;
     domElem.showModal();
+    $('#dialog').draggable();
   }
 
 
@@ -118,7 +120,7 @@ class ModalLogin extends React.Component {
       })();
     return (
       <>
-      <dialog style={this.props.style} id="dialog" ref={this.ref}>
+      <dialog style={this.props.style} id='dialog' ref={this.ref}>
         <form method="dialog" onSubmit={this.login}>
           {logErrMsg}
           <p>Please provide installation name,  username and password</p>
