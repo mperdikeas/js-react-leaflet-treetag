@@ -51,7 +51,8 @@ class TargetPhotoPane extends React.Component {
 
   getInitialState = () => {
     return {
-      loadingNumOfPhotos: true
+      userIsLoggingIn: false
+      , loadingNumOfPhotos: true
       , loadingPhoto    : false
       , numOfPhotos     : null
       , currentPhotoIndx: null
@@ -84,12 +85,12 @@ class TargetPhotoPane extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     console.log('componentDidUpdate');
     if (false) {
-    if (prevProps.targetId !== this.props.targetId) {
-      this.setState(this.getInitialState());
-      this.fetchNumOfPhotos();
-    } else if ((prevState.currentPhotoIndx !== this.state.currentPhotoIndx)
-               && (this.state.currentPhotoIndx!=null))
-      this.fetchPhoto();
+      if (prevProps.targetId !== this.props.targetId) {
+        this.setState(this.getInitialState());
+        this.fetchNumOfPhotos();
+      } else if ((prevState.currentPhotoIndx !== this.state.currentPhotoIndx)
+                 && (this.state.currentPhotoIndx!=null))
+        this.fetchPhoto();
     }
     if (prevProps.targetId !== this.props.targetId) {
       this.setState(this.getInitialState());
@@ -101,21 +102,28 @@ class TargetPhotoPane extends React.Component {
   }
 
   render() {
-    if (this.state.loadingNumOfPhotos) {
+    if (this.state.userIsLoggingIn) {
       return (
         <>
-        <img src={loading} className='img-fluid' alt='Retrieving # of photos...'/>
-        <div>Retrieving number of photos</div>
+        <img src={loading} className='img-fluid' alt='User re-signing in &hellip;'/>
+        <div>User re-signing in &hellip;</div>
         </>
-        );
+      );
+    } else if (this.state.loadingNumOfPhotos) {
+      return (
+        <>
+        <img src={loading} className='img-fluid' alt='Retrieving # of photos &hellip;'/>
+        <div>Retrieving number of photos &hellip;</div>
+        </>
+      );
 
     } else if (this.state.loadingPhoto) {
       return (
         <>
-        <img src={loading} className='img-fluid' alt='Retrieving photo ...'/>
-        <div>Retrieving photo</div>
+        <img src={loading} className='img-fluid' alt='Retrieving photo &hellip;'/>
+        <div>Retrieving photo &hellip;</div>
         </>
-        );
+      );
     } else {
       console.log('not loading state');
       const {numOfPhotos, currentPhotoIndx, photoBase64, photoBase64Instant} = this.state;
@@ -199,7 +207,6 @@ class TargetPhotoPane extends React.Component {
   }
 
   fetchNumOfPhotos = () => {
-    console.log('fetchNumOfPhotos');
     const url = urlForNumOfPhotos(this.props.targetId);
     console.log(`fetchNumOfPhotos, axios URL is: ${url}`);
     axiosAuth.get(url
@@ -218,14 +225,16 @@ class TargetPhotoPane extends React.Component {
       if (err===null) {
         const numOfPhotos = t;
         const currentPhotoIndx = numOfPhotos>0?0:null;
-        this.setState({ loadingNumOfPhotos: false
-                      , loadingPhoto: numOfPhotos>0
-                      , numOfPhotos: numOfPhotos
-                      , currentPhotoIndx: currentPhotoIndx
-                      , photoBase64: null
-                      , error: null});
+        this.setState({userIsLoggingIn: false
+                     , loadingNumOfPhotos: false
+                     , loadingPhoto: numOfPhotos>0
+                     , numOfPhotos: numOfPhotos
+                     , currentPhotoIndx: currentPhotoIndx
+                     , photoBase64: null
+                     , error: null});
       } else {
-        this.setState({ loadingNumOfPhotos: false
+        this.setState({ userIsLoggingIn: false
+                      , loadingNumOfPhotos: false
                       , numOfPhotos: null
                       , error: {message: `server-side error: ${err.message}`
                               , details: err.strServerTrace}});
@@ -234,73 +243,75 @@ class TargetPhotoPane extends React.Component {
       console.log(JSON.stringify(err));
       console.log(err);
       if (err.response && err.response.data) {
-        /* SSE-1585746388
-         * Here the shape of the error response is {code, msg}
-         * final class ValidJWSAccessTokenFilter#AbortResponse {
-         *    public final String code;
-         *    public final String msg;
-         *  ...
-         */
-        switch(err.response.data.code) {
+        // SSE-1585746388: the shape of err.response.data is (code, msg, details)
+        // Java class ValidJWSAccessTokenFilter#AbortResponse
+        const {code, msg, details} = err.response.data;
+        switch(code) {
           case 'JWT-verif-failed':
             this.props.displayModalLogin( ()=>{this.fetchNumOfPhotos();} );
-            this.setState({loadingNumOfPhotos: false
-                         , error: {message: 'JWT verif. failed (likely expired?)'
-                                 , details: err.response.data.msg}});
+            this.setState({userIsLoggingIn: true
+                         , loadingNumOfPhotos: false
+                         , error: {message: `JWT verif. failed. Server message is: [${msg}]`
+                                 , details: details}});
             break;
           default:
             this.setState({loadingNumOfPhotos: false
-                         , error: {message: 'unexpected error code'
-                                 , details: `unexpected error code: ${err.response.data.code}, msg=${err.response.data.msg}`}});
+                         , error: {message: `unexpected error code: ${code}`
+                                 , details: msg}});
         }
       } else {
         this.setState({loadingNumOfPhotos: false
                      , error: {message: 'unexpected error - likely a bug'
                              , details: JSON.stringify(err)}});
       }
-    });
+    }) // catch
   } // fetchNumOfPhotos
-  
-  fetchPhoto = () => {
-    console.log('fetchPhoto');
-    const url = urlForPhoto(this.props.targetId, this.state.currentPhotoIndx);
-    axiosAuth.get(url
-      //            , {headers: createAxiosAuthHeader()}
-    ).then(res => {
-      console.log(res);
-      const {t: {photoBase64, instant}, err} = res.data; // corr-id: SSE-1585746250
-      if (err===null) {
-        this.setState({ loadingPhoto: false, photoBase64: photoBase64, photoBase64Instant: instant, error: null});
-      } else {
-        this.setState({ loadingPhoto: false
-                      , photoBase64: null
-                      , error: {message: err.message
-                              , details: err.strServerTrace}});
+
+fetchPhoto = () => {
+  const url = urlForPhoto(this.props.targetId, this.state.currentPhotoIndx);
+  console.log(`fetchPhoto axios url is [${url}]`);
+  axiosAuth.get(url).then(res => {
+    console.log(res);
+    const {t: {photoBase64, instant}, err} = res.data; // corr-id: SSE-1585746250
+    if (err===null) {
+      this.setState({userIsLoggingIn: false
+                   , loadingPhoto: false
+                   , photoBase64: photoBase64
+                   , photoBase64Instant: instant
+                   , error: null});
+    } else {
+      this.setState({ userIsLoggingIn: false
+                    , loadingPhoto: false
+                    , photoBase64: null
+                    , error: {message: err.message
+                            , details: err.strServerTrace}});
+    }
+  }).catch( err => {
+    console.log(JSON.stringify(err));
+    console.log(err);
+    if (err.response && err.response.data) {
+      // corr-id: SSE-1585746388
+      const {code, msg, details} = err.response.data;
+      switch(code) {
+        case 'JWT-verif-failed':
+          this.props.displayModalLogin( ()=>{this.fetchPhoto();});
+          this.setState({userIsLoggingIn: true
+                       , loadingPhoto: false
+                       , error: {message: `JWT verif. failed. Server message is: [${msg}]`
+                               , details: details}});
+          break;
+        default:
+          this.setState({loadingPhoto: false
+                       , error: {message: `unexpected error code: ${code}`
+                               , details: msg}});
       }
-    }).catch( err => {
-      console.log(err);
-      if (err.response && err.response.data) {
-        // corr-id: SSE-1585746388
-        switch(err.response.data.code) {
-          case 'JWT-verif-failed':
-            console.log('case JWT-verif-failed');
-            this.props.displayModalLogin( ()=>{this.fetchPhoto();});
-            this.setState({loadingPhoto: false
-                         , error: {message: 'JWT verif. failed (likely expired?)'
-                                 , details: err.response.data.msg}});
-            break;
-          default:
-            this.setState({loadingPhoto: false
-                         , error: {message: 'unexpected error code'
-                                 , details: `unexpected error code: ${err.response.data.code}, msg=${err.response.data.msg}`}});
-        }
-      } else {
-        this.setState({loadingPhoto: false
-                     , error: {message: 'unexpected error - likely a bug'
-                             , details: JSON.stringify(err)}});
-      }
-    });
-  }
+    } else {
+      this.setState({loadingPhoto: false
+                   , error: {message: 'unexpected error - likely a bug'
+                           , details: JSON.stringify(err)}});
+    }
+  });
+}
 } // class
 
 function uuidToNumber(uuid) {

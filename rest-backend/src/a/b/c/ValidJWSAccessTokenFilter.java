@@ -179,22 +179,23 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
                 Installation.setInContainerRequestContext(requestContext, installation);
 
             } catch (final Throwable t) {
-                final String msg = String.format("JWT Bearer %s access token [%s] was not verified. Error msg is [%s]. Stack trace is: %s"
+                final String msg = String.format("JWT Bearer %s access token [%s] was not verified. Error msg is [%s]"
                                                  , HttpHeaders.AUTHORIZATION
                                                  , accessToken
-                                                 , t.getMessage()
-                                                 , Throwables.getStackTraceAsString(t));
+                                                 , t.getMessage());
                 abortUnauthorizedRequest(requestContext
                                          , Response.Status.FORBIDDEN
                                          , new AbortResponse(BearerAuthorizationFailureMode.JWT_VERIFICATION_FAILED.code
-                                                             , msg));
+                                                             , msg
+                                                             , Throwables.getStackTraceAsString(t)));
                 return;
             }
         } catch (BearerAuthorizationHeaderException exc) {
             abortUnauthorizedRequest(requestContext
                                      , Response.Status.FORBIDDEN
                                      , new AbortResponse(exc.mode.code
-                                                         , exc.msg));
+                                                         , exc.msg
+                                                         , (String) null));
             return;
         }
     }
@@ -231,7 +232,8 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
             abortUnauthorizedRequest(requestContext
                                      , Response.Status.FORBIDDEN
                                      , new AbortResponse("no-cookie-header"
-                                                         , msg));
+                                                         , msg
+                                                         , (String) null));
             return;
         } else if (cookieHeaders.size()==0) {
             final String msg = String.format("No %s headers were present (0 element list case)"
@@ -239,7 +241,8 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
             abortUnauthorizedRequest(requestContext
                                      , Response.Status.FORBIDDEN
                                      , new AbortResponse("no-cookie-header"
-                                                         , msg));
+                                                         , msg
+                                                         , (String) null));
             return;
         } else if (cookieHeaders.size()>1) {
             final String msg = String.format("Expected 1 %s headers yet encountered: %d. Thou art"
@@ -251,7 +254,8 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
             abortUnauthorizedRequest(requestContext
                                      , Response.Status.BAD_REQUEST
                                      , new AbortResponse("more-than-1-cookie-header"
-                                                         , msg));
+                                                         , msg
+                                                         , (String) null));
         }
         Assert.assertEquals(1, cookieHeaders.size());
         final String cookiesStr = cookieHeaders.get(0);
@@ -272,7 +276,9 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
                                                  , cookieTr);
                 abortUnauthorizedRequest(requestContext
                                          , Response.Status.BAD_REQUEST
-                                         , new AbortResponse("unrec-cookie-format", msg));
+                                         , new AbortResponse("unrec-cookie-format"
+                                                             , msg
+                                                             , (String) null));
                 return;
             } else {
                 final String name  = nameValue[0].trim();
@@ -288,7 +294,9 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
                                                          , cookiesStr);
                         abortUnauthorizedRequest(requestContext
                                                  , Response.Status.BAD_REQUEST
-                                                 , new AbortResponse("more-than-1-cookies", msg));
+                                                 , new AbortResponse("more-than-1-cookies"
+                                                                     , msg
+                                                                     , (String) null));
                         return;
                     } else {
                         logger.debug(String.format("[%s] %s found with value [%s]"
@@ -308,7 +316,8 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
                             abortUnauthorizedRequest(requestContext
                                                      , Response.Status.FORBIDDEN
                                                      , new AbortResponse("JWT-verif-failed"
-                                                                         , msg));
+                                                                         , msg
+                                                                         , (String) null));
                             return;
                         }
                     }
@@ -322,7 +331,8 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
             abortUnauthorizedRequest(requestContext
                                      , Response.Status.FORBIDDEN
                                      , new AbortResponse("no-accesstoken-cookie-found"
-                                                         , msg));
+                                                         , msg
+                                                         , (String) null));
             return;                    
         }
     }
@@ -343,8 +353,12 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
 final class AbortResponse {
     public final String code;
     public final String msg;
-    public AbortResponse(final String code, final String msg) {
+    public final String details;
+    public AbortResponse(final String code
+                         , final String msg
+                         , final String details) {
         this.code = code;
         this.msg = msg;
+        this.details = details;
     }
 }
