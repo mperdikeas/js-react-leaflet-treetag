@@ -37,9 +37,7 @@ const mapStateToProps = (modals) => {
 
 
 const ModalRoot = ({geometryContext, modals, children}) => {
-  console.log(modals);
   if (modals.length === null) {
-    console.log('no modals left to display');
     return (<>
       {children}
       </>
@@ -54,7 +52,6 @@ const ModalRoot = ({geometryContext, modals, children}) => {
       return <SpecificModal style={{top: Y+idx*step, left: X+idx*step}} key={idx} {...modalProps}/>
     } );
 
-    console.log(`rendering ${modals.length} modals`);
     return (
       <>
       {specificModals}

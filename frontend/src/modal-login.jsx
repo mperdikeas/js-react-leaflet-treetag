@@ -49,8 +49,24 @@ class ModalLogin extends React.Component {
   componentDidMount() {
     const domElem = this.ref.current;
     domElem.showModal();
+    const body = document.getElementsByTagName('body')[0];
+    this.escapeKeySuppressor = (e)=>{
+      console.log(`key pressed: ${e.code}`);
+      if (e.code === 'Escape') {
+        console.log('preventing default and stopping propagation');
+        e.preventDefault();
+        e.stopPropagation();
+        }
+    };
+    document.addEventListener('keydown', this.escapeKeySuppressor);
     $('#dialog').draggable();
   }
+
+  componentWillUnmount() {
+    console.log('component will unmount');
+    const body = document.getElementsByTagName('body')[0];
+    document.removeEventListener('keydown', this.escapeKeySuppressor);
+    }
 
 
   doLogin = (installation, username, password) => {
@@ -122,6 +138,7 @@ class ModalLogin extends React.Component {
     );
 
     const newForm = (<LoginForm doLogin={this.doLogin}/>);
+
     return (
       <>
       <dialog style={this.props.style} id='dialog' ref={this.ref}>
@@ -130,7 +147,6 @@ class ModalLogin extends React.Component {
       {this.props.children}
       </>
     )
-
   }
 }
 

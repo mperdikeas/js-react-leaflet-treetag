@@ -25,8 +25,6 @@ function rootReducer(state = {}, action) {
         maximizedInfoPanel   : maximizedInfoPanelReducer   (state.maximizedInfoPanel, action),
         paneToOpenInfoPanel  : paneToOpenInfoPanelReducer  (state.paneToOpenInfoPanel, action)
     };
-    console.log('root state follows');
-    console.log(rv);
     return rv;
 };
 
