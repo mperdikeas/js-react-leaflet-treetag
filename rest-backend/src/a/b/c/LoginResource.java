@@ -133,7 +133,8 @@ public class LoginResource {
             
             return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(loginResult))).build();
         } catch (Throwable t) {
-            logger.error(String.format("Problem when calling login(%s, %s) from remote address [%s]"
+            logger.error(String.format("Problem when calling login(%s, %s, %s) from remote address [%s]"
+                                       , installation
                                        , username
                                        , password
                                        , httpServletRequest.getRemoteAddr())
@@ -141,6 +142,47 @@ public class LoginResource {
             return ResourceUtil.softFailureResponse(t);
         }
     }
+
+    @Path("/login/resetPassword/emailConfirmationCode")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public final Response emailConfirmationCode(@Context javax.ws.rs.core.Application _app
+                                , @Context final HttpServletRequest httpServletRequest
+                                , String json) {
+        logger.info(String.format("//login/resetPassword/emailConfirmationCode POST JSON payload is %s"
+                                  , json));
+        final PasswordResetEmailConfirmationCodeInfo info = GsonHelper.fromJson(json
+                                                                      , PasswordResetEmailConfirmationCodeInfo.class);
+
+        final String installation     = info.installation;
+        final String username         = info.username;
+
+
+        try {
+            logger.info(String.format("emailConfirmationCode(%s, %s) ~*~ remote address: [%s]"
+                                      , installation
+                                      , username
+                                      , httpServletRequest.getRemoteAddr()));
+            PasswordResetEmailConfirmationCodeResult result;
+            final JaxRsApplication app = (JaxRsApplication) _app;
+            final String email = app.userEmail(installation, username);
+            if (email == null)
+                result = new PasswordResetEmailConfirmationCodeResult(false, (String) null, (Integer) null);
+            else {
+                final int validSecs = app.emailConfirmationCode(email);
+                result = new PasswordResetEmailConfirmationCodeResult(true, email, validSecs);
+            }
+            
+            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(result))).build();
+        } catch (Throwable t) {
+            logger.error(String.format("Problem when calling emailConfirmationCode(%s, %s) from remote address [%s]"
+                                       , installation
+                                       , username
+                                       , httpServletRequest.getRemoteAddr())
+                         , t);
+            return ResourceUtil.softFailureResponse(t);
+        }
+    }    
 
     private static final String accessToken(final String installation
                                             , final String username) {
@@ -183,4 +225,25 @@ final class LoginCredentials {
     public String installation;
     public String username;
     public String password;
+}
+
+final class PasswordResetEmailConfirmationCodeInfo {
+    public String installation;
+    public String username;
+}
+
+final class PasswordResetEmailConfirmationCodeResult {
+    public final boolean found;
+    public final String value;
+    public final Integer validSecs;
+
+    public PasswordResetEmailConfirmationCodeResult(final boolean found
+                                                    , final String value
+                                                    , final Integer validSecs) {
+        Assert.assertTrue( String.format("impossible combination (found, value, validSecs) = (%b, %s, %d)", found, value, validSecs)
+                           , (found && value!=null && validSecs != null) || (!found && value==null && validSecs == null));
+        this.found = found;
+        this.value = value;
+        this.validSecs = validSecs;
+    }
 }

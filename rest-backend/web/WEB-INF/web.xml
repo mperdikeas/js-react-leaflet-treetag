@@ -33,5 +33,11 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+
+    <context-param>
+        <param-name>mailSession.jndiName</param-name>
+        <param-value>java:jboss/mail/ChaserMail</param-value>
+    </context-param>
+    
     
 </web-app>
