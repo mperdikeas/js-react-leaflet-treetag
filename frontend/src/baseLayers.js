@@ -59,6 +59,6 @@ const BaseLayersForLayerControl = (()=>{
 })();
 
 
-module.exports = {BaseLayers, BaseLayersForLayerControl};
+module.exports = {BaseLayersForLayerControl};
 
 

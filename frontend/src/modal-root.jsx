@@ -11,15 +11,18 @@ import './css/modal-dialog.css'; // TODO: use React emotion for element-scoped C
 
 import wrapContexts from './context/contexts-wrapper.jsx';
 
+import ModalAppIsLoading             from './modal-app-is-loading.jsx';
 import ModalLogin                    from './modal-login.jsx';
 import ModalSaveWorkspaceToDisk      from './modal-save-workspace-to-disk.jsx';
 import ModalInsertGeoJSONToWorkspace from './modal-insert-geoJSON-workspace.jsx';
 
-import {MODAL_LOGIN
+import {MODAL_APP_IS_LOADING
+      , MODAL_LOGIN
       , MDL_SAVE_WS_2_DSK
       , MDL_INS_GJSON_2_WS} from './constants/modal-types.js';
 
 const MODAL_COMPONENTS = {
+  MODAL_APP_IS_LOADING: ModalAppIsLoading,
   MODAL_LOGIN: ModalLogin,
   MDL_SAVE_WS_2_DSK: ModalSaveWorkspaceToDisk,
   MDL_INS_GJSON_2_WS: ModalInsertGeoJSONToWorkspace

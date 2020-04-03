@@ -1,5 +1,6 @@
 const assert = require('chai').assert;
-import {UPDATE_MOUSE_COORDS
+import {APP_IS_DONE_LOADING
+        , UPDATE_MOUSE_COORDS
         , SET_FLAG
         , CLEAR_FLAG
         , DISPLAY_MODAL
@@ -11,6 +12,10 @@ import {UPDATE_MOUSE_COORDS
 import {isValidModalType} from '../constants/modal-types.js';
 
 import {CT_UNIT} from '../constants.js';
+
+export function appIsDoneLoading() {
+    return {type: APP_IS_DONE_LOADING, payload: null};
+}
 
 export function updateMouseCoords(latlng) {
     return { type: UPDATE_MOUSE_COORDS, payload: {latlng} };

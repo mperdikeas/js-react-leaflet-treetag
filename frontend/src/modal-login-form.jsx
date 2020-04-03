@@ -1,6 +1,6 @@
 const React = require('react');
 
-import {Form, Col, Row, Button} from 'react-bootstrap';
+import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
 
 
 
@@ -87,8 +87,15 @@ export default class LoginForm extends React.Component {
           <Form.Check label="Remember me on this machine"/>
         </Form.Group>
 
-        <Button type="submit">Submit form</Button>
-
+        <Button type="submit">Login</Button>
+      <Nav className="justify-content-center">
+        <Nav.Item>
+          <Nav.Link eventKey="link-1">forgot username</Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link eventKey="link-2">forgot password</Nav.Link>
+        </Nav.Item>
+      </Nav>
       </Form>
     );
   } // render

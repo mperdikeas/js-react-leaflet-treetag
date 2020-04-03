@@ -31,7 +31,7 @@ require('../node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css');
 require('../node_modules/leaflet.markercluster/dist/leaflet.markercluster.js');
 
 import {exactlyOne, allStrictEqual} from './util.js';
-import {BaseLayers, BaseLayersForLayerControl} from './baseLayers.js';
+import {BaseLayersForLayerControl} from './baseLayers.js';
 import {DefaultIcon, TreeIcon}          from './icons.js';
 import rainbow from './rainbow.js';
 
@@ -59,7 +59,8 @@ import {CLEAR_DRAW_WORKSPACE
 import {MODAL_ADD_GEOMETRY} from './constants/modal-types.js';
 
 import { connect }          from 'react-redux';
-import {updateMouseCoords
+import {appIsDoneLoading
+      , updateMouseCoords
       , clearFlag
       , displayModal
       , toggleTarget}  from './actions/index.js';
@@ -78,7 +79,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    updateCoordinates                   : (latlng)   => dispatch(updateMouseCoords(latlng))
+    appIsDoneLoading: ()=> dispatch(appIsDoneLoading())
+    , updateCoordinates                   : (latlng)   => dispatch(updateMouseCoords(latlng))
     , clearDrawWorkspaceFlag            : ()         => dispatch(clearFlag(CLEAR_DRAW_WORKSPACE))
     , clearInsertGeoJSONIntoWorkspaceFlag: ()        => dispatch(clearFlag(INSERT_GEOJSON_INTO_WORKSPACE))
     , displayAddPolygonDialog           : (polygonId, polygon)  => dispatch(displayModal(MODAL_ADD_GEOMETRY, {polygonId, polygon}))
@@ -257,6 +259,7 @@ class Map extends React.Component {
 
     $('div.leaflet-control-container section.leaflet-control-layers-list div.leaflet-control-layers-overlays input.leaflet-control-layers-selector[type="checkbox"]').on('change', (e)=>{
     });
+    setTimeout(()=>{this.props.appIsDoneLoading()}, 1000);
   }
 
 
