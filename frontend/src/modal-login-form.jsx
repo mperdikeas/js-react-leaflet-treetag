@@ -1,10 +1,16 @@
 const React = require('react');
 
+const assert = require('chai').assert;
+
 import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
 
 
+const LinkEventKeys = {FORGOT_USERNAME: 'forgot-username'
+  , FORGOT_PASSWORD: 'forgot-password'};
 
 export default class LoginForm extends React.Component {
+
+
 
   constructor(props) {
     super(props);
@@ -31,6 +37,11 @@ export default class LoginForm extends React.Component {
     domElem.addEventListener('keyup', this.escapeKeySuppressor);
   }
 
+
+  sendUsernameReminder = ()=> {
+
+
+    }
   
 
   handleSubmit = (event) => {
@@ -42,6 +53,20 @@ export default class LoginForm extends React.Component {
     const password     = this.inputPasswordRef.current.value;
     this.props.doLogin(installation, username, password);
   };
+
+  onSelect = (eventKey)=>{
+    console.log(`${eventKey} selected`);
+    switch (eventKey) {
+      case LinkEventKeys.FORGOT_USERNAME:
+        this.sendUsernameReminder();
+        break;
+      case LinkEventKeys.FORGOT_PASSWORD:
+        break;
+      default:
+        
+        assert.fail(`unrecognized eventKey: ${eventKey}`);
+    }
+  }
 
   render = ()=> {
     return (
@@ -88,12 +113,12 @@ export default class LoginForm extends React.Component {
         </Form.Group>
 
         <Button type="submit">Login</Button>
-      <Nav className="justify-content-center">
+      <Nav className="justify-content-center" onSelect={this.onSelect}>
         <Nav.Item>
-          <Nav.Link eventKey="link-1">forgot username</Nav.Link>
+          <Nav.Link eventKey="forgot-username">forgot username</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey="link-2">forgot password</Nav.Link>
+          <Nav.Link eventKey="forgot-password">forgot password</Nav.Link>
         </Nav.Item>
       </Nav>
       </Form>

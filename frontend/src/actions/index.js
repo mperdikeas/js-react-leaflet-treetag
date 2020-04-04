@@ -7,7 +7,8 @@ import {APP_IS_DONE_LOADING
         , CLEAR_MODAL
         , TOGGLE_MAXIMIZE_INFO_PANEL
         , TOGGLE_TARGET
-        , SET_PANE_TO_OPEN_INFO_PANEL} from '../constants/action-types.js';
+        , SET_PANE_TO_OPEN_INFO_PANEL
+        , ADD_TOAST} from '../constants/action-types.js';
 
 import {isValidModalType} from '../constants/modal-types.js';
 
@@ -54,4 +55,8 @@ export function toggleTarget(targetId) {
 
 export function setPaneToOpenInfoPanel(pane) {
     return {type: SET_PANE_TO_OPEN_INFO_PANEL, payload: {pane}};
+}
+
+export function addToast(id, msg) {
+    return {type: ADD_TOAST, payload: {id, msg}};
 }

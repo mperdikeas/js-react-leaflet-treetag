@@ -8,6 +8,8 @@ import {CHANGE_TILE_PROVIDER
         , UPDATE_TARGET} from '../constants/action-types.js';
 
 const assert = require('chai').assert;
+
+import toastReducer                   from './toastReducer.js';
 import mouseCoordsReducer             from './mouseCoordsReducer.js';
 import toggleTargetReducer            from './toggleTargetReducer.js';
 import flagsReducer                   from './flagsReducer.js';
@@ -18,6 +20,7 @@ import paneToOpenInfoPanelReducer     from './paneToOpenInfoPanelReducer.js';
 
 function rootReducer(state = {}, action) {
     const rv = {
+        toasts               : toastReducer                (state.toasts, action),
         latlng               : mouseCoordsReducer          (state.latlng, action),
         targetId             : toggleTargetReducer         (state.targetId, action),
         flags                : flagsReducer                (state.flags, action),

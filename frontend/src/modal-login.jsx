@@ -7,8 +7,6 @@ const assert = require('chai').assert;
 
 import {storeAccessToken} from './access-token-util.js';
 
-import './css/modal-dialog.css'; // TODO: use React emotion for element-scoped CSS
-
 import wrapContexts from './context/contexts-wrapper.jsx';
 
 import {axiosPlain} from './axios-setup.js';
