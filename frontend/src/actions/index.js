@@ -8,7 +8,8 @@ import {APP_IS_DONE_LOADING
         , TOGGLE_MAXIMIZE_INFO_PANEL
         , TOGGLE_TARGET
         , SET_PANE_TO_OPEN_INFO_PANEL
-        , ADD_TOAST} from '../constants/action-types.js';
+        , ADD_TOAST
+        , DISMISS_TOAST} from '../constants/action-types.js';
 
 import {isValidModalType} from '../constants/modal-types.js';
 
@@ -59,4 +60,8 @@ export function setPaneToOpenInfoPanel(pane) {
 
 export function addToast(id, msg) {
     return {type: ADD_TOAST, payload: {id, msg}};
+}
+
+export function dismissToast(id, msg) {
+    return {type: DISMISS_TOAST, payload: {id}};
 }

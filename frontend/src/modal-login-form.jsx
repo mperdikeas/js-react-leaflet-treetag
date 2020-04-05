@@ -80,6 +80,7 @@ export default class LoginForm extends React.Component {
             required
             type="text"
             placeholder="installation"
+            value="a1"
             />
           </Col>
         </Form.Group>
@@ -92,6 +93,7 @@ export default class LoginForm extends React.Component {
                         required
                         type="text"
                         placeholder="username"
+                        value="admin"
             />
           </Col>
         </Form.Group>
@@ -105,6 +107,7 @@ export default class LoginForm extends React.Component {
                                     required
                                     type="password"
                                     placeholder="secret"
+                                    value="pass"
             />
           </Col>
         </Form.Group>
