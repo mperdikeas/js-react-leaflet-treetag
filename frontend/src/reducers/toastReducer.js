@@ -22,10 +22,11 @@ export default (toasts = [{id: 1, msg: 'foo'}, {id:2, msg: 'boo'}], action) => {
         return toasts2;
     }
     case DISMISS_TOAST: {
+        console.log(`type: ${action.type}, id: ${action.payload.id}`);
         const {id} = action.payload;
         const idx = findIndexOfToast(toasts, id);
         const toasts2 = [...toasts];
-        toasts2.splice(idx);
+        toasts2.splice(idx, 1);
         return toasts2;
     }
     default: {
