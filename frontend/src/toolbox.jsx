@@ -8,21 +8,24 @@ require('./toolbox.css');
 import saveWorkspaceToDisk      from './resources/save-workspace-to-disk-32.png';
 import uploadLayerToCloud       from './resources/upload-layer-to-cloud-32.png';
 import insertGeoJSONToWorkspace from './resources/insert-geoJSON-to-workspace-32.png';
+import selectTree               from './resources/select-tree-32.png';
 
 
 // redux
-import { connect }          from 'react-redux';
-import {toggleMode, displayModal}         from './actions/index.js';
+import { connect }                          from 'react-redux';
+import {toggleMode, displayModal, addToast} from './actions/index.js';
 
 import {MDL_SAVE_WS_2_DSK, MDL_INS_GJSON_2_WS} from './constants/modal-types.js';
 import {GSN, globalGet} from './globalStore.js';
 
+let i = 0;
 
 const mapDispatchToProps = (dispatch) => {
   return {
       saveWorkspaceToDisk: (geoJSON) => dispatch(displayModal(MDL_SAVE_WS_2_DSK, {geoJSON}))
     , insertGeoGSONToWorkspace: () => dispatch(displayModal(MDL_INS_GJSON_2_WS))
     , uploadLayerToCloud: () => dispatch(displayModal())
+    , selectTree: ()=>dispatch(addToast(i, 'this is some random toast'))
     };
   }
 
@@ -58,11 +61,16 @@ class Toolbox extends React.Component {
     this.props.insertGeoGSONToWorkspace();
   }
 
+  selectTree = (e) => {
+    e.preventDefault();
+    this.props.selectTree();
+  }
 
   render = () => {
     const tools = [{icon:saveWorkspaceToDisk , mode: null, f: this.saveWorkspaceToDisk}
                  , {icon:uploadLayerToCloud , mode: null, f: this.chooseUploadLayerToCloud}
-                 , {icon: insertGeoJSONToWorkspace, mode: null, f: this.insertGeoJSONToWorkspace}];
+                 , {icon: insertGeoJSONToWorkspace, mode: null, f: this.insertGeoJSONToWorkspace}
+                 , {icon:selectTree, mode: null, f: this.selectTree}];
     
     const style = {display: 'block'
                  , margin: 'auto'
