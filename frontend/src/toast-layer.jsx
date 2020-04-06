@@ -108,26 +108,12 @@ class ToastLayer extends React.Component {
       assert.fail('totally unexpected situation');
     }
   }
-/*    
-    console.log('entering getDerivedStateFromProps, props is as follows:');
-    console.log(props);
-    console.log('state is as follows:');
-    console.log(state);
-    const idToShow = {...state.idToShow};
-    props.toasts.forEach( (toast) => {
-      console.log(toast);
-      if (idToShow[toast.id]===undefined)
-        idToShow[toast.id] = true;
-    });
-    console.log('returning state from props as follows:');
-    console.log(idToShow);
-    return {idToShow};
-  }
-*/
   
   render() {
-    console.log('rendering ToastLayer');
-    const style={position: 'absolute', top: 0, left: 0, zIndex: 99999};
+    const style={position: 'absolute'
+               , top: this.props.geometryContext.geometry.headerBarHeight
+               , left: this.props.geometryContext.toolboxTotalWidth()
+               , zIndex: 99999};
     const toastsDiv = Object.keys(this.props.toasts).map( (key) => {
       const {msg} = this.props.toasts[key];
       console.log(`toast-layer::render() key is ${key}, show is: ${this.state.idToShow[key]}`);
