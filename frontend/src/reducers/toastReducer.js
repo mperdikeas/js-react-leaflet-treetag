@@ -18,7 +18,7 @@ export default (toasts = {1: {msg: 'foo'}, 2: {msg: 'boo'}, 3: {msg: 'koo'}}, ac
     case ADD_TOAST: {
         const {msg} = action.payload;
         const toasts2 = {...toasts};
-        const currentMaxKey = Math.max(...Object.keys(m).map(x=>parseInt(x)));
+        const currentMaxKey = Math.max(-1, ...Object.keys(toasts2).map(x=>parseInt(x)));
         toasts2[currentMaxKey+1]={msg};
         return toasts2;
     }

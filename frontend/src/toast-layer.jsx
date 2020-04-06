@@ -55,7 +55,7 @@ class ToastLayer extends React.Component {
       console.log(`componentDidUpdate: new state was added, lengths are ${Object.keys(prevState.idToShow).length} , ${Object.keys(this.state.idToShow)}`);
       if (isSubsetOf(Object.keys(prevState.idToShow), Object.keys(this.state.idToShow))) {
         const idToShow2 = {...this.state.idToShow};
-        const n = 0;
+        let n = 0;
         Object.keys(this.state.idToShow).forEach( (idx) => {
           if ((this.state.idToShow[idx]===false) && (prevState.idToShow[idx]===undefined)) {
             idToShow2[idx]=true;
