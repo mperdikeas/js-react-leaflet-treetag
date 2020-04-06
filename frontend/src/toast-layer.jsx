@@ -31,6 +31,7 @@ class ToastLayer extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = {idToShow: {}};
   }
 
   componentDidUpdate(prevProps) {
@@ -39,12 +40,38 @@ class ToastLayer extends React.Component {
     }
   }
 
+  dismissToast = (id)=>{
+    console.log(`setting show to false for id ${id}`);
+    this.setState({idToShow: Object.assign({}, this.state.idToShow, {[id]: false})});
+    window.setTimeout( ()=>{
+      console.log(`dismissing toast ${id}`);
+      this.props.dismissToast(id)
+    }, 500);
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    console.log('entering getDerivedStateFromProps, props is as follows:');
+    console.log(props);
+    const idToShow = {...state.idToShow};
+    props.toasts.forEach( (toast) => {
+      console.log(toast);
+      if (idToShow[toast.id]===undefined)
+        idToShow[toast.id] = true;
+    });
+    console.log('returning state from props as follows:');
+    console.log(idToShow);
+    return {idToShow};
+  }
+
+  
   render() {
     console.log('rendering ToastLayer');
     const style={position: 'absolute', top: 0, left: 0, zIndex: 99999};
     const toastsDiv = this.props.toasts.map( ({id, msg}) => {
+      console.log(`id is ${id}`);
+      console.log(`show is: ${this.state.idToShow[id]}`);
       return (
-        <Toast show={true} onClose={()=>this.props.dismissToast(id)}>
+        <Toast show={this.state.idToShow[id]} onClose={()=>this.dismissToast(id)} animation={true}>
           <Toast.Header>
             <strong className="mr-auto">Password change</strong>
             <small>11 mins ago</small>

@@ -64,6 +64,7 @@ class Toolbox extends React.Component {
   selectTree = (e) => {
     e.preventDefault();
     this.props.selectTree();
+    i++;
   }
 
   render = () => {
