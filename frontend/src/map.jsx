@@ -134,7 +134,6 @@ class Map extends React.Component {
 
 
   componentWillUnmount = () => {
-    console.log('map::componentWillUnmount()');
     window.removeEventListener ('resize', this.handleResize);
     this.map.off('click');
   }
@@ -199,12 +198,10 @@ class Map extends React.Component {
   
 
   countTreesInDrawWorkspace = () => {
-    console.log('countTreesInDrawWorkspace');
     let count = 0;
     this.drawnItems.eachLayer( (layer) => {
       count += this.countTreesInLayer(layer);
     });
-    console.log(`${count} trees within layer`);
   }
 
   componentDidMount = () => {
@@ -278,10 +275,6 @@ class Map extends React.Component {
         this.targetId2Marker = Object.assign({}
                                            , (this.targetId2Marker===null)?{}:this.targetId2Marker
                                            , targetId2Marker);
-        console.log('retrieved targetdId2Marker and markers');
-        console.log(targetId2Marker);
-        console.log(layerGroup);
-        console.log(this.map);
         layerGroup.addTo(this.map);
         this.clickableLayers.push(layerGroup);
         this.addClickListenersToMarkersOnLayer(layerGroup);
@@ -318,7 +311,6 @@ class Map extends React.Component {
 
 
   addClickListenersToMarkers = () => {
-    console.log('addClickListenersToMarkers');
     this.clickableLayers.forEach( (layer) => {
       this.addClickListenersToMarkersOnLayer(layer);
     });
@@ -327,7 +319,6 @@ class Map extends React.Component {
   addClickListenersToMarkersOnLayer = (layer) => {
     layer.eachLayer ( (marker)=>{
       marker.on('click', this.clickOnCircleMarker);
-      console.log('addClickListenersToMarkers : A');
       marker.options.interactive = true; // https://stackoverflow.com/a/60642381/274677
     }); // eachLayer
   }

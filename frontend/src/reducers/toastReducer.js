@@ -13,20 +13,20 @@ function findIndexOfToast(toasts, id) {
     return sca_fake_return();
 }
 
-export default (toasts = [{id: 1, msg: 'foo'}, {id:2, msg: 'boo'}], action) => {
+export default (toasts = {1: {msg: 'foo'}, 2: {msg: 'boo'}, 3: {msg: 'koo'}}, action) => {
     switch (action.type) {
     case ADD_TOAST: {
-        const {id, msg} = action.payload;
-        const toasts2 = [...toasts];
-        toasts2.push({id, msg});
+        const {msg} = action.payload;
+        const toasts2 = {...toasts};
+        const currentMaxKey = Math.max(...Object.keys(m).map(x=>parseInt(x)));
+        toasts2[currentMaxKey+1]={msg};
         return toasts2;
     }
     case DISMISS_TOAST: {
         console.log(`type: ${action.type}, id: ${action.payload.id}`);
         const {id} = action.payload;
-        const idx = findIndexOfToast(toasts, id);
-        const toasts2 = [...toasts];
-        toasts2.splice(idx, 1);
+        const toasts2 = {...toasts};
+        delete toasts2[id];
         return toasts2;
     }
     default: {
