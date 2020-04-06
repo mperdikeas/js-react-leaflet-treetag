@@ -50,33 +50,28 @@ class ToastLayer extends React.Component {
     // if a new state was added with show:false set it to true (to make it appear)
     const prevIndices = Object.keys(prevState.idToShow);
     const newIndices =  Object.keys(this.state.idToShow);
-    console.log(`componentDidUpdate: prev indices is: ${JSON.stringify(prevIndices)}, new indices is ${JSON.stringify(newIndices)}`);
-    if (Object.keys(prevState.idToShow).length < Object.keys(this.state.idToShow).length) {
-      console.log(`componentDidUpdate: new state was added, lengths are ${Object.keys(prevState.idToShow).length} , ${Object.keys(this.state.idToShow)}`);
+    if (prevIndices.length < newIndices.length) {
       if (isSubsetOf(Object.keys(prevState.idToShow), Object.keys(this.state.idToShow))) {
         const idToShow2 = {...this.state.idToShow};
         let n = 0;
         Object.keys(this.state.idToShow).forEach( (idx) => {
           if ((this.state.idToShow[idx]===false) && (prevState.idToShow[idx]===undefined)) {
             idToShow2[idx]=true;
-            console.log(`componentDidUpdate: set show of ${idx} to true`);
             n ++;
           }
         });
-        console.log(`componentDidUpdate: set a total of ${n} indices to true`);
-        assert.isTrue(n>=1, `unexpected number of updates: ${n}`);
+        // maybe I ought to be more lenient and relax the following to n>=1
+        assert.isTrue(n===1, `unexpected number of updates: ${n}`);
         this.setState({idToShow:idToShow2});
       } else {
-        assert.fail('unexpected situation');
+        assert.fail(`unexpected situation prevIndices=${JSON.stringify(prevIndices)}, newIndices=${JSON.stringify(newIndices)}`);
       }
    }
   }
 
   dismissToast = (id)=>{
-    console.log(`setting show to false for id ${id}`);
     this.setState({idToShow: Object.assign({}, this.state.idToShow, {[id]: false})});
     window.setTimeout( ()=>{
-      console.log(`dismissing toast ${id}`);
       this.props.dismissToast(id)
     }, 500);
   }
@@ -85,12 +80,11 @@ class ToastLayer extends React.Component {
     const propToastIds = Object.keys(props.toasts);
     const stateToastIds = Object.keys(state.idToShow);
     if (isSubsetOf(propToastIds, stateToastIds)) {
-      // a toast id has been removed from the DOM - delete the key from state:
+      // a toast has been removed from the DOM - delete the key from state:
       const idToShow2 = {...state.idToShow};
       stateToastIds.forEach( (el)=> {
         if (propToastIds.indexOf(el)===-1) {
           delete idToShow2[el];
-          console.log(`getDerivedStateFromProps: deleted key ${el} from state.idToShow`);
         }
       });
       return {idToShow: idToShow2};
@@ -100,12 +94,11 @@ class ToastLayer extends React.Component {
       propToastIds.forEach( (el)=> {
         if (stateToastIds.indexOf(el)===-1) {
           idToShow2[el]=false;
-          console.log(`getDerivedStateFromProps: added key ${el} to state.idToShow`);
         }
       });
       return {idToShow: idToShow2};
     } else {
-      assert.fail('totally unexpected situation');
+      assert.fail(`totally unexpected situation. PropToastIds is ${JSON.stringify(propToastIds)}, stateToastIds is ${JSON.stringify(stateToastIds)}`);
     }
   }
   
