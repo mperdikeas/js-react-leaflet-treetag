@@ -15,6 +15,8 @@ import {Toast} from 'react-bootstrap';
 
 import { isSubsetOf } from 'is-subset-of';
 
+require('./css/toast.css');
+
 const mapStateToProps = (state) => {
   return {
     toasts: state.toasts
@@ -109,11 +111,20 @@ class ToastLayer extends React.Component {
                , width: this.props.geometryContext.geometry.toastDiv.width
                , zIndex: 99999
                , className: 'container'};
+    const toastStyle={
+      backgroundColor: '#A4FE82'
+    };
+
     const toastsDiv = Object.keys(this.props.toasts).map( (key) => {
       const {msg} = this.props.toasts[key];
       console.log(`toast-layer::render() key is ${key}, show is: ${this.state.idToShow[key]}`);
       return (
-        <Toast show={this.state.idToShow[key]} onClose={()=>this.dismissToast(key)} animation={true}>
+        <Toast style={toastStyle}
+               show={this.state.idToShow[key]}
+               onClose={()=>this.dismissToast(key)}
+               animation={true}
+               delay={15000}
+               autohide={true}>
           <Toast.Header>
             <strong className="mr-auto">Password change</strong>
             <small>11 mins ago</small>
