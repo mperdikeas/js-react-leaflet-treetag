@@ -13,6 +13,8 @@ import { dismissToast } from './actions/index.js';
 
 import {Toast} from 'react-bootstrap';
 
+import ToastWrapper from './toast-wrapper.jsx';
+
 import { isSubsetOf } from 'is-subset-of';
 
 require('./css/toast.css');
@@ -21,7 +23,7 @@ const mapStateToProps = (state) => {
   return {
     toasts: state.toasts
 
-  }
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
@@ -110,26 +112,17 @@ class ToastLayer extends React.Component {
                              , left: this.props.geometryContext.leftOfToastDiv()
                              , width: this.props.geometryContext.geometry.toastDiv.width
                              , zIndex: 99999};
-    const toastStyle={
-      backgroundColor: '#A4FE82'
-    };
 
     const toastsDiv = Object.keys(this.props.toasts).map( (key) => {
       const {header, msg} = this.props.toasts[key];
       console.log(`toast-layer::render() key is ${key}, show is: ${this.state.idToShow[key]}`);
       return (
-        <Toast style={toastStyle}
-               show={this.state.idToShow[key]}
-               onClose={()=>this.dismissToast(key)}
-               animation={true}
-               delay={15000}
-               autohide={true}>
-          <Toast.Header>
-            <strong className="mr-auto">{header}</strong>
-            <small>11 mins ago</small>
-          </Toast.Header>
-          <Toast.Body>{msg}</Toast.Body>
-        </Toast>
+        <ToastWrapper
+        show={this.state.idToShow[key]}
+        onClose={()=>this.dismissToast(key)}
+        header={header}
+        msg={msg}
+        />
       );
     });
     return (
