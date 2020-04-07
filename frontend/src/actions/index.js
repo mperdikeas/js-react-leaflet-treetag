@@ -58,8 +58,8 @@ export function setPaneToOpenInfoPanel(pane) {
     return {type: SET_PANE_TO_OPEN_INFO_PANEL, payload: {pane}};
 }
 
-export function addToast(msg) {
-    return {type: ADD_TOAST, payload: {msg}};
+export function addToast(header, msg) {
+    return {type: ADD_TOAST, payload: {header, msg}};
 }
 
 export function dismissToast(id, msg) {

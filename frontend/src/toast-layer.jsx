@@ -105,18 +105,17 @@ class ToastLayer extends React.Component {
   }
   
   render() {
-    const style={position: 'absolute'
-               , top: this.props.geometryContext.topOfToastDiv()
-               , left: this.props.geometryContext.leftOfToastDiv()
-               , width: this.props.geometryContext.geometry.toastDiv.width
-               , zIndex: 99999
-               , className: 'container'};
+    const toastContainerStyle={position: 'absolute'
+                             , top: this.props.geometryContext.topOfToastDiv()
+                             , left: this.props.geometryContext.leftOfToastDiv()
+                             , width: this.props.geometryContext.geometry.toastDiv.width
+                             , zIndex: 99999};
     const toastStyle={
       backgroundColor: '#A4FE82'
     };
 
     const toastsDiv = Object.keys(this.props.toasts).map( (key) => {
-      const {msg} = this.props.toasts[key];
+      const {header, msg} = this.props.toasts[key];
       console.log(`toast-layer::render() key is ${key}, show is: ${this.state.idToShow[key]}`);
       return (
         <Toast style={toastStyle}
@@ -126,16 +125,16 @@ class ToastLayer extends React.Component {
                delay={15000}
                autohide={true}>
           <Toast.Header>
-            <strong className="mr-auto">Password change</strong>
+            <strong className="mr-auto">{header}</strong>
             <small>11 mins ago</small>
           </Toast.Header>
-          <Toast.Body>Email with confirmation code sent to your addresss of record {msg}</Toast.Body>
+          <Toast.Body>{msg}</Toast.Body>
         </Toast>
       );
     });
     return (
       <>
-      <div style={style}>
+      <div style={toastContainerStyle}>
         {toastsDiv}
       </div>
       {this.props.children}
