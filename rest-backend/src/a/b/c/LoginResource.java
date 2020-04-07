@@ -127,7 +127,7 @@ public class LoginResource {
             final JaxRsApplication app = (JaxRsApplication) _app;
             //            if (installation.equals("a1") && username.equals("admin") && password.equals("pass"))
             if (app.checkCredentials(installation, username, password))
-                loginResult = new LoginResult(null, accessToken(installation, username));
+                loginResult = new LoginResult(null, createAccessToken(installation, username));
             else
                 loginResult = new LoginResult("login-fail", null);
             
@@ -184,8 +184,8 @@ public class LoginResource {
         }
     }    
 
-    private static final String accessToken(final String installation
-                                            , final String username) {
+    private static final String createAccessToken(final String installation
+                                                  , final String username) {
         /*    provenance of [secretKeyS]
          *
          *        ~/demo-spa-and-web-services-with-jwt-auth-type-01/console-utils/generate-secret-key
@@ -201,7 +201,7 @@ public class LoginResource {
     }
 
     private static Date createExpirationDate() {
-        final int VALIDITY_FOR_JWT_AUTHORIZATION_SECS = 7;
+        final int VALIDITY_FOR_JWT_AUTHORIZATION_SECS = 60;
         final LocalDateTime x = LocalDateTime.now().plusSeconds(VALIDITY_FOR_JWT_AUTHORIZATION_SECS);
         final Date rv = Date.from( x.atZone( ZoneId.systemDefault()).toInstant() );
         return rv;
