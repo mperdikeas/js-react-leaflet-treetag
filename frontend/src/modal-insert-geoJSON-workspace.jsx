@@ -15,11 +15,6 @@ import {  connect   }              from 'react-redux';
 import { clearModal, setFlag } from './actions/index.js';
 
 
-const mapStateToProps = (state) => {
-  return {
-    modal: state.modal.modalProps
-  };
-};
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -97,6 +92,6 @@ class ModalInsertGeoJSONToWorkspace extends React.Component {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(ModalInsertGeoJSONToWorkspace));
+export default connect(null, mapDispatchToProps)(wrapContexts(ModalInsertGeoJSONToWorkspace));
 
 
