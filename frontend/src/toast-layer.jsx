@@ -104,9 +104,11 @@ class ToastLayer extends React.Component {
   
   render() {
     const style={position: 'absolute'
-               , top: this.props.geometryContext.geometry.headerBarHeight
-               , left: this.props.geometryContext.toolboxTotalWidth()
-               , zIndex: 99999};
+               , top: this.props.geometryContext.topOfToastDiv()
+               , left: this.props.geometryContext.leftOfToastDiv()
+               , width: this.props.geometryContext.geometry.toastDiv.width
+               , zIndex: 99999
+               , className: 'container'};
     const toastsDiv = Object.keys(this.props.toasts).map( (key) => {
       const {msg} = this.props.toasts[key];
       console.log(`toast-layer::render() key is ${key}, show is: ${this.state.idToShow[key]}`);
