@@ -76,14 +76,13 @@ class UsernameReminderForm extends React.Component {
   };
 
 
-  cancel = () => {
-    this.props.clearModal();
-    }
-
   render = ()=> {
+    const buttonDivStyle={display:'flex'
+                        , direction:'flex-flow'
+                        , justifyContent:'space-around'};
     return (
       <Form noValidate onSubmit={this.handleSubmit}>
-        <div>Please provide the following information
+        <div style={{marginBottom: '1em'}}>Please provide the following information
           to allow us to send you the username reminder</div>
         <Form.Group as={Row} controlId="installation">
           <Form.Label column sm='4'>Installation</Form.Label>
@@ -112,8 +111,10 @@ class UsernameReminderForm extends React.Component {
         </Form.Group>
 
 
-        <Button type="submit">Send username reminder</Button>
-        <Button variant='secondary' onClick={this.cancel}>Cancel</Button>
+        <div style={buttonDivStyle}>
+          <Button variant='secondary' onClick={this.props.clearModal}>Cancel</Button>
+          <Button type="submit">Send username reminder</Button>
+        </div>
       </Form>
     );
   } // render
