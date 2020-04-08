@@ -28,10 +28,9 @@ import a.b.email.ContainerConfiguredEmailSessionSmtpMsaImpl;
 
 public class JaxRsApplication extends Application {
 
-    private final Map<String, UserInfo> users;
     private final Random r; 
     private final ISmtpMsa smtpMSA;
-
+    protected DBFacade dbFacade;
     
     final static Logger logger = Logger.getLogger(JaxRsApplication.class);
     
@@ -39,16 +38,13 @@ public class JaxRsApplication extends Application {
 
     public JaxRsApplication(@Context ServletContext servletContext) {
         Assert.assertNotNull(servletContext);
-        this.users = new LinkedHashMap<String, UserInfo>();
         this.r = new Random();
-
+        this.dbFacade = new DBFacade();
 
         final String emailSessionJndiName = ContextInitParameter.JNDI_NAME_FOR_EMAIL_SESSION.get(servletContext);
         Assert.assertNotNull(emailSessionJndiName);
         this.smtpMSA = new ContainerConfiguredEmailSessionSmtpMsaImpl(emailSessionJndiName);
 
-        
-        users.put("admin", new UserInfo("pass", "mperdikeas@gmail.com"));
         singletons.add( new MainResource  (servletContext) );
         singletons.add( new LoginResource (servletContext) );
         singletons.add( new CORSFilter() );
@@ -59,26 +55,6 @@ public class JaxRsApplication extends Application {
                                                           , logger) );
 
         }
-    }
-
-    public boolean checkCredentials(final String installation, final String username, final String password) {
-        if (!installation.equals("a1"))
-            return false;
-        final UserInfo userInfo = users.get(username);
-        if (userInfo == null)
-            return false;
-        else
-            return password.equals(userInfo.password);
-    }
-
-    public String userEmail(final String installation, final String username) {
-        if (!installation.equals("a1"))
-            return null;
-        final UserInfo userInfo = users.get(username);
-        if (userInfo == null)
-            return (String) null;
-        else
-            return userInfo.email;
     }
 
     public int emailConfirmationCode(final String email) {
@@ -92,6 +68,18 @@ public class JaxRsApplication extends Application {
         this.sendEmail("mperdikeas@gmail.com", "password change confirmation code", msg, false);
         return VALID_SECS;
     }
+
+    public int emailUsernameReminder(final String email, final String username) {
+        final int VALID_SECS = 300;
+        final int confirmationCode = 100000 + (int) (r.nextFloat()*900000);
+        logger.info(String.format("confirmation code is [%d]\n"
+                                  , confirmationCode));
+        logger.info(String.format("sending out email with confirmation code to: [%s]\n"
+                                  , email));
+        final String msg = String.format("Your confirmation code for password change is [%d]", confirmationCode);
+        this.sendEmail("mperdikeas@gmail.com", "password change confirmation code", msg, false);
+        return VALID_SECS;
+    }    
 
     @Override
     public Set<Object> getSingletons() {

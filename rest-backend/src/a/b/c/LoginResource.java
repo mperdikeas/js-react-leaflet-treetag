@@ -125,8 +125,7 @@ public class LoginResource {
                                       , httpServletRequest.getRemoteAddr()));
             LoginResult loginResult;
             final JaxRsApplication app = (JaxRsApplication) _app;
-            //            if (installation.equals("a1") && username.equals("admin") && password.equals("pass"))
-            if (app.checkCredentials(installation, username, password))
+            if (app.dbFacade.checkCredentials(installation, username, password))
                 loginResult = new LoginResult(null, createAccessToken(installation, username));
             else
                 loginResult = new LoginResult("login-fail", null);
@@ -149,36 +148,24 @@ public class LoginResource {
     public final Response emailUsernameReminder(@Context javax.ws.rs.core.Application _app
                                                 , @Context final HttpServletRequest httpServletRequest
                                                 , final String json) {
-        Assert.assertEquals(String.format("method emailUsernameReminder expects no payload in the "
-                                          + "POST body, yet a payload of [%s] was received"
-                                          , json)
-                            , json
-                            , "{}");
-        final String installation = Installation.getFromServletRequest(httpServletRequest);
+        final UsernameReminderPostRequest info = GsonHelper.fromJson(json
+                                                                      , UsernameReminderPostRequest.class);        
+        final String installation = info.installation;
+        final String email = info.email;
+        Assert.assertNotNull(installation);
+        Assert.assertNotNull(email);
         try {
-
-            int i = 42;
-            if (i==42) throw new RuntimeException(String.format("got the call, installation is read as [%s]", installation));
-            /*
-
-            logger.info(String.format("emailConfirmationCode(%s, %s) ~*~ remote address: [%s]"
+            logger.info(String.format("emailUsernameReminder(%s, %s) ~*~ remote address: [%s]"
                                       , installation
-                                      , username
+                                      , email
                                       , httpServletRequest.getRemoteAddr()));
-            PasswordResetEmailConfirmationCodeResult result;
             final JaxRsApplication app = (JaxRsApplication) _app;
-            final String email = app.userEmail(installation, username);
-            if (email == null)
-                result = new PasswordResetEmailConfirmationCodeResult(false, (String) null, (Integer) null);
-            else {
-                final int validSecs = app.emailConfirmationCode(email);
-                result = new PasswordResetEmailConfirmationCodeResult(true, email, validSecs);
-            }
-            
+            final String username = app.dbFacade.emailToUsername(installation, email);
+            final UsernameReminderResult result = new UsernameReminderResult(username==null?String.format("no username is found for installation [%s] and email [%s]"
+                                                                                                          , installation
+                                                                                                          , email)
+                                                                             : (String) null);
             return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(result))).build();
-            */
-
-            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok("foobar"))).build();            
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling emailUsernameReminder(%s, %s) from remote address [%s]"
                                        , installation
@@ -212,7 +199,7 @@ public class LoginResource {
                                       , httpServletRequest.getRemoteAddr()));
             PasswordResetEmailConfirmationCodeResult result;
             final JaxRsApplication app = (JaxRsApplication) _app;
-            final String email = app.userEmail(installation, username);
+            final String email = app.dbFacade.userEmail(installation, username);
             if (email == null)
                 result = new PasswordResetEmailConfirmationCodeResult(false, (String) null, (Integer) null);
             else {
@@ -292,5 +279,18 @@ final class PasswordResetEmailConfirmationCodeResult {
         this.found = found;
         this.value = value;
         this.validSecs = validSecs;
+    }
+}
+
+
+final class UsernameReminderPostRequest {
+    public String installation;
+    public String email;
+}
+
+final class UsernameReminderResult {
+    final String problem;
+    public UsernameReminderResult(final String problem) {
+        this.problem = problem;
     }
 }

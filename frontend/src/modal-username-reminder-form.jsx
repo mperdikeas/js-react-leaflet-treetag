@@ -7,7 +7,7 @@ import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
 
 import {clearModal} from './actions/index.js';
 
-import {axiosAuth} from './axios-setup.js';
+import {axiosPlain} from './axios-setup.js';
 
 
 
@@ -28,13 +28,8 @@ class UsernameReminderForm extends React.Component {
 
   constructor(props) {
     super(props);
-    this.inputInstallationRef = React.createRef();
-    this.inputUsernameRef     = React.createRef();
-    this.inputPasswordRef     = React.createRef();
-
-    this.state = {
-      logErrMsg: null
-    };    
+    this.installationRef = React.createRef();
+    this.emailRef        = React.createRef();
   }
 
 
@@ -43,8 +38,9 @@ class UsernameReminderForm extends React.Component {
     }
 
   sendUsernameReminder = (installation, email)=> {
+    console.log(`sendUsernameReminder(${installation}, ${email})`);
     const url = '/login/emailUsernameReminder';
-    axiosAuth.post(url, {installation, email}).then(res => {
+    axiosPlain.post(url, {installation, email}).then(res => {
       if (res.data.err != null) {
         console.log('sendUsernameReminder API call error');
         assert.fail(res.data.err);
@@ -70,8 +66,8 @@ class UsernameReminderForm extends React.Component {
     console.log('modal-login-form::handleSubmit');
     event.preventDefault();
     event.stopPropagation();
-    const installation = this.inputInstallationRef.current.value;
-    const email        = this.email.current.value;
+    const installation = this.installationRef.current.value;
+    const email        = this.emailRef.current.value;
     this.sendUsernameReminder(installation, email);
   };
 
@@ -88,7 +84,7 @@ class UsernameReminderForm extends React.Component {
           <Form.Label column sm='4'>Installation</Form.Label>
           <Col sm='8'>
             <Form.Control
-            ref={this.inputInstallationRef}
+            ref={this.installationRef}
             required
             type="text"
             placeholder="installation"
@@ -101,7 +97,7 @@ class UsernameReminderForm extends React.Component {
           <Form.Label column sm='4'>email</Form.Label>
           <Col sm='8'>
             <Form.Control
-                        ref={this.inputUsernameRef}
+                        ref={this.emailRef}
                         required
                         type="text"
                         placeholder="username"
