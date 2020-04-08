@@ -4,11 +4,25 @@ const assert = require('chai').assert;
 
 import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
 
+import {MDL_USERNAME_REMINDER} from './constants/modal-types.js';
+
+import {axiosAuth} from './axios-setup.js';
 
 const LinkEventKeys = {FORGOT_USERNAME: 'forgot-username'
-  , FORGOT_PASSWORD: 'forgot-password'};
+                     , FORGOT_PASSWORD: 'forgot-password'};
 
-export default class LoginForm extends React.Component {
+import {displayModal} from './actions/index.js';
+
+import {connect} from 'react-redux';
+
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    displayUsernameReminderModal: () => dispatch(displayModal(MDL_USERNAME_REMINDER))
+    };
+  }
+
+class LoginForm extends React.Component {
 
 
 
@@ -38,11 +52,6 @@ export default class LoginForm extends React.Component {
   }
 
 
-  sendUsernameReminder = ()=> {
-
-
-    }
-  
 
   handleSubmit = (event) => {
     console.log('modal-login-form::handleSubmit');
@@ -58,7 +67,7 @@ export default class LoginForm extends React.Component {
     console.log(`${eventKey} selected`);
     switch (eventKey) {
       case LinkEventKeys.FORGOT_USERNAME:
-        this.sendUsernameReminder();
+        this.props.displayUsernameReminderModal();
         break;
       case LinkEventKeys.FORGOT_PASSWORD:
         break;
@@ -129,3 +138,5 @@ export default class LoginForm extends React.Component {
   } // render
 
 } // class
+
+export default connect(null, mapDispatchToProps)(LoginForm);

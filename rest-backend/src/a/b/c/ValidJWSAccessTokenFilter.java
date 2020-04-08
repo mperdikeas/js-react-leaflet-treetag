@@ -1,13 +1,16 @@
 package a.b.c;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Collections;
 
 import java.lang.reflect.Method;
 
 import java.nio.charset.StandardCharsets;
     
-
+import java.lang.reflect.Method;
+    
 import javax.ws.rs.WebApplicationException;
 
 import javax.xml.bind.DatatypeConverter;
@@ -54,14 +57,14 @@ import a.b.c.constants.Installation;
 
 public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
     
-    private final List<? extends Class<?>>   guardedClasses;
-    private Logger                           logger;
+    final private Map<Class<?>, Set<Method>> guardedClassesAndMethods;
+    final private Logger                     logger;
     
-    public ValidJWSAccessTokenFilter(final List<? extends Class<?>> guardedClasses
+    public ValidJWSAccessTokenFilter(final Map<Class<?>, Set<Method>> guardedClassesAndMethods
                                      , final Logger logger) {
-        Assert.assertNotNull(guardedClasses);
+        Assert.assertNotNull(guardedClassesAndMethods);
         Assert.assertNotNull(logger);
-        this.guardedClasses = guardedClasses;
+        this.guardedClassesAndMethods = guardedClassesAndMethods;
         this.logger         = logger;
     }
 
@@ -75,9 +78,17 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
     public final boolean protects(final Class c, final Method m) {
         // simplest possible implementation for the time being: require authorization for *all* methods
         // of any of the guarded class
-        for (Class<?> guardedClass: guardedClasses)
-            if (c.equals( guardedClass ))
-                return true;
+        for (Class<?> guardedClass: guardedClassesAndMethods.keySet()) {
+            if (c.equals( guardedClass )) {
+                final Set<Method> methods = guardedClassesAndMethods.get(guardedClass);
+                if (methods.isEmpty()) // no exceptions - the filter all methods of the class
+                    return true;
+                else {
+                    if (methods.contains(m))
+                        return true; // the method is among the exception methods (i.e. those that we do protect on that class)
+                }
+            }
+        }
         return false;
     }
 

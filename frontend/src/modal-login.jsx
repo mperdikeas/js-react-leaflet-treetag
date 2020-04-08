@@ -120,27 +120,10 @@ class ModalLogin extends React.Component {
 
     })();
 
-    const oldForm = (
-
-        <form method="dialog" onSubmit={this.login}>
-          {logErrMsg}
-          <p>Please provide installation name,  username and password</p>
-          <label htmlFor='installation-input'>Installation</label>
-          {installationInput}
-          <label htmlFor='login-name-input'>Username</label>
-          {nameInput}
-          <label htmlFor='login-pass-input'>Password</label>
-          {passInput}
-          <input type="submit" value="OK"/>
-        </form>
-    );
-
-    const newForm = (<LoginForm doLogin={this.doLogin}/>);
-
     return (
       <>
       <dialog style={this.props.style} id='dialog' ref={this.ref}>
-        {newForm}
+          <LoginForm doLogin={this.doLogin}/>
       </dialog>
       {this.props.children}
       </>

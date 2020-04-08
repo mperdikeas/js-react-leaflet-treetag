@@ -15,6 +15,7 @@ import ModalAppIsLoading             from './modal-app-is-loading.jsx';
 import ModalLogin                    from './modal-login.jsx';
 import ModalSaveWorkspaceToDisk      from './modal-save-workspace-to-disk.jsx';
 import ModalInsertGeoJSONToWorkspace from './modal-insert-geoJSON-workspace.jsx';
+import ModalUsernameReminder         from './modal-username-reminder.jsx';
 
 import {MODAL_APP_IS_LOADING
       , MODAL_LOGIN
@@ -25,7 +26,8 @@ const MODAL_COMPONENTS = {
   MODAL_APP_IS_LOADING: ModalAppIsLoading,
   MODAL_LOGIN: ModalLogin,
   MDL_SAVE_WS_2_DSK: ModalSaveWorkspaceToDisk,
-  MDL_INS_GJSON_2_WS: ModalInsertGeoJSONToWorkspace
+  MDL_INS_GJSON_2_WS: ModalInsertGeoJSONToWorkspace,
+  MDL_USERNAME_REMINDER: ModalUsernameReminder
 };
 
 

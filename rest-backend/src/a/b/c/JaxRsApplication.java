@@ -11,6 +11,8 @@ import java.util.Random;
 
 import java.io.UnsupportedEncodingException;
 
+import java.lang.reflect.Method;
+
 import javax.mail.MessagingException;
 import javax.ws.rs.core.Application;
 
@@ -52,8 +54,8 @@ public class JaxRsApplication extends Application {
         singletons.add( new CORSFilter() );
 
         {
-            final List<? extends Class<?>> guardedClasses = Arrays.asList(new Class<?>[]{MainResource.class});
-            singletons.add( new ValidJWSAccessTokenFilter(guardedClasses
+            final Map<Class<?>, Set<Method>> guardedClassesAndMethods = GuardedClassesAndMethodsPreparer.getGuardedClassesAndMethods();
+            singletons.add( new ValidJWSAccessTokenFilter(guardedClassesAndMethods
                                                           , logger) );
 
         }

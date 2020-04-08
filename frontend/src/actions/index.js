@@ -35,8 +35,6 @@ export function setFlag(flagToSet, flagValue=CT_UNIT) {
 }
 
 export function displayModal(modalType, modalProps) {
-    console.log(modalProps);
-    console.log(`asdfadfasd displayModal(${modalType}, ${JSON.stringify(modalProps)}`);
     assert.isTrue(isValidModalType(modalType), `unrecognized modal type: [${modalType}]`);
     return {type: DISPLAY_MODAL, payload: {modalType, modalProps}};
 }
