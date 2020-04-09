@@ -65,21 +65,22 @@ public class JaxRsApplication extends Application {
         logger.info(String.format("sending out email with confirmation code to: [%s]\n"
                                   , email));
         final String msg = String.format("Your confirmation code for password change is [%d]", confirmationCode);
-        this.sendEmail("mperdikeas@gmail.com", "password change confirmation code", msg, false);
+        this.sendEmail(email, "password change confirmation code", msg, false);
         return VALID_SECS;
     }
 
-    public int emailUsernameReminder(final String email, final String username) {
-        final int VALID_SECS = 300;
-        final int confirmationCode = 100000 + (int) (r.nextFloat()*900000);
-        logger.info(String.format("confirmation code is [%d]\n"
-                                  , confirmationCode));
-        logger.info(String.format("sending out email with confirmation code to: [%s]\n"
-                                  , email));
-        final String msg = String.format("Your confirmation code for password change is [%d]", confirmationCode);
-        this.sendEmail("mperdikeas@gmail.com", "password change confirmation code", msg, false);
-        return VALID_SECS;
-    }    
+    public void emailUsernameReminder(final String email
+                                      , final String installation
+                                      , final String username) {
+        final String msg = String.format("The username at the TreeCadaster application associated with this email (%s) (for the '%s' installation) is: %s."
+                                         , email
+                                         , installation
+                                         , username);
+        this.sendEmail(email, "username reminder from the TreeCadster application", msg, false);
+        logger.info(String.format("send username reminder to [%s]", email));
+    }
+
+
 
     @Override
     public Set<Object> getSingletons() {

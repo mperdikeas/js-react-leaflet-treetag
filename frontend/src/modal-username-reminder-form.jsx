@@ -30,8 +30,12 @@ class UsernameReminderForm extends React.Component {
     super(props);
     this.installationRef = React.createRef();
     this.emailRef        = React.createRef();
+    this.state           = this.initialState();
   }
 
+  initialState = () => {
+    return {serverAPIFailureResponse: null};
+  }
 
   componentWillUnmount = ()=>{
     console.log('modal-username-reminder-form: component will unmount');
@@ -46,13 +50,11 @@ class UsernameReminderForm extends React.Component {
         assert.fail(res.data.err);
       } else {
         console.log('sendUsernameReminder API call success');
-        if (res.data.t.loginFailureReason===null) {
-          storeAccessToken(res.data.t.accessToken);
-          this.props.clearModal();
-          this.props.loginContext.updateLogin(username);
+        if (res.data.t.problem===null) {
+          this.setState({serverAPIFailureResponse: null});
         } else {
           console.log('sendUsernameReminder call was unsuccessful');
-          this.setState({logErrMsg: res.data.t.loginFailureReason});
+          this.setState({serverAPIFailureResponse: res.data.t.problem});
         }
       }
     }).catch( err => {
@@ -76,8 +78,22 @@ class UsernameReminderForm extends React.Component {
     const buttonDivStyle={display:'flex'
                         , direction:'flex-flow'
                         , justifyContent:'space-around'};
+    const errMsg = (()=>{
+      if (this.state.serverAPIFailureResponse == null)
+        return null;
+      else {
+        const errMsgStyle= {color: 'red'};
+        return (
+          <div style={errMsgStyle}>
+            {this.state.serverAPIFailureResponse}
+          </div>
+        );
+        }
+
+    })();
     return (
       <Form noValidate onSubmit={this.handleSubmit}>
+        {errMsg}
         <div style={{marginBottom: '1em'}}>Please provide the following information
           to allow us to send you the username reminder</div>
         <Form.Group as={Row} controlId="installation">
@@ -101,7 +117,6 @@ class UsernameReminderForm extends React.Component {
                         required
                         type="text"
                         placeholder="username"
-                        value="admin"
             />
           </Col>
         </Form.Group>

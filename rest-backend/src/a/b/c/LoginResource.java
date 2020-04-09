@@ -161,10 +161,14 @@ public class LoginResource {
                                       , httpServletRequest.getRemoteAddr()));
             final JaxRsApplication app = (JaxRsApplication) _app;
             final String username = app.dbFacade.emailToUsername(installation, email);
+            if (username != null)
+                app.emailUsernameReminder(email, installation, username);
+            
             final UsernameReminderResult result = new UsernameReminderResult(username==null?String.format("no username is found for installation [%s] and email [%s]"
                                                                                                           , installation
                                                                                                           , email)
                                                                              : (String) null);
+
             return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(result))).build();
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling emailUsernameReminder(%s, %s) from remote address [%s]"
