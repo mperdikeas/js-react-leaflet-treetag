@@ -15,15 +15,8 @@ import {axiosPlain} from './axios-setup.js';
 
 
 // redux
-import {  connect, mapDispatchToProps   } from 'react-redux';
-import { clearModal } from './actions/index.js';
-
-
-const mapStateToProps = (state) => {
-  return {
-    modal: state.modal
-  };
-};
+// TODO: remove all mapDispatchToPros from all redux imports
+import { connect } from 'react-redux';
 
 
 class ModalAppIsLoading extends React.Component {
@@ -61,7 +54,7 @@ class ModalAppIsLoading extends React.Component {
   render() {
     return (
       <>
-      <dialog id='app-is-loading' ref={this.ref}>
+      <dialog ref={this.ref}>
         <div>Please wait while app is loading &hellip; </div>
       </dialog>
       {this.props.children}
@@ -71,6 +64,6 @@ class ModalAppIsLoading extends React.Component {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(ModalAppIsLoading));
+export default ModalAppIsLoading;
 
 

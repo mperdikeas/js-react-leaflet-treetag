@@ -39,6 +39,7 @@ class LoginForm extends React.Component {
   }
 
 
+  /*
   componentDidMount() {
     const domElem = this.ref.current;
     this.escapeKeySuppressor = (e)=>{
@@ -50,7 +51,7 @@ class LoginForm extends React.Component {
     };
     domElem.addEventListener('keyup', this.escapeKeySuppressor);
   }
-
+*/
 
 
   handleSubmit = (event) => {

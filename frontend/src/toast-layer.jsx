@@ -118,6 +118,7 @@ class ToastLayer extends React.Component {
       console.log(`toast-layer::render() key is ${key}, show is: ${this.state.idToShow[key]}`);
       return (
         <ToastWrapper
+        key = {key}
         show={this.state.idToShow[key]}
         onClose={()=>this.dismissToast(key)}
         header={header}

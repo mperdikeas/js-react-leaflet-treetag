@@ -5,7 +5,10 @@ const assert = require('chai').assert;
 import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
 
 
-import {clearModal} from './actions/index.js';
+import {displayModal, clearModal, addToast} from './actions/index.js';
+
+import {MDL_USERNAME_REMINDER_SUCCESS} from './constants/modal-types.js';
+
 
 import {axiosPlain} from './axios-setup.js';
 
@@ -18,6 +21,15 @@ import {  connect   }              from 'react-redux';
 const mapDispatchToProps = (dispatch) => {
   return {
     clearModal: ()=> dispatch(clearModal())
+    , addToastForSuccessfulUsernameReminderSent: (installation, email)=> {
+      dispatch(addToast('username reminder'
+                      , `username reminder was successfully sent to the email address ${email}`+
+                        ` for installation ${installation}.`+
+                        ' Please check your email'))
+    }
+    , displayModalForSuccessfulUsernameReminderSent: ()=> {
+      dispatch(displayModal(MDL_USERNAME_REMINDER_SUCCESS));
+      }
   };
 }
 
@@ -34,7 +46,7 @@ class UsernameReminderForm extends React.Component {
   }
 
   initialState = () => {
-    return {serverAPIFailureResponse: null};
+    return {serverAPIFailureResponse: null, waitForServer: false};
   }
 
   componentWillUnmount = ()=>{
@@ -42,6 +54,7 @@ class UsernameReminderForm extends React.Component {
     }
 
   sendUsernameReminder = (installation, email)=> {
+    this.setState({waitForServer: true});
     console.log(`sendUsernameReminder(${installation}, ${email})`);
     const url = '/login/emailUsernameReminder';
     axiosPlain.post(url, {installation, email}).then(res => {
@@ -51,10 +64,13 @@ class UsernameReminderForm extends React.Component {
       } else {
         console.log('sendUsernameReminder API call success');
         if (res.data.t.problem===null) {
-          this.setState({serverAPIFailureResponse: null});
+          this.setState({serverAPIFailureResponse: null, waitForServer: false});
+          this.props.addToastForSuccessfulUsernameReminderSent(installation, email);
+          this.props.clearModal();
+          this.props.displayModalForSuccessfulUsernameReminderSent();
         } else {
           console.log('sendUsernameReminder call was unsuccessful');
-          this.setState({serverAPIFailureResponse: res.data.t.problem});
+          this.setState({serverAPIFailureResponse: res.data.t.problem, waitForServer: false});
         }
       }
     }).catch( err => {
@@ -91,6 +107,16 @@ class UsernameReminderForm extends React.Component {
         }
 
     })();
+
+
+    const buttonForPrimaryAction = (()=>{
+      if (this.state.waitForServer) {
+        return <Button type="submit" disabled={true}>Please wait...</Button>
+      } else {
+        return <Button type="submit">Send username reminder</Button>
+        }
+    })();
+    
     return (
       <Form noValidate onSubmit={this.handleSubmit}>
         {errMsg}
@@ -117,6 +143,7 @@ class UsernameReminderForm extends React.Component {
                         required
                         type="text"
                         placeholder="username"
+                        value="mperdikeas@gmail.com"
             />
           </Col>
         </Form.Group>
@@ -124,7 +151,7 @@ class UsernameReminderForm extends React.Component {
 
         <div style={buttonDivStyle}>
           <Button variant='secondary' onClick={this.props.clearModal}>Cancel</Button>
-          <Button type="submit">Send username reminder</Button>
+          {buttonForPrimaryAction}
         </div>
       </Form>
     );

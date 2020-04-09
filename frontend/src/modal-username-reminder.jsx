@@ -24,6 +24,7 @@ class ModalUsernameReminder extends React.Component {
   componentDidMount() {
     const domElem = this.ref.current;
     domElem.showModal();
+    /*
     const body = document.getElementsByTagName('body')[0];
     this.escapeKeySuppressor = (e)=>{
       console.log(`key pressed: ${e.code}`);
@@ -34,15 +35,18 @@ class ModalUsernameReminder extends React.Component {
         }
     };
     document.addEventListener('keydown', this.escapeKeySuppressor);
-    $('#dialog').draggable();
+    */
+    $('#dialog').draggable(); // this aint' working
   }
 
+
+  /*
   componentWillUnmount() {
     console.log('component will unmount');
     const body = document.getElementsByTagName('body')[0];
     document.removeEventListener('keydown', this.escapeKeySuppressor);
     }
-  
+  */
 
   render() {
 
