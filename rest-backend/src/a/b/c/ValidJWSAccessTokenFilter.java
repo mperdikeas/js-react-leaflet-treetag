@@ -81,9 +81,11 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
         for (Class<?> guardedClass: guardedClassesAndMethods.keySet()) {
             if (c.equals( guardedClass )) {
                 final Set<Method> methods = guardedClassesAndMethods.get(guardedClass);
-                if (methods.isEmpty()) // no exceptions - the filter all methods of the class
+                if (methods==null) // no exceptions - the filter all methods of the class
                     return true;
                 else {
+                    Assert.assertFalse("use a null Set to denote that there are no exceptions; don't use an empty set for that purpose; why? because!"
+                                       , methods.isEmpty());
                     if (methods.contains(m))
                         return true; // the method is among the exception methods (i.e. those that we do protect on that class)
                 }

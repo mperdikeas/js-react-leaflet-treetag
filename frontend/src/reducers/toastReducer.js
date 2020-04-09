@@ -13,10 +13,7 @@ function findIndexOfToast(toasts, id) {
     return sca_fake_return();
 }
 
-export default (toasts = {1: {header: 'foo', msg: 'ταρχίδια μου κουνιούνται'}
-                          , 2: {header: 'boo', msg: 'ταρχίδια μου κουνιούνται #2'}
-                          , 3: {header: 'koo', msg: 'ταρχίδια μου κουνιούνται #3'}
-                         }, action) => {
+export default (toasts = {}, action) => {
     switch (action.type) {
     case ADD_TOAST: {
         const {header, msg} = action.payload;

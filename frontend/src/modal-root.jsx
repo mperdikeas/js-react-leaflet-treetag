@@ -57,7 +57,6 @@ const ModalRoot = ({geometryContext, modals, children}) => {
     const specificModals = modals.map( (modal, idx) => {
       const {modalType, modalProps} = modal;
       const SpecificModal = MODAL_COMPONENTS[modalType]
-      console.log(`specific modal for ${modalType} is ${SpecificModal}`);
       return <SpecificModal style={{top: Y+idx*step, left: X+idx*step}} key={idx} {...modalProps}/>
     } );
 
