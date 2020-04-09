@@ -15,14 +15,18 @@ import selectTree               from './resources/select-tree-32.png';
 import { connect }                          from 'react-redux';
 import {toggleMode, displayModal, addToast} from './actions/index.js';
 
-import {MDL_SAVE_WS_2_DSK, MDL_INS_GJSON_2_WS} from './constants/modal-types.js';
+import {MDL_NOTIFICATION, MDL_SAVE_WS_2_DSK, MDL_INS_GJSON_2_WS} from './constants/modal-types.js';
 import {GSN, globalGet} from './globalStore.js';
 
 let i = 0;
 
 const mapDispatchToProps = (dispatch) => {
   return {
-      saveWorkspaceToDisk: (geoJSON) => dispatch(displayModal(MDL_SAVE_WS_2_DSK, {geoJSON}))
+    displayWorkspaceIsEmptyNotification: () => {
+      const html = (<div style={{marginBottom: '1em'}}>Workspace layer has nothing to save</div>);
+      dispatch(displayModal(MDL_NOTIFICATION, {html}));
+    }
+    , saveWorkspaceToDisk: (geoJSON) => dispatch(displayModal(MDL_SAVE_WS_2_DSK, {geoJSON}))
     , insertGeoGSONToWorkspace: () => dispatch(displayModal(MDL_INS_GJSON_2_WS))
     , uploadLayerToCloud: () => dispatch(displayModal())
     , selectTree: ()=>dispatch(addToast(i, 'this is some random toast'))
@@ -45,8 +49,12 @@ class Toolbox extends React.Component {
     console.log('save workspace to disk');
     e.preventDefault();
     const drawnItems = globalGet(GSN.LEAFLET_DRAWN_ITEMS);
-    const geoJSON = drawnItems.toGeoJSON(7);
-    this.props.saveWorkspaceToDisk(geoJSON);
+    if (drawnItems.getLayers().length === 0) {
+      this.props.displayWorkspaceIsEmptyNotification();
+    } else {
+      const geoJSON = drawnItems.toGeoJSON(7);
+      this.props.saveWorkspaceToDisk(geoJSON);
+    }
   }
 
 

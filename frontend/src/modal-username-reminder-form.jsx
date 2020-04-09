@@ -7,7 +7,7 @@ import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
 
 import {displayModal, clearModal, addToast} from './actions/index.js';
 
-import {MDL_USERNAME_REMINDER_SUCCESS} from './constants/modal-types.js';
+import {MDL_NOTIFICATION} from './constants/modal-types.js';
 
 
 import {axiosPlain} from './axios-setup.js';
@@ -38,7 +38,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(addToast('username reminder', msg(installation, email)));
     }
     , displayModalForSuccessfulUsernameReminderSent: (installation, email)=> {
-      dispatch(displayModal(MDL_USERNAME_REMINDER_SUCCESS, {html: msgHTML(installation, email)}));
+      dispatch(displayModal(MDL_NOTIFICATION, {html: msgHTML(installation, email)}));
     }
   };
 }

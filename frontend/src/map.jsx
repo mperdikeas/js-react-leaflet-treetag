@@ -238,7 +238,7 @@ class Map extends React.Component {
         console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
         const treesInPolygon = this.countTreesInLayer(layer);
         layer.bindPopup(`<b>${treesInPolygon}</b><br>10 ελιές, 20 εσπεριδοεϊδή.`).openPopup();
-        }
+      }
     });
 
     const eventsToTriggerCounting = ['draw:created', 'draw:edited', 'draw:saved'

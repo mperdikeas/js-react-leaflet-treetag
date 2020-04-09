@@ -17,7 +17,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 }
 
-class ModalUsernameReminderSuccess extends React.Component {
+class ModalNotification extends React.Component {
 
   constructor(props) {
     super(props);
@@ -43,6 +43,6 @@ class ModalUsernameReminderSuccess extends React.Component {
 }
 
 
-export default connect(null, mapDispatchToProps)(ModalUsernameReminderSuccess);
+export default connect(null, mapDispatchToProps)(ModalNotification);
 
 
