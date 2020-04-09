@@ -33,9 +33,7 @@ class ModalUsernameReminderSuccess extends React.Component {
     return (
       <>
       <dialog ref={this.ref}>
-        <div>Username reminder (for installation {'installation'}) sent to the
-          email address: {'email'}
-        </div>
+        {this.props.html}
         <Button variant='primary' onClick={this.props.clearModal}>OK</Button>
       </dialog>
       {this.props.children}

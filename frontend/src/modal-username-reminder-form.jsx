@@ -13,23 +13,33 @@ import {MDL_USERNAME_REMINDER_SUCCESS} from './constants/modal-types.js';
 import {axiosPlain} from './axios-setup.js';
 
 
-
-// redux
 import {  connect   }              from 'react-redux';
 
+
+const msg = (installation, email) => {
+  return `username reminder was successfully sent to the email address ${email}`+
+         ` for installation ${installation}.`+
+         ' Please check your email';
+}
+
+const msgHTML = (installation, email) => {
+  return (<>
+    <p style={{width: '27em'}}>
+      {msg(installation, email)}
+    </p>
+
+    </>);
+}
 
 const mapDispatchToProps = (dispatch) => {
   return {
     clearModal: ()=> dispatch(clearModal())
     , addToastForSuccessfulUsernameReminderSent: (installation, email)=> {
-      dispatch(addToast('username reminder'
-                      , `username reminder was successfully sent to the email address ${email}`+
-                        ` for installation ${installation}.`+
-                        ' Please check your email'))
+      dispatch(addToast('username reminder', msg(installation, email)));
     }
-    , displayModalForSuccessfulUsernameReminderSent: ()=> {
-      dispatch(displayModal(MDL_USERNAME_REMINDER_SUCCESS));
-      }
+    , displayModalForSuccessfulUsernameReminderSent: (installation, email)=> {
+      dispatch(displayModal(MDL_USERNAME_REMINDER_SUCCESS, {html: msgHTML(installation, email)}));
+    }
   };
 }
 
@@ -51,7 +61,7 @@ class UsernameReminderForm extends React.Component {
 
   componentWillUnmount = ()=>{
     console.log('modal-username-reminder-form: component will unmount');
-    }
+  }
 
   sendUsernameReminder = (installation, email)=> {
     this.setState({waitForServer: true});
@@ -67,7 +77,7 @@ class UsernameReminderForm extends React.Component {
           this.setState({serverAPIFailureResponse: null, waitForServer: false});
           this.props.addToastForSuccessfulUsernameReminderSent(installation, email);
           this.props.clearModal();
-          this.props.displayModalForSuccessfulUsernameReminderSent();
+          this.props.displayModalForSuccessfulUsernameReminderSent(installation, email);
         } else {
           console.log('sendUsernameReminder call was unsuccessful');
           this.setState({serverAPIFailureResponse: res.data.t.problem, waitForServer: false});
@@ -104,7 +114,7 @@ class UsernameReminderForm extends React.Component {
             {this.state.serverAPIFailureResponse}
           </div>
         );
-        }
+      }
 
     })();
 
@@ -114,7 +124,7 @@ class UsernameReminderForm extends React.Component {
         return <Button type="submit" disabled={true}>Please wait...</Button>
       } else {
         return <Button type="submit">Send username reminder</Button>
-        }
+      }
     })();
     
     return (
