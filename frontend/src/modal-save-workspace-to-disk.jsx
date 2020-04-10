@@ -15,13 +15,20 @@ import { clearModal, setFlag } from './actions/index.js';
 
 import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
 
+import {addToast} from './actions/index.js';
+
+
 import { saveAs } from 'file-saver';
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    overlayIsNowSaved: () => {
+    clearModal: ()=>dispatch(clearModal())
+    , overlayIsNowSaved: (fname, wipeWSAfterSave) => {
       dispatch(clearModal());
-      dispatch(setFlag(CLEAR_DRAW_WORKSPACE));
+      if (wipeWSAfterSave)
+        dispatch(setFlag(CLEAR_DRAW_WORKSPACE));
+      dispatch(addToast('overlay saved', `current overlay was saved to disk as file ${fname}.`
+        +(wipeWSAfterSave===false?'':' Workspace is now wiped clean and empty again.')));
     }
   };
 }
@@ -33,6 +40,7 @@ class ModalSaveWorkspaceToDisk extends React.Component {
     console.log(props);
     this.ref = React.createRef();
     this.overlayFileInputRef = React.createRef();
+    this.cleanWSCheck = React.createRef();
     this.state = {validated: false};
   }
 
@@ -46,11 +54,12 @@ class ModalSaveWorkspaceToDisk extends React.Component {
     event.stopPropagation();
     const form = event.currentTarget;
     if (form.checkValidity() === true) {
-      const overlayFname = this.overlayFileInputRef.current.value;
+      const fname = this.overlayFileInputRef.current.value;
+      const wipeWSAfterSave = this.cleanWSCheck.current.checked;
 
       const blob = new Blob([JSON.stringify(this.props.geoJSON)], {type: "application/geo+json;charset=utf-8"});
-      saveAs(blob, overlayFname);
-      this.props.overlayIsNowSaved();
+      saveAs(blob, fname);
+      this.props.overlayIsNowSaved(fname, wipeWSAfterSave);
     }
     this.setState({validated: true});    
   }
@@ -62,7 +71,7 @@ class ModalSaveWorkspaceToDisk extends React.Component {
       <dialog id="dialog" ref={this.ref}>
 
         <Form noValidate validated={this.state.validated} onSubmit={this.handleSubmit}>
-          <div display='flex' direction='flex=column'>
+          <div style={{display: 'flex', flexDirection: 'column'}}>
             <div>Save the present workspace overlay to disk.</div>
             <div style={{marginBottom: '1em'}}>Please enter the filename to save it under:</div>
             <Form.Group as={Col} controlId="overlay">
@@ -78,8 +87,17 @@ class ModalSaveWorkspaceToDisk extends React.Component {
                 υποχρεωτικό πεδίο
               </Form.Control.Feedback>              
             </Form.Group>
-            
-            <Button type="submit">Save</Button>
+            <Form.Group>
+              <Form.Check label="Wipe clean workspace after successful save"
+                          ref={this.cleanWSCheck}
+              />
+            </Form.Group>
+            <div style={{display: 'flex'
+                       , flexDirection:'row'
+                       , justifyContent: 'space-around'}}>
+              <Button variant="secondary" onClick={this.props.clearModal}>Cancel</Button>
+              <Button type="submit">Save</Button>
+            </div>
           </div>
         </Form>
       </dialog>
