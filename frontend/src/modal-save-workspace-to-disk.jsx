@@ -81,7 +81,7 @@ class ModalSaveWorkspaceToDisk extends React.Component {
               <Form.Control required
                             ref={this.overlayFnameInputRef}
                             type="text"
-                            placeholder="workspace.geojson"
+                            placeholder="workspace.json"
               />
               <Form.Control.Feedback>
                 Looks good!

@@ -155,7 +155,8 @@ class Map extends React.Component {
     this.drawControl = new L.Control.Draw({
       draw: {
         polyline: true,
-        circleMarker: true,
+        circlemarker: false, // GeoJSON does not support circles
+        circle: false,       // --------------------------------
         rectangle: true,
         marker: true,
         polygon: {
@@ -233,7 +234,9 @@ class Map extends React.Component {
     this.map.on('draw:created', (e) => {
       const type = e.layerType,
             layer = e.layer;
+      console.log(layer);
       this.drawnItems.addLayer(layer);
+      console.log(this.drawnItems.toGeoJSON(7));
       if (type==='polygon') {
         console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
         const treesInPolygon = this.countTreesInLayer(layer);

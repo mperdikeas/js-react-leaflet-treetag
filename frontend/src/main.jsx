@@ -18,6 +18,8 @@ import store                    from './store/index.js';
 
 import 'leaflet-draw';
 
+import './hack-for-the-leaflet-wrong-image-url.js';
+
 
 $(document).ready(doStuff);
 
