@@ -13,6 +13,8 @@ import {  connect   }              from 'react-redux';
 import { clearModal, setFlag } from './actions/index.js';
 
 
+import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
+
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -30,6 +32,7 @@ class ModalSaveWorkspaceToDisk extends React.Component {
     console.log(props);
     this.ref = React.createRef();
     this.overlayNameRef = React.createRef();
+    this.state = {validated: false};
   }
 
   componentDidMount() {
@@ -37,21 +40,26 @@ class ModalSaveWorkspaceToDisk extends React.Component {
     domElem.showModal();
   }
 
-  saveOverlay = (ev) => {
-    ev.preventDefault();    
-    const overlayName = this.overlayNameRef.current.value;
-    const workspacesJSON = localStorage.getItem('workspaces');
-    const workspaces = ((workspacesJSON)=>{
-      if (workspacesJSON===null)
-        return [];
-      else
-        return JSON.parse(workspacesJSON);
-    })(workspacesJSON);
-    workspaces.push({name: overlayName
-                   , geoJSON: this.props.geoJSON});
-    localStorage.setItem('workspaces', JSON.stringify(workspaces));
-    console.log(`overlay with name [${overlayName}] is now saved; ${workspaces.length} workspaces in local storage`);
-    this.props.overlayIsNowSaved();
+  handleSubmit = (ev) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const form = event.currentTarget;
+    if (form.checkValidity() === true) {
+      const overlayName = this.overlayNameRef.current.value;
+      const workspacesJSON = localStorage.getItem('workspaces');
+      const workspaces = ((workspacesJSON)=>{
+        if (workspacesJSON===null)
+          return [];
+        else
+          return JSON.parse(workspacesJSON);
+      })(workspacesJSON);
+      workspaces.push({name: overlayName
+                     , geoJSON: this.props.geoJSON});
+      localStorage.setItem('workspaces', JSON.stringify(workspaces));
+      console.log(`overlay with name [${overlayName}] is now saved; ${workspaces.length} workspaces in local storage`);
+      this.props.overlayIsNowSaved();
+    }
+    this.setState({validated: true});
   }
 
 
@@ -59,12 +67,28 @@ class ModalSaveWorkspaceToDisk extends React.Component {
     return (
       <>
       <dialog id="dialog" ref={this.ref}>
-        <form method="dialog" onSubmit={this.saveOverlay}>
-          <p>Enter a name for this overlay</p>
-          <label htmlFor='overlay-name-input'>Name for the overlay</label>
-          <input ref={this.overlayNameRef} type='text' id='overlay-name-input'/><br/>
-          <input type="submit" value="OK"/>
-        </form>
+
+        <Form noValidate validated={this.state.validated} onSubmit={this.handleSubmit}>
+
+          <Form.Group as={Row} controlId="overlay">
+            <Form.Label column sm='4'>Enter a name for this overlay</Form.Label>
+            <Col sm='8'>
+              <Form.Control required
+            ref={this.overlayNameRef}
+            type="text"
+            placeholder="overlay"
+              />
+              <Form.Control.Feedback>
+                Looks good!
+              </Form.Control.Feedback>              
+              <Form.Control.Feedback type="invalid">
+                υποχρεωτικό πεδίο
+              </Form.Control.Feedback>
+            </Col>
+          </Form.Group>
+
+          <Button type="submit">Save to browser local storage</Button>
+        </Form>
       </dialog>
       {this.props.children}
       </>

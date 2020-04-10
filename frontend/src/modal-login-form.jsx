@@ -28,7 +28,6 @@ class LoginForm extends React.Component {
 
   constructor(props) {
     super(props);
-    this.ref = React.createRef();
     this.inputInstallationRef = React.createRef();
     this.inputUsernameRef     = React.createRef();
     this.inputPasswordRef     = React.createRef();
@@ -37,21 +36,6 @@ class LoginForm extends React.Component {
       logErrMsg: null
     };    
   }
-
-
-  /*
-  componentDidMount() {
-    const domElem = this.ref.current;
-    this.escapeKeySuppressor = (e)=>{
-      console.log(`key pressed: ${e.keyCode}`);
-      if (e.keyCode === 27) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-    };
-    domElem.addEventListener('keyup', this.escapeKeySuppressor);
-  }
-*/
 
 
   handleSubmit = (event) => {
@@ -80,7 +64,7 @@ class LoginForm extends React.Component {
 
   render = ()=> {
     return (
-      <Form ref={this.ref} noValidate onSubmit={this.handleSubmit}>
+      <Form noValidate onSubmit={this.handleSubmit}>
 
         <Form.Group as={Row} controlId="installation">
           <Form.Label column sm='4'>Installation</Form.Label>
