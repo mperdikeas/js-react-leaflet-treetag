@@ -15,6 +15,7 @@ import { clearModal, setFlag } from './actions/index.js';
 
 import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
 
+import { saveAs } from 'file-saver';
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -31,7 +32,7 @@ class ModalSaveWorkspaceToDisk extends React.Component {
     super(props);
     console.log(props);
     this.ref = React.createRef();
-    this.overlayNameRef = React.createRef();
+    this.overlayFileInputRef = React.createRef();
     this.state = {validated: false};
   }
 
@@ -45,21 +46,13 @@ class ModalSaveWorkspaceToDisk extends React.Component {
     event.stopPropagation();
     const form = event.currentTarget;
     if (form.checkValidity() === true) {
-      const overlayName = this.overlayNameRef.current.value;
-      const workspacesJSON = localStorage.getItem('workspaces');
-      const workspaces = ((workspacesJSON)=>{
-        if (workspacesJSON===null)
-          return [];
-        else
-          return JSON.parse(workspacesJSON);
-      })(workspacesJSON);
-      workspaces.push({name: overlayName
-                     , geoJSON: this.props.geoJSON});
-      localStorage.setItem('workspaces', JSON.stringify(workspaces));
-      console.log(`overlay with name [${overlayName}] is now saved; ${workspaces.length} workspaces in local storage`);
+      const overlayFname = this.overlayFileInputRef.current.value;
+
+      const blob = new Blob([JSON.stringify(this.props.geoJSON)], {type: "application/geo+json;charset=utf-8"});
+      saveAs(blob, overlayFname);
       this.props.overlayIsNowSaved();
     }
-    this.setState({validated: true});
+    this.setState({validated: true});    
   }
 
 
@@ -69,25 +62,25 @@ class ModalSaveWorkspaceToDisk extends React.Component {
       <dialog id="dialog" ref={this.ref}>
 
         <Form noValidate validated={this.state.validated} onSubmit={this.handleSubmit}>
-
-          <Form.Group as={Row} controlId="overlay">
-            <Form.Label column sm='4'>Enter a name for this overlay</Form.Label>
-            <Col sm='8'>
+          <div display='flex' direction='flex=column'>
+            <div>Save the present workspace overlay to disk.</div>
+            <div style={{marginBottom: '1em'}}>Please enter the filename to save it under:</div>
+            <Form.Group as={Col} controlId="overlay">
               <Form.Control required
-            ref={this.overlayNameRef}
-            type="text"
-            placeholder="overlay"
+                            ref={this.overlayFileInputRef}
+                            type="text"
+                            placeholder="workspace.geojson"
               />
               <Form.Control.Feedback>
                 Looks good!
               </Form.Control.Feedback>              
               <Form.Control.Feedback type="invalid">
                 υποχρεωτικό πεδίο
-              </Form.Control.Feedback>
-            </Col>
-          </Form.Group>
-
-          <Button type="submit">Save to browser local storage</Button>
+              </Form.Control.Feedback>              
+            </Form.Group>
+            
+            <Button type="submit">Save</Button>
+          </div>
         </Form>
       </dialog>
       {this.props.children}
