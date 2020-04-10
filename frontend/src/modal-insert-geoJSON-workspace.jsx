@@ -65,11 +65,9 @@ class ModalInsertGeoJSONToWorkspace extends React.Component {
     ev.stopPropagation();
     const form = ev.currentTarget;
     if (form.checkValidity() === true) {
-      setTimeout(()=>{
       assert.isNotNull(this.state.readFromFile);
-        const overlayGeoJSON = this.state.readFromFile;
-        this.props.insertOverlay(overlayGeoJSON);
-        }, 2000);
+      const overlayGeoJSON = this.state.readFromFile;
+      this.props.insertOverlay(overlayGeoJSON);
     }
     this.setState({validated: true});
   }
