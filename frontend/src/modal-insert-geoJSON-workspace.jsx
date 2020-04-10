@@ -10,6 +10,8 @@ import './css/modal-dialog.css'; // TODO: use React emotion for element-scoped C
 
 import wrapContexts from './context/contexts-wrapper.jsx';
 
+import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
+
 // redux
 import {  connect   }              from 'react-redux';
 import { clearModal, setFlag } from './actions/index.js';
@@ -18,9 +20,13 @@ import { clearModal, setFlag } from './actions/index.js';
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    insertOverlay: (geoJSON) => {
+    clearModal: ()=>dispatch(clearModal())    
+    , insertOverlay: (geoJSON) => {
+      console.log('-----------------------');
+      console.log(geoJSON);
+      console.log('-----------------------');
+      dispatch(setFlag(INSERT_GEOJSON_INTO_WORKSPACE, JSON.parse(geoJSON)));
       dispatch(clearModal());
-      dispatch(setFlag(INSERT_GEOJSON_INTO_WORKSPACE, geoJSON));
     }
   };
 }
@@ -30,64 +36,77 @@ class ModalInsertGeoJSONToWorkspace extends React.Component {
   constructor(props) {
     super(props);
     this.ref = React.createRef();
-    this.overlaySelectionRef = React.createRef();
-    this.state = {workspaces: []};
+    this.overlayFileInputRef = React.createRef();
+    this.state = {validated: false, readFromFile: null};
   }
 
-  getGeoJSON = (overlayName) => {
-    for (let i = 0 ; i < this.state.workspaces.length ; i++) {
-      if (this.state.workspaces[i].name === overlayName)
-        return this.state.workspaces[i].geoJSON;
-      }
-    assert.fail("this should never occur according to design unless you cleared "+
-                "your browser's local storage after the modal dialog was displayed "+
-                "(in which case you 're an asshole)");
-  }
-
+  
   componentDidMount() {
-    const workspaces = ((workspacesJSON)=>{
-      if (workspacesJSON===null)
-        return [];
-      else
-        return JSON.parse(workspacesJSON);
-    })(localStorage.getItem('workspaces'));
-    this.setState({workspaces});
-    const domElem = this.ref.current;    
+    const domElem = this.ref.current;
     domElem.showModal();
+
+    this.overlayFileInputRef.current.addEventListener("change", (event) => {
+      console.log('listener added');
+      var reader = new FileReader();
+      console.log('2nd layer listener added');
+      reader.addEventListener('load', (e) => {
+        const text = reader.result;
+        console.log('contents are:');
+        console.log(text);
+        console.log('end of contents.');
+        this.setState({readFromFile: text});
+      });
+      reader.readAsText(event.target.files[0]);
+    });
   }
 
-  insertOverlay = (ev) => {
+  handleSubmit = (ev) => {
     ev.preventDefault();
-    const overlayName    = this.overlaySelectionRef.current.value;
-    const overlayGeoJSON = this.getGeoJSON(overlayName);
-    console.log('overlayGeoJSON', overlayGeoJSON);
-    this.props.insertOverlay(overlayGeoJSON);
+    ev.stopPropagation();
+    const form = ev.currentTarget;
+    if (form.checkValidity() === true) {
+      setTimeout(()=>{
+      assert.isNotNull(this.state.readFromFile);
+        const overlayGeoJSON = this.state.readFromFile;
+        this.props.insertOverlay(overlayGeoJSON);
+        }, 2000);
+    }
+    this.setState({validated: true});
   }
 
 
   render() {
-    const overlayNames = this.state.workspaces.map( (x)=>x.name );
-    console.log('overlayNames');
-    console.log(overlayNames);
-    const overlayOptions = overlayNames.map( (x) => {
-      return <option key={x} value={x}>{x}</option>;
-    });
     return (
       <>
       <dialog id="dialog" ref={this.ref}>
-        <form method="dialog" onSubmit={this.insertOverlay}>
-          <p>Choose an overlay to insert</p>
-          <label htmlFor='overlay-select'>Overlay to insert</label>
-          <select ref={this.overlaySelectionRef} name="overlay" id="overlay-select">
-            <option key='header' value="">--Please choose an option--</option>
-            {overlayOptions}
-          </select>
-          <input type="submit" value="OK"/>          
-        </form>
+        <Form noValidate validated={this.state.validated} onSubmit={this.handleSubmit}>
+          <div style={{display: 'flex', flexDirection: 'column'}}>
+            <div style={{marginBottom: '1em'}}>Import an overlay from disk into the current workspace</div>
+            <Form.Group as={Col} controlId="overlay">
+              <Form.Control required
+                            ref={this.overlayFileInputRef}
+                            type='file'
+                            accept='application/json'
+              />
+              <Form.Control.Feedback>
+                Looks good!
+              </Form.Control.Feedback>              
+              <Form.Control.Feedback type="invalid">
+                υποχρεωτικό πεδίο
+              </Form.Control.Feedback>              
+            </Form.Group>
+            <div style={{display: 'flex'
+                       , flexDirection:'row'
+                       , justifyContent: 'space-around'}}>
+              <Button variant="secondary" onClick={this.props.clearModal}>Cancel</Button>
+              <Button type="submit">Load</Button>
+            </div>
+          </div>
+        </Form>
       </dialog>
       {this.props.children}
       </>
-    )
+    );
   }
 }
 

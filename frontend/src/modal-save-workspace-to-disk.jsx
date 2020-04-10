@@ -40,7 +40,7 @@ class ModalSaveWorkspaceToDisk extends React.Component {
     super(props);
     console.log(props);
     this.ref = React.createRef();
-    this.overlayFileInputRef = React.createRef();
+    this.overlayFnameInputRef = React.createRef();
     this.cleanWSCheck = React.createRef();
     this.state = {validated: false};
   }
@@ -51,18 +51,20 @@ class ModalSaveWorkspaceToDisk extends React.Component {
   }
 
   handleSubmit = (ev) => {
-    event.preventDefault();
-    event.stopPropagation();
-    const form = event.currentTarget;
+    ev.preventDefault();
+    ev.stopPropagation();
+    assert.isNotNull(event); // TODO: investigate this aberration
+    assert.isDefined(event); // ---------------------------------
+    const form = ev.currentTarget;
     if (form.checkValidity() === true) {
-      const fname = this.overlayFileInputRef.current.value;
+      const fname = this.overlayFnameInputRef.current.value;
       const wipeWSAfterSave = this.cleanWSCheck.current.checked;
 
       const blob = new Blob([JSON.stringify(this.props.geoJSON)], {type: "application/geo+json;charset=utf-8"});
       saveAs(blob, fname);
       this.props.overlayIsNowSaved(fname, wipeWSAfterSave);
     }
-    this.setState({validated: true});    
+    this.setState({validated: true});
   }
 
 
@@ -77,7 +79,7 @@ class ModalSaveWorkspaceToDisk extends React.Component {
             <div style={{marginBottom: '1em'}}>Please enter the filename to save it under:</div>
             <Form.Group as={Col} controlId="overlay">
               <Form.Control required
-                            ref={this.overlayFileInputRef}
+                            ref={this.overlayFnameInputRef}
                             type="text"
                             placeholder="workspace.geojson"
               />
