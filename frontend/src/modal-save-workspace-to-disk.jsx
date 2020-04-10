@@ -27,7 +27,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(clearModal());
       if (wipeWSAfterSave)
         dispatch(setFlag(CLEAR_DRAW_WORKSPACE));
-      dispatch(addToast('overlay saved', `current overlay was saved to disk as file ${fname}.`
+      dispatch(addToast('overlay saved', `current overlay was saved to disk using suggested filename '${fname}'.`
+        +' Exact filename and directory are decided by the browser automatically.'
         +(wipeWSAfterSave===false?'':' Workspace is now wiped clean and empty again.')));
     }
   };
