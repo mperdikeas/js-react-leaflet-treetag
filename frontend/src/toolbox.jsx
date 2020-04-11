@@ -9,13 +9,18 @@ import saveWorkspaceToDisk      from './resources/save-workspace-to-disk-32.png'
 import uploadLayerToCloud       from './resources/upload-layer-to-cloud-32.png';
 import insertGeoJSONToWorkspace from './resources/insert-geoJSON-to-workspace-32.png';
 import selectTree               from './resources/select-tree-32.png';
+import query                    from './resources/question-32.png';
 
 
 // redux
 import { connect }                          from 'react-redux';
 import {toggleMode, displayModal, addToast} from './actions/index.js';
 
-import {MDL_NOTIFICATION, MDL_SAVE_WS_2_DSK, MDL_INS_GJSON_2_WS} from './constants/modal-types.js';
+import {MDL_NOTIFICATION
+      , MDL_SAVE_WS_2_DSK
+      , MDL_INS_GJSON_2_WS
+      , MDL_QUERY} from './constants/modal-types.js';
+
 import {GSN, globalGet} from './globalStore.js';
 
 let i = 0;
@@ -30,6 +35,7 @@ const mapDispatchToProps = (dispatch) => {
     , insertGeoGSONToWorkspace: () => dispatch(displayModal(MDL_INS_GJSON_2_WS))
     , uploadLayerToCloud: () => dispatch(displayModal())
     , selectTree: ()=>dispatch(addToast(i, 'this is some random toast'))
+    , query: ()=>dispatch(displayModal(MDL_QUERY))
     };
   }
 
@@ -46,8 +52,8 @@ class Toolbox extends React.Component {
 
 
   saveWorkspaceToDisk = (e) => {
-    console.log('save workspace to disk');
     e.preventDefault();
+    e.stopPropagation();
     const drawnItems = globalGet(GSN.LEAFLET_DRAWN_ITEMS);
     if (drawnItems.getLayers().length === 0) {
       this.props.displayWorkspaceIsEmptyNotification();
@@ -60,26 +66,36 @@ class Toolbox extends React.Component {
 
   chooseUploadLayerToCloud = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     const drawnItems = globalGet(GSN.LEAFLET_DRAWN_ITEMS);
-    console.log('toolbox', drawnItems.toGeoJSON(7));
   }
 
   insertGeoJSONToWorkspace = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     this.props.insertGeoGSONToWorkspace();
   }
 
   selectTree = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     this.props.selectTree();
     i++;
+  }
+
+  query = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    this.props.query();
   }
 
   render = () => {
     const tools = [{icon:saveWorkspaceToDisk , mode: null, f: this.saveWorkspaceToDisk}
                  , {icon:uploadLayerToCloud , mode: null, f: this.chooseUploadLayerToCloud}
                  , {icon: insertGeoJSONToWorkspace, mode: null, f: this.insertGeoJSONToWorkspace}
-                 , {icon:selectTree, mode: null, f: this.selectTree}];
+                 , {icon:selectTree, mode: null, f: this.selectTree}
+                 , {icon:query, mode: null, f: this.query}
+    ];
     
     const style = {display: 'block'
                  , margin: 'auto'

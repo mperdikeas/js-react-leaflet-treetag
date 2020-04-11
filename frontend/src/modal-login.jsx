@@ -19,7 +19,7 @@ import { clearModal } from './actions/index.js';
 
 
 
-import LoginForm from './modal-login-form.jsx';
+import ModalLoginForm from './modal-login-form.jsx';
 
 const mapStateToProps = (state) => {
   return {
@@ -123,7 +123,7 @@ class ModalLogin extends React.Component {
     return (
       <>
       <dialog style={this.props.style} id='dialog' ref={this.ref}>
-          <LoginForm doLogin={this.doLogin}/>
+          <ModalLoginForm doLogin={this.doLogin}/>
       </dialog>
       {this.props.children}
       </>

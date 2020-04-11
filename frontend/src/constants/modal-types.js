@@ -5,6 +5,7 @@ export const MDL_INS_GJSON_2_WS   = 'MDL_INS_GJSON_2_WS'; // Modal Insert GeoJSO
 export const MDL_USERNAME_REMINDER = 'MDL_USERNAME_REMINDER';
 export const MDL_NOTIFICATION      = 'MDL_NOTIFICATION';
 export const MDL_WKSPACE_IS_EMPTY = 'MDL_WKSPACE_IS_EMPTY';
+export const MDL_QUERY            = 'MDL_QUERY';
 export function isValidModalType(modalType) {
     const validModalTypes = [MODAL_APP_IS_LOADING
                              , MODAL_LOGIN
@@ -12,7 +13,8 @@ export function isValidModalType(modalType) {
                              , MDL_INS_GJSON_2_WS
                              , MDL_USERNAME_REMINDER
                              , MDL_NOTIFICATION
-                             , MDL_WKSPACE_IS_EMPTY];
+                             , MDL_WKSPACE_IS_EMPTY
+                             , MDL_QUERY];
     return (validModalTypes.indexOf(modalType)!==-1);
 }
 
