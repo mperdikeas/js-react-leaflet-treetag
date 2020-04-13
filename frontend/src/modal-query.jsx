@@ -12,7 +12,7 @@ import {  connect   } from 'react-redux';
 import {storeAccessToken} from './access-token-util.js';
 import wrapContexts from './context/contexts-wrapper.jsx';
 
-import { displayModal, clearModal } from './actions/index.js';
+import { displayModal, clearModal, addToast } from './actions/index.js';
 import {MDL_NOTIFICATION} from './constants/modal-types.js';
 
 import ModalQueryForm from './modal-query-form.jsx';
@@ -29,7 +29,10 @@ const mapDispatchToProps = (dispatch) => {
   return {
     clearModal : () => dispatch(clearModal()),
     alertDrawnItemsIsEmpty: ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: <div>workspace is empty</div>})),
-    alertDrawnItemsHasNoAreas: ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: <div>workspace defines no areas</div>}))    
+    alertDrawnItemsHasNoAreas: ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: <div>workspace defines no areas</div>})),
+    toastQuerySaved: (N, n)=>dispatch(addToast('query saved'
+                                             , 'Query results are now saved in query layer. '
+                                              +`${n} trees were selected out of a total of ${N} trees considered by the query`))
   };
 }
 
@@ -94,8 +97,10 @@ class ModalQuery extends React.Component {
         const layerGroup = L.layerGroup(trees);
         globalSet(GSN.LEAFLET_QUERY_LAYER, layerGroup);
         layersControl.addOverlay(layerGroup, 'query results');
+        this.props.clearModal();
+        this.props.toastQuerySaved(totalTrees, treesSelected);
       }
-    }
+    } // else <if (layerIsEmpty(drawnItems))>
   }
 
 
