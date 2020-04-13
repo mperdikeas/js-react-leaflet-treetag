@@ -82,10 +82,16 @@ class ModalQuery extends React.Component {
         const trees = [];
         map.eachLayer( (layer) => {
           if (layer instanceof L.CircleMarker) {
-            totalTrees++;
-            if (isMarkerInsidePolygonsOfLayerGroup(layer, drawnItems)) {
-              trees.push(layer);
-              treesSelected++;
+            if (layer.options.hasOwnProperty('targetId')) {
+              /*     
+               *   Only valid trees have a targetId, other gunk (e.g. the highlighting
+               *   marker don't.
+               */
+              totalTrees++;
+              if (isMarkerInsidePolygonsOfLayerGroup(layer, drawnItems)) {
+                trees.push(layer);
+                treesSelected++;
+              }
             }
           }
         } );
