@@ -16,7 +16,7 @@ import { displayModal, clearModal } from './actions/index.js';
 import {MDL_NOTIFICATION} from './constants/modal-types.js';
 
 import ModalQueryForm from './modal-query-form.jsx';
-import {GSN, globalGet} from './globalStore.js';
+import {GSN, globalGet, globalSet} from './globalStore.js';
 import {layerIsEmpty, layerContainsAreas, isMarkerInsidePolygonsOfLayerGroup} from './leaflet-util.js';
 
 const mapStateToProps = (state) => {
@@ -87,7 +87,12 @@ class ModalQuery extends React.Component {
           }
         } );
         console.log(`${totalTrees} trees found in total; ${treesSelected} added in query result`);
+        const queryLayer = globalGet(GSN.LEAFLET_QUERY_LAYER, false);
+        if (queryLayer) {
+          layersControl.removeLayer(queryLayer);
+        }
         const layerGroup = L.layerGroup(trees);
+        globalSet(GSN.LEAFLET_QUERY_LAYER, layerGroup);
         layersControl.addOverlay(layerGroup, 'query results');
       }
     }
