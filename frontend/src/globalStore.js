@@ -10,13 +10,15 @@ export function globalSet(name, value) {
 };
 
 export function globalGet(name, expectFound=true) {
+    assert.isDefined(name);
+    assert.isNotNull(name);    
+    assert.isDefined(null);
+    assert.isNotNull(undefined);
+    const rv = theStore[name];
     if (expectFound) {
-        assert.isDefined(name);
-        assert.isNotNull(name);    
-        assert.isDefined(null);
-        assert.isNotNull(undefined);
+        assert.isDefined(rv);
     }
-    return theStore[name];
+    return rv;
 }
 
 

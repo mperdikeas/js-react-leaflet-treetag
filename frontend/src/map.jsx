@@ -43,7 +43,7 @@ import {numOfLayersInLayerGroup} from './leaflet-util.js';
 // const Buffer = require('buffer').Buffer;
 // const Iconv  = require('iconv').Iconv;
 
-import {GSN, globalSet} from './globalStore.js';
+import {GSN, globalSet, globalGet} from './globalStore.js';
 
 import '../node_modules/leaflet-measure/dist/leaflet-measure.en.js';
 import '../node_modules/leaflet-measure/dist/leaflet-measure.css';
@@ -178,6 +178,20 @@ class Map extends React.Component {
     });
     this.map.addControl(this.drawControl);
   }
+
+  installNewQueryLayer = (featureGroup) => {
+    let queryLayer = globalGet(GSN.LEAFLET_QUERY_LAYER, false);
+    if (queryLayer!==undefined) {
+      assert.isNotNull(queryLayer);
+      queryLayer.clearLayers();
+      this.layersControl.removeLayer(queryLayer);
+      this.map.removeLayer(queryLayer);
+    }
+    queryLayer = featureGroup;
+    this.layersControl.addOverlay(queryLayer, 'query results');
+    globalSet(GSN.LEAFLET_QUERY_LAYER, queryLayer);
+    this.map.addLayer(queryLayer);
+  }  
 
   countTreesInLayer = (layer) => {
     let count = 0;
@@ -324,7 +338,9 @@ class Map extends React.Component {
         console.log(marker);
         return marker;
       }};
-      this.installNewDrawWorkspace(L.geoJSON(geoJSON, options));
+      const [circleMarkersFG, restFG] = splitFeatureGroupIntoCircleMarkersAndTheRest(L.geoJSON(geoJSON, options));
+      this.installNewDrawWorkspace(restFG);
+      this.installNewQueryLayer(circleMarkersFG);
       this.props.clearInsertGeoJSONIntoWorkspaceFlag();
     } else if (prevProps.insertGeoJSONIntoWorkspace && !this.props.insertGeoJSONIntoWorkspace) {
       console.log('map - insert GeoJSON into the draw workspace flag is cleared');
@@ -400,6 +416,18 @@ class Map extends React.Component {
 
 }
 
+function splitFeatureGroupIntoCircleMarkersAndTheRest(featureGroup) {
+  const circleMarkerLayers = [];
+  const restLayers = [];
+  featureGroup.eachLayer( (layer) => {
+    if (layer instanceof L.CircleMarker)
+      circleMarkerLayers.push(layer);
+    else
+      restLayers.push(layer);
+  });
+  return [L.featureGroup(circleMarkerLayers)
+        , L.featureGroup(restLayers)];
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(Map));
 
