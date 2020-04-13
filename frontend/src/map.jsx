@@ -108,6 +108,7 @@ class Map extends React.Component {
     this.layerGroup = null;
     this.clickableLayers = [];
     this.highlightedMarker = null;
+    globalSet(GSN.REACT_MAP, this);
   }
 
   getMapHeight = () => {

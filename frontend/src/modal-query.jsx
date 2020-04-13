@@ -96,13 +96,19 @@ class ModalQuery extends React.Component {
           }
         } );
         console.log(`${totalTrees} trees found in total; ${treesSelected} added in query result`);
+
+        if (false) {
         const queryLayer = globalGet(GSN.LEAFLET_QUERY_LAYER, false);
         if (queryLayer) {
           layersControl.removeLayer(queryLayer);
         }
         const layerGroup = L.layerGroup(trees);
         globalSet(GSN.LEAFLET_QUERY_LAYER, layerGroup);
-        layersControl.addOverlay(layerGroup, 'query results');
+          layersControl.addOverlay(layerGroup, 'query results');
+
+        }
+        const mapComponent = globalGet(GSN.REACT_MAP);
+        mapComponent.installNewQueryLayer(L.layerGroup(trees));
         this.props.clearModal();
         this.props.toastQuerySaved(totalTrees, treesSelected);
       }
