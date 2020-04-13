@@ -20,5 +20,7 @@ export function globalGet(name) {
 
 
 export const GSN = { // Global Store Name
-    LEAFLET_DRAWN_ITEMS: 'leaflet.drawnItems'
+    LEAFLET_DRAWN_ITEMS: 'leaflet.drawnItems',
+    LEAFLET_MAP: 'leaflet.map',
+    LEAFLET_LAYERS_CONTROL: 'leaflet.layers.control'
 };

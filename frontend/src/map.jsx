@@ -24,7 +24,7 @@ import 'leaflet-draw/dist/leaflet.draw.css';
 //import '../node_modules/leaflet-draw/dist/leaflet.draw.js';
 
 import proj4 from 'proj4';
-import inside from 'point-in-polygon';
+
 import keycode from 'keycode';
 
 require('../node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css');
@@ -206,12 +206,25 @@ class Map extends React.Component {
   }
 
   componentDidMount = () => {
+
+
+    
     window.addEventListener    ('resize', this.handleResize);
     this.map = L.map('map-id', {
       center: Athens,
       zoom: 15,
       zoomControl: false
     });
+
+    {
+      var bounds = [[54.559322, -5.767822], [56.1210604, -3.021240]];
+      // create an orange rectangle
+      const rectangle = L.rectangle(bounds, {color: "#ff7800", weight: 1}); // .addTo(this.map);
+      console.log(rectangle.getLatLngs());
+    }
+
+    
+    globalSet(GSN.LEAFLET_MAP, this.map);
     this.map.doubleClickZoom.disable();
 
     const options = {position: 'topleft'
@@ -267,6 +280,7 @@ class Map extends React.Component {
     const overlays = {};
     overlays['Καλλικράτης'] = ota_Callicrates;
     this.layersControl = L.control.layers(BaseLayersForLayerControl, overlays).addTo(this.map);
+    globalSet(GSN.LEAFLET_LAYERS_CONTROL, this.layersControl);
     BaseLayersForLayerControl.ESRI.addTo(this.map);
   }
 
