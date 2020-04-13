@@ -289,12 +289,9 @@ class Map extends React.Component {
 
   addLayerGroupsForPromisingLayers = () => {
     const promise = treeOverlays();
-    promise.then(({targetId2Marker, overlays}) => {
+    promise.then((overlays) => {
       for (const layerName in overlays) {
         const layerGroup = overlays[layerName];
-        this.targetId2Marker = Object.assign({}
-                                           , (this.targetId2Marker===null)?{}:this.targetId2Marker
-                                           , targetId2Marker);
         layerGroup.addTo(this.map);
         this.clickableLayers.push(layerGroup);
         this.addClickListenersToMarkersOnLayer(layerGroup);
@@ -382,7 +379,7 @@ class Map extends React.Component {
     console.log(e.target);
     const targetId = e.target.options.targetId;
     console.log(targetId);
-    const coords = e.target.getLatLng(); // this.targetId2Marker[targetId].getLatLng();
+    const coords = e.target.getLatLng();
 
 
     
