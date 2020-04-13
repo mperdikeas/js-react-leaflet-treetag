@@ -58,7 +58,12 @@ class Toolbox extends React.Component {
     if (drawnItems.getLayers().length === 0) {
       this.props.displayWorkspaceIsEmptyNotification();
     } else {
-      const geoJSON = drawnItems.toGeoJSON(7);
+      const drawnItems2 = L.featureGroup(drawnItems.getLayers());
+      const queryResults = globalGet(GSN.LEAFLET_QUERY_LAYER);
+      queryResults.eachLayer( (marker) => {
+        drawnItems2.addLayer(marker);
+      });
+      const geoJSON = drawnItems2.toGeoJSON(7);
       this.props.saveWorkspaceToDisk(geoJSON);
     }
   }

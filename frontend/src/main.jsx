@@ -19,6 +19,7 @@ import store                    from './store/index.js';
 import 'leaflet-draw';
 
 import './hack-for-the-leaflet-wrong-image-url.js';
+import './geojson-override.js';
 
 
 $(document).ready(doStuff);

@@ -216,6 +216,9 @@ class Map extends React.Component {
       zoomControl: false
     });
 
+    this.map.on('layeradd', (ev) => {
+      console.log(ev);
+      });
     {
       var bounds = [[54.559322, -5.767822], [56.1210604, -3.021240]];
       // create an orange rectangle
@@ -316,7 +319,15 @@ class Map extends React.Component {
     if (!prevProps.insertGeoJSONIntoWorkspace && this.props.insertGeoJSONIntoWorkspace) {
       console.log('map - I have to insert GeoJSON into the draw workspace');
       const geoJSON = this.props.insertGeoJSONIntoWorkspace; // the flag is a geoJSON object in this case
-      this.installNewDrawWorkspace(L.geoJSON(geoJSON));
+      const options = {pointToLayer: (geoJsonPoint, latlng) => {
+        console.log(`xxx ${geoJsonPoint.geometry.type}`);
+        const marker =  L.circleMarker(latlng, {targetId: geoJsonPoint.properties.targetId});
+        marker.on('click', this.clickOnCircleMarker);
+        marker.options.interactive = true;
+        console.log(marker);
+        return marker;
+      }};
+      this.installNewDrawWorkspace(L.geoJSON(geoJSON, options));
       this.props.clearInsertGeoJSONIntoWorkspaceFlag();
     } else if (prevProps.insertGeoJSONIntoWorkspace && !this.props.insertGeoJSONIntoWorkspace) {
       console.log('map - insert GeoJSON into the draw workspace flag is cleared');
@@ -368,9 +379,11 @@ class Map extends React.Component {
       this.highlightedMarker.marker.bringToBack();
       this.map.setView(coords, this.map.getZoom());
     };
+    console.log(e.target);
+    const targetId = e.target.options.targetId;
+    console.log(targetId);
+    const coords = e.target.getLatLng(); // this.targetId2Marker[targetId].getLatLng();
 
-    const targetId = e.target.options.targetId;    
-    const coords = this.targetId2Marker[targetId].getLatLng();
 
     
     if (this.highlightedMarker === null) {
