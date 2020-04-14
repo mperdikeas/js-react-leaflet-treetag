@@ -101,7 +101,7 @@ const HGRS87 = 'EPSG:2100';
 class Map extends React.Component {
 
   constructor(props) {
-    super(props);/*
+    super(props);
     this.layerGroup = null;
     this.clickableLayers = [];
     this.highlightedMarker = null;
@@ -319,21 +319,11 @@ class Map extends React.Component {
     } else if (prevProps.clearDrawWorkspace && !this.props.clearDrawWorkspace) {
       console.log('map - clear draw workspace flag is cleared');
     }
+  }
 
-
-    if (!prevProps.insertGeoJSONIntoWorkspace && this.props.insertGeoJSONIntoWorkspace) {
+  insertGeoJSONIntoWorkspace = (geoJSON) => {
       console.log('map - I have to insert GeoJSON into the draw workspace');
-      const geoJSON = this.props.insertGeoJSONIntoWorkspace; // the flag is a geoJSON object in this case
       const options = {pointToLayer: (geoJsonPoint, latlng) => {
-        console.log(`xxx ${geoJsonPoint.geometry.type}`);
-/*
-        2. just store the react map component in the global store and not the various feature groups
-        3. get rid of the silly flags signalling and just directly access the map component and do stuff with it
-        4. figure out a way to edit leaflet marker comments
- */
-        /*  Only create circle markers for trees, for the rest of the points, just create
-         *  default markers.
-         */
         if (geoJsonPoint.properties.hasOwnProperty("targetId")) {
           const marker =  L.circleMarker(latlng, {targetId: geoJsonPoint.properties.targetId});
           marker.on('click', this.clickOnCircleMarker);
@@ -347,13 +337,7 @@ class Map extends React.Component {
       const [circleMarkersFG, restFG] = splitFeatureGroupIntoCircleMarkersAndTheRest(L.geoJSON(geoJSON, options));
       this.installNewDrawWorkspace(restFG);
       this.installNewQueryLayer(circleMarkersFG);
-      this.props.clearInsertGeoJSONIntoWorkspaceFlag();
-    } else if (prevProps.insertGeoJSONIntoWorkspace && !this.props.insertGeoJSONIntoWorkspace) {
-      console.log('map - insert GeoJSON into the draw workspace flag is cleared');
-    }    
-
-
-  }
+    }
 
 
 

@@ -16,6 +16,8 @@ import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
 import {  connect   }              from 'react-redux';
 import { clearModal, setFlag } from './actions/index.js';
 
+import {globalGet, GSN} from './globalStore.js';
+
 
 
 const mapDispatchToProps = (dispatch) => {
@@ -25,7 +27,7 @@ const mapDispatchToProps = (dispatch) => {
       console.log('-----------------------');
       console.log(geoJSON);
       console.log('-----------------------');
-      dispatch(setFlag(INSERT_GEOJSON_INTO_WORKSPACE, JSON.parse(geoJSON)));
+      globalGet(GSN.REACT_MAP).insertGeoJSONIntoWorkspace(JSON.parse(geoJSON));
       dispatch(clearModal());
     }
   };
