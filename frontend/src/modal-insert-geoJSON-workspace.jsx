@@ -5,7 +5,6 @@ const assert = require('chai').assert;
 
 import {GeometryContext} from './context/geometry-context.jsx';
 
-import {INSERT_GEOJSON_INTO_WORKSPACE}         from './constants/flags.js';
 import './css/modal-dialog.css'; // TODO: use React emotion for element-scoped CSS
 
 import wrapContexts from './context/contexts-wrapper.jsx';
@@ -13,8 +12,8 @@ import wrapContexts from './context/contexts-wrapper.jsx';
 import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
 
 // redux
-import {  connect   }              from 'react-redux';
-import { clearModal, setFlag } from './actions/index.js';
+import {  connect   } from 'react-redux';
+import { clearModal } from './actions/index.js';
 
 import {globalGet, GSN} from './globalStore.js';
 

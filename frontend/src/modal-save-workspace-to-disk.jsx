@@ -3,18 +3,18 @@ var      cx = require('classnames');
 
 const assert = require('chai').assert;
 
-import {CLEAR_DRAW_WORKSPACE}                  from './constants/flags.js';
 import './css/modal-dialog.css'; // TODO: use React emotion for element-scoped CSS
 
 import wrapContexts from './context/contexts-wrapper.jsx';
 
 // redux
 import {  connect   }              from 'react-redux';
-import { clearModal, setFlag } from './actions/index.js';
+import { clearModal } from './actions/index.js';
 
 
 import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
 
+import {globalGet, GSN} from './globalStore.js';
 import {addToast} from './actions/index.js';
 
 
@@ -26,7 +26,8 @@ const mapDispatchToProps = (dispatch) => {
     , overlayIsNowSaved: (fname, wipeWSAfterSave) => {
       dispatch(clearModal());
       if (wipeWSAfterSave)
-        dispatch(setFlag(CLEAR_DRAW_WORKSPACE));
+        globalGet(GSN.REACT_MAP).drawnItems.clearLayers();
+      
       dispatch(addToast('overlay saved', `current overlay was saved to disk using suggested filename '${fname}'.`
         +' Exact filename and directory are decided by the browser automatically.'
         +(wipeWSAfterSave===false?'':' Workspace is now wiped clean and empty again.')));

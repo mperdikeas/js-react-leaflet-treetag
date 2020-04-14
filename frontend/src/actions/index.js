@@ -1,8 +1,6 @@
 const assert = require('chai').assert;
 import {APP_IS_DONE_LOADING
         , UPDATE_MOUSE_COORDS
-        , SET_FLAG
-        , CLEAR_FLAG
         , DISPLAY_MODAL
         , CLEAR_MODAL
         , TOGGLE_MAXIMIZE_INFO_PANEL
@@ -21,17 +19,6 @@ export function appIsDoneLoading() {
 
 export function updateMouseCoords(latlng) {
     return { type: UPDATE_MOUSE_COORDS, payload: {latlng} };
-}
-
-export function clearFlag(flagToClear) {
-    return {type: CLEAR_FLAG, payload: {flagToClear}};
-}
-
-export function setFlag(flagToSet, flagValue=CT_UNIT) {
-    assert.isNotNull(flagValue);
-    assert.isDefined(flagValue);
-    console.log(`dispatching flag [${flagToSet}] with flag value [${flagValue}]`); 
-    return {type: SET_FLAG, payload: {flagToSet, flagValue}};
 }
 
 export function displayModal(modalType, modalProps) {

@@ -38,7 +38,7 @@ import rainbow from './rainbow.js';
 import {CustomCircleMarker} from './custom-markers.js';
 import wrapContexts from './context/contexts-wrapper.jsx';
 
-import {numOfLayersInLayerGroup} from './leaflet-util.js';
+import {layerIsEmpty, numOfLayersInLayerGroup} from './leaflet-util.js';
 
 // const Buffer = require('buffer').Buffer;
 // const Iconv  = require('iconv').Iconv;
@@ -53,15 +53,12 @@ import '../node_modules/leaflet-measure/dist/leaflet-measure.css';
 import {Athens, ota_Callicrates, treeOverlays, defaultMarkerStyle} from './tree-markers.js';
 
 
-import {CLEAR_DRAW_WORKSPACE
-      , INSERT_GEOJSON_INTO_WORKSPACE} from './constants/flags.js';
 
 import {MODAL_ADD_GEOMETRY} from './constants/modal-types.js';
 
 import { connect }          from 'react-redux';
 import {appIsDoneLoading
       , updateMouseCoords
-      , clearFlag
       , displayModal
       , toggleTarget}  from './actions/index.js';
 
@@ -72,8 +69,6 @@ const tentativePolygonStyle = {weight: 2, dashArray: '6'};
 const mapStateToProps = (state) => {
   return {
     tileProviderId                 : state.tileProviderId
-    , clearDrawWorkspace           : state.flags[CLEAR_DRAW_WORKSPACE]
-    , insertGeoJSONIntoWorkspace   : state.flags[INSERT_GEOJSON_INTO_WORKSPACE]
   };
 };
 
@@ -81,8 +76,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     appIsDoneLoading: ()=> dispatch(appIsDoneLoading())
     , updateCoordinates                   : (latlng)   => dispatch(updateMouseCoords(latlng))
-    , clearDrawWorkspaceFlag            : ()         => dispatch(clearFlag(CLEAR_DRAW_WORKSPACE))
-    , clearInsertGeoJSONIntoWorkspaceFlag: ()        => dispatch(clearFlag(INSERT_GEOJSON_INTO_WORKSPACE))
     , displayAddPolygonDialog           : (polygonId, polygon)  => dispatch(displayModal(MODAL_ADD_GEOMETRY, {polygonId, polygon}))
     , toggleTarget                      : (targetId) => dispatch(toggleTarget(targetId))
     };
@@ -105,6 +98,7 @@ class Map extends React.Component {
     this.layerGroup = null;
     this.clickableLayers = [];
     this.highlightedMarker = null;
+    this.queryLayer = null;
     globalSet(GSN.REACT_MAP, this);
   }
 
@@ -178,8 +172,7 @@ class Map extends React.Component {
 
   installNewQueryLayer = (featureGroup) => {
 //    let queryLayer = globalGet(GSN.LEAFLET_QUERY_LAYER, false);
-    if (this.queryLayer!==undefined) {
-      assert.isNotNull(this.queryLayer);
+    if (this.queryLayer!==null) {
       this.queryLayer.clearLayers();
       this.layersControl.removeLayer(this.queryLayer);
       this.map.removeLayer(this.queryLayer);
@@ -311,33 +304,26 @@ class Map extends React.Component {
   componentDidUpdate(prevProps, prevState) {
     if ((prevProps.loginContext.username===null) && (this.props.loginContext.username!==null))
       this.addLayerGroupsForPromisingLayers();
-
-    if (!prevProps.clearDrawWorkspace && this.props.clearDrawWorkspace) {
-      console.log('map - I have to clear the draw workspace');
-      this.drawnItems.clearLayers();
-      this.props.clearDrawWorkspaceFlag();
-    } else if (prevProps.clearDrawWorkspace && !this.props.clearDrawWorkspace) {
-      console.log('map - clear draw workspace flag is cleared');
-    }
   }
 
   insertGeoJSONIntoWorkspace = (geoJSON) => {
-      console.log('map - I have to insert GeoJSON into the draw workspace');
-      const options = {pointToLayer: (geoJsonPoint, latlng) => {
-        if (geoJsonPoint.properties.hasOwnProperty("targetId")) {
-          const marker =  L.circleMarker(latlng, {targetId: geoJsonPoint.properties.targetId});
-          marker.on('click', this.clickOnCircleMarker);
-          marker.options.interactive = true;
-          console.log(marker);
-          return marker;
-        } else {
-          return L.marker(latlng);
-        }
-      }};
-      const [circleMarkersFG, restFG] = splitFeatureGroupIntoCircleMarkersAndTheRest(L.geoJSON(geoJSON, options));
-      this.installNewDrawWorkspace(restFG);
+    console.log('map - I have to insert GeoJSON into the draw workspace');
+    const options = {pointToLayer: (geoJsonPoint, latlng) => {
+      if (geoJsonPoint.properties.hasOwnProperty("targetId")) {
+        const marker =  L.circleMarker(latlng, {targetId: geoJsonPoint.properties.targetId});
+        marker.on('click', this.clickOnCircleMarker);
+        marker.options.interactive = true;
+        console.log(marker);
+        return marker;
+      } else {
+        return L.marker(latlng);
+      }
+    }};
+    const [circleMarkersFG, restFG] = splitFeatureGroupIntoCircleMarkersAndTheRest(L.geoJSON(geoJSON, options));
+    this.installNewDrawWorkspace(restFG);
+    if (! layerIsEmpty(circleMarkersFG))
       this.installNewQueryLayer(circleMarkersFG);
-    }
+  }
 
 
 
