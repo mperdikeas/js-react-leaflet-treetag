@@ -63,7 +63,7 @@ import {appIsDoneLoading
       , toggleTarget}  from './actions/index.js';
 
 
-const tentativePolygonStyle = {weight: 2, dashArray: '6'};
+import TreeCountStatistic from './tree-count-statistic.js';
 
 
 const mapStateToProps = (state) => {
@@ -183,28 +183,25 @@ class Map extends React.Component {
   }  
 
   countTreesInLayer = (layer) => {
-    let count = 0;
+    const rv = new TreeCountStatistic();
     this.clickableLayers.forEach( (markers) => {
       markers.eachLayer ( (marker)=>{
         if (layer instanceof L.Polygon) {
           if (layer.contains(marker.getLatLng())) {
-            count++;
-          }
-        } else if (layer instanceof L.Circle) {
-          if (layer.getLatLng().distanceTo(marker.getLatLng()) <= layer.getRadius()) {
-            count++;
+            console.log(marker);
+            rv.increment(marker.options.kind);
           }
         }
       });
     });
-    return count;
+    return rv;
   }
   
 
   countTreesInDrawWorkspace = () => {
     let count = 0;
     this.drawnItems.eachLayer( (layer) => {
-      count += this.countTreesInLayer(layer);
+      count += this.countTreesInLayer(layer).total;
     });
   }
 
@@ -257,8 +254,8 @@ class Map extends React.Component {
       console.log(this.drawnItems.toGeoJSON(7));
       if (type==='polygon') {
         console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
-        const treesInPolygon = this.countTreesInLayer(layer);
-        layer.bindPopup(`<b>${treesInPolygon}</b><br>10 ελιές, 20 εσπεριδοεϊδή.`).openPopup();
+        const countResult = this.countTreesInLayer(layer);
+        layer.bindPopup(`<b>${countResult.total()}</b><br>${countResult.toDetailBreakdownString()}`).openPopup();
       }
     });
 
