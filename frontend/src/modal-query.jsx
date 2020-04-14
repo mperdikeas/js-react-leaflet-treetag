@@ -66,9 +66,9 @@ class ModalQuery extends React.Component {
   doQuery = () => {
     console.log(`we are now ready to do a query`);
     const reactMap      = globalGet(GSN.REACT_MAP);
-    const map           = reactMap.map; // globalGet(GSN.LEAFLET_MAP);
-    const layersControl = reactMap.layersControl; // globalGet(GSN.LEAFLET_LAYERS_CONTROL);
-    const drawnItems    = reactMap.drawnItems; // globalGet(GSN.LEAFLET_DRAWN_ITEMS);
+    const map           = reactMap.map;
+    const layersControl = reactMap.layersControl;
+    const drawnItems    = reactMap.drawnItems;
     if (layerIsEmpty(drawnItems)) {
       this.props.alertDrawnItemsIsEmpty();
     } else {

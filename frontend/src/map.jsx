@@ -102,9 +102,6 @@ class Map extends React.Component {
 
   constructor(props) {
     super(props);/*
-    this.state = {
-      highlightedMarker: null
-    };*/
     this.layerGroup = null;
     this.clickableLayers = [];
     this.highlightedMarker = null;
@@ -151,7 +148,6 @@ class Map extends React.Component {
     
     this.drawnItems = featureGroup;
     this.layersControl.addOverlay(this.drawnItems, 'επιφάνεια εργασίας');      
-//    globalSet(GSN.LEAFLET_DRAWN_ITEMS, this.drawnItems);
     this.map.addLayer(this.drawnItems);
     this.drawControl = new L.Control.Draw({
       draw: {
@@ -190,7 +186,6 @@ class Map extends React.Component {
     }
     this.queryLayer = featureGroup;
     this.layersControl.addOverlay(this.queryLayer, 'query results');
-//    globalSet(GSN.LEAFLET_QUERY_LAYER, queryLayer);
     this.map.addLayer(this.queryLayer);
   }  
 
@@ -242,7 +237,6 @@ class Map extends React.Component {
     }
 
     
-//    globalSet(GSN.LEAFLET_MAP, this.map);
     this.map.doubleClickZoom.disable();
 
     const options = {position: 'topleft'
@@ -298,7 +292,6 @@ class Map extends React.Component {
     const overlays = {};
     overlays['Καλλικράτης'] = ota_Callicrates;
     this.layersControl = L.control.layers(BaseLayersForLayerControl, overlays).addTo(this.map);
-//    globalSet(GSN.LEAFLET_LAYERS_CONTROL, this.layersControl);
     BaseLayersForLayerControl.ESRI.addTo(this.map);
   }
 
