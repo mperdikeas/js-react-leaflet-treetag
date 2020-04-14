@@ -58,6 +58,7 @@ class TreeInformationPanel extends React.Component {
   }
 
   render() {
+    console.log('information panel render');
     if (this.props.targetId===null) {
       return (
         <div id='detailInformation' className='col-4 padding-0' style={{backgroundColor: 'lightgrey'}}>

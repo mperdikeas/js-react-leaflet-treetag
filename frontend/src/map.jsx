@@ -348,6 +348,7 @@ class Map extends React.Component {
   
 
   render() {
+    console.log('map rendered');
     const style = {height: `${this.getMapHeight()}px`};
     return (
       <div id='map-id' style={style}>
