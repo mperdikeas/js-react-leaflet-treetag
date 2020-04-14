@@ -28,5 +28,5 @@ export const GSN = { // Global Store Name
     LEAFLET_MAP: 'leaflet.map',
     LEAFLET_LAYERS_CONTROL: 'leaflet.layers.control',
     LEAFLET_QUERY_LAYER: 'leafet.query_layer',
-    REACT_MAP: 'react.map'
+    REACT_MAP: 'react.map' // this is the React map component, not the Leaflet map
 };

@@ -13,8 +13,6 @@ const LinkEventKeys = {FORGOT_USERNAME: 'forgot-username'
 
 import {clearModal, displayModal} from './actions/index.js';
 
-import {globalGet, GSN} from './globalStore.js';
-
 import {connect} from 'react-redux';
 
 
@@ -34,10 +32,6 @@ class ModalQueryForm extends React.Component {
     this.inputInstallationRef = React.createRef();
     this.inputUsernameRef     = React.createRef();
     this.inputPasswordRef     = React.createRef();
-
-    this.state = {
-      drawnItems: globalGet(GSN.LEAFLET_DRAWN_ITEMS)
-    };    
   }
 
 
@@ -62,9 +56,6 @@ class ModalQueryForm extends React.Component {
   }
 
   render = ()=> {
-    console.log('drawn items START');
-    console.log(this.state.drawnItems);
-    console.log('drawn items END');
     return (
       <Form noValidate onSubmit={this.handleSubmit}>
 

@@ -16,7 +16,7 @@ import { displayModal, clearModal, addToast } from './actions/index.js';
 import {MDL_NOTIFICATION} from './constants/modal-types.js';
 
 import ModalQueryForm from './modal-query-form.jsx';
-import {GSN, globalGet, globalSet} from './globalStore.js';
+import {GSN, globalGet} from './globalStore.js';
 import {layerIsEmpty, layerContainsAreas, isMarkerInsidePolygonsOfLayerGroup} from './leaflet-util.js';
 
 const mapStateToProps = (state) => {
@@ -65,12 +65,10 @@ class ModalQuery extends React.Component {
 
   doQuery = () => {
     console.log(`we are now ready to do a query`);
-    const map           = globalGet(GSN.LEAFLET_MAP);
-    const layersControl = globalGet(GSN.LEAFLET_LAYERS_CONTROL);
-    const drawnItems    = globalGet(GSN.LEAFLET_DRAWN_ITEMS);
-    console.log('drawn items are:');
-    console.log(drawnItems);
-    console.log('drawn items END');
+    const reactMap      = globalGet(GSN.REACT_MAP);
+    const map           = reactMap.map; // globalGet(GSN.LEAFLET_MAP);
+    const layersControl = reactMap.layersControl; // globalGet(GSN.LEAFLET_LAYERS_CONTROL);
+    const drawnItems    = reactMap.drawnItems; // globalGet(GSN.LEAFLET_DRAWN_ITEMS);
     if (layerIsEmpty(drawnItems)) {
       this.props.alertDrawnItemsIsEmpty();
     } else {
@@ -97,18 +95,8 @@ class ModalQuery extends React.Component {
         } );
         console.log(`${totalTrees} trees found in total; ${treesSelected} added in query result`);
 
-        if (false) {
-        const queryLayer = globalGet(GSN.LEAFLET_QUERY_LAYER, false);
-        if (queryLayer) {
-          layersControl.removeLayer(queryLayer);
-        }
-        const layerGroup = L.layerGroup(trees);
-        globalSet(GSN.LEAFLET_QUERY_LAYER, layerGroup);
-          layersControl.addOverlay(layerGroup, 'query results');
 
-        }
-        const mapComponent = globalGet(GSN.REACT_MAP);
-        mapComponent.installNewQueryLayer(L.layerGroup(trees));
+        reactMap.installNewQueryLayer(L.layerGroup(trees));
         this.props.clearModal();
         this.props.toastQuerySaved(totalTrees, treesSelected);
       }

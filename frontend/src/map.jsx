@@ -43,7 +43,7 @@ import {numOfLayersInLayerGroup} from './leaflet-util.js';
 // const Buffer = require('buffer').Buffer;
 // const Iconv  = require('iconv').Iconv;
 
-import {GSN, globalSet, globalGet} from './globalStore.js';
+import {GSN, globalSet} from './globalStore.js';
 
 import '../node_modules/leaflet-measure/dist/leaflet-measure.en.js';
 import '../node_modules/leaflet-measure/dist/leaflet-measure.css';
@@ -151,7 +151,7 @@ class Map extends React.Component {
     
     this.drawnItems = featureGroup;
     this.layersControl.addOverlay(this.drawnItems, 'επιφάνεια εργασίας');      
-    globalSet(GSN.LEAFLET_DRAWN_ITEMS, this.drawnItems);
+//    globalSet(GSN.LEAFLET_DRAWN_ITEMS, this.drawnItems);
     this.map.addLayer(this.drawnItems);
     this.drawControl = new L.Control.Draw({
       draw: {
@@ -181,17 +181,17 @@ class Map extends React.Component {
   }
 
   installNewQueryLayer = (featureGroup) => {
-    let queryLayer = globalGet(GSN.LEAFLET_QUERY_LAYER, false);
-    if (queryLayer!==undefined) {
-      assert.isNotNull(queryLayer);
-      queryLayer.clearLayers();
-      this.layersControl.removeLayer(queryLayer);
-      this.map.removeLayer(queryLayer);
+//    let queryLayer = globalGet(GSN.LEAFLET_QUERY_LAYER, false);
+    if (this.queryLayer!==undefined) {
+      assert.isNotNull(this.queryLayer);
+      this.queryLayer.clearLayers();
+      this.layersControl.removeLayer(this.queryLayer);
+      this.map.removeLayer(this.queryLayer);
     }
-    queryLayer = featureGroup;
-    this.layersControl.addOverlay(queryLayer, 'query results');
-    globalSet(GSN.LEAFLET_QUERY_LAYER, queryLayer);
-    this.map.addLayer(queryLayer);
+    this.queryLayer = featureGroup;
+    this.layersControl.addOverlay(this.queryLayer, 'query results');
+//    globalSet(GSN.LEAFLET_QUERY_LAYER, queryLayer);
+    this.map.addLayer(this.queryLayer);
   }  
 
   countTreesInLayer = (layer) => {
@@ -242,7 +242,7 @@ class Map extends React.Component {
     }
 
     
-    globalSet(GSN.LEAFLET_MAP, this.map);
+//    globalSet(GSN.LEAFLET_MAP, this.map);
     this.map.doubleClickZoom.disable();
 
     const options = {position: 'topleft'
@@ -298,7 +298,7 @@ class Map extends React.Component {
     const overlays = {};
     overlays['Καλλικράτης'] = ota_Callicrates;
     this.layersControl = L.control.layers(BaseLayersForLayerControl, overlays).addTo(this.map);
-    globalSet(GSN.LEAFLET_LAYERS_CONTROL, this.layersControl);
+//    globalSet(GSN.LEAFLET_LAYERS_CONTROL, this.layersControl);
     BaseLayersForLayerControl.ESRI.addTo(this.map);
   }
 
@@ -334,7 +334,6 @@ class Map extends React.Component {
       const options = {pointToLayer: (geoJsonPoint, latlng) => {
         console.log(`xxx ${geoJsonPoint.geometry.type}`);
 /*
-        1. only create circle markers for proper trees, create default markers for the rest
         2. just store the react map component in the global store and not the various feature groups
         3. get rid of the silly flags signalling and just directly access the map component and do stuff with it
         4. figure out a way to edit leaflet marker comments
