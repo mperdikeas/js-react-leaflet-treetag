@@ -333,11 +333,24 @@ class Map extends React.Component {
       const geoJSON = this.props.insertGeoJSONIntoWorkspace; // the flag is a geoJSON object in this case
       const options = {pointToLayer: (geoJsonPoint, latlng) => {
         console.log(`xxx ${geoJsonPoint.geometry.type}`);
-        const marker =  L.circleMarker(latlng, {targetId: geoJsonPoint.properties.targetId});
-        marker.on('click', this.clickOnCircleMarker);
-        marker.options.interactive = true;
-        console.log(marker);
-        return marker;
+/*
+        1. only create circle markers for proper trees, create default markers for the rest
+        2. just store the react map component in the global store and not the various feature groups
+        3. get rid of the silly flags signalling and just directly access the map component and do stuff with it
+        4. figure out a way to edit leaflet marker comments
+ */
+        /*  Only create circle markers for trees, for the rest of the points, just create
+         *  default markers.
+         */
+        if (geoJsonPoint.properties.hasOwnProperty("targetId")) {
+          const marker =  L.circleMarker(latlng, {targetId: geoJsonPoint.properties.targetId});
+          marker.on('click', this.clickOnCircleMarker);
+          marker.options.interactive = true;
+          console.log(marker);
+          return marker;
+        } else {
+          return L.marker(latlng);
+        }
       }};
       const [circleMarkersFG, restFG] = splitFeatureGroupIntoCircleMarkersAndTheRest(L.geoJSON(geoJSON, options));
       this.installNewDrawWorkspace(restFG);
