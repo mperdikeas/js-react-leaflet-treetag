@@ -48,7 +48,7 @@ import {GSN, globalSet} from './globalStore.js';
 import '../node_modules/leaflet-measure/dist/leaflet-measure.en.js';
 import '../node_modules/leaflet-measure/dist/leaflet-measure.css';
 
-
+import {axiosAuth} from './axios-setup.js';
 
 import {Athens, ota_Callicrates, treeOverlays, defaultMarkerStyle} from './tree-markers.js';
 
@@ -188,7 +188,6 @@ class Map extends React.Component {
       markers.eachLayer ( (marker)=>{
         if (layer instanceof L.Polygon) {
           if (layer.contains(marker.getLatLng())) {
-            console.log(marker);
             rv.increment(marker.options.kind);
           }
         }
@@ -216,17 +215,6 @@ class Map extends React.Component {
       zoomControl: false
     });
 
-    this.map.on('layeradd', (ev) => {
-      console.log(ev);
-      });
-    {
-      var bounds = [[54.559322, -5.767822], [56.1210604, -3.021240]];
-      // create an orange rectangle
-      const rectangle = L.rectangle(bounds, {color: "#ff7800", weight: 1}); // .addTo(this.map);
-      console.log(rectangle.getLatLngs());
-    }
-
-    
     this.map.doubleClickZoom.disable();
 
     const options = {position: 'topleft'
@@ -252,7 +240,7 @@ class Map extends React.Component {
       console.log(layer);
       this.drawnItems.addLayer(layer);
       console.log(this.drawnItems.toGeoJSON(7));
-      if (type==='polygon') {
+      if (layer instanceof L.Polygon) {
         console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
         const countResult = this.countTreesInLayer(layer);
         layer.bindPopup(`<b>${countResult.total()}</b><br>${countResult.toDetailBreakdownString()}`).openPopup();
@@ -298,9 +286,29 @@ class Map extends React.Component {
     });
   }
 
+  getTreesConfiguration = () => {
+    const url = '/getTreesConfiguration';
+    return axiosAuth.get(url
+    ).then(res => {
+      if (res.data.err != null) {
+        console.log('getTreesConfiguration API call error');
+        assert.fail(res.data.err);
+        return sca_fake_return();
+      } else {
+        this.treesConfiguration = res.data.t;
+      }
+    }).catch( err => {
+      console.log(err);
+      console.log(JSON.stringify(err));
+      assert.fail(err);
+    });
+  }
+
   componentDidUpdate(prevProps, prevState) {
-    if ((prevProps.loginContext.username===null) && (this.props.loginContext.username!==null))
+    if ((prevProps.loginContext.username===null) && (this.props.loginContext.username!==null)) {
       this.addLayerGroupsForPromisingLayers();
+      this.getTreesConfiguration();
+    }
   }
 
   insertGeoJSONIntoWorkspace = (geoJSON) => {

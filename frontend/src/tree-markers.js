@@ -131,7 +131,7 @@ function getTrees(N) {
                         } else {
                             console.log('getTrees API call success');
                             assert.isTrue(Array.isArray(res.data.t));
-                            if (res.data.t.length < N)
+                            if (res.data.t.length < N) // TODO: I shouldn't have that on production
                                 return res.data.t;
                             else
                                 return res.data.t.slice(0, N);

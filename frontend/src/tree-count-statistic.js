@@ -1,3 +1,5 @@
+import {globalGet, GSN} from './globalStore.js';
+
 export default class TreeCountStatistic {
 
     constructor() {
@@ -25,10 +27,16 @@ export default class TreeCountStatistic {
         const rv = [];
         for (var kind in this.kind2count) {
             if (Object.prototype.hasOwnProperty.call(this.kind2count, kind)) {
-                rv.push(`${this.kind2count[kind]} ${kind}`);
+                rv.push(numberAndKindDescr(this.kind2count[kind], kind));
             }
         }
         return rv.join(', ');
     }
 
+}
+
+function numberAndKindDescr(number, kind) {
+    const treesConfiguration = globalGet(GSN.REACT_MAP).treesConfiguration;
+    const {singular, plural} = treesConfiguration[kind].name;
+    return `${number} ${number==1?singular:plural}`;
 }
