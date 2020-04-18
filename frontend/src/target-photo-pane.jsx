@@ -309,21 +309,15 @@ fetchPhoto = () => {
 }
 } // class
 
-function uuidToNumber(uuid) {
-  return uuid.split("").reduce(function(a,b){a=((a<<5)-a)+b.charCodeAt(0);return a&a},0);
-}
-
 
 function urlForPhoto(targetId, indx) {
-  const effectiveTargetId = Math.abs(uuidToNumber(targetId));
-  const url = `/feature/${effectiveTargetId}/photos/elem/${indx}`;
+  const url = `/feature/${targetId}/photos/elem/${indx}`;
   return url;
 }
 
 
 function urlForNumOfPhotos(targetId) {
-  const effectiveTargetId = Math.abs(uuidToNumber(targetId));
-  const url=`/feature/${effectiveTargetId}/photos/num`;
+  const url=`/feature/${targetId}/photos/num`;
   return url;
 }
 

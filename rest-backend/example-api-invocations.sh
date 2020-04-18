@@ -12,8 +12,12 @@ echo $accessToken
 
 curl -k https://127.0.0.1:8445/tree-cadaster-backend/jax-rs/main/getTrees -H "Authorization: Bearer ${accessToken}"
 
-echo
-echo
+echo '--------------------------'
+
+curl -k https://127.0.0.1:8445/tree-cadaster-backend/jax-rs/main/feature/0/data -H "Authorization: Bearer ${accessToken}"
+
+
+echo '--------------------------'
 
 
 curl -k https://127.0.0.1:8445/tree-cadaster-backend/jax-rs/main/getTreesConfiguration -H "Authorization: Bearer ${accessToken}"

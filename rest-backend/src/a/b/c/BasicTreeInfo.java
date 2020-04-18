@@ -1,12 +1,14 @@
 package a.b.c;
 
-public final class BasicTreeInfo {
+import java.util.Random;
 
-    public final String id;
+public class BasicTreeInfo {
+
+    public final int id;
     public final int kind;
     public final Coordinates coords;
 
-    public BasicTreeInfo(final String id, final int kind, final Coordinates coords) {
+    public BasicTreeInfo(final int id, final int kind, final Coordinates coords) {
         this.id = id;
         this.kind = kind;
         this.coords = coords;

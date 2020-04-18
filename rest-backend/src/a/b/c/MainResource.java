@@ -140,11 +140,14 @@ public class MainResource {
         return TreeConfigurations.example();
     }
 
+
     
     @Path("/getTrees/")
     @GET 
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTrees(@Context final HttpServletRequest httpServletRequest) {
+        public Response getTrees(@Context javax.ws.rs.core.Application _app,
+                             @Context final HttpServletRequest httpServletRequest) {
+        final JaxRsApplication app = (JaxRsApplication) _app;
         String methodInfo = null;
         try {
             final String installation = Installation.getFromServletRequest(httpServletRequest);
@@ -152,32 +155,39 @@ public class MainResource {
                                                     , installation
                                                     , httpServletRequest.getRemoteAddr());
             logger.info(methodInfo);
-            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(getTrees(installation)))).build();
+            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(app.dbFacade.getTrees(installation)))).build();
         } catch (Throwable t) {
             logger.error(String.format("%s - shit happened", methodInfo), t);
             return ResourceUtil.softFailureResponse(t);
         }
     }
 
-        
 
-    
-    private static List<BasicTreeInfo> getTrees(final String installation) {
-        final List<BasicTreeInfo> rv = new ArrayList<>();
-        final int N = 10000;
-        final Random r = new Random();
-        for (int i = 0; i < N ; i++) {
-            final double longAthens = 23.72;
-            final double latAthens  = 37.98;
-            final double widthOfCoverageInDegrees = 0.05;
-            rv.add(new BasicTreeInfo(UUID.randomUUID().toString()
-                                     , r.nextInt(30)
-                                     , new Coordinates(longAthens + (widthOfCoverageInDegrees*r.nextDouble()-widthOfCoverageInDegrees/2)
-                                                       , latAthens + (widthOfCoverageInDegrees*r.nextDouble()-widthOfCoverageInDegrees/2))));
+    @Path("/feature/{featureId}/data")
+    @GET 
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getFeatureData(@Context javax.ws.rs.core.Application _app,
+                                   @Context final HttpServletRequest httpServletRequest
+                                   , @PathParam("featureId") final int featureId
+                                    ) {
+        final JaxRsApplication app = (JaxRsApplication) _app;
+        try {
+            logger.info(String.format("getFeaturePhotosNum(%d) ~*~ remote address: [%s]"
+                                      , featureId
+                                      , httpServletRequest.getRemoteAddr()));
+            TimeUnit.MILLISECONDS.sleep(200);
+            final TreeInfo treeInfo = app.dbFacade.getTreeInfo(featureId);
+            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(treeInfo))).build();
+        } catch (Throwable t) {
+            logger.error(String.format("Problem when calling getFeaturePhotosNum(%d) from remote address [%s]"
+                                       , featureId
+                                       , httpServletRequest.getRemoteAddr())
+                         , t);
+            return ResourceUtil.softFailureResponse(t);
         }
-        return rv;
     }
-        
+    
+    
 
     @Path("/feature/{featureId}/photos/num")
     @GET 
