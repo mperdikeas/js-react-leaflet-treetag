@@ -3,7 +3,7 @@ package a.b.c;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-
+import java.time.Instant;
 
 public class Globals {
 
@@ -12,10 +12,10 @@ public class Globals {
     static {
         final GsonBuilder gsonBuilder = new GsonBuilder();
         // gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
-        // gsonBuilder.registerTypeAdapter( Pair   .class, new PairAdapter());
-        // gsonBuilder.registerTypeAdapter( Map    .class, new MapAdapter());
         // gsonBuilder.registerTypeAdapter( Boolean.class, new JsonBooleanDeserializer());
-        gsonBuilder.registerTypeAdapter( HealthStatus.class, new HealthStatusAdapter());
+        gsonBuilder.registerTypeAdapter( HealthStatus.class  , new HealthStatusAdapter());
+        gsonBuilder.registerTypeAdapter( TreeActionType.class, new TreeActionTypeAdapter());
+        gsonBuilder.registerTypeAdapter( Instant.class, new InstantTypeAdapter());
         gson = gsonBuilder.serializeNulls().create();
     }
 

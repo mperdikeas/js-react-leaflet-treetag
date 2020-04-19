@@ -1,5 +1,7 @@
 package a.b.c;
 
+import java.util.List;
+
 public class TreeInfo extends BasicTreeInfo {
 
     public int yearPlanted;
@@ -8,7 +10,7 @@ public class TreeInfo extends BasicTreeInfo {
     public int crownHeightCm;
     public int circumferenceCm;
     public boolean raisedSidewalk;
-    public boolean nearPowerLines;
+    public boolean powerlineProximity;
     public boolean obstruction;
     public boolean debris;
     public boolean litter;
@@ -17,6 +19,7 @@ public class TreeInfo extends BasicTreeInfo {
     public boolean publicInterest;
     public boolean disease;
     public String comments;
+    public List<TreeAction> treeActions;
 
 
     public TreeInfo(final int id,
@@ -28,7 +31,7 @@ public class TreeInfo extends BasicTreeInfo {
                     final int crownHeightCm,
                     final int circumferenceCm,
                     final boolean raisedSidewalk,
-                    final boolean nearPowerLines,
+                    final boolean powerlineProximity,
                     final boolean obstruction,
                     final boolean debris,
                     final boolean litter,
@@ -36,7 +39,8 @@ public class TreeInfo extends BasicTreeInfo {
                     final boolean fallHazard,
                     final boolean publicInterest,
                     final boolean disease,
-                    final String comments) {
+                    final String comments,
+                    final List<TreeAction> treeActions) {
         super(id, kind, coords);
         this.yearPlanted = yearPlanted;
         this.healthStatus = healthStatus;
@@ -44,7 +48,7 @@ public class TreeInfo extends BasicTreeInfo {
         this.crownHeightCm = crownHeightCm;
         this.circumferenceCm = circumferenceCm;
         this.raisedSidewalk = raisedSidewalk;
-        this.nearPowerLines = nearPowerLines;
+        this.powerlineProximity = powerlineProximity;
         this.obstruction = obstruction;
         this.debris = debris;
         this.litter = litter;
@@ -53,6 +57,7 @@ public class TreeInfo extends BasicTreeInfo {
         this.publicInterest = publicInterest;
         this.disease = disease;
         this.comments = comments;
+        this.treeActions = treeActions;
     }
 
     public BasicTreeInfo toBasicTreeInfo() {

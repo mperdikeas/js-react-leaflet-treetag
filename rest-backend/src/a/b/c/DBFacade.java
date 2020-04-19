@@ -49,6 +49,7 @@ public class DBFacade {
                                                              , r.nextBoolean()
                                                              , r.nextBoolean()
                                                              , "yo! it's a tree"
+                                                             , TreeAction.someRandomActions(r)
                                                              )));
         } // for (int i = 0;
 

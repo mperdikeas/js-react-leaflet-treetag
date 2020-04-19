@@ -14,19 +14,20 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonParseException;
 
 
-public class HealthStatusAdapter implements JsonSerializer<HealthStatus>, JsonDeserializer<HealthStatus> {
+public class TreeActionTypeAdapter implements JsonSerializer<TreeActionType>
+                                              , JsonDeserializer<TreeActionType> {
 
     @Override
-    public JsonElement serialize(final HealthStatus h, Type typeOfT, JsonSerializationContext context) {
-        return new JsonPrimitive(h.getCode());
+    public JsonElement serialize(final TreeActionType o, Type typeOfT, JsonSerializationContext context) {
+        return new JsonPrimitive(o.getCode());
     }
 
     @Override
-    public HealthStatus deserialize(JsonElement _json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public TreeActionType deserialize(JsonElement _json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         
         final JsonPrimitive json = _json.getAsJsonPrimitive();
         Assert.assertTrue(json.isNumber());
         final int code = json.getAsInt();
-        return HealthStatus.fromCode(code);
+        return TreeActionType.fromCode(code);
     }
 }

@@ -13,20 +13,23 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonParseException;
 
+import java.time.Instant;
 
-public class HealthStatusAdapter implements JsonSerializer<HealthStatus>, JsonDeserializer<HealthStatus> {
+
+public class InstantTypeAdapter implements JsonSerializer<Instant>
+                                           , JsonDeserializer<Instant> {
 
     @Override
-    public JsonElement serialize(final HealthStatus h, Type typeOfT, JsonSerializationContext context) {
-        return new JsonPrimitive(h.getCode());
+    public JsonElement serialize(final Instant o, Type typeOfT, JsonSerializationContext context) {
+        return new JsonPrimitive(o.toEpochMilli()/1000);
     }
 
     @Override
-    public HealthStatus deserialize(JsonElement _json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public Instant deserialize(JsonElement _json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         
         final JsonPrimitive json = _json.getAsJsonPrimitive();
         Assert.assertTrue(json.isNumber());
-        final int code = json.getAsInt();
-        return HealthStatus.fromCode(code);
+        final long millisSSE  = json.getAsLong();
+        return Instant.ofEpochMilli(millisSSE);
     }
 }
