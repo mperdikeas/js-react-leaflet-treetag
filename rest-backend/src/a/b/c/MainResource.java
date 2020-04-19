@@ -155,6 +155,7 @@ public class MainResource {
                                                     , installation
                                                     , httpServletRequest.getRemoteAddr());
             logger.info(methodInfo);
+            // final Type TYPE= new TypeToken<ValueOrInternalServerExceptionData<BasicTreeInfo>>() {}.getType();
             return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(app.dbFacade.getTrees(installation)))).build();
         } catch (Throwable t) {
             logger.error(String.format("%s - shit happened", methodInfo), t);
