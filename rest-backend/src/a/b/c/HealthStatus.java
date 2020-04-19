@@ -2,16 +2,9 @@ package a.b.c;
 
 import org.junit.Assert;
 
-import com.google.gson.annotations.SerializedName;
-
 public enum HealthStatus {
-    @SerializedName("-1")
     POOR(-1),
-
-    @SerializedName("0")
     AVERAGE(0),
-
-    @SerializedName("1")    
     HEALTHY(1);
     
     private int code;

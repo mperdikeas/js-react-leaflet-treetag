@@ -75,8 +75,6 @@ import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 
-import a.b.gson.GsonHelper;
-
 import javax.crypto.SecretKey;
 import io.jsonwebtoken.Jwts;
 
@@ -129,7 +127,7 @@ public class MainResource {
                                                     , httpServletRequest.getRemoteAddr());
             logger.info(methodInfo);
             final TreeConfigurations x = getTreesConfiguration(installation);
-            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(x.value))).build();
+            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(x.value))).build();
         } catch (Throwable t) {
             logger.error(String.format("%s - shit happened", methodInfo), t);
             return ResourceUtil.softFailureResponse(t);
@@ -155,8 +153,7 @@ public class MainResource {
                                                     , installation
                                                     , httpServletRequest.getRemoteAddr());
             logger.info(methodInfo);
-            // final Type TYPE= new TypeToken<ValueOrInternalServerExceptionData<BasicTreeInfo>>() {}.getType();
-            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(app.dbFacade.getTrees(installation)))).build();
+            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(app.dbFacade.getTrees(installation)))).build();
         } catch (Throwable t) {
             logger.error(String.format("%s - shit happened", methodInfo), t);
             return ResourceUtil.softFailureResponse(t);
@@ -178,7 +175,7 @@ public class MainResource {
                                       , httpServletRequest.getRemoteAddr()));
             TimeUnit.MILLISECONDS.sleep(200);
             final TreeInfo treeInfo = app.dbFacade.getTreeInfo(featureId);
-            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(treeInfo))).build();
+            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(treeInfo))).build();
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling getFeaturePhotosNum(%d) from remote address [%s]"
                                        , featureId
@@ -201,7 +198,7 @@ public class MainResource {
                                       , featureId
                                       , httpServletRequest.getRemoteAddr()));
             TimeUnit.MILLISECONDS.sleep(200);
-            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(featureId % 5))).build();
+            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(featureId % 5))).build();
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling getFeaturePhotosNum(%d) from remote address [%s]"
                                        , featureId
@@ -228,7 +225,7 @@ public class MainResource {
             final String photoBase64 = getPhotoBase64(featureId, photoIndx);
             final Instant photoInstant = getPhotoInstant(featureId);
             final FeaturePhoto featurePhoto = new FeaturePhoto(photoBase64, photoInstant);
-            return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(featurePhoto))).build();
+            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(featurePhoto))).build();
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling getFeaturePhoto(%d, %d) from remote address [%s]"
                                        , featureId
