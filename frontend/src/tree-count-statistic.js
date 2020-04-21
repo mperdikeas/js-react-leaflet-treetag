@@ -1,5 +1,7 @@
 import {globalGet, GSN} from './globalStore.js';
 
+const assert = require('chai').assert;
+
 export default class TreeCountStatistic {
 
     constructor() {
@@ -23,11 +25,11 @@ export default class TreeCountStatistic {
         return rv;
     }
 
-    toDetailBreakdownString() {
+    toDetailBreakdownString(treesConfiguration) {
         const rv = [];
         for (var kind in this.kind2count) {
             if (Object.prototype.hasOwnProperty.call(this.kind2count, kind)) {
-                rv.push(numberAndKindDescr(this.kind2count[kind], kind));
+                rv.push(numberAndKindDescr(treesConfiguration, this.kind2count[kind], kind));
             }
         }
         return rv.join(', ');
@@ -35,8 +37,11 @@ export default class TreeCountStatistic {
 
 }
 
-function numberAndKindDescr(number, kind) {
-    const treesConfiguration = globalGet(GSN.REACT_MAP).treesConfiguration;
+function numberAndKindDescr(treesConfiguration, number, kind) {
+    const msg = 'at the time of this writing it was considered unfathomable that the TreesConfigurationContextProvider'
+        +'will not have obtained the treesConfiguration by this point';
+    assert.isNotNull(treesConfiguration, msg);
+    assert.isDefined(treesConfiguration, msg);
     const {singular, plural} = treesConfiguration[kind].name;
     return `${number} ${number==1?singular:plural}`;
 }

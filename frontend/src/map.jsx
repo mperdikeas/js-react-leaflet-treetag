@@ -65,7 +65,6 @@ import {appIsDoneLoading
 
 import TreeCountStatistic from './tree-count-statistic.js';
 
-import getTreesConfiguration from './trees-configuration-reader.js';
 
 
 const mapStateToProps = (state) => {
@@ -245,7 +244,16 @@ class Map extends React.Component {
       if (layer instanceof L.Polygon) {
         console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
         const countResult = this.countTreesInLayer(layer);
-        layer.bindPopup(`<b>${countResult.total()}</b><br>${countResult.toDetailBreakdownString()}`).openPopup();
+        const treesConfiguration = this.props.treesConfigurationContext.treesConfiguration;
+        const msg = 'it is inconceivable that, at this point, the TreesConfigurationContextProvider'
+                   +' should have failed to obtain the treesConfiguration object. If this abomination should come'
+                   +' to transpire then an approach similar to that used in ref:sse-1587477558 should be adopted.'
+                   +' However, given that it is highly unlikely that this should ever come to pass, I consider'
+                   +' it an overkill to adopt such an approach pre-emptively. In constrast, the approach in'
+        +' ref:sse-1587477558 was, in fact, necessary';
+        assert.exists(treesConfiguration, msg);
+        const detailBreakdown = countResult.toDetailBreakdownString(treesConfiguration);
+        layer.bindPopup(`<b>${countResult.total()}</b><br>${detailBreakdown}`).openPopup();
       }
     });
 
@@ -276,24 +284,37 @@ class Map extends React.Component {
   }
 
   addLayerGroupsForPromisingLayers = () => {
-    const promise = treeOverlays();
-    promise.then((overlays) => {
-      for (const layerName in overlays) {
-        const layerGroup = overlays[layerName];
-        layerGroup.addTo(this.map);
-        this.clickableLayers.push(layerGroup);
-        this.addClickListenersToMarkersOnLayer(layerGroup);
-        this.layersControl.addOverlay(layerGroup, layerName);
-      }
-    });
+    // sse-1587477558
+    const treesConfigurationIsNowAvailable = new Promise(
+      (resolution, rejection) => {
+        const testAvailability = () => {
+          if (this.props.treesConfigurationContext.treesConfiguration!=null) {
+            clearInterval(intervalId);
+            resolution();
+          } else
+          ; // wait some more (it typically takes 5 ms to populate the treesConfiguration structure)
+        }
+        const intervalId = setInterval(testAvailability, 1);
+      });
+    treesConfigurationIsNowAvailable.then( ()=> {
+      const promise = treeOverlays(this.props.treesConfigurationContext.treesConfiguration);
+      promise.then((overlays) => {
+        for (const layerName in overlays) {
+          const layerGroup = overlays[layerName];
+          layerGroup.addTo(this.map);
+          this.clickableLayers.push(layerGroup);
+          this.addClickListenersToMarkersOnLayer(layerGroup);
+          this.layersControl.addOverlay(layerGroup, layerName);
+        }
+      });
+    }).catch( (v) => {
+      assert.fail('not expecting this promise to fail: '+v); 
+    } );
   }
 
   componentDidUpdate(prevProps, prevState) {
     if ((prevProps.loginContext.username===null) && (this.props.loginContext.username!==null)) {
       this.addLayerGroupsForPromisingLayers();
-      getTreesConfiguration().then( (treesConfiguration)=>{
-        this.treesConfiguration = treesConfiguration;
-      });
     }
   }
 

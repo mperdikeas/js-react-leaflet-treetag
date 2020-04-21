@@ -10,8 +10,9 @@ import 'reset-css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/style.css';
 
-import GeometryContextProvider  from './context/geometry-context.jsx'
-import LoginContextProvider     from './context/login-context.jsx'
+import LoginContextProvider              from './context/login-context.jsx'
+import TreeConfigurationContextProvider  from './context/trees-configuration-context.jsx'
+import GeometryContextProvider           from './context/geometry-context.jsx'
 
 import { Provider }             from "react-redux";
 import store                    from './store/index.js';
@@ -32,9 +33,11 @@ function doRender() {
   ReactDOM.render(
     <Provider store={store}>
       <LoginContextProvider>
-        <GeometryContextProvider>
-          <App/>
-        </GeometryContextProvider>
+        <TreeConfigurationContextProvider>
+          <GeometryContextProvider>
+            <App/>
+          </GeometryContextProvider>
+        </TreeConfigurationContextProvider>
       </LoginContextProvider>
     </Provider>
     , $('#app')[0]);

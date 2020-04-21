@@ -19,8 +19,6 @@ import {sca_fake_return
 import {axiosAuth} from './axios-setup.js';
 
 
-import getTreesConfiguration from './trees-configuration-reader.js';
-
 const Athens = [37.98, 23.72];
 
 
@@ -52,49 +50,47 @@ function from_kind2layer_to_layer2kinds(configuration) {
     return rv;
 }
 
-const treeOverlays = ()=> {
-    return getTreesConfiguration().then( (treeConfiguration) => {
-        console.log(treeConfiguration);
-        const overlays = {};
-        const overlayNames = extractLayerNames(treeConfiguration);
-        console.log(overlayNames);
-        const layer2kinds = from_kind2layer_to_layer2kinds(treeConfiguration);
-        return getTrees(100).then( (data)=> {
-            overlayNames.forEach( (overlayName) => {
-                const layerGroup = L.layerGroup(data.filter(({kind})=>{
-                    const kindsInThisLayer = layer2kinds[overlayName];
-                    assert.isTrue(Array.isArray(kindsInThisLayer));
-                    const rv = kindsInThisLayer.includes(kind);
-                    return rv;
-                }).map( ({id, kind, coords})=> {
-                    assert.isTrue(id != null);
-                    let c = [coords.latitude, coords.longitude];
-                    const color = treeConfiguration[kind].color;
-                    const baseOptions = {targetId: id, kind, color};
+const treeOverlays = (treeConfiguration)=> {
+    console.log(treeConfiguration);
+    const overlays = {};
+    const overlayNames = extractLayerNames(treeConfiguration);
+    console.log(overlayNames);
+    const layer2kinds = from_kind2layer_to_layer2kinds(treeConfiguration);
+    return getTrees(100).then( (data)=> {
+        overlayNames.forEach( (overlayName) => {
+            const layerGroup = L.layerGroup(data.filter(({kind})=>{
+                const kindsInThisLayer = layer2kinds[overlayName];
+                assert.isTrue(Array.isArray(kindsInThisLayer));
+                const rv = kindsInThisLayer.includes(kind);
+                return rv;
+            }).map( ({id, kind, coords})=> {
+                assert.isTrue(id != null);
+                let c = [coords.latitude, coords.longitude];
+                const color = treeConfiguration[kind].color;
+                const baseOptions = {targetId: id, kind, color};
 
-                    const useCanvasRenderer = true;
-                    const styleOptions = (()=>{
-                        if (useCanvasRenderer)
-                            return Object.assign({}, defaultMarkerStyle(), {renderer: myRenderer});
-                        else
-                            return Object.assign({}, defaultMarkerStyle());
-                    })();
+                const useCanvasRenderer = true;
+                const styleOptions = (()=>{
+                    if (useCanvasRenderer)
+                        return Object.assign({}, defaultMarkerStyle(), {renderer: myRenderer});
+                    else
+                        return Object.assign({}, defaultMarkerStyle());
+                })();
 
-                    const effectiveOptions = Object.assign({}, baseOptions, styleOptions);
-                    /*
-                     *  There is no need to use a custom class to add just one option; adding
-                     *  the option on a vanila L.circleMarker works just as well.
-                     *
-                     *  const marker = new CustomCircleMarker(c, effectiveOptions);
-                     */
-                    const marker = new L.circleMarker(c, effectiveOptions);
-                    return marker;
+                const effectiveOptions = Object.assign({}, baseOptions, styleOptions);
+                /*
+                 *  There is no need to use a custom class to add just one option; adding
+                 *  the option on a vanila L.circleMarker works just as well.
+                 *
+                 *  const marker = new CustomCircleMarker(c, effectiveOptions);
+                 */
+                const marker = new L.circleMarker(c, effectiveOptions);
+                return marker;
 
-                })); // const layerGroup = L.layerGroup(...
-                overlays[overlayName] = layerGroup;
-            }); // overlayNames.forEach
-            return overlays;
-        });
+            })); // const layerGroup = L.layerGroup(...
+            overlays[overlayName] = layerGroup;
+        }); // overlayNames.forEach
+        return overlays;
     });
 };
 
