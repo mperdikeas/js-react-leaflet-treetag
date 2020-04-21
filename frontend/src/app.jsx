@@ -55,10 +55,10 @@ class App extends React.Component {
 
         <div className='row no-gutters justify-content-start align-items-center'
              style={{height: `${headerBarHeight}px`}}>
-          <div className='col-10'>
+          <div className='col-5'>
             <PointCoordinates/>
           </div>
-          <div className='col-2'>
+          <div className='col-7'>
             <UserControl/>
           </div>
         </div>
