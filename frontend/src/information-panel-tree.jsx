@@ -12,6 +12,11 @@ import TargetMetadataPane from './target-metadata-pane.jsx';
 import { connect }          from 'react-redux';
 import {toggleMaximizeInfoPanel, setPaneToOpenInfoPanel}  from './actions/index.js';
 import {INFORMATION, PHOTOS, HISTORY} from './constants/information-panel-panes.js';
+import {MODAL_LOGIN} from './constants/modal-types.js';
+
+import {displayModal} from './actions/index.js';
+import {axiosAuth} from './axios-setup.js';
+
 
 const mapStateToProps = (state) => {
   return {
@@ -25,6 +30,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     toggleMaximizeInfoPanel: ()=>dispatch(toggleMaximizeInfoPanel())
     , setPaneToOpenInfoPanel: (pane) => dispatch(setPaneToOpenInfoPanel(pane))
+    , displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
     };
 }
 
@@ -33,14 +39,86 @@ class TreeInformationPanel extends React.Component {
   constructor(props) {
     console.log('InformationPanel:: constructor');
     super(props);
+    this.state = this.getInitialState();
   }
 
+
+  getInitialState = () => {
+    return {
+      userIsLoggingIn: false
+      , loadingTreeData: true
+      , treeData: null
+      , error: null
+    };
+  }
+
+
   componentDidMount() {
+    this.fetchData();
   }
   
   componentDidUpdate(prevProps, prevState) {
+    if (prevProps.targetId !== this.props.targetId) {
+      console.log('targetId is different');
+      this.fetchData();
+    } else
+    console.log('targetId is the same');
   }
 
+
+  fetchData = () => {
+    const url = `/feature/${this.props.targetId}/data`;
+    console.log(`fetchData, axios URL is: ${url}`);
+    this.setState({loadingTreeData: true});
+    axiosAuth.get(url
+    ).then(res => {
+      // corr-id: SSE-1585746250
+       const {t, err} = res.data; 
+      if (err===null) {
+        this.setState({userIsLoggingIn: false
+                     , loadingTreeData: false
+                     , treeData: t
+                     , error: null});
+      } else {
+        this.setState({ userIsLoggingIn: false
+                      , loadingTreeData: false
+                      , treeData: null
+                      , error: {message: `server-side error: ${err.message}`
+                              , details: err.strServerTrace}});
+      }
+    }).catch( err => {
+      console.log(JSON.stringify(err));
+      console.log(err);
+      if (err.response && err.response.data) {
+        // SSE-1585746388: the shape of err.response.data is (code, msg, details)
+        // Java class ValidJWSAccessTokenFilter#AbortResponse
+        const {code, msg, details} = err.response.data;
+        switch(code) {
+          case 'JWT-verif-failed':
+            this.props.displayModalLogin( ()=>{this.fetchData();} );
+            this.setState({userIsLoggingIn: true
+                         , loadingTreeData: false
+                         , treeData: null
+                         , error: {message: `JWT verif. failed. Server message is: [${msg}]`
+                                 , details: details}});
+            break;
+          default:
+            this.setState({userIsLoggingIn: false
+                         , loadingTreeData: false
+                         , treeData: null
+                         , error: {message: `unexpected error code: ${code}`
+                                 , details: msg}});
+        }
+      } else {
+        this.setState({userIsLoggingIn: false
+                     , loadingTreeData: false
+                     , treeData: null
+                     , error: {message: 'unexpected error - likely a bug'
+                             , details: JSON.stringify(err)}});
+      }
+    }) // catch
+  } // fetchData
+  
   componentWillUnmount() {
     console.log('TreeInformationPanel: unmounting...');
   }
@@ -115,15 +193,21 @@ class TreeInformationPanel extends React.Component {
     switch (this.props.tab) {
       case INFORMATION:
         return (
-          <TargetDataPane targetId={this.props.targetId}/>
+          <TargetDataPane
+          userIsLoggingIn = {this.state.userIsLoggingIn}
+          loadingTreeData = {this.state.loadingTreeData}
+          treeData        = {this.state.treeData}
+          />
         );
       case PHOTOS:
-        return (
-          <TargetPhotoPane targetId={this.props.targetId}/>                
-        );
+        return <TargetPhotoPane/>;
       case HISTORY:
         return (
-          <TargetMetadataPane targetId={this.props.targetId}/>
+          <TargetMetadataPane
+          userIsLoggingIn = {this.state.userIsLoggingIn}
+          loadingTreeData = {this.state.loadingTreeData}
+          treeActions     = {this.state.treeData===null?null:this.state.treeData.treeActions}
+          />
         );
       default:
         assert.fail(`unhandled case [${this.props.tab}]`);

@@ -39,7 +39,14 @@ export default (modals = [{modalType: MODAL_LOGIN, modalProps: null}
                             console.log(modalToClose.modalProps.followUpFunction);
                             if (modalToClose.modalProps.followUpFunction) {
                                 console.log('calling follow up function');
-                                modalToClose.modalProps.followUpFunction();
+                                /* without the setTimeout I encountered the following problem:
+                                 * Error: You may not call store.getState() while the reducer is executing.” 🤔
+                                 * I can't explain the root cause of the problem and also, it didn't occur
+                                 * in the target-photo-pane.jsx at all; it only occured at the 
+                                 * target-data-pane.jsx and target-metadata-pane.jsx
+                                 */
+
+                                setTimeout(()=>modalToClose.modalProps.followUpFunction(), 0);
                             } else
                                 console.log('no follow up function upon clear modal');
                         } else {
