@@ -65,6 +65,8 @@ import {appIsDoneLoading
 
 import TreeCountStatistic from './tree-count-statistic.js';
 
+import getTreesConfiguration from './trees-configuration-reader.js';
+
 
 const mapStateToProps = (state) => {
   return {
@@ -286,28 +288,12 @@ class Map extends React.Component {
     });
   }
 
-  getTreesConfiguration = () => {
-    const url = '/getTreesConfiguration';
-    return axiosAuth.get(url
-    ).then(res => {
-      if (res.data.err != null) {
-        console.log('getTreesConfiguration API call error');
-        assert.fail(res.data.err);
-        return sca_fake_return();
-      } else {
-        this.treesConfiguration = res.data.t;
-      }
-    }).catch( err => {
-      console.log(err);
-      console.log(JSON.stringify(err));
-      assert.fail(err);
-    });
-  }
-
   componentDidUpdate(prevProps, prevState) {
     if ((prevProps.loginContext.username===null) && (this.props.loginContext.username!==null)) {
       this.addLayerGroupsForPromisingLayers();
-      this.getTreesConfiguration();
+      getTreesConfiguration().then( (treesConfiguration)=>{
+        this.treesConfiguration = treesConfiguration;
+      });
     }
   }
 
