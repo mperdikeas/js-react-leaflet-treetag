@@ -27,3 +27,23 @@ export function NumericDataFieldFactory (onChange) {
     );
   }
 }
+
+
+export function BooleanDataFieldFactory (onChange) {
+
+  return (props) => {
+
+    return (
+      <Form.Group as={Row} controlId={props.name}>
+        <Form.Label column sm='8'>{props.label}</Form.Label>
+        <Col sm='4'>
+          <Form.Check type='checkbox'
+                      name={props.name}
+                      checked={props.value}
+                      onChange={(ev)=>onChange(ev.target.name, ev.target.checked)}
+          />
+        </Col>
+      </Form.Group>
+    );
+  }
+}

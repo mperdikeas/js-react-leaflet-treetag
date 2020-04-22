@@ -8,7 +8,7 @@ import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
 import { connect }          from 'react-redux';
 
 
-import {NumericDataFieldFactory} from './data-field-controls.jsx';
+import {NumericDataFieldFactory, BooleanDataFieldFactory} from './data-field-controls.jsx';
 
 const mapStateToProps = (state) => {
   return {
@@ -61,6 +61,7 @@ class TargetDataPane extends React.Component {
              disease,
              comments} = this.props.treeData;
       const NumericDataField = NumericDataFieldFactory(this.handleChange);
+      const BooleanDataField = BooleanDataFieldFactory(this.handleChange);
       return (
         <>
         <div>
@@ -90,124 +91,20 @@ class TargetDataPane extends React.Component {
             </Col>
         </Form.Group>
 
-        <NumericDataField name='heightCm'      label='Ύψος (cm)'         value={heightCm} />
-        <NumericDataField name='crownHeightCm' label='Έναρξη κόμης (cm)' value={crownHeightCm} />
+        <NumericDataField name='heightCm'            label='Ύψος (cm)'              value={heightCm} />
+        <NumericDataField name='crownHeightCm'       label='Έναρξη κόμης (cm)'      value={crownHeightCm} />
 
+        <NumericDataField name='circumferenceCm'     label='Περιφέρεια (cm)'        value={circumferenceCm} />
 
-
-          <Form.Group as={Row} controlId="circumferenceCm">
-            <Form.Label column sm='8'>Περιφέρεια (cm)</Form.Label>
-            <Col sm='4'>
-              <Form.Control
-          ref={this.circumferenceCm}
-          name="circumferenceCm"
-                        required
-                        type="number"
-                        value={circumferenceCm}
-                        onChange={(ev)=>this.handleChange(ev.target.name, ev.target.value)}
-              />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="raisedSidewalk">
-            <Form.Label column sm='8'>Ανασηκωμένο πεζοδρόμιο</Form.Label>
-            <Col sm='4'>
-              <Form.Check type='checkbox'
-                          name='raisedSidewalk'
-                          checked={raisedSidewalk}
-                          onChange={(ev)=>this.handleChange(ev.target.name, ev.target.checked)}
-              />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="powerlineProximity">
-            <Form.Label column sm='8'>Εγγύτητα σε ΔΕΗ</Form.Label>
-            <Col sm='4'>
-              <Form.Check type='checkbox'
-                          name='powerlineProximity'
-                          checked={powerlineProximity}
-                          onChange={(ev)=>this.handleChange(ev.target.name, ev.target.checked)}
-              />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="obstruction">
-            <Form.Label column sm='8'>Εμποδίζει διεύλευση</Form.Label>
-            <Col sm='4'>
-              <Form.Check type='checkbox'
-                          name='obstruction'
-                          checked={obstruction}
-                          onChange={(ev)=>this.handleChange(ev.target.name, ev.target.checked)}
-              />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="debris">
-            <Form.Label column sm='8'>Θραύσματα</Form.Label>
-            <Col sm='4'>
-              <Form.Check type='checkbox'
-                          name='debris'
-                          checked={debris}
-                          onChange={(ev)=>this.handleChange(ev.target.name, ev.target.checked)}
-              />
-            </Col>
-          </Form.Group>
-
-          <Form.Group as={Row} controlId="litter">
-            <Form.Label column sm='8'>σκουπίδια</Form.Label>
-            <Col sm='4'>
-              <Form.Check type='checkbox'
-                          name='litter'
-                          checked={litter}
-                          onChange={(ev)=>this.handleChange(ev.target.name, ev.target.checked)}
-              />
-            </Col>
-          </Form.Group>          
-
-          <Form.Group as={Row} controlId="trunkDamaga">
-            <Form.Label column sm='8'>πληγώσεις</Form.Label>
-            <Col sm='4'>
-              <Form.Check type='checkbox'
-                          name='trunkDamage'
-                          checked={trunkDamage}
-                          onChange={(ev)=>this.handleChange(ev.target.name, ev.target.checked)}
-              />
-            </Col>
-          </Form.Group>          
-
-          <Form.Group as={Row} controlId="fallHazard">
-            <Form.Label column sm='8'>κίνδυνος πτώσης</Form.Label>
-            <Col sm='4'>
-              <Form.Check type='checkbox'
-                          name='fallHazard'
-                          checked={fallHazard}
-                          onChange={(ev)=>this.handleChange(ev.target.name, ev.target.checked)}
-              />
-            </Col>
-          </Form.Group>          
-
-          <Form.Group as={Row} controlId="publicInterest">
-            <Form.Label column sm='8'>δημοσίου ενδιαφέροντος</Form.Label>
-            <Col sm='4'>
-              <Form.Check type='checkbox'
-                          name='publicInterest'
-                          checked={publicInterest}
-                          onChange={(ev)=>this.handleChange(ev.target.name, ev.target.checked)}
-              />
-            </Col>
-          </Form.Group>          
-
-          <Form.Group as={Row} controlId="disease">
-            <Form.Label column sm='8'>ασθένεια</Form.Label>
-            <Col sm='4'>
-              <Form.Check type='checkbox'
-                          name='disease'
-                          checked={disease}
-                          onChange={(ev)=>this.handleChange(ev.target.name, ev.target.checked)}
-              />
-            </Col>
-          </Form.Group>          
-
+        <BooleanDataField name='raisedSidewalk'      label='Ανασηκωμένο πεζοδρόμιο' value={raisedSidewalk}/>
+        <BooleanDataField name='powerlineProximity'  label='Εγγύτητα σε ΔΕΗ'        value={powerlineProximity}/>
+        <BooleanDataField name='obstruction'         label='Εμποδίζει διεύλευση'    value={obstruction}/>
+        <BooleanDataField name='debris'              label='Θραύσματα'              value={debris}/>
+        <BooleanDataField name='litter'              label='σκουπίδια'              value={litter}/>
+        <BooleanDataField name='trunkDamage'         label='πληγώσεις'              value={trunkDamage}/>
+        <BooleanDataField name='fallHazard'          label='κίνδυνος πτώσης'        value={fallHazard}/>
+        <BooleanDataField name='publicInterest'      label='δημοσίου ενδιαφέροντος' value={publicInterest}/>
+        <BooleanDataField name='disease'             label='ασθένεια'               value={disease}/>        
           <Form.Group as={Row} controlId="comments">
             <Form.Label column sm='4'>Σχόλια</Form.Label>
             <Col sm='8'>
