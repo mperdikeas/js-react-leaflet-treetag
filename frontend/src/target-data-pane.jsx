@@ -8,7 +8,9 @@ import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
 import { connect }          from 'react-redux';
 
 
-import {NumericDataFieldFactory, BooleanDataFieldFactory} from './data-field-controls.jsx';
+import {NumericDataFieldFactory
+      , BooleanDataFieldFactory
+      , SelectDataFieldFactory} from './data-field-controls.jsx';
 
 const mapStateToProps = (state) => {
   return {
@@ -16,6 +18,7 @@ const mapStateToProps = (state) => {
   };
 };
 
+import wrapContexts from './context/contexts-wrapper.jsx';
 
 class TargetDataPane extends React.Component {
 
@@ -62,6 +65,7 @@ class TargetDataPane extends React.Component {
              comments} = this.props.treeData;
       const NumericDataField = NumericDataFieldFactory(this.handleChange);
       const BooleanDataField = BooleanDataFieldFactory(this.handleChange);
+      const SelectDataField  = SelectDataFieldFactory (this.handleChange);
       return (
         <>
         <div>
@@ -69,27 +73,9 @@ class TargetDataPane extends React.Component {
         </div>
         <Form noValidate onSubmit={this.handleSubmit}>
 
-        <NumericDataField name='yearPlanted' label='έτος φύτευσης' value={yearPlanted} />
+        <NumericDataField name='yearPlanted'  label='έτος φύτευσης' value={yearPlanted} />
+        <SelectDataField  name='healthStatus' label='Υγεία'         value={healthStatus} codeToName={{'-1': 'poor', 0: 'normal', 1: 'good'}}/>
 
-
-          <Form.Group as={Row} controlId="healthStatus">
-            <Form.Label column sm='8'>Υγεία</Form.Label>
-            <Col sm='4'>
-              <Form.Group controlId="healthStatus">
-                <Form.Control as="select"
-                        ref={this.healthStatus}
-                        required
-                        name="healthStatus"
-                        value={healthStatus}
-                        onChange={(ev)=>this.handleChange(ev.target.name, ev.target.value)}
-                >
-                  <option value='-1'>poor</option>
-                  <option value='0'>normal</option>
-                  <option value='1'>good</option>
-                </Form.Control>
-              </Form.Group>
-            </Col>
-        </Form.Group>
 
         <NumericDataField name='heightCm'            label='Ύψος (cm)'              value={heightCm} />
         <NumericDataField name='crownHeightCm'       label='Έναρξη κόμης (cm)'      value={crownHeightCm} />
@@ -134,6 +120,6 @@ class TargetDataPane extends React.Component {
 }
 
 
-export default connect(mapStateToProps)(TargetDataPane);
+export default connect(mapStateToProps)(wrapContexts(TargetDataPane));
 
 
