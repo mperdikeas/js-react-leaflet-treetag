@@ -74,16 +74,11 @@ class TargetDataPane extends React.Component {
         Data for tree {this.props.targetId} follow
         </div>
         <Form noValidate onSubmit={this.handleSubmit}>
-
           <NumericDataField  name='yearPlanted'  label='έτος φύτευσης' value={yearPlanted} />
           <SelectDataField   name='healthStatus' label='Υγεία'         value={healthStatus} codeToName={this.props.treesConfigurationContext.healthStatuses}/>
-
-
           <NumericDataField  name='heightCm'            label='Ύψος (cm)'              value={heightCm} />
           <NumericDataField  name='crownHeightCm'       label='Έναρξη κόμης (cm)'      value={crownHeightCm} />
-
           <NumericDataField  name='circumferenceCm'     label='Περιφέρεια (cm)'        value={circumferenceCm} />
-
           <BooleanDataField  name='raisedSidewalk'      label='Ανασηκωμένο πεζοδρόμιο' value={raisedSidewalk}/>
           <BooleanDataField  name='powerlineProximity'  label='Εγγύτητα σε ΔΕΗ'        value={powerlineProximity}/>
           <BooleanDataField  name='obstruction'         label='Εμποδίζει διεύλευση'    value={obstruction}/>
