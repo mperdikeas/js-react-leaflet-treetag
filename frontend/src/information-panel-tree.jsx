@@ -172,7 +172,7 @@ class TreeInformationPanel extends React.Component {
       </div>);
       return (
         <div id='detail-information' className={cx(klasses)} style={{backgroundColor: 'lightgrey'}}>
-          <div className='row'>
+          <div className='row' style={{marginLeft: 0, marginRight: 0}}>
             {tagReal}
             <div className='col-6'>
               <a id='toggle-info-panel' className={cx(defaultClasses)} href="#" onClick={this.props.toggleMaximizeInfoPanel}>{toggleTxt}</a>

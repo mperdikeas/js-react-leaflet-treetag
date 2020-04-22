@@ -4,13 +4,15 @@ const assert = require('chai').assert;
 
 import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
 
+const style={marginLeft: 0, marginRight: 0};
+
 
 export function NumericDataFieldFactory (onChange) {
 
   return (props) => {
 
     return (
-      <Form.Group as={Row} controlId={props.name} style={{marginLeft: 0, marginRight: 0}}>
+      <Form.Group as={Row} controlId={props.name} style={style}>
         <Form.Label column sm='8'>{props.label}</Form.Label>
         <Col sm='4'>
           <Form.Control
@@ -34,7 +36,7 @@ export function BooleanDataFieldFactory (onChange) {
   return (props) => {
 
     return (
-      <Form.Group as={Row} controlId={props.name} style={{marginLeft: 0, marginRight: 0}}>
+      <Form.Group as={Row} controlId={props.name} style={style}>
         <Form.Label column sm='8'>{props.label}</Form.Label>
         <Col sm='4'>
           <Form.Check type='checkbox'
@@ -59,7 +61,7 @@ export function SelectDataFieldFactory (onChange) {
       return <option key={index} value={key}>{name}</option>;
     });
     return (
-      <Form.Group as={Row} controlId={props.name} style={{marginLeft: 0, marginRight: 0}}>
+      <Form.Group as={Row} controlId={props.name} style={style}>
         <Form.Label column sm='8'>{props.label}</Form.Label>
         <Col sm='4'>
           <Form.Control as="select"
