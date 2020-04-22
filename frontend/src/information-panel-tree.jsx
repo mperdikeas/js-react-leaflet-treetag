@@ -65,6 +65,11 @@ class TreeInformationPanel extends React.Component {
     console.log('targetId is the same');
   }
 
+  updateTreeData = (treeData) => {
+    console.log(treeData.raisedSidewalk);
+    this.setState({treeData});
+  }
+
 
   fetchData = () => {
     const url = `/feature/${this.props.targetId}/data`;
@@ -73,8 +78,10 @@ class TreeInformationPanel extends React.Component {
     axiosAuth.get(url
     ).then(res => {
       // corr-id: SSE-1585746250
-       const {t, err} = res.data; 
+      console.log(res.data);
+      const {t, err} = res.data;
       if (err===null) {
+        console.log(t);
         this.setState({userIsLoggingIn: false
                      , loadingTreeData: false
                      , treeData: t
@@ -197,6 +204,7 @@ class TreeInformationPanel extends React.Component {
           userIsLoggingIn = {this.state.userIsLoggingIn}
           loadingTreeData = {this.state.loadingTreeData}
           treeData        = {this.state.treeData}
+          updateTreeData  = {this.updateTreeData}
           />
         );
       case PHOTOS:
