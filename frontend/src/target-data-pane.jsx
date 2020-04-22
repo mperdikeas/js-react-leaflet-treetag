@@ -91,7 +91,7 @@ class TargetDataPane extends React.Component {
         <BooleanDataField name='fallHazard'          label='κίνδυνος πτώσης'        value={fallHazard}/>
         <BooleanDataField name='publicInterest'      label='δημοσίου ενδιαφέροντος' value={publicInterest}/>
         <BooleanDataField name='disease'             label='ασθένεια'               value={disease}/>        
-          <Form.Group as={Row} controlId="comments">
+          <Form.Group as={Row} controlId="comments" style={{marginLeft: 0, marginRight: 0}}>
             <Form.Label column sm='4'>Σχόλια</Form.Label>
             <Col sm='8'>
               <Form.Control
