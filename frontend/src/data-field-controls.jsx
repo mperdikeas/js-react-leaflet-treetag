@@ -15,8 +15,7 @@ export function NumericDataFieldFactory (onChange) {
       <Form.Group as={Row} controlId={props.name} style={style}>
         <Form.Label column sm='8'>{props.label}</Form.Label>
         <Col sm='4'>
-          <Form.Control
-                        required
+          <Form.Control required
                         type="number"
                         name={props.name}
                         value={props.value}
@@ -47,7 +46,7 @@ export function BooleanDataFieldFactory (onChange) {
         </Col>
       </Form.Group>
     );
-  }
+  };
 }
 
 
@@ -74,5 +73,25 @@ export function SelectDataFieldFactory (onChange) {
         </Col>
       </Form.Group>
     );
-  }
+  };
+}
+
+export function TextAreaDataFieldFactory (onChange) {
+  return (props) => {
+    return (
+      <Form.Group as={Row} controlId={props.name} style={style}>
+        <Form.Label column sm='4'>{props.label}</Form.Label>
+        <Col sm='8'>
+          <Form.Control as='textarea'
+                        rows='5'
+                        required
+                        type="text"
+                        name={props.name}
+                        value={props.value}
+                        onChange={(ev)=>this.handleChange(ev.target.name, ev.target.value)}
+          />
+        </Col>
+      </Form.Group>
+    );
+  };
 }

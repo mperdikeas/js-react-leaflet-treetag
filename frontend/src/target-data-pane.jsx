@@ -10,7 +10,8 @@ import { connect }          from 'react-redux';
 
 import {NumericDataFieldFactory
       , BooleanDataFieldFactory
-      , SelectDataFieldFactory} from './data-field-controls.jsx';
+      , SelectDataFieldFactory
+      , TextAreaDataFieldFactory} from './data-field-controls.jsx';
 
 const mapStateToProps = (state) => {
   return {
@@ -63,9 +64,10 @@ class TargetDataPane extends React.Component {
              publicInterest,
              disease,
              comments} = this.props.treeData;
-      const NumericDataField = NumericDataFieldFactory(this.handleChange);
-      const BooleanDataField = BooleanDataFieldFactory(this.handleChange);
-      const SelectDataField  = SelectDataFieldFactory (this.handleChange);
+      const NumericDataField  = NumericDataFieldFactory(this.handleChange);
+      const BooleanDataField  = BooleanDataFieldFactory(this.handleChange);
+      const SelectDataField   = SelectDataFieldFactory (this.handleChange);
+      const TextAreaDataField = TextAreaDataFieldFactory(this.handleChange);
       return (
         <>
         <div>
@@ -73,46 +75,26 @@ class TargetDataPane extends React.Component {
         </div>
         <Form noValidate onSubmit={this.handleSubmit}>
 
-        <NumericDataField name='yearPlanted'  label='έτος φύτευσης' value={yearPlanted} />
-        <SelectDataField  name='healthStatus' label='Υγεία'         value={healthStatus} codeToName={this.props.treesConfigurationContext.healthStatuses}/>
+          <NumericDataField  name='yearPlanted'  label='έτος φύτευσης' value={yearPlanted} />
+          <SelectDataField   name='healthStatus' label='Υγεία'         value={healthStatus} codeToName={this.props.treesConfigurationContext.healthStatuses}/>
 
 
-        <NumericDataField name='heightCm'            label='Ύψος (cm)'              value={heightCm} />
-        <NumericDataField name='crownHeightCm'       label='Έναρξη κόμης (cm)'      value={crownHeightCm} />
+          <NumericDataField  name='heightCm'            label='Ύψος (cm)'              value={heightCm} />
+          <NumericDataField  name='crownHeightCm'       label='Έναρξη κόμης (cm)'      value={crownHeightCm} />
 
-        <NumericDataField name='circumferenceCm'     label='Περιφέρεια (cm)'        value={circumferenceCm} />
+          <NumericDataField  name='circumferenceCm'     label='Περιφέρεια (cm)'        value={circumferenceCm} />
 
-        <BooleanDataField name='raisedSidewalk'      label='Ανασηκωμένο πεζοδρόμιο' value={raisedSidewalk}/>
-        <BooleanDataField name='powerlineProximity'  label='Εγγύτητα σε ΔΕΗ'        value={powerlineProximity}/>
-        <BooleanDataField name='obstruction'         label='Εμποδίζει διεύλευση'    value={obstruction}/>
-        <BooleanDataField name='debris'              label='Θραύσματα'              value={debris}/>
-        <BooleanDataField name='litter'              label='σκουπίδια'              value={litter}/>
-        <BooleanDataField name='trunkDamage'         label='πληγώσεις'              value={trunkDamage}/>
-        <BooleanDataField name='fallHazard'          label='κίνδυνος πτώσης'        value={fallHazard}/>
-        <BooleanDataField name='publicInterest'      label='δημοσίου ενδιαφέροντος' value={publicInterest}/>
-        <BooleanDataField name='disease'             label='ασθένεια'               value={disease}/>        
-          <Form.Group as={Row} controlId="comments" style={{marginLeft: 0, marginRight: 0}}>
-            <Form.Label column sm='4'>Σχόλια</Form.Label>
-            <Col sm='8'>
-              <Form.Control
-                        as='textarea'
-                        rows='5'
-                        ref={this.comments}
-                        required
-                        type="number"
-                        name="comments"
-                        value={comments}
-                        onChange={(ev)=>this.handleChange(ev.target.name, ev.target.value)}
-              />
-            </Col>
-          </Form.Group>
-          
-          
+          <BooleanDataField  name='raisedSidewalk'      label='Ανασηκωμένο πεζοδρόμιο' value={raisedSidewalk}/>
+          <BooleanDataField  name='powerlineProximity'  label='Εγγύτητα σε ΔΕΗ'        value={powerlineProximity}/>
+          <BooleanDataField  name='obstruction'         label='Εμποδίζει διεύλευση'    value={obstruction}/>
+          <BooleanDataField  name='debris'              label='Θραύσματα'              value={debris}/>
+          <BooleanDataField  name='litter'              label='σκουπίδια'              value={litter}/>
+          <BooleanDataField  name='trunkDamage'         label='πληγώσεις'              value={trunkDamage}/>
+          <BooleanDataField  name='fallHazard'          label='κίνδυνος πτώσης'        value={fallHazard}/>
+          <BooleanDataField  name='publicInterest'      label='δημοσίου ενδιαφέροντος' value={publicInterest}/>
+          <BooleanDataField  name='disease'             label='ασθένεια'               value={disease}/>
+          <TextAreaDataField name='comments'            label='Σχόλια'                 value={comments}/>
         </Form>
-
-
-
-
         </>
       );
     }
