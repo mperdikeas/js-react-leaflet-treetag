@@ -101,7 +101,8 @@ class TargetDataPane extends React.Component {
             <Form.Label column sm='8'>Ύψος (cm)</Form.Label>
             <Col sm='4'>
               <Form.Control
-                        ref={this.heightCm}
+        ref={this.heightCm}
+          name="heightCm"
                         required
                         type="number"
                         value={heightCm}
@@ -114,7 +115,8 @@ class TargetDataPane extends React.Component {
             <Form.Label column sm='8'>Έναρξη κόμης (cm)</Form.Label>
             <Col sm='4'>
               <Form.Control
-                        ref={this.crownHeightCm}
+          ref={this.crownHeightCm}
+          name="crownHeightCm"          
                         required
                         type="number"
                         value={crownHeightCm}
@@ -128,7 +130,8 @@ class TargetDataPane extends React.Component {
             <Form.Label column sm='8'>Περιφέρεια (cm)</Form.Label>
             <Col sm='4'>
               <Form.Control
-                        ref={this.circumferenceCm}
+          ref={this.circumferenceCm}
+          name="circumferenceCm"
                         required
                         type="number"
                         value={circumferenceCm}
@@ -147,22 +150,117 @@ class TargetDataPane extends React.Component {
               />
             </Col>
           </Form.Group>
+
+          <Form.Group as={Row} controlId="powerlineProximity">
+            <Form.Label column sm='8'>Εγγύτητα σε ΔΕΗ</Form.Label>
+            <Col sm='4'>
+              <Form.Check type='checkbox'
+                          name='powerlineProximity'
+                          checked={powerlineProximity}
+                          onChange={(ev)=>this.handleChange(ev.target.name, ev.target.checked)}
+              />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="obstruction">
+            <Form.Label column sm='8'>Εμποδίζει διεύλευση</Form.Label>
+            <Col sm='4'>
+              <Form.Check type='checkbox'
+                          name='obstruction'
+                          checked={obstruction}
+                          onChange={(ev)=>this.handleChange(ev.target.name, ev.target.checked)}
+              />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="debris">
+            <Form.Label column sm='8'>Θραύσματα</Form.Label>
+            <Col sm='4'>
+              <Form.Check type='checkbox'
+                          name='debris'
+                          checked={debris}
+                          onChange={(ev)=>this.handleChange(ev.target.name, ev.target.checked)}
+              />
+            </Col>
+          </Form.Group>
+
+          <Form.Group as={Row} controlId="litter">
+            <Form.Label column sm='8'>σκουπίδια</Form.Label>
+            <Col sm='4'>
+              <Form.Check type='checkbox'
+                          name='litter'
+                          checked={litter}
+                          onChange={(ev)=>this.handleChange(ev.target.name, ev.target.checked)}
+              />
+            </Col>
+          </Form.Group>          
+
+          <Form.Group as={Row} controlId="trunkDamaga">
+            <Form.Label column sm='8'>πληγώσεις</Form.Label>
+            <Col sm='4'>
+              <Form.Check type='checkbox'
+                          name='trunkDamage'
+                          checked={trunkDamage}
+                          onChange={(ev)=>this.handleChange(ev.target.name, ev.target.checked)}
+              />
+            </Col>
+          </Form.Group>          
+
+          <Form.Group as={Row} controlId="fallHazard">
+            <Form.Label column sm='8'>κίνδυνος πτώσης</Form.Label>
+            <Col sm='4'>
+              <Form.Check type='checkbox'
+                          name='fallHazard'
+                          checked={fallHazard}
+                          onChange={(ev)=>this.handleChange(ev.target.name, ev.target.checked)}
+              />
+            </Col>
+          </Form.Group>          
+
+          <Form.Group as={Row} controlId="publicInterest">
+            <Form.Label column sm='8'>δημοσίου ενδιαφέροντος</Form.Label>
+            <Col sm='4'>
+              <Form.Check type='checkbox'
+                          name='publicInterest'
+                          checked={publicInterest}
+                          onChange={(ev)=>this.handleChange(ev.target.name, ev.target.checked)}
+              />
+            </Col>
+          </Form.Group>          
+
+          <Form.Group as={Row} controlId="disease">
+            <Form.Label column sm='8'>ασθένεια</Form.Label>
+            <Col sm='4'>
+              <Form.Check type='checkbox'
+                          name='disease'
+                          checked={disease}
+                          onChange={(ev)=>this.handleChange(ev.target.name, ev.target.checked)}
+              />
+            </Col>
+          </Form.Group>          
+
+          <Form.Group as={Row} controlId="comments">
+            <Form.Label column sm='4'>Σχόλια</Form.Label>
+            <Col sm='8'>
+              <Form.Control
+                        as='textarea'
+                        rows='5'
+                        ref={this.comments}
+                        required
+                        type="number"
+                        name="comments"
+                        value={comments}
+                        onChange={(ev)=>this.handleChange(ev.target.name, ev.target.value)}
+              />
+            </Col>
+          </Form.Group>
+          
+          
         </Form>
 
 
-        <div>{}</div>
-        <div>{powerlineProximity}</div>
-        <div>{obstruction}</div>
-        <div>{debris}</div>
-        <div>{litter}</div>
-        <div>{trunkDamage}</div>
-        <div>{fallHazard}</div>
-        <div>{publicInterest}</div>
-        <div>{disease}</div>
-        <div>{comments}</div>
-        <div>
-          {JSON.stringify(this.props.treeData)}
-        </div>
+
+
         </>
       );
     }
