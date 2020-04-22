@@ -53,9 +53,10 @@ export function SelectDataFieldFactory (onChange) {
 
   return (props) => {
     const {codeToName} = props;
-    const options = Object.keys(codeToName).map(function(key, index) {
-      console.log(`key=${key}, value=${codeToName[key]}`);
-      return <option key={index} value={key}>{codeToName[key]}</option>;
+    const options = Array.from(codeToName.keys()).map(function(key, index) {
+      const name = codeToName.get(key);
+      assert.exists(name);
+      return <option key={index} value={key}>{name}</option>;
     });
     return (
       <Form.Group as={Row} controlId={props.name}>

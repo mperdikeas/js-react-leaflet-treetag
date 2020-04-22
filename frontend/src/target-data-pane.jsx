@@ -74,7 +74,7 @@ class TargetDataPane extends React.Component {
         <Form noValidate onSubmit={this.handleSubmit}>
 
         <NumericDataField name='yearPlanted'  label='έτος φύτευσης' value={yearPlanted} />
-        <SelectDataField  name='healthStatus' label='Υγεία'         value={healthStatus} codeToName={{'-1': 'poor', 0: 'normal', 1: 'good'}}/>
+        <SelectDataField  name='healthStatus' label='Υγεία'         value={healthStatus} codeToName={this.props.treesConfigurationContext.healthStatuses}/>
 
 
         <NumericDataField name='heightCm'            label='Ύψος (cm)'              value={heightCm} />
