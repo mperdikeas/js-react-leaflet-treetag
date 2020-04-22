@@ -14,6 +14,8 @@ class TreesConfigurationContextProvider extends React.Component {
     super(props);
     this.state =  {
       treesConfiguration: null
+      , healthStatuses: null
+      , activities: null
     }
   }
 
@@ -24,8 +26,11 @@ class TreesConfigurationContextProvider extends React.Component {
   componentDidUpdate(prevProps) {
     if ((prevProps.loginContext.username === null) && (this.props.loginContext.username!=null)) {
       // we're now logged-in and can obtain the trees configuration
-      getTreesConfiguration().then( (treesConfiguration) => {
-        this.setState({treesConfiguration});
+      getTreesConfiguration().then( (configuration) => {
+        console.log(configuration);
+        const {treesConfiguration, healthStatuses, activities} = configuration;
+        this.setState({treesConfiguration, healthStatuses, activities});
+        
       });
     }
   }

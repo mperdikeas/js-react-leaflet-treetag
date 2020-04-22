@@ -115,10 +115,10 @@ public class MainResource {
                                   , System.identityHashCode(this)));
     }
 
-    @Path("/getTreesConfiguration/")
+    @Path("/getConfiguration/")
     @GET 
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTreesConfiguration(@Context final HttpServletRequest httpServletRequest) {
+    public Response getConfiguration(@Context final HttpServletRequest httpServletRequest) {
         String methodInfo = null;
         try {
             final String installation = Installation.getFromServletRequest(httpServletRequest);
@@ -126,16 +126,16 @@ public class MainResource {
                                                     , installation
                                                     , httpServletRequest.getRemoteAddr());
             logger.info(methodInfo);
-            final TreeConfigurations x = getTreesConfiguration(installation);
-            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(x.value))).build();
+            final Configuration x = getConfiguration(installation);
+            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(x))).build();
         } catch (Throwable t) {
             logger.error(String.format("%s - shit happened", methodInfo), t);
             return ResourceUtil.softFailureResponse(t);
         }
     }
 
-    private static TreeConfigurations getTreesConfiguration(final String installation) {
-        return TreeConfigurations.example();
+    private static Configuration getConfiguration(final String installation) {
+        return Configuration.example();
     }
 
 

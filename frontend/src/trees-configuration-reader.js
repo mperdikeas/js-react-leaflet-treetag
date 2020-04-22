@@ -7,7 +7,7 @@ import {axiosAuth} from './axios-setup.js';
 
 
 export default function getTreesConfiguration() {
-    const url = '/getTreesConfiguration';
+    const url = '/getConfiguration';
     return axiosAuth.get(url).then(res => {
         if (res.data.err != null) {
             console.log('getTreesConfiguration API call error');
