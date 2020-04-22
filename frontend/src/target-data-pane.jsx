@@ -7,6 +7,9 @@ import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
 // REDUX
 import { connect }          from 'react-redux';
 
+
+import {NumericDataFieldFactory} from './data-field-controls.jsx';
+
 const mapStateToProps = (state) => {
   return {
     targetId: state.targetId
@@ -57,6 +60,7 @@ class TargetDataPane extends React.Component {
              publicInterest,
              disease,
              comments} = this.props.treeData;
+      const NumericDataField = NumericDataFieldFactory(this.handleChange);
       return (
         <>
         <div>
@@ -64,19 +68,8 @@ class TargetDataPane extends React.Component {
         </div>
         <Form noValidate onSubmit={this.handleSubmit}>
 
-          <Form.Group as={Row} controlId="yearPlanted">
-            <Form.Label column sm='8'>Έτος φύτευσης</Form.Label>
-            <Col sm='4'>
-              <Form.Control
-                        ref={this.yearPlanted}
-                        required
-                        type="number"
-                        name="yearPlanted"
-                        value={yearPlanted}
-                        onChange={(ev)=>this.handleChange(ev.target.name, ev.target.value)}
-              />
-            </Col>
-          </Form.Group>
+        <NumericDataField name='yearPlanted' label='έτος φύτευσης' value={yearPlanted} />
+
 
           <Form.Group as={Row} controlId="healthStatus">
             <Form.Label column sm='8'>Υγεία</Form.Label>
@@ -95,35 +88,11 @@ class TargetDataPane extends React.Component {
                 </Form.Control>
               </Form.Group>
             </Col>
-          </Form.Group>
+        </Form.Group>
 
-          <Form.Group as={Row} controlId="heightCm">
-            <Form.Label column sm='8'>Ύψος (cm)</Form.Label>
-            <Col sm='4'>
-              <Form.Control
-        ref={this.heightCm}
-          name="heightCm"
-                        required
-                        type="number"
-                        value={heightCm}
-                        onChange={(ev)=>this.handleChange(ev.target.name, ev.target.value)}
-              />
-            </Col>
-          </Form.Group>
+        <NumericDataField name='heightCm'      label='Ύψος (cm)'         value={heightCm} />
+        <NumericDataField name='crownHeightCm' label='Έναρξη κόμης (cm)' value={crownHeightCm} />
 
-          <Form.Group as={Row} controlId="crownHeightCm">
-            <Form.Label column sm='8'>Έναρξη κόμης (cm)</Form.Label>
-            <Col sm='4'>
-              <Form.Control
-          ref={this.crownHeightCm}
-          name="crownHeightCm"          
-                        required
-                        type="number"
-                        value={crownHeightCm}
-                        onChange={(ev)=>this.handleChange(ev.target.name, ev.target.value)}
-              />
-            </Col>
-          </Form.Group>
 
 
           <Form.Group as={Row} controlId="circumferenceCm">
