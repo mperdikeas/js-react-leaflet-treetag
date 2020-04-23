@@ -16,7 +16,7 @@ import {MODAL_LOGIN} from './constants/modal-types.js';
 
 import {displayModal} from './actions/index.js';
 import {axiosAuth} from './axios-setup.js';
-
+import wrapContexts from './context/contexts-wrapper.jsx';
 
 const mapStateToProps = (state) => {
   return {
@@ -170,8 +170,9 @@ class TreeInformationPanel extends React.Component {
           Tag #
           <span style={{fontFamily: 'monospace'}}>198305193817</span>
       </div>);
+      const heightStyle = {height: `${this.getInformationPanelHeight()}px`, overflow: 'scroll'};
       return (
-        <div id='detail-information' className={cx(klasses)} style={{backgroundColor: 'lightgrey'}}>
+        <div id='detail-information' className={cx(klasses)} style={Object.assign({}, heightStyle, {backgroundColor: 'lightgrey'})}>
           <div className='row' style={{marginLeft: 0, marginRight: 0}}>
             {tagReal}
             <div className='col-6'>
@@ -196,6 +197,11 @@ class TreeInformationPanel extends React.Component {
       );
     }
   }
+
+  getInformationPanelHeight = () => {
+    return this.props.geometryContext.screen.height - this.props.geometryContext.geometry.headerBarHeight
+  }
+
   paneToDisplay = () => {
     switch (this.props.tab) {
       case INFORMATION:
@@ -208,7 +214,7 @@ class TreeInformationPanel extends React.Component {
           />
         );
       case PHOTOS:
-        return <TargetPhotoPane/>;
+        return <TargetPhotoPane/>
       case HISTORY:
         return (
           <TargetMetadataPane
@@ -226,5 +232,5 @@ class TreeInformationPanel extends React.Component {
 
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(TreeInformationPanel);
+export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(TreeInformationPanel));
 

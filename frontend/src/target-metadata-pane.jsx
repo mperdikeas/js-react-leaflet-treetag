@@ -32,17 +32,23 @@ class TargetMetadataPane extends React.Component {
       return <div>user is logging in &hellip;</div>;
     else if (this.props.loadingTreeData)
       return <div>querying the server for tree {this.props.targetId} &hellip;</div>;
-    else
+    else {
+      const stuff = (Array.from(Array(50).keys())).map( (x, idx)=>{
+        return (
+          <div key={idx}>
+            {JSON.stringify(this.props.treeActions)}
+          </div>
+        );
+      });
       return (
-        <>
-        <div>
-        Metadata for tree {this.props.targetId} follow
+        <div style={{'overflow':'scroll'}}>
+          <div>
+            Metadata for tree {this.props.targetId} follow
+          </div>
+          {stuff}
         </div>
-        <div>
-        {JSON.stringify(this.props.treeActions)}
-        </div>
-        </>
       );
+    }
   }
 }
 
