@@ -20,7 +20,7 @@ public class DBFacade {
         users.put("admin", new UserInfo("pass", "mperdikeas@gmail.com"));
         this.trees = new LinkedHashMap<>();
         this.r = new Random(0);
-        final int NUM_OF_TREES = 60*1000;
+        final int NUM_OF_TREES = 100;
         
         final double longAthens = 23.72;
         final double latAthens  = 37.98;

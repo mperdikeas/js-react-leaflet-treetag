@@ -122,7 +122,7 @@ public class MainResource {
         String methodInfo = null;
         try {
             final String installation = Installation.getFromServletRequest(httpServletRequest);
-            methodInfo = String.format("getTreesConfiguration() ~*~ installation: [%s], remote address: [%s]"
+            methodInfo = String.format("getConfiguration() ~*~ installation: [%s], remote address: [%s]"
                                                     , installation
                                                     , httpServletRequest.getRemoteAddr());
             logger.info(methodInfo);
@@ -170,14 +170,14 @@ public class MainResource {
                                     ) {
         final JaxRsApplication app = (JaxRsApplication) _app;
         try {
-            logger.info(String.format("getFeaturePhotosNum(%d) ~*~ remote address: [%s]"
+            logger.info(String.format("getFeatureData(%d) ~*~ remote address: [%s]"
                                       , featureId
                                       , httpServletRequest.getRemoteAddr()));
             TimeUnit.MILLISECONDS.sleep(200);
             final TreeInfo treeInfo = app.dbFacade.getTreeInfo(featureId);
             return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(treeInfo))).build();
         } catch (Throwable t) {
-            logger.error(String.format("Problem when calling getFeaturePhotosNum(%d) from remote address [%s]"
+            logger.error(String.format("Problem when calling getFeatureData(%d) from remote address [%s]"
                                        , featureId
                                        , httpServletRequest.getRemoteAddr())
                          , t);
