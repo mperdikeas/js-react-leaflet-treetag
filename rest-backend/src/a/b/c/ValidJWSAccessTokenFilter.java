@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
 
 import java.nio.charset.StandardCharsets;
     
-import java.lang.reflect.Method;
+
     
 import javax.ws.rs.WebApplicationException;
 
@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 import java.util.List;
 import java.util.Collections;
 import java.io.IOException;
-import java.lang.reflect.Method;
+
 import java.nio.charset.StandardCharsets;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,19 +33,21 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.HttpHeaders;
 
+import javax.ws.rs.core.Application;
+
 import javax.ws.rs.container.ResourceInfo;
 
 import javax.crypto.SecretKey;
-
-import org.junit.Assert;
-
-import org.apache.log4j.Logger;
-
 
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerRequestContext;
 
 
+import org.junit.Assert;
+
+import org.apache.log4j.Logger;
+
+import com.google.common.base.Joiner;
 import com.google.common.base.Throwables;
 
 import a.b.c.InterAppConstants;
@@ -73,6 +75,9 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
 
     @Context
     private HttpServletRequest request;
+
+    @Context
+    private Application _app;
 
     @SuppressWarnings("rawtypes")
     public final boolean protects(final Class c, final Method m) {
@@ -188,8 +193,25 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
             try {
                 final Claims claims = JWTUtil.verifyJWS(secretKeySpecS, accessToken);
                 final String installation = Installation.getFromClaims(claims);
+                final String username     = claims.getSubject();
 
-                Installation.setInContainerRequestContext(requestContext, installation);
+                final IDBFacade dbFacade = ( (JaxRsApplication) _app).dbFacade;
+
+                final Set<Privillege> privilleges = dbFacade.getPrivilleges(installation, username);
+
+                if (dbFacade.arePrivillegesSufficient(privilleges, klass, method)) {
+                    Installation.setInContainerRequestContext(requestContext, installation);
+                    return;
+                } else {
+                    abortUnauthorizedRequest(requestContext
+                                             , Response.Status.FORBIDDEN
+                                             , new AbortResponse(BearerAuthorizationFailureMode.INSUFFICIENT_PRIVILLEGES
+                                                                 , String.format("privilleges [%s] are not sufficient for %s::%s"
+                                                                                 , Joiner.on(", ").join(Privillege.toStrings(privilleges))
+                                                                                 , klass
+                                                                                 , method)
+                                                                 , (String) null));
+                }
 
             } catch (final Throwable t) {
                 final String msg = String.format("JWT Bearer %s access token [%s] was not verified. Error msg is [%s]"
@@ -198,7 +220,7 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
                                                  , t.getMessage());
                 abortUnauthorizedRequest(requestContext
                                          , Response.Status.FORBIDDEN
-                                         , new AbortResponse(BearerAuthorizationFailureMode.JWT_VERIFICATION_FAILED.code
+                                         , new AbortResponse(BearerAuthorizationFailureMode.JWT_VERIFICATION_FAILED
                                                              , msg
                                                              , Throwables.getStackTraceAsString(t)));
                 return;
@@ -206,14 +228,14 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
         } catch (BearerAuthorizationHeaderException exc) {
             abortUnauthorizedRequest(requestContext
                                      , Response.Status.FORBIDDEN
-                                     , new AbortResponse(exc.mode.code
+                                     , new AbortResponse(exc.mode
                                                          , exc.msg
                                                          , (String) null));
             return;
         }
     }
     
-
+    /*
     public void filter_OLD_IMPLEMENTATION_USES_COOKIE_HEADER(final ContainerRequestContext requestContext) throws IOException {
         boolean SHORT_CIRCUIT = false;
         if (SHORT_CIRCUIT)
@@ -349,7 +371,8 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
             return;                    
         }
     }
-
+    */
+    
     protected void abortUnauthorizedRequest(final ContainerRequestContext requestContext
                                             , final Response.Status status
                                             , final AbortResponse abortResponse) {
@@ -363,15 +386,3 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
     }    
 }
 
-final class AbortResponse {
-    public final String code;
-    public final String msg;
-    public final String details;
-    public AbortResponse(final String code
-                         , final String msg
-                         , final String details) {
-        this.code = code;
-        this.msg = msg;
-        this.details = details;
-    }
-}

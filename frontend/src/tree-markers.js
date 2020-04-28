@@ -135,7 +135,12 @@ function getTrees(N) {
                     }).catch( err => {
                         console.log(err);
                         console.log(JSON.stringify(err));
-                        assert.fail(err);
+                        if ((err.response) && (err.response.data.code == 'INSUFFICIENT_PRIVILLEGES')) {
+                            console.log(err.response);
+                            assert.fail(`impossible that I get INSUFFICIENT_PRIVILLEGES for this method`);
+                        } else {
+                            assert.fail('you know what? any kind of error at this point is also impossible');
+                        }
                     });
 }
 

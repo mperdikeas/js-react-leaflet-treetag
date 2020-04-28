@@ -1,4 +1,5 @@
 import React, {createContext} from 'react'
+const assert = require('chai').assert;
 
 
 export const TreesConfigurationContext =  createContext();
@@ -34,6 +35,8 @@ class TreesConfigurationContextProvider extends React.Component {
                      , healthStatuses: healthStatusesMap(healthStatuses)
                      , activities});
         
+      }).catch( (error) => {
+        assert.fail(`incoceivable that I encounter error at this stage: ${JSON.stringify(error)}`);
       });
     }
   }

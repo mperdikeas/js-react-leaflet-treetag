@@ -30,7 +30,7 @@ public class JaxRsApplication extends Application {
 
     private final Random r; 
     private final ISmtpMsa smtpMSA;
-    protected DBFacade dbFacade;
+    protected IDBFacade dbFacade;
     
     final static Logger logger = Logger.getLogger(JaxRsApplication.class);
     

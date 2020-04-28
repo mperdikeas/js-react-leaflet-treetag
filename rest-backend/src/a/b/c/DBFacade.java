@@ -2,14 +2,20 @@ package a.b.c;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.LinkedHashMap;
 import java.util.Random;
 
+import java.lang.reflect.Method;
+
 import org.junit.Assert;
 
-public class DBFacade {
+import a.b.c.SCAUtil;
+
+public class DBFacade implements IDBFacade {
 
     private final Map<String, UserInfo> users;
     private final Map<Integer, TreeInfo> trees;
@@ -56,7 +62,7 @@ public class DBFacade {
     }
 
 
-
+    @Override
     public boolean checkCredentials(final String installation, final String username, final String password) {
         if (!installation.equals("a1"))
             return false;
@@ -67,6 +73,7 @@ public class DBFacade {
             return password.equals(userInfo.password);
     }
 
+    @Override    
     public String userEmail(final String installation, final String username) {
         if (!installation.equals("a1"))
             return null;
@@ -77,6 +84,7 @@ public class DBFacade {
             return userInfo.email;
     }
 
+    @Override
     public String emailToUsername(final String installation, final String email) {
         for (final String username: users.keySet()) {
             if (users.get(username).email.equals(email))
@@ -84,16 +92,19 @@ public class DBFacade {
         }
         return null;
     }
-
+    
+    @Override
     public BasicTreeInfo getBasicTreeInfo(final int treeId) {
         return this.trees.get(treeId);
     }
 
 
+    @Override
     public TreeInfo getTreeInfo(final int treeId) {
         return this.trees.get(treeId);
     }
 
+    @Override
     public List<BasicTreeInfo> getTrees(final String installation) {
         /* TODO: ignoring the installation value for this demo and returning *all*
          *       the trees in the database.
@@ -102,6 +113,31 @@ public class DBFacade {
         final List<TreeInfo> a = new ArrayList<TreeInfo>(this.trees.values());
         final List<BasicTreeInfo> b = a.stream().map(x -> x.toBasicTreeInfo()).collect(Collectors.toList());
         return b;
+    }
+
+    @Override
+    public final Set<Privillege> getPrivilleges(final String installation, final String username) {
+        return new LinkedHashSet<Privillege>();
+    }
+
+    @Override    
+    public final boolean arePrivillegesSufficient(Set<Privillege> privilleges, final Class c, final Method m) {
+        if (c.equals(MainResource.class)) {
+            try {
+                final Method setFeatureData = MainResource.class.getMethod("setFeatureData"
+                                                                           , javax.ws.rs.core.Application.class
+                                                                           , javax.servlet.http.HttpServletRequest.class
+                                                                           , int.class
+                                                                           , String.class);
+                if (m.equals(setFeatureData))
+                    return false;
+                else
+                    return true;
+            } catch (NoSuchMethodException e) {
+                Assert.fail(e.getMessage());
+                return SCAUtil.satisfyReturn(true);
+            }
+        } else return true;
     }
 
 

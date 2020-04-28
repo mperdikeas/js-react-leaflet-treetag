@@ -184,6 +184,32 @@ public class MainResource {
             return ResourceUtil.softFailureResponse(t);
         }
     }
+
+    @Path("/feature/{featureId}/data")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response setFeatureData(@Context javax.ws.rs.core.Application _app,
+                                   @Context final HttpServletRequest httpServletRequest
+                                   , @PathParam("featureId") final int featureId
+                                   , final String feeatureData
+                                    ) {
+        final JaxRsApplication app = (JaxRsApplication) _app;
+        try {
+            logger.info(String.format("setFeatureData(%d) ~*~ remote address: [%s]"
+                                      , featureId
+                                      , httpServletRequest.getRemoteAddr()));
+            TimeUnit.MILLISECONDS.sleep(200);
+            final TreeInfo treeInfo = Globals.gson.fromJson(feeatureData, TreeInfo.class);
+            int i = 0 ; if (i==0) throw new RuntimeException("not implemented yet");
+            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok((Void) null))).build();
+        } catch (Throwable t) {
+            logger.error(String.format("Problem when calling setFeatureData(%d) from remote address [%s]"
+                                       , featureId
+                                       , httpServletRequest.getRemoteAddr())
+                         , t);
+            return ResourceUtil.softFailureResponse(t);
+        }
+    }
     
     
 
