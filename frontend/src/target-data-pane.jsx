@@ -2,7 +2,7 @@ const React = require('react');
 var      cx = require('classnames');
 
 const assert = require('chai').assert;
-import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
+import {Form, Col, Row, Button, Nav, ButtonGroup} from 'react-bootstrap';
 
 // REDUX
 import { connect }          from 'react-redux';
@@ -31,6 +31,17 @@ class TargetDataPane extends React.Component {
     }
 
 
+  handleSubmit = (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    console.log('handle submit');
+  }
+
+  revert = (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    console.log('revert');
+  }
 
   handleChange = (fieldName, value) => {
     const newTreeData = {...this.props.treeData, [fieldName]: value};
@@ -89,6 +100,17 @@ class TargetDataPane extends React.Component {
           <BooleanDataField  name='publicInterest'      label='δημοσίου ενδιαφέροντος' value={publicInterest}/>
           <BooleanDataField  name='disease'             label='ασθένεια'               value={disease}/>
           <TextAreaDataField name='comments'            label='Σχόλια'                 value={comments}/>
+          <ButtonGroup style={{marginTop: '1em'
+                             , display: 'flex'
+                             , flexDirection: 'row'
+                             , justifyContent: 'space-around'}}className="mb-2">
+            <Button style={{flexGrow: 0}} variant="secondary" onClick={this.revert}>
+              Ανάκληση
+            </Button>
+            <Button style={{flexGrow: 0}} variant="primary" type="submit">
+              Αποθήκευση
+            </Button>
+          </ButtonGroup>
         </Form>
         </>
       );
