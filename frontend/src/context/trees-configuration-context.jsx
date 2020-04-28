@@ -8,6 +8,7 @@ export const TreesConfigurationContext =  createContext();
 import {wrapLoginContext} from './contexts-wrapper.jsx';
 
 import getTreesConfiguration from '../trees-configuration-reader.js';
+import {possiblyInsufPrivPanicInAnyCase} from '../util-privilleges.js';
 
 class TreesConfigurationContextProvider extends React.Component {
 
@@ -35,8 +36,9 @@ class TreesConfigurationContextProvider extends React.Component {
                      , healthStatuses: healthStatusesMap(healthStatuses)
                      , activities});
         
-      }).catch( (error) => {
-        assert.fail(`incoceivable that I encounter error at this stage: ${JSON.stringify(error)}`);
+      }).catch( (err) => {
+        possiblyInsufPrivPanicInAnyCase(err);
+//        assert.fail(`incoceivable that I encounter error at this stage: ${JSON.stringify(error)}`);
       });
     }
   }

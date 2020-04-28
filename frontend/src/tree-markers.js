@@ -17,6 +17,7 @@ import rainbow                       from './rainbow.js';
 import {sca_fake_return
         , uniqValues}                from './util.js';
 import {axiosAuth} from './axios-setup.js';
+import {possiblyInsufPrivPanicInAnyCase} from './util-privilleges.js';
 
 
 const Athens = [37.98, 23.72];
@@ -133,14 +134,7 @@ function getTrees(N) {
                                 return res.data.t.slice(0, N);
                         }
                     }).catch( err => {
-                        console.log(err);
-                        console.log(JSON.stringify(err));
-                        if ((err.response) && (err.response.data.code == 'INSUFFICIENT_PRIVILLEGES')) {
-                            console.log(err.response);
-                            assert.fail(`impossible that I get INSUFFICIENT_PRIVILLEGES for this method`);
-                        } else {
-                            assert.fail('you know what? any kind of error at this point is also impossible');
-                        }
+                        possiblyInsufPrivPanicInAnyCase(err);
                     });
 }
 

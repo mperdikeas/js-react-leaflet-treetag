@@ -15,6 +15,7 @@ public class Globals {
         // gsonBuilder.registerTypeAdapter( Boolean.class, new JsonBooleanDeserializer());
         gsonBuilder.registerTypeAdapter( HealthStatus.class  , new HealthStatusAdapter());
         gsonBuilder.registerTypeAdapter( TreeActionType.class, new TreeActionTypeAdapter());
+        gsonBuilder.registerTypeAdapter( BearerAuthorizationFailureMode.class, new BearerAuthorizationFailureModeAdapter());
         gsonBuilder.registerTypeAdapter( Instant.class, new InstantTypeAdapter());
         gson = gsonBuilder.serializeNulls().create();
     }

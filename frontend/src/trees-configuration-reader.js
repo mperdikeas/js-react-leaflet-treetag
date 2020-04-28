@@ -4,7 +4,7 @@ const assert = require('chai').assert;
 import {sca_fake_return} from './util.js';
 
 import {axiosAuth} from './axios-setup.js';
-
+import {possiblyInsufPrivPanicInAnyCase} from './util-privilleges.js';
 
 export default function getTreesConfiguration() {
     const url = '/getConfiguration';
@@ -19,9 +19,7 @@ export default function getTreesConfiguration() {
             return res.data.t;
         }
     }).catch( err => {
-        console.log(err);
-        console.log(JSON.stringify(err));
-        assert.fail(err);
+        throw err;
     });
 }
 

@@ -164,9 +164,6 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(final ContainerRequestContext requestContext) throws IOException {
-        boolean SHORT_CIRCUIT = false;
-        if (SHORT_CIRCUIT)
-            return;
         final Class<?> klass = resourceInfo.getResourceClass();
         final Method method =  resourceInfo.getResourceMethod();
         logger.debug(String.format("%s::filter() # HTTP verb is: [%s] - attempting to invoke method [%s] on class [%s]"
@@ -205,7 +202,7 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
                 } else {
                     abortUnauthorizedRequest(requestContext
                                              , Response.Status.FORBIDDEN
-                                             , new AbortResponse(BearerAuthorizationFailureMode.INSUFFICIENT_PRIVILLEGES
+                                             , new AbortResponse(BearerAuthorizationFailureMode.INSUFFICIENT_PRIVILEGES
                                                                  , String.format("privilleges [%s] are not sufficient for %s::%s"
                                                                                  , Joiner.on(", ").join(Privillege.toStrings(privilleges))
                                                                                  , klass
@@ -376,7 +373,7 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
     protected void abortUnauthorizedRequest(final ContainerRequestContext requestContext
                                             , final Response.Status status
                                             , final AbortResponse abortResponse) {
-        final String entity =  GsonHelper.toJson(abortResponse);
+        final String entity =  Globals.gson.toJson(abortResponse);
         logger.info(String.format("aborting the request with status: [%s] and abort response: [%s]"
                                    , status
                                   , entity));

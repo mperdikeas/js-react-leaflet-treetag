@@ -12,7 +12,7 @@ public enum BearerAuthorizationFailureMode {
     , MORE_THAN_ONE_BEARER_TOKENS("more-than-one-bearer-token")
     , NO_BEARER_TOKEN("no-bearer-token")
     , JWT_VERIFICATION_FAILED("JWT-verif-failed")
-    , INSUFFICIENT_PRIVILLEGES("insufficient-priveleges");
+    , INSUFFICIENT_PRIVILEGES("insufficient-privileges");
 
     private final String code;
 
