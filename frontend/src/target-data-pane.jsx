@@ -7,11 +7,14 @@ import {Form, Col, Row, Button, Nav, ButtonGroup} from 'react-bootstrap';
 // REDUX
 import { connect }          from 'react-redux';
 
+import {axiosAuth} from './axios-setup.js';
 
 import {NumericDataFieldFactory
       , BooleanDataFieldFactory
       , SelectDataFieldFactory
       , TextAreaDataFieldFactory} from './data-field-controls.jsx';
+
+import {possiblyInsufPrivPanicInAnyCase, isInsufficientPrivilleges} from './util-privilleges.js';
 
 const mapStateToProps = (state) => {
   return {
@@ -35,6 +38,25 @@ class TargetDataPane extends React.Component {
     ev.preventDefault();
     ev.stopPropagation();
     console.log('handle submit');
+    axiosAuth.post(`/feature/{this.props.targetId}/data`, {foo: 'arxidia'}).then(res => {
+      if (res.data.err != null) {
+        console.log(`/feature/${this.props.targetId}/data POST error`);
+        assert.fail(res.data.err);
+      } else {
+        console.log(' API call success');
+        console.log(res.data.t);
+        throw 42;
+      }
+    }).catch( err => {
+      if (isInsufficientPrivilleges(err)) {
+        console.log('insuf detected');
+      } else {
+        // TODO: I should detect if the problem was expiry of the JWT in which case I should
+        //       prompt the user to login again
+        console.log(err);
+        assert.fail();
+      }
+    });
   }
 
   revert = (ev) => {
@@ -104,10 +126,10 @@ class TargetDataPane extends React.Component {
                              , display: 'flex'
                              , flexDirection: 'row'
                              , justifyContent: 'space-around'}}className="mb-2">
-            <Button style={{flexGrow: 0}} variant="secondary" onClick={this.revert}>
+            <Button disabled={! this.props.treeDataMutated} style={{flexGrow: 0}} variant="secondary" onClick={this.revert}>
               Ανάκληση
             </Button>
-            <Button style={{flexGrow: 0}} variant="primary" type="submit">
+            <Button disabled={! this.props.treeDataMutated} style={{flexGrow: 0}} variant="primary" type="submit">
               Αποθήκευση
             </Button>
           </ButtonGroup>

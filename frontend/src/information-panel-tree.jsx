@@ -48,6 +48,7 @@ class TreeInformationPanel extends React.Component {
       userIsLoggingIn: false
       , loadingTreeData: true
       , treeData: null
+      , treeDataMutated: false
       , error: null
     };
   }
@@ -66,8 +67,8 @@ class TreeInformationPanel extends React.Component {
   }
 
   updateTreeData = (treeData) => {
-    console.log(treeData.raisedSidewalk);
-    this.setState({treeData});
+    console.log('x');
+    this.setState({treeData, treeDataMutated: true});
   }
 
 
@@ -210,6 +211,7 @@ class TreeInformationPanel extends React.Component {
           userIsLoggingIn = {this.state.userIsLoggingIn}
           loadingTreeData = {this.state.loadingTreeData}
           treeData        = {this.state.treeData}
+          treeDataMutated = {this.state.treeDataMutated}
           updateTreeData  = {this.updateTreeData}
           />
         );
