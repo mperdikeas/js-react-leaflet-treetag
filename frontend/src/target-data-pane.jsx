@@ -36,10 +36,23 @@ const mapDispatchToProps = (dispatch) => {
 
 import wrapContexts from './context/contexts-wrapper.jsx';
 
+
+
 class TargetDataPane extends React.Component {
 
     constructor(props) {
       super(props);
+      /* Creating the components here (and not in the render() method) is necessary.
+       * See the following for more:
+       *
+       *    https://stackoverflow.com/a/49688084/274677
+       *
+       */
+      this.NumericDataField  = NumericDataFieldFactory(this.handleChange);
+      this.BooleanDataField  = BooleanDataFieldFactory(this.handleChange);
+      this.SelectDataField   = SelectDataFieldFactory (this.handleChange);
+      this.TextAreaDataField = TextAreaDataFieldFactory(this.handleChange);
+
     }
 
     componentDidMount() {
@@ -120,31 +133,27 @@ class TargetDataPane extends React.Component {
              publicInterest,
              disease,
              comments} = this.props.treeData;
-      const NumericDataField  = NumericDataFieldFactory(this.handleChange);
-      const BooleanDataField  = BooleanDataFieldFactory(this.handleChange);
-      const SelectDataField   = SelectDataFieldFactory (this.handleChange);
-      const TextAreaDataField = TextAreaDataFieldFactory(this.handleChange);
       return (
         <>
         <div>
         Data for tree {this.props.targetId} follow
         </div>
         <Form noValidate onSubmit={this.handleSubmit}>
-          <NumericDataField  name='yearPlanted'  label='έτος φύτευσης' value={yearPlanted} />
-          <SelectDataField   name='healthStatus' label='Υγεία'         value={healthStatus} codeToName={this.props.treesConfigurationContext.healthStatuses}/>
-          <NumericDataField  name='heightCm'            label='Ύψος (cm)'              value={heightCm} />
-          <NumericDataField  name='crownHeightCm'       label='Έναρξη κόμης (cm)'      value={crownHeightCm} />
-          <NumericDataField  name='circumferenceCm'     label='Περιφέρεια (cm)'        value={circumferenceCm} />
-          <BooleanDataField  name='raisedSidewalk'      label='Ανασηκωμένο πεζοδρόμιο' value={raisedSidewalk}/>
-          <BooleanDataField  name='powerlineProximity'  label='Εγγύτητα σε ΔΕΗ'        value={powerlineProximity}/>
-          <BooleanDataField  name='obstruction'         label='Εμποδίζει διεύλευση'    value={obstruction}/>
-          <BooleanDataField  name='debris'              label='Θραύσματα'              value={debris}/>
-          <BooleanDataField  name='litter'              label='σκουπίδια'              value={litter}/>
-          <BooleanDataField  name='trunkDamage'         label='πληγώσεις'              value={trunkDamage}/>
-          <BooleanDataField  name='fallHazard'          label='κίνδυνος πτώσης'        value={fallHazard}/>
-          <BooleanDataField  name='publicInterest'      label='δημοσίου ενδιαφέροντος' value={publicInterest}/>
-          <BooleanDataField  name='disease'             label='ασθένεια'               value={disease}/>
-          <TextAreaDataField name='comments'            label='Σχόλια'                 value={comments}/>
+          <this.NumericDataField  name='yearPlanted'  label='έτος φύτευσης' value={yearPlanted} />
+          <this.SelectDataField   name='healthStatus' label='Υγεία'         value={healthStatus} codeToName={this.props.treesConfigurationContext.healthStatuses}/>
+          <this.NumericDataField  name='heightCm'            label='Ύψος (cm)'              value={heightCm} />
+          <this.NumericDataField  name='crownHeightCm'       label='Έναρξη κόμης (cm)'      value={crownHeightCm} />
+          <this.NumericDataField  name='circumferenceCm'     label='Περιφέρεια (cm)'        value={circumferenceCm} />
+          <this.BooleanDataField  name='raisedSidewalk'      label='Ανασηκωμένο πεζοδρόμιο' value={raisedSidewalk}/>
+          <this.BooleanDataField  name='powerlineProximity'  label='Εγγύτητα σε ΔΕΗ'        value={powerlineProximity}/>
+          <this.BooleanDataField  name='obstruction'         label='Εμποδίζει διεύλευση'    value={obstruction}/>
+          <this.BooleanDataField  name='debris'              label='Θραύσματα'              value={debris}/>
+          <this.BooleanDataField  name='litter'              label='σκουπίδια'              value={litter}/>
+          <this.BooleanDataField  name='trunkDamage'         label='πληγώσεις'              value={trunkDamage}/>
+          <this.BooleanDataField  name='fallHazard'          label='κίνδυνος πτώσης'        value={fallHazard}/>
+          <this.BooleanDataField  name='publicInterest'      label='δημοσίου ενδιαφέροντος' value={publicInterest}/>
+          <this.BooleanDataField  name='disease'             label='ασθένεια'               value={disease}/>
+          <this.TextAreaDataField name='comments'            label='Σχόλια'                 value={comments}/>
           <ButtonGroup style={{marginTop: '1em'
                              , display: 'flex'
                              , flexDirection: 'row'
