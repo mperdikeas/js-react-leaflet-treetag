@@ -29,7 +29,7 @@ public class InstantTypeAdapter implements JsonSerializer<Instant>
         
         final JsonPrimitive json = _json.getAsJsonPrimitive();
         Assert.assertTrue(json.isNumber());
-        final long millisSSE  = json.getAsLong();
-        return Instant.ofEpochMilli(millisSSE);
+        final long sse  = json.getAsLong();
+        return Instant.ofEpochSecond(sse);
     }
 }

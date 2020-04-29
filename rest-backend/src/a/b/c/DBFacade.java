@@ -105,6 +105,12 @@ public class DBFacade implements IDBFacade {
     }
 
     @Override
+    public boolean setTreeInfo(int treeId, TreeInfo treeInfo) {
+        final TreeInfo oldValue = this.trees.put(treeId, treeInfo);
+        return oldValue != null;
+    }
+
+    @Override
     public List<BasicTreeInfo> getTrees(final String installation) {
         /* TODO: ignoring the installation value for this demo and returning *all*
          *       the trees in the database.
@@ -130,7 +136,7 @@ public class DBFacade implements IDBFacade {
                                                                            , int.class
                                                                            , String.class);
                 if (m.equals(setFeatureData))
-                    return false;
+                    return true; // TODO
                 else
                     return true;
             } catch (NoSuchMethodException e) {

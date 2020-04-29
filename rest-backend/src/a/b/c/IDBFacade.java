@@ -14,6 +14,7 @@ public interface IDBFacade {
     String emailToUsername(String installation, String email);
     BasicTreeInfo getBasicTreeInfo(int treeId);
     TreeInfo getTreeInfo(int treeId);
+    boolean setTreeInfo(int treeId, TreeInfo treeInfo);
     List<BasicTreeInfo> getTrees(String installation);
 
     Set<Privillege> getPrivilleges(String installation, String username);

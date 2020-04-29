@@ -63,7 +63,9 @@ class TargetDataPane extends React.Component {
     ev.preventDefault();
     ev.stopPropagation();
     console.log('handle submit');
-    axiosAuth.post(`/feature/{this.props.targetId}/data`, {foo: 'arxidia'}).then(res => {
+    console.log(this.props.treeData);
+    console.log(JSON.stringify(this.props.treeData));
+    axiosAuth.post(`/feature/${this.props.targetId}/data`, this.props.treeData).then(res => {
       if (res.data.err != null) {
         console.log(`/feature/${this.props.targetId}/data POST error`);
         assert.fail(res.data.err);
@@ -89,7 +91,8 @@ class TargetDataPane extends React.Component {
               assert.fail(`unexpected condition: code=${code}, msg=${msg}, details=${details}`);
           }
         } else {
-          assert.fail('unexpected condition', err);
+          console.log(err);
+          assert.fail(`unexpected condition: ${JSON.stringify(err)}`);
         }
       }
     });

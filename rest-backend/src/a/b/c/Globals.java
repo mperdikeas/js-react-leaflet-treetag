@@ -17,7 +17,16 @@ public class Globals {
         gsonBuilder.registerTypeAdapter( TreeActionType.class, new TreeActionTypeAdapter());
         gsonBuilder.registerTypeAdapter( BearerAuthorizationFailureMode.class, new BearerAuthorizationFailureModeAdapter());
         gsonBuilder.registerTypeAdapter( Instant.class, new InstantTypeAdapter());
-        gson = gsonBuilder.serializeNulls().create();
+
+        /*
+         * otherwise I had strings like "yo! it[']s a tree" converted to
+         * "yo! it\u0027s a tree"
+         * 
+         * See: https://stackoverflow.com/a/42743133/274677
+         *
+         */
+        gson = gsonBuilder.serializeNulls().disableHtmlEscaping().create();
+        
     }
 
 

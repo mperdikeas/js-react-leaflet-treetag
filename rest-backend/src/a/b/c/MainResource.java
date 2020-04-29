@@ -191,17 +191,25 @@ public class MainResource {
     public Response setFeatureData(@Context javax.ws.rs.core.Application _app,
                                    @Context final HttpServletRequest httpServletRequest
                                    , @PathParam("featureId") final int featureId
-                                   , final String feeatureData
+                                   , final String featureData
                                     ) {
         final JaxRsApplication app = (JaxRsApplication) _app;
         try {
             logger.info(String.format("setFeatureData(%d) ~*~ remote address: [%s]"
                                       , featureId
                                       , httpServletRequest.getRemoteAddr()));
+            logger.info(String.format("featureData is [%s]", featureData));
             TimeUnit.MILLISECONDS.sleep(200);
-            final TreeInfo treeInfo = Globals.gson.fromJson(feeatureData, TreeInfo.class);
-            int i = 0 ; if (i==0) throw new RuntimeException("not implemented yet");
-            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok((Void) null))).build();
+
+            todo: write a method to assert that the JSON object is stable
+                
+            final TreeInfo treeInfo = Globals.gson.fromJson(featureData, TreeInfo.class);
+            final String treeInfoJSON = Globals.gson.toJson(treeInfo);
+            Assert.assertEquals("something's not right"
+                                , featureData
+                                , treeInfoJSON);
+            final boolean valueUpdated = app.dbFacade.setTreeInfo(featureId, treeInfo);
+            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(valueUpdated))).build();
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling setFeatureData(%d) from remote address [%s]"
                                        , featureId
