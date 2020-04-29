@@ -88,7 +88,7 @@ export function TextAreaDataFieldFactory (onChange) {
                         type="text"
                         name={props.name}
                         value={props.value}
-                        onChange={(ev)=>this.handleChange(ev.target.name, ev.target.value)}
+                        onChange={(ev)=>onChange(ev.target.name, ev.target.value)}
           />
         </Col>
       </Form.Group>

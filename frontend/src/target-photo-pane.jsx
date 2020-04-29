@@ -18,7 +18,6 @@ import {axiosAuth} from './axios-setup.js';
 import { connect } from 'react-redux';
 
 import {MODAL_LOGIN} from './constants/modal-types.js';
-
 import {displayModal} from './actions/index.js';
 
 

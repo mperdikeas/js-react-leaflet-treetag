@@ -16,11 +16,23 @@ import {NumericDataFieldFactory
 
 import {possiblyInsufPrivPanicInAnyCase, isInsufficientPrivilleges} from './util-privilleges.js';
 
+import {MODAL_LOGIN, MDL_NOTIFICATION} from './constants/modal-types.js';
+import {displayModal} from './actions/index.js';
+
 const mapStateToProps = (state) => {
   return {
     targetId: state.targetId
   };
 };
+
+const mapDispatchToProps = (dispatch) => {
+  const msgInsufPriv1 = 'ο χρήστης δεν έχει τα προνόμια για να εκτελέσει αυτήν την λειτουργία';
+  return {
+    displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
+    , displayNotificationInsufPrivilleges: ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgInsufPriv1}))
+  };
+}
+
 
 import wrapContexts from './context/contexts-wrapper.jsx';
 
@@ -50,11 +62,22 @@ class TargetDataPane extends React.Component {
     }).catch( err => {
       if (isInsufficientPrivilleges(err)) {
         console.log('insuf detected');
+        this.props.displayNotificationInsufPrivilleges();
       } else {
-        // TODO: I should detect if the problem was expiry of the JWT in which case I should
-        //       prompt the user to login again
-        console.log(err);
-        assert.fail();
+        if (err.response && err.response.data) {
+          // SSE-1585746388: the shape of err.response.data is (code, msg, details)
+          // Java class ValidJWSAccessTokenFilter#AbortResponse
+          const {code, msg, details} = err.response.data;
+          switch(code) {
+            case 'JWT-verif-failed':
+              this.props.displayModalLogin( ()=>{this.handleSubmit();});
+              break;
+            default:
+              assert.fail(`unexpected condition: code=${code}, msg=${msg}, details=${details}`);
+          }
+        } else {
+          assert.fail('unexpected condition', err);
+        }
       }
     });
   }
@@ -141,6 +164,6 @@ class TargetDataPane extends React.Component {
 }
 
 
-export default connect(mapStateToProps)(wrapContexts(TargetDataPane));
+export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(TargetDataPane));
 
 
