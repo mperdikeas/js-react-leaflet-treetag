@@ -201,7 +201,7 @@ public class MainResource {
             logger.info(String.format("featureData is [%s]", featureData));
             TimeUnit.MILLISECONDS.sleep(200);
 
-            todo: write a method to assert that the JSON object is stable
+            // TODO: write a method to assert that the JSON object is stable
                 
             final TreeInfo treeInfo = Globals.gson.fromJson(featureData, TreeInfo.class);
             final String treeInfoJSON = Globals.gson.toJson(treeInfo);

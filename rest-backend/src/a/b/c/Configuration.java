@@ -6,12 +6,12 @@ public class Configuration {
 
 
     public LinkedHashMap<Integer, TreeConfiguration> treesConfiguration;
-    public LinkedHashMap<Integer, String> healthStatuses;
+    public HealthStatuses healthStatuses;
     public LinkedHashMap<Integer, String> activities;
 
 
     public Configuration(final LinkedHashMap<Integer, TreeConfiguration> treesConfiguration
-                         , final LinkedHashMap<Integer, String> healthStatuses
+                         , final HealthStatuses healthStatuses
                          , final LinkedHashMap<Integer, String> activities) {
         this.treesConfiguration = treesConfiguration;
         this.healthStatuses = healthStatuses;
@@ -99,12 +99,13 @@ public class Configuration {
                                              , "διακοσμητικά"
                                              , "#00FFFF"));        
         }
-        final LinkedHashMap<Integer, String> healthStatuses = new LinkedHashMap<>();
+        final LinkedHashMap<Integer, String> _healthStatuses = new LinkedHashMap<>();
         {
-            healthStatuses.put(-1, "poor");
-            healthStatuses.put(0, "normal");
-            healthStatuses.put(1, "good");
+            _healthStatuses.put(-1, "poor");
+            _healthStatuses.put(0, "normal");
+            _healthStatuses.put(1, "good");
         }
+        final HealthStatuses healthStatuses = new HealthStatuses(_healthStatuses);
         final LinkedHashMap<Integer, String> activities = new LinkedHashMap<>();
         {
             activities.put(0, "initial record");

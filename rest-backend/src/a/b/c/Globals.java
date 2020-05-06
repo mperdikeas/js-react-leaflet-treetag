@@ -14,6 +14,7 @@ public class Globals {
         // gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES);
         // gsonBuilder.registerTypeAdapter( Boolean.class, new JsonBooleanDeserializer());
         gsonBuilder.registerTypeAdapter( HealthStatus.class  , new HealthStatusAdapter());
+        gsonBuilder.registerTypeAdapter( HealthStatuses.class  , new HealthStatusesAdapter());
         gsonBuilder.registerTypeAdapter( TreeActionType.class, new TreeActionTypeAdapter());
         gsonBuilder.registerTypeAdapter( BearerAuthorizationFailureMode.class, new BearerAuthorizationFailureModeAdapter());
         gsonBuilder.registerTypeAdapter( Instant.class, new InstantTypeAdapter());

@@ -16,17 +16,20 @@ import com.google.gson.JsonParseException;
 
 public class HealthStatusAdapter implements JsonSerializer<HealthStatus>, JsonDeserializer<HealthStatus> {
 
+
     @Override
     public JsonElement serialize(final HealthStatus h, Type typeOfT, JsonSerializationContext context) {
-        return new JsonPrimitive(h.getCode());
+        return new JsonPrimitive(String.valueOf(h.getCode()));
     }
 
     @Override
     public HealthStatus deserialize(JsonElement _json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         
         final JsonPrimitive json = _json.getAsJsonPrimitive();
-        Assert.assertTrue(json.isNumber());
-        final int code = json.getAsInt();
+        /* JSON keys are strings; this cannot be helped. Accordingly, we need to convert
+         * from strings back to integers upon deserializing
+         */
+        final int code = json.getAsInt(); 
         return HealthStatus.fromCode(code);
     }
 }

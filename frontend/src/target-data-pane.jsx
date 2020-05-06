@@ -123,6 +123,9 @@ class TargetDataPane extends React.Component {
       );
     } else {
       assert.exists(this.props.treeData);
+      console.log('tree data follows:');
+      console.log(this.props.treeData);
+      console.log('---------------------');
       const {yearPlanted, healthStatus, heightCm,
              crownHeightCm,
              circumferenceCm,
@@ -136,6 +139,9 @@ class TargetDataPane extends React.Component {
              publicInterest,
              disease,
              comments} = this.props.treeData;
+      console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~');
+      console.log(this.props.treesConfigurationContext.healthStatuses);
+      console.log('============================');
       return (
         <>
         <div>
