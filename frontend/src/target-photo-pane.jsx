@@ -167,7 +167,10 @@ class TargetPhotoPane extends React.Component {
                                                   disabled: lastImage,
                                                   'not-allowed':lastImage
                                                 });
-        const divActualDate = (<div>photo of {this.props.targetId} taken on {photoBase64Instant.seconds}</div>);
+        const localDate = new Date();
+        localDate.setUTCSeconds(photoBase64Instant);
+        const localDateString = localDate.toLocaleDateString('el-GR');
+        const divActualDate = (<div>photo of {this.props.targetId} taken on {localDateString}</div>);
         const divDummyDate = (<div>Ημερομηνία λήψης 2019-10-03</div>);
         const prevNextStyle = {fontSize: 18, fontWeight: 'bold'};
         return (
@@ -267,7 +270,7 @@ fetchPhoto = () => {
   axiosAuth.get(url).then(res => {
     console.log(res);
     const {t: {photoBase64, instant}, err} = res.data; // corr-id: SSE-1585746250
-    if (err===null) {
+      if (err===null) {
       this.setState({userIsLoggingIn: false
                    , loadingPhoto: false
                    , photoBase64: photoBase64
