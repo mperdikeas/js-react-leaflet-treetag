@@ -2,8 +2,7 @@ const assert = require('chai').assert;
 
 import {APP_IS_DONE_LOADING
         , DISPLAY_MODAL
-        , CLEAR_MODAL
-        , ADD_GEOMETRY} from '../constants/action-types.js';
+        , CLEAR_MODAL} from '../constants/action-types.js';
 
 import {MODAL_APP_IS_LOADING
         , MODAL_LOGIN} from '../constants/modal-types.js';
@@ -17,9 +16,6 @@ export default (modals = [{modalType: MODAL_LOGIN, modalProps: null}
                         const newModal = {modalType: action.payload.modalType, modalProps: action.payload.modalProps};
                         modals2.push(newModal);
                         return modals2;
-                    }
-                    case ADD_GEOMETRY: {// TODO: I don't think this is used anymore
-                        return {modal: null};
                     }
                     case APP_IS_DONE_LOADING: {
                         console.log(`yyyyyyyyy modalreducer ${modals.length} modals`);

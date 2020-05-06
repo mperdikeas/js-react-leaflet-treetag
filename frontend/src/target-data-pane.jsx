@@ -27,9 +27,11 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   const msgInsufPriv1 = 'ο χρήστης δεν έχει τα προνόμια για να εκτελέσει αυτήν την λειτουργία';
+  const msgTreeDataHasBeenUpdated = targetId => `τα νέα δεδομένα για το δένδρο #${targetId} αποθηκεύτηκαν`;
   return {
     displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
     , displayNotificationInsufPrivilleges: ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgInsufPriv1}))
+    , displayTreeDataHasBeenUpdated: (targetId)=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataHasBeenUpdated(targetId)}))
   };
 }
 
@@ -72,7 +74,8 @@ class TargetDataPane extends React.Component {
       } else {
         console.log(' API call success');
         console.log(res.data.t);
-        throw 42;
+        this.props.displayTreeDataHasBeenUpdated(this.props.targetId);
+        this.props.clearTreeDataMutatedFlag();
       }
     }).catch( err => {
       if (isInsufficientPrivilleges(err)) {

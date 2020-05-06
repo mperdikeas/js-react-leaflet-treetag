@@ -71,6 +71,10 @@ class TreeInformationPanel extends React.Component {
     this.setState({treeData, treeDataMutated: true});
   }
 
+  clearTreeDataMutatedFlag = () => {
+    this.setState({treeDataMutated: false});
+  }
+
 
   fetchData = () => {
     const url = `/feature/${this.props.targetId}/data`;
@@ -208,11 +212,12 @@ class TreeInformationPanel extends React.Component {
       case INFORMATION:
         return (
           <TargetDataPane
-          userIsLoggingIn = {this.state.userIsLoggingIn}
-          loadingTreeData = {this.state.loadingTreeData}
-          treeData        = {this.state.treeData}
-          treeDataMutated = {this.state.treeDataMutated}
-          updateTreeData  = {this.updateTreeData}
+              userIsLoggingIn = {this.state.userIsLoggingIn}
+              loadingTreeData = {this.state.loadingTreeData}
+              treeData        = {this.state.treeData}
+              treeDataMutated = {this.state.treeDataMutated}
+              clearTreeDataMutatedFlag = {this.clearTreeDataMutatedFlag}
+              updateTreeData  = {this.updateTreeData}
           />
         );
       case PHOTOS:

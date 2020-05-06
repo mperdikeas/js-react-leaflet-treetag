@@ -54,8 +54,6 @@ import {Athens, ota_Callicrates, treeOverlays, defaultMarkerStyle} from './tree-
 
 
 
-import {MODAL_ADD_GEOMETRY} from './constants/modal-types.js';
-
 import { connect }          from 'react-redux';
 import {appIsDoneLoading
       , updateMouseCoords
@@ -77,7 +75,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     appIsDoneLoading: ()=> dispatch(appIsDoneLoading())
     , updateCoordinates                   : (latlng)   => dispatch(updateMouseCoords(latlng))
-    , displayAddPolygonDialog           : (polygonId, polygon)  => dispatch(displayModal(MODAL_ADD_GEOMETRY, {polygonId, polygon}))
     , toggleTarget                      : (targetId) => dispatch(toggleTarget(targetId))
     };
   }
