@@ -20,6 +20,8 @@ import { connect } from 'react-redux';
 import {MODAL_LOGIN} from './constants/modal-types.js';
 import {displayModal} from './actions/index.js';
 
+import PhotoDateAndDeletion from './photo-date-and-deletion.jsx';
+
 
 const mapStateToProps = (state) => {
   return {
@@ -167,15 +169,10 @@ class TargetPhotoPane extends React.Component {
                                                   disabled: lastImage,
                                                   'not-allowed':lastImage
                                                 });
-        const localDate = new Date();
-        localDate.setUTCSeconds(photoBase64Instant);
-        const localDateString = localDate.toLocaleDateString('el-GR');
-        const divActualDate = (<div>photo of {this.props.targetId} taken on {localDateString}</div>);
-        const divDummyDate = (<div>Ημερομηνία λήψης 2019-10-03</div>);
         const prevNextStyle = {fontSize: 18, fontWeight: 'bold'};
         return (
           <>
-          {divActualDate}
+          <PhotoDateAndDeletion photoBase64Instant={photoBase64Instant}/>
           <div className='d-flex flex-row justify-content-between'>
             <button type="button" disabled={firstImage} className={cx(prevButtonClasses)} style={prevNextStyle} onClick={this.prevImage}>&lt;</button>
             Φωτό {currentPhotoIndx+1} από {numOfPhotos}
