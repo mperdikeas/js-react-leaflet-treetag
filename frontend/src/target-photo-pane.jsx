@@ -268,11 +268,11 @@ fetchPhoto = () => {
   console.log(`fetchPhoto axios url is [${url}]`);
   axiosAuth.get(url).then(res => {
     console.log(res);
-    const {t: {photoBase64, instant}, err} = res.data; // corr-id: SSE-1585746250
+    const {t: {imageBase64, instant}, err} = res.data; // corr-id: SSE-1585746250
       if (err===null) {
       this.setState({userIsLoggingIn: false
                    , loadingPhoto: false
-                   , photoBase64: photoBase64
+                   , photoBase64: imageBase64
                    , photoBase64Instant: instant
                    , error: null});
     } else {

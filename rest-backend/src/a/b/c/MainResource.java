@@ -247,19 +247,19 @@ public class MainResource {
     @GET 
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFeaturePhoto(@Context final HttpServletRequest httpServletRequest
-                                  , @PathParam("featureId") final int featureId
+                                    , @Context javax.ws.rs.core.Application _app
+                                    , @PathParam("featureId") final int featureId
                                     , @PathParam("photoIndx") final int photoIndx
                                     ) {
         try {
+            final JaxRsApplication app = (JaxRsApplication) _app;
             logger.info(String.format("getFeaturePhoto(%d, %d) ~*~ remote address: [%s]"
                                       , featureId
                                       , photoIndx
                                       , httpServletRequest.getRemoteAddr()));
             TimeUnit.MILLISECONDS.sleep(200);
-            final String photoBase64 = getPhotoBase64(featureId, photoIndx);
-            final Instant photoInstant = getPhotoInstant(featureId);
-            final FeaturePhoto featurePhoto = new FeaturePhoto(photoBase64, photoInstant);
-            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(featurePhoto))).build();
+            final PhotoData photoData = app.dbFacade.getPhoto(featureId, photoIndx);
+            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(photoData))).build();
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling getFeaturePhoto(%d, %d) from remote address [%s]"
                                        , featureId
@@ -270,6 +270,33 @@ public class MainResource {
         }
     }
 
+    @Path("/feature/{featureId}/photos/elem/{photoIndx}")
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteFeaturePhoto(@Context final HttpServletRequest httpServletRequest
+                                       , @PathParam("featureId") final int featureId
+                                       , @PathParam("photoIndx") final int photoIndx
+                                       ) {
+        try {
+            logger.info(String.format("deleteFeaturePhoto(%d, %d) ~*~ remote address: [%s]"
+                                      , featureId
+                                      , photoIndx
+                                      , httpServletRequest.getRemoteAddr()));
+            TimeUnit.MILLISECONDS.sleep(200);
+            final String photoBase64 = getPhotoBase64(featureId, photoIndx);
+            final Instant photoInstant = getPhotoInstant(featureId);
+            final FeaturePhoto featurePhoto = new FeaturePhoto(photoBase64, photoInstant);
+            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(featurePhoto))).build();
+        } catch (Throwable t) {
+            logger.error(String.format("Problem when calling deleteFeaturePhoto(%d, %d) from remote address [%s]"
+                                       , featureId
+                                       , photoIndx
+                                       , httpServletRequest.getRemoteAddr())
+                         , t);
+            return ResourceUtil.softFailureResponse(t);
+        }
+    }
+    
     private Instant getPhotoInstant(final int featureId) {
         final int days = featureId % 2000;
         return Instant.now().minus(days, ChronoUnit.DAYS);
@@ -321,17 +348,4 @@ public class MainResource {
         return Base64.getEncoder().encodeToString(imageData);
     }
 }
-
-
-
-class FeaturePhoto {
-    final String photoBase64;
-    final Instant instant;
-    protected FeaturePhoto(final String photoBase64, Instant instant) {
-        this.photoBase64 = photoBase64;
-        this.instant = instant;
-    }
-
-}
-
 

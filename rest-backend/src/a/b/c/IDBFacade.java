@@ -15,7 +15,9 @@ public interface IDBFacade {
     BasicTreeInfo getBasicTreeInfo(int treeId);
     TreeInfo getTreeInfo(int treeId);
     boolean setTreeInfo(int treeId, TreeInfo treeInfo);
+    PhotoData getPhoto(int treeId, int photoIdx);
     List<BasicTreeInfo> getTrees(String installation);
+
 
     Set<Privillege> getPrivilleges(String installation, String username);
     boolean arePrivillegesSufficient(Set<Privillege> privilleges, Class c, Method m);
