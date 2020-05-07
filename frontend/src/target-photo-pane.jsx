@@ -172,12 +172,12 @@ class TargetPhotoPane extends React.Component {
         const prevNextStyle = {fontSize: 18, fontWeight: 'bold'};
         return (
           <>
-          <PhotoDateAndDeletion photoBase64Instant={photoBase64Instant}/>
           <div className='d-flex flex-row justify-content-between'>
             <button type="button" disabled={firstImage} className={cx(prevButtonClasses)} style={prevNextStyle} onClick={this.prevImage}>&lt;</button>
             Φωτό {currentPhotoIndx+1} από {numOfPhotos}
             <button type="button" disabled={lastImage} className={cx(nextButtonClasses)} style={prevNextStyle} onClick={this.nextImage}>&gt;</button>
           </div>
+          <PhotoDateAndDeletion photoBase64Instant={photoBase64Instant} targetId={this.props.targetId}/>
           {imageDiv}
           </>
         );

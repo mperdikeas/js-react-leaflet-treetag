@@ -43,6 +43,9 @@ class PhotoDateAndDeletion extends React.Component {
     super(props);
   }
 
+  deletePhoto = () => {
+    console.log(`delete photo for tree ${this.props.targetId}`);
+  }
 
   render() {
     console.log(this.props.photoBase64Instant);
@@ -55,9 +58,10 @@ class PhotoDateAndDeletion extends React.Component {
       <div style={{display: 'flex'
                  , flexDirection: 'row'
                  , justifyContent: 'space-around'
-                 , marginBottom: '1em'}}>
+                 , marginTop: '.5em'
+                 , marginBottom: '.5em'}}>
         <span>λήψη {localDateString}</span>
-        <Button variant='outline-danger'>Διαγραφή</Button>
+        <Button variant='outline-danger' onClick={this.deletePhoto}>Διαγραφή</Button>
       </div>
 
     );
