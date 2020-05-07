@@ -3,6 +3,7 @@ var      cx = require('classnames');
 
 const assert = require('chai').assert;
 
+import {Button} from 'react-bootstrap';
 
 const loading  = require('./resources/loading.gif');
 // require('../resources/down-arrow.png');
@@ -19,8 +20,6 @@ import { connect } from 'react-redux';
 
 import {MODAL_LOGIN} from './constants/modal-types.js';
 import {displayModal} from './actions/index.js';
-
-import PhotoDateAndDeletion from './photo-date-and-deletion.jsx';
 
 
 const mapStateToProps = (state) => {
@@ -170,6 +169,7 @@ class TargetPhotoPane extends React.Component {
                                                   'not-allowed':lastImage
                                                 });
         const prevNextStyle = {fontSize: 18, fontWeight: 'bold'};
+        const photoDateAndDeletion = this.getPhotoDateAndDeletion(this.props.targetId, currentPhotoIndx, photoBase64Instant);
         return (
           <>
           <div className='d-flex flex-row justify-content-between'>
@@ -177,7 +177,7 @@ class TargetPhotoPane extends React.Component {
             Φωτό {currentPhotoIndx+1} από {numOfPhotos}
             <button type="button" disabled={lastImage} className={cx(nextButtonClasses)} style={prevNextStyle} onClick={this.nextImage}>&gt;</button>
           </div>
-          <PhotoDateAndDeletion photoBase64Instant={photoBase64Instant} targetId={this.props.targetId}/>
+          {photoDateAndDeletion}
           {imageDiv}
           </>
         );
@@ -198,7 +198,9 @@ class TargetPhotoPane extends React.Component {
         );
       }
     }
+
   }
+
 
   fetchNumOfPhotos = () => {
     const url = urlForNumOfPhotos(this.props.targetId);
@@ -306,6 +308,28 @@ fetchPhoto = () => {
     }
   });
 }
+  deletePhoto = (photoIndx) => {
+    console.log(`delete photo #${photoIndx} for tree ${this.props.targetId}`);
+  }
+  
+  getPhotoDateAndDeletion = (targetId, photoIndx, photoBase64Instant) => {
+    const localDate = new Date();
+    localDate.setUTCSeconds(photoBase64Instant);
+    const localDateString = localDate.toLocaleDateString('el-GR');
+    const divDate = (<div>Λήψη {localDateString}</div>);
+
+    return (
+      <div style={{display: 'flex'
+                 , flexDirection: 'row'
+                 , justifyContent: 'space-around'
+                 , marginTop: '.5em'
+                 , marginBottom: '.5em'}}>
+        <span>λήψη {localDateString}</span>
+        <Button variant='outline-danger' onClick={()=>this.deletePhoto(photoIndx)}>Διαγραφή</Button>
+      </div>
+
+    );
+  }
 } // class
 
 
