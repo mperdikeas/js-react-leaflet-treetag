@@ -1,6 +1,7 @@
 package a.b.c;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
@@ -195,8 +196,35 @@ public class DBFacade implements IDBFacade {
     }
 
     @Override
+    public int getNumOfPhotos(int treeId) {
+        return tree2photo.get(treeId).size();
+    }
+
+    @Override
     public PhotoData getPhoto(int treeId, int photoIdx) {
         return tree2photo.get(treeId).get(photoIdx);
+    }
+
+    @Override
+    public boolean deletePhoto(int treeId, int photoIdx) {
+        final Map<Integer, PhotoData> treePhotos = this.tree2photo.get(treeId);
+        final PhotoData photoData = treePhotos.remove(photoIdx);
+        final Map<Integer, PhotoData> treePhotosShifted = shiftToFillGaps(treePhotos);
+        Assert.assertNotNull(this.tree2photo.put(treeId, treePhotosShifted));
+        return photoData != null;
+    }
+
+    private static Map<Integer, PhotoData> shiftToFillGaps(final Map<Integer, PhotoData> treePhotos) {
+        final Map<Integer, PhotoData> rv = new LinkedHashMap<>();
+        final Set<Integer> photoIndexes = treePhotos.keySet();
+        List<Integer> photoIndexesSorted = new ArrayList<>(photoIndexes);
+        Collections.sort(photoIndexesSorted);
+        int idx = 0;
+        for (int i: photoIndexesSorted) {
+            Assert.assertNull(rv.put(idx, treePhotos.get(i)));
+            idx ++;
+        }
+        return rv;
     }
 
     @Override

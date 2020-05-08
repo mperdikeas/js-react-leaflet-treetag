@@ -224,15 +224,17 @@ public class MainResource {
     @Path("/feature/{featureId}/photos/num")
     @GET 
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getFeaturePhotosNum(@Context final HttpServletRequest httpServletRequest
+    public Response getFeaturePhotosNum(@Context javax.ws.rs.core.Application _app
+                                        , @Context final HttpServletRequest httpServletRequest
                                         , @PathParam("featureId") final int featureId
                                     ) {
         try {
+            final JaxRsApplication app = (JaxRsApplication) _app;
             logger.info(String.format("getFeaturePhotosNum(%d) ~*~ remote address: [%s]"
                                       , featureId
                                       , httpServletRequest.getRemoteAddr()));
             TimeUnit.MILLISECONDS.sleep(200);
-            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(featureId % 5))).build();
+            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(app.dbFacade.getNumOfPhotos(featureId)))).build();
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling getFeaturePhotosNum(%d) from remote address [%s]"
                                        , featureId
@@ -246,8 +248,8 @@ public class MainResource {
     @Path("/feature/{featureId}/photos/elem/{photoIndx}")
     @GET 
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getFeaturePhoto(@Context final HttpServletRequest httpServletRequest
-                                    , @Context javax.ws.rs.core.Application _app
+    public Response getFeaturePhoto(@Context javax.ws.rs.core.Application _app
+                                    , @Context final HttpServletRequest httpServletRequest
                                     , @PathParam("featureId") final int featureId
                                     , @PathParam("photoIndx") final int photoIndx
                                     ) {
@@ -273,21 +275,20 @@ public class MainResource {
     @Path("/feature/{featureId}/photos/elem/{photoIndx}")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteFeaturePhoto(@Context final HttpServletRequest httpServletRequest
+    public Response deleteFeaturePhoto(@Context javax.ws.rs.core.Application _app
+                                       , @Context final HttpServletRequest httpServletRequest
                                        , @PathParam("featureId") final int featureId
                                        , @PathParam("photoIndx") final int photoIndx
                                        ) {
+        final JaxRsApplication app = (JaxRsApplication) _app;
         try {
             logger.info(String.format("deleteFeaturePhoto(%d, %d) ~*~ remote address: [%s]"
                                       , featureId
                                       , photoIndx
                                       , httpServletRequest.getRemoteAddr()));
-            int i = 0; if (i==0) throw new RuntimeException();
             TimeUnit.MILLISECONDS.sleep(200);
-            final String photoBase64 = getPhotoBase64(featureId, photoIndx);
-            final Instant photoInstant = getPhotoInstant(featureId);
-            final FeaturePhoto featurePhoto = new FeaturePhoto(photoBase64, photoInstant);
-            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(featurePhoto))).build();
+            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(app.dbFacade.deletePhoto(featureId, photoIndx)))).build();
+            
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling deleteFeaturePhoto(%d, %d) from remote address [%s]"
                                        , featureId

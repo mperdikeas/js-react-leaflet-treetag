@@ -137,14 +137,17 @@ class TargetPhotoPane extends React.Component {
       } // switch
     } else {
       const {numOfPhotos, currentPhotoIndx, photoBase64, photoBase64Instant} = this.state;
+      console.log(`render: # = ${numOfPhotos}`);
       if (this.state.error===null) {
 
-        if ((numOfPhotos===0) && (photoBase64===null))
+        if (numOfPhotos===0) {
+          assert.isNull(photoBase64);
           return (
             <>
             <div>no photos are available</div>
             </>
           );
+        }
 
 
         const imageDiv = (()=>{
@@ -239,9 +242,15 @@ class TargetPhotoPane extends React.Component {
         if (numOfPhotos>0)
           this.setState({serverCallInProgress: GETTING_PHOTO
                        , numOfPhotos: numOfPhotos
-                       , currentPhotoIndx: 0});
+                       , currentPhotoIndx: 0
+                       , error: null});
         else
-          this.setState({serverCallInProgress: null});
+          this.setState({serverCallInProgress: null
+                       , numOfPhotos: 0
+                       , currentPhotoIndx: null
+                       , photoBase64: null
+                       , photoBase64Instant: null
+                       , error: null});
       } else {
         this.setState({serverCallInProgress: null
                      , error: {message: `server-side error: ${err.message}`
@@ -279,12 +288,22 @@ fetchPhoto = () => {
   console.log(`fetchPhoto axios url is [${url}]`);
   axiosAuth.get(url).then(res => {
     console.log(res);
-    const {t: {imageBase64, instant}, err} = res.data; // corr-id: SSE-1585746250
+    const {t, err} = res.data;
     if (err===null) {
-      this.setState({serverCallInProgress: null
-                   , photoBase64: imageBase64
-                   , photoBase64Instant: instant
-                   , error: null});
+      if (t!=null) {
+        const {imageBase64, instant} = t; // corr-id: SSE-1585746250
+        this.setState({serverCallInProgress: null
+                     , photoBase64: imageBase64
+                     , photoBase64Instant: instant
+                     , error: null});
+      } else {
+        console.warn('curiously the photo appears to have been deleted');
+        this.setState({serverCallInProgress: null
+                     , numOfPhotos: 0
+                     , photoBase64: null
+                     , photoBase64Instant: null
+                     , error: null});
+      }
     } else {
       this.setState({ serverCallInProgress: null
                     , photoBase64: null
@@ -322,11 +341,7 @@ fetchPhoto = () => {
     ).then(res => {
       const {t, err} = res.data; 
       if (err===null) {
-        const newNumOfPhotos = this.state.numOfPhotos - 1;
-        const newCurrentPhotoIndx = newNumOfPhotos===0?null:this.state.currentPhotoIndx-1;
-        this.setState({serverCallInProgress: null
-                     , numOfPhotos: newNumOfPhotos
-                     , currentPhotoIndx: newCurrentPhotoIndx});
+        this.fetchNumOfPhotos();
       } else {
         this.setState({ serverCallInProgress: null
                       , error: {message: `server-side error while deleting photo #{photoIndx} on tree #{this.props.targetId}: ${err.message}`
