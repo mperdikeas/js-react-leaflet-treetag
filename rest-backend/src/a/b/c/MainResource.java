@@ -282,6 +282,7 @@ public class MainResource {
                                       , featureId
                                       , photoIndx
                                       , httpServletRequest.getRemoteAddr()));
+            int i = 0; if (i==0) throw new RuntimeException();
             TimeUnit.MILLISECONDS.sleep(200);
             final String photoBase64 = getPhotoBase64(featureId, photoIndx);
             final Instant photoInstant = getPhotoInstant(featureId);

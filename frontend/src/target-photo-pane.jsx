@@ -21,7 +21,10 @@ import { connect } from 'react-redux';
 import {MODAL_LOGIN} from './constants/modal-types.js';
 import {displayModal} from './actions/index.js';
 
+import {LOGGING_IN, GETTING_NUM_OF_PHOTOS, GETTING_PHOTO, DELETING_PHOTO} from './target-photo-pane-server-call-types.js';
 
+
+  
 const mapStateToProps = (state) => {
   return {
     targetId: state.targetId
@@ -45,6 +48,7 @@ class TargetPhotoPane extends React.Component {
   }
 
   getInitialState = () => {
+/*
     return {
       userIsLoggingIn: false
       , loadingNumOfPhotos: true
@@ -54,6 +58,15 @@ class TargetPhotoPane extends React.Component {
       , photoBase64     : null
       , photoBase64Instant     : null                
       , error           : null};
+    */
+    return {
+      serverCallInProgress: true
+      , serverCallType: GETTING_NUM_OF_PHOTOS
+      , numOfPhotos     : null
+      , currentPhotoIndx: null
+      , photoBase64     : null
+      , photoBase64Instant     : null                
+      , error           : null};    
     /*
      *    error objects will have the following shape:
      *    {message, details}
@@ -61,13 +74,15 @@ class TargetPhotoPane extends React.Component {
   }
 
   prevImage = () => {
-    this.setState({loadingPhoto: true
+    this.setState({serverCallInProgress: true
+                 , serverCallType: GETTING_PHOTO
                  , currentPhotoIndx: this.state.currentPhotoIndx-1
                  , photoBase64: null});
   }
   
   nextImage = () => {
-    this.setState({loadingPhoto: true
+    this.setState({serverCallInProgress: true
+                 , serverCallType: GETTING_PHOTO
                  , currentPhotoIndx: this.state.currentPhotoIndx+1
                  , photoBase64: null});
   }    
@@ -79,48 +94,65 @@ class TargetPhotoPane extends React.Component {
   
   componentDidUpdate(prevProps, prevState) {
     console.log('componentDidUpdate');
-    if (false) {
-      if (prevProps.targetId !== this.props.targetId) {
-        this.setState(this.getInitialState());
-        this.fetchNumOfPhotos();
-      } else if ((prevState.currentPhotoIndx !== this.state.currentPhotoIndx)
-                 && (this.state.currentPhotoIndx!=null))
-        this.fetchPhoto();
-    }
     if (prevProps.targetId !== this.props.targetId) {
       this.setState(this.getInitialState());
-    } else if (this.state.loadingNumOfPhotos) {
-      this.fetchNumOfPhotos();
-    } else if (this.state.loadingPhoto) {
-      this.fetchPhoto();
-    }
+    } else if (this.state.serverCallInProgress) {
+      assert.exists(this.state.serverCallType);
+        switch (this.state.serverCallType) {
+          case LOGGING_IN:
+            break; // nothing to do here
+          case GETTING_NUM_OF_PHOTOS:
+            this.fetchNumOfPhotos();
+            break;
+          case GETTING_PHOTO:
+            this.fetchPhoto();
+            break;
+          case DELETING_PHOTO:
+            this.deletePhoto();
+            break;
+          default:
+            assert.fail(`unrecognized server call type: ${this.state.serverCallType}`);
+        }
+      }
   }
 
   render() {
-    if (this.state.userIsLoggingIn) {
-      return (
-        <>
-        <img src={loading} className='img-fluid' alt='User re-signing in &hellip;'/>
-        <div>User re-signing in &hellip;</div>
-        </>
-      );
-    } else if (this.state.loadingNumOfPhotos) {
-      return (
-        <>
-        <img src={loading} className='img-fluid' alt='Retrieving # of photos &hellip;'/>
-        <div>Retrieving number of photos &hellip;</div>
-        </>
-      );
-
-    } else if (this.state.loadingPhoto) {
-      return (
-        <>
-        <img src={loading} className='img-fluid' alt='Retrieving photo &hellip;'/>
-        <div>Retrieving photo &hellip;</div>
-        </>
-      );
+    if (this.state.serverCallInProgress) {
+      console.log(`call in progress is ${this.state.serverCallInProgress} and call type is ${this.state.serverCallType}`);
+      assert.exists(this.state.serverCallType);
+      switch (this.state.serverCallType) {
+        case LOGGING_IN:
+          return (
+            <>
+            <img src={loading} className='img-fluid' alt='User re-signing in &hellip;'/>
+            <div>User re-signing in &hellip;</div>
+            </>
+          );
+        case GETTING_NUM_OF_PHOTOS:
+          return (
+            <>
+            <img src={loading} className='img-fluid' alt='Retrieving # of photos &hellip;'/>
+            <div>Retrieving number of photos &hellip;</div>
+            </>
+          );
+        case GETTING_PHOTO:
+          return (
+            <>
+            <img src={loading} className='img-fluid' alt='Retrieving photo &hellip;'/>
+            <div>Retrieving photo &hellip;</div>
+            </>
+          );
+        case DELETING_PHOTO:
+          return (
+            <>
+            <img src={loading} className='img-fluid' alt='Deleting photo &hellip;'/>
+            <div>Deleting photo &hellip;</div>
+            </>
+          );
+        default:
+          assert.fail(`unrecognized server call type: ${this.state.serverCallType}`);
+      } // switch
     } else {
-      console.log('not loading state');
       const {numOfPhotos, currentPhotoIndx, photoBase64, photoBase64Instant} = this.state;
       if (this.state.error===null) {
 
@@ -221,6 +253,105 @@ class TargetPhotoPane extends React.Component {
       if (err===null) {
         const numOfPhotos = t;
         const currentPhotoIndx = numOfPhotos>0?0:null;
+        if (numOfPhotos>0)
+          this.setState({serverCallInProgress: true
+                       , serverCallType: GETTING_PHOTO
+                       , numOfPhotos: numOfPhotos
+                       , currentPhotoIndx: 0});
+        else
+          this.setState({serverCallInProgress: false
+                       , serverCallType: null});
+      } else {
+        this.setState({serverCallInProgress: false
+                     , serverCallType: null
+                     , error: {message: `server-side error: ${err.message}`
+                             , details: err.strServerTrace}});
+      }
+    }).catch( err => {
+      console.log(JSON.stringify(err));
+      console.log(err);
+      if (err.response && err.response.data) {
+        // SSE-1585746388: the shape of err.response.data is (code, msg, details)
+        // Java class ValidJWSAccessTokenFilter#AbortResponse
+        const {code, msg, details} = err.response.data;
+        switch(code) {
+          case 'JWT-verif-failed':
+            this.props.displayModalLogin( ()=>{this.fetchNumOfPhotos();} );
+            this.setState({serverCallInProgress: true
+                         , serverCallType: LOGGING_IN
+                         , error: {message: `JWT verif. failed. Server message is: [${msg}]`
+                                 , details: details}});
+            break;
+          default:
+            this.setState({serverCallInProgress: false
+                         , serverCallType: null
+                         , error: {message: `unexpected error code: ${code}`
+                                 , details: msg}});
+        }
+      } else {
+        this.setState({serverCallInProgress: false
+                     , serverCallType: null
+                     , error: {message: 'unexpected error - likely a bug'
+                             , details: JSON.stringify(err)}});
+      }
+    }) // catch
+  } // fetchNumOfPhotos
+
+fetchPhoto = () => {
+  const url = urlForPhoto(this.props.targetId, this.state.currentPhotoIndx);
+  console.log(`fetchPhoto axios url is [${url}]`);
+  axiosAuth.get(url).then(res => {
+    console.log(res);
+    const {t: {imageBase64, instant}, err} = res.data; // corr-id: SSE-1585746250
+    if (err===null) {
+      this.setState({serverCallInProgress: false
+                   , serverCallType: null
+                   , photoBase64: imageBase64
+                   , photoBase64Instant: instant
+                   , error: null});
+    } else {
+      this.setState({ serverCallInProgress: false
+                    , serverCallType: null
+                    , photoBase64: null
+                    , error: {message: err.message
+                            , details: err.strServerTrace}});
+    }
+  }).catch( err => {
+    console.log(JSON.stringify(err));
+    console.log(err);
+    if (err.response && err.response.data) {
+      // corr-id: SSE-1585746388
+      const {code, msg, details} = err.response.data;
+      switch(code) {
+        case 'JWT-verif-failed':
+          this.props.displayModalLogin( ()=>{this.fetchPhoto();});
+          this.setState({serverCallInProgress: true
+                       , serverCallType: LOGGING_IN
+                       , error: {message: `JWT verif. failed. Server message is: [${msg}]`
+                               , details: details}});
+          break;
+        default:
+          this.setState({serverCallInProgress: false
+                       , serverCallType: null
+                       , error: {message: `unexpected error code: ${code}`
+                               , details: msg}});
+      }
+    } else {
+      this.setState({serverCallInProgress: false
+                   , serverCallType: null
+                   , error: {message: 'unexpected error - likely a bug'
+                           , details: JSON.stringify(err)}});
+    }
+  });
+}
+  deletePhoto = () => {
+    console.log(`delete photo #${this.props.currentPhotoIndx} for tree ${this.props.targetId}`);
+    axiosAuth.delete(url
+    ).then(res => {
+      const {t, err} = res.data; 
+      if (err===null) {
+        const numOfPhotos = t;
+        const currentPhotoIndx = numOfPhotos>0?0:null;
         this.setState({userIsLoggingIn: false
                      , loadingNumOfPhotos: false
                      , loadingPhoto: numOfPhotos>0
@@ -232,7 +363,7 @@ class TargetPhotoPane extends React.Component {
         this.setState({ userIsLoggingIn: false
                       , loadingNumOfPhotos: false
                       , numOfPhotos: null
-                      , error: {message: `server-side error: ${err.message}`
+                      , error: {message: `server-side error while deleting photo #{photoIndx} on tree #{this.props.targetId}: ${err.message}`
                               , details: err.strServerTrace}});
       }
     }).catch( err => {
@@ -261,56 +392,8 @@ class TargetPhotoPane extends React.Component {
                              , details: JSON.stringify(err)}});
       }
     }) // catch
-  } // fetchNumOfPhotos
+  } // fetchNumOfPhotos    
 
-fetchPhoto = () => {
-  const url = urlForPhoto(this.props.targetId, this.state.currentPhotoIndx);
-  console.log(`fetchPhoto axios url is [${url}]`);
-  axiosAuth.get(url).then(res => {
-    console.log(res);
-    const {t: {imageBase64, instant}, err} = res.data; // corr-id: SSE-1585746250
-      if (err===null) {
-      this.setState({userIsLoggingIn: false
-                   , loadingPhoto: false
-                   , photoBase64: imageBase64
-                   , photoBase64Instant: instant
-                   , error: null});
-    } else {
-      this.setState({ userIsLoggingIn: false
-                    , loadingPhoto: false
-                    , photoBase64: null
-                    , error: {message: err.message
-                            , details: err.strServerTrace}});
-    }
-  }).catch( err => {
-    console.log(JSON.stringify(err));
-    console.log(err);
-    if (err.response && err.response.data) {
-      // corr-id: SSE-1585746388
-      const {code, msg, details} = err.response.data;
-      switch(code) {
-        case 'JWT-verif-failed':
-          this.props.displayModalLogin( ()=>{this.fetchPhoto();});
-          this.setState({userIsLoggingIn: true
-                       , loadingPhoto: false
-                       , error: {message: `JWT verif. failed. Server message is: [${msg}]`
-                               , details: details}});
-          break;
-        default:
-          this.setState({loadingPhoto: false
-                       , error: {message: `unexpected error code: ${code}`
-                               , details: msg}});
-      }
-    } else {
-      this.setState({loadingPhoto: false
-                   , error: {message: 'unexpected error - likely a bug'
-                           , details: JSON.stringify(err)}});
-    }
-  });
-}
-  deletePhoto = (photoIndx) => {
-    console.log(`delete photo #${photoIndx} for tree ${this.props.targetId}`);
-  }
   
   getPhotoDateAndDeletion = (targetId, photoIndx, photoBase64Instant) => {
     const localDate = new Date();
@@ -327,7 +410,6 @@ fetchPhoto = () => {
         <span>λήψη {localDateString}</span>
         <Button variant='outline-danger' onClick={()=>this.deletePhoto(photoIndx)}>Διαγραφή</Button>
       </div>
-
     );
   }
 } // class
