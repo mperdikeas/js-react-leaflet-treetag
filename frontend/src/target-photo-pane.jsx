@@ -201,7 +201,7 @@ class TargetPhotoPane extends React.Component {
         return (
           <>
           <div>
-            shit happened: {this.state.error.message}
+            Please contact support: {this.state.error.message}
           </div>
           <div>
             Full stack trace (for your sick perusal) follows:
@@ -317,24 +317,18 @@ fetchPhoto = () => {
   });
 }
   deletePhoto = () => {
-    console.log(`delete photo #${this.props.currentPhotoIndx} for tree ${this.props.targetId}`);
+    const url = urlForPhotoDeletion(this.props.targetId, this.state.currentPhotoIndx);
     axiosAuth.delete(url
     ).then(res => {
       const {t, err} = res.data; 
       if (err===null) {
-        const numOfPhotos = t;
-        const currentPhotoIndx = numOfPhotos>0?0:null;
-        this.setState({userIsLoggingIn: false
-                     , loadingNumOfPhotos: false
-                     , loadingPhoto: numOfPhotos>0
-                     , numOfPhotos: numOfPhotos
-                     , currentPhotoIndx: currentPhotoIndx
-                     , photoBase64: null
-                     , error: null});
+        const newNumOfPhotos = this.state.numOfPhotos - 1;
+        const newCurrentPhotoIndx = newNumOfPhotos===0?null:this.state.currentPhotoIndx-1;
+        this.setState({serverCallInProgress: null
+                     , numOfPhotos: newNumOfPhotos
+                     , currentPhotoIndx: newCurrentPhotoIndx});
       } else {
-        this.setState({ userIsLoggingIn: false
-                      , loadingNumOfPhotos: false
-                      , numOfPhotos: null
+        this.setState({ serverCallInProgress: null
                       , error: {message: `server-side error while deleting photo #{photoIndx} on tree #{this.props.targetId}: ${err.message}`
                               , details: err.strServerTrace}});
       }
@@ -347,24 +341,23 @@ fetchPhoto = () => {
         const {code, msg, details} = err.response.data;
         switch(code) {
           case 'JWT-verif-failed':
-            this.props.displayModalLogin( ()=>{this.fetchNumOfPhotos();} );
-            this.setState({userIsLoggingIn: true
-                         , loadingNumOfPhotos: false
+            this.props.displayModalLogin( ()=>{this.deletePhoto();} );
+            this.setState({serverCallInProgress: LOGGING_IN
                          , error: {message: `JWT verif. failed. Server message is: [${msg}]`
                                  , details: details}});
             break;
           default:
-            this.setState({loadingNumOfPhotos: false
+            this.setState({serverCallInProgress: null
                          , error: {message: `unexpected error code: ${code}`
                                  , details: msg}});
         }
       } else {
-        this.setState({loadingNumOfPhotos: false
+        this.setState({serverCallInProgress: null
                      , error: {message: 'unexpected error - likely a bug'
                              , details: JSON.stringify(err)}});
       }
     }) // catch
-  } // fetchNumOfPhotos    
+  } // deletePhoto    
 
   
   getPhotoDateAndDeletion = (targetId, photoIndx, photoBase64Instant) => {
@@ -386,6 +379,10 @@ fetchPhoto = () => {
   }
 } // class
 
+
+function urlForPhotoDeletion(targetId, indx) {
+  return urlForPhoto(targetId, indx);
+}
 
 function urlForPhoto(targetId, indx) {
   const url = `/feature/${targetId}/photos/elem/${indx}`;
