@@ -48,20 +48,8 @@ class TargetPhotoPane extends React.Component {
   }
 
   getInitialState = () => {
-/*
     return {
-      userIsLoggingIn: false
-      , loadingNumOfPhotos: true
-      , loadingPhoto    : false
-      , numOfPhotos     : null
-      , currentPhotoIndx: null
-      , photoBase64     : null
-      , photoBase64Instant     : null                
-      , error           : null};
-    */
-    return {
-      serverCallInProgress: true
-      , serverCallType: GETTING_NUM_OF_PHOTOS
+      serverCallInProgress: GETTING_NUM_OF_PHOTOS
       , numOfPhotos     : null
       , currentPhotoIndx: null
       , photoBase64     : null
@@ -74,15 +62,13 @@ class TargetPhotoPane extends React.Component {
   }
 
   prevImage = () => {
-    this.setState({serverCallInProgress: true
-                 , serverCallType: GETTING_PHOTO
+    this.setState({serverCallInProgress: GETTING_PHOTO
                  , currentPhotoIndx: this.state.currentPhotoIndx-1
                  , photoBase64: null});
   }
   
   nextImage = () => {
-    this.setState({serverCallInProgress: true
-                 , serverCallType: GETTING_PHOTO
+    this.setState({serverCallInProgress: GETTING_PHOTO
                  , currentPhotoIndx: this.state.currentPhotoIndx+1
                  , photoBase64: null});
   }    
@@ -97,8 +83,7 @@ class TargetPhotoPane extends React.Component {
     if (prevProps.targetId !== this.props.targetId) {
       this.setState(this.getInitialState());
     } else if (this.state.serverCallInProgress) {
-      assert.exists(this.state.serverCallType);
-        switch (this.state.serverCallType) {
+        switch (this.state.serverCallInProgress) {
           case LOGGING_IN:
             break; // nothing to do here
           case GETTING_NUM_OF_PHOTOS:
@@ -118,9 +103,7 @@ class TargetPhotoPane extends React.Component {
 
   render() {
     if (this.state.serverCallInProgress) {
-      console.log(`call in progress is ${this.state.serverCallInProgress} and call type is ${this.state.serverCallType}`);
-      assert.exists(this.state.serverCallType);
-      switch (this.state.serverCallType) {
+      switch (this.state.serverCallInProgress) {
         case LOGGING_IN:
           return (
             <>
@@ -254,16 +237,13 @@ class TargetPhotoPane extends React.Component {
         const numOfPhotos = t;
         const currentPhotoIndx = numOfPhotos>0?0:null;
         if (numOfPhotos>0)
-          this.setState({serverCallInProgress: true
-                       , serverCallType: GETTING_PHOTO
+          this.setState({serverCallInProgress: GETTING_PHOTO
                        , numOfPhotos: numOfPhotos
                        , currentPhotoIndx: 0});
         else
-          this.setState({serverCallInProgress: false
-                       , serverCallType: null});
+          this.setState({serverCallInProgress: null});
       } else {
-        this.setState({serverCallInProgress: false
-                     , serverCallType: null
+        this.setState({serverCallInProgress: null
                      , error: {message: `server-side error: ${err.message}`
                              , details: err.strServerTrace}});
       }
@@ -277,20 +257,17 @@ class TargetPhotoPane extends React.Component {
         switch(code) {
           case 'JWT-verif-failed':
             this.props.displayModalLogin( ()=>{this.fetchNumOfPhotos();} );
-            this.setState({serverCallInProgress: true
-                         , serverCallType: LOGGING_IN
+            this.setState({serverCallInProgress: LOGGING_IN
                          , error: {message: `JWT verif. failed. Server message is: [${msg}]`
                                  , details: details}});
             break;
           default:
-            this.setState({serverCallInProgress: false
-                         , serverCallType: null
+            this.setState({serverCallInProgress: null
                          , error: {message: `unexpected error code: ${code}`
                                  , details: msg}});
         }
       } else {
-        this.setState({serverCallInProgress: false
-                     , serverCallType: null
+        this.setState({serverCallInProgress: null
                      , error: {message: 'unexpected error - likely a bug'
                              , details: JSON.stringify(err)}});
       }
@@ -304,14 +281,12 @@ fetchPhoto = () => {
     console.log(res);
     const {t: {imageBase64, instant}, err} = res.data; // corr-id: SSE-1585746250
     if (err===null) {
-      this.setState({serverCallInProgress: false
-                   , serverCallType: null
+      this.setState({serverCallInProgress: null
                    , photoBase64: imageBase64
                    , photoBase64Instant: instant
                    , error: null});
     } else {
-      this.setState({ serverCallInProgress: false
-                    , serverCallType: null
+      this.setState({ serverCallInProgress: null
                     , photoBase64: null
                     , error: {message: err.message
                             , details: err.strServerTrace}});
@@ -325,20 +300,17 @@ fetchPhoto = () => {
       switch(code) {
         case 'JWT-verif-failed':
           this.props.displayModalLogin( ()=>{this.fetchPhoto();});
-          this.setState({serverCallInProgress: true
-                       , serverCallType: LOGGING_IN
+          this.setState({serverCallInProgress: LOGGING_IN
                        , error: {message: `JWT verif. failed. Server message is: [${msg}]`
                                , details: details}});
           break;
         default:
-          this.setState({serverCallInProgress: false
-                       , serverCallType: null
+          this.setState({serverCallInProgress: null
                        , error: {message: `unexpected error code: ${code}`
                                , details: msg}});
       }
     } else {
-      this.setState({serverCallInProgress: false
-                   , serverCallType: null
+      this.setState({serverCallInProgress: null
                    , error: {message: 'unexpected error - likely a bug'
                            , details: JSON.stringify(err)}});
     }
