@@ -13,7 +13,8 @@ import {sca_fake_return} from './util.js';
 
 
 import {axiosAuth} from './axios-setup.js';
-
+import {CancelToken} from 'axios';
+assert.exists(CancelToken);
 
 // REDUX
 import { connect } from 'react-redux';
@@ -24,6 +25,7 @@ import {displayModal} from './actions/index.js';
 import {LOGGING_IN, GETTING_NUM_OF_PHOTOS, GETTING_PHOTO, DELETING_PHOTO} from './target-photo-pane-server-call-types.js';
 
 
+const OP_NO_LONGER_RELEVANT = 'op-no-longer-relevant';
   
 const mapStateToProps = (state) => {
   return {
@@ -45,6 +47,7 @@ class TargetPhotoPane extends React.Component {
   constructor(props) {
     super(props);
     this.state = this.getInitialState();
+    this.source = CancelToken.source();
   }
 
   getInitialState = () => {
@@ -77,10 +80,22 @@ class TargetPhotoPane extends React.Component {
     console.log('componentDidMount');
     this.fetchNumOfPhotos();
   }
-  
+
+  componentWillUnmount() {
+    console.log('cancelling requests');
+    this.source.cancel(OP_NO_LONGER_RELEVANT);
+  }
+
   componentDidUpdate(prevProps, prevState) {
     console.log('componentDidUpdate');
     if (prevProps.targetId !== this.props.targetId) {
+      console.log('cancelling pending requests due to new target');
+      this.source.cancel(OP_NO_LONGER_RELEVANT);
+      /* The below is mighty important - we need a new cancel token otherwise the above
+       * cancel somehow interferes with requests made for the new tree. I still don't
+       * get why this is the case but it works better with the next line in file.
+       */
+      this.source = CancelToken.source();
       this.setState(this.getInitialState());
     } else if (this.state.serverCallInProgress) {
         switch (this.state.serverCallInProgress) {
@@ -223,8 +238,7 @@ class TargetPhotoPane extends React.Component {
   fetchNumOfPhotos = () => {
     const url = urlForNumOfPhotos(this.props.targetId);
     console.log(`fetchNumOfPhotos, axios URL is: ${url}`);
-    axiosAuth.get(url
-    ).then(res => {
+    axiosAuth.get(url, {cancelToken: this.source.token}).then(res => {
       /* SSE-1585746250
        * This is a ValueOrInternalServerExceptionData data type on the server side
        *
@@ -259,7 +273,11 @@ class TargetPhotoPane extends React.Component {
     }).catch( err => {
       console.log(JSON.stringify(err));
       console.log(err);
-      if (err.response && err.response.data) {
+      console.log(err.message);
+      console.log(Object.keys(err));
+      if (err.message === OP_NO_LONGER_RELEVANT) {
+        console.log('fetchNumOfPhotos operation is no longer relevant and got cancelled');
+      } else if (err.response && err.response.data) {
         // SSE-1585746388: the shape of err.response.data is (code, msg, details)
         // Java class ValidJWSAccessTokenFilter#AbortResponse
         const {code, msg, details} = err.response.data;
@@ -286,7 +304,7 @@ class TargetPhotoPane extends React.Component {
 fetchPhoto = () => {
   const url = urlForPhoto(this.props.targetId, this.state.currentPhotoIndx);
   console.log(`fetchPhoto axios url is [${url}]`);
-  axiosAuth.get(url).then(res => {
+  axiosAuth.get(url, {cancelToken: this.source.token}).then(res => {
     console.log(res);
     const {t, err} = res.data;
     if (err===null) {
@@ -313,7 +331,11 @@ fetchPhoto = () => {
   }).catch( err => {
     console.log(JSON.stringify(err));
     console.log(err);
-    if (err.response && err.response.data) {
+    console.log(err.message);
+    console.log(Object.keys(err));
+    if (err.message === OP_NO_LONGER_RELEVANT) {
+      console.log('fetchPhoto operation is no longer relevant and got cancelled');
+    } else if (err.response && err.response.data) {
       // corr-id: SSE-1585746388
       const {code, msg, details} = err.response.data;
       switch(code) {
@@ -337,8 +359,7 @@ fetchPhoto = () => {
 }
   deletePhoto = () => {
     const url = urlForPhotoDeletion(this.props.targetId, this.state.currentPhotoIndx);
-    axiosAuth.delete(url
-    ).then(res => {
+    axiosAuth.delete(url, {cancelToken: this.source.token}).then(res => {
       const {t, err} = res.data; 
       if (err===null) {
         this.fetchNumOfPhotos();
@@ -350,7 +371,11 @@ fetchPhoto = () => {
     }).catch( err => {
       console.log(JSON.stringify(err));
       console.log(err);
-      if (err.response && err.response.data) {
+      console.log(err.message);
+      console.log(Object.keys(err));
+      if (err.message === OP_NO_LONGER_RELEVANT) {
+        console.log('deletePhoto operation is no longer relevant and got cancelled');
+      } else if (err.response && err.response.data) {
         // SSE-1585746388: the shape of err.response.data is (code, msg, details)
         // Java class ValidJWSAccessTokenFilter#AbortResponse
         const {code, msg, details} = err.response.data;

@@ -173,7 +173,7 @@ public class MainResource {
             logger.info(String.format("getFeatureData(%d) ~*~ remote address: [%s]"
                                       , featureId
                                       , httpServletRequest.getRemoteAddr()));
-            TimeUnit.MILLISECONDS.sleep(200);
+            TimeUnit.MILLISECONDS.sleep(2000);
             final TreeInfo treeInfo = app.dbFacade.getTreeInfo(featureId);
             return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(treeInfo))).build();
         } catch (Throwable t) {
@@ -199,7 +199,7 @@ public class MainResource {
                                       , featureId
                                       , httpServletRequest.getRemoteAddr()));
             logger.info(String.format("featureData is [%s]", featureData));
-            TimeUnit.MILLISECONDS.sleep(200);
+            TimeUnit.MILLISECONDS.sleep(2000);
 
             // TODO: write a method to assert that the JSON object is stable
                 
@@ -233,7 +233,7 @@ public class MainResource {
             logger.info(String.format("getFeaturePhotosNum(%d) ~*~ remote address: [%s]"
                                       , featureId
                                       , httpServletRequest.getRemoteAddr()));
-            TimeUnit.MILLISECONDS.sleep(200);
+            TimeUnit.MILLISECONDS.sleep(2000);
             return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(app.dbFacade.getNumOfPhotos(featureId)))).build();
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling getFeaturePhotosNum(%d) from remote address [%s]"
@@ -259,7 +259,7 @@ public class MainResource {
                                       , featureId
                                       , photoIndx
                                       , httpServletRequest.getRemoteAddr()));
-            TimeUnit.MILLISECONDS.sleep(200);
+            TimeUnit.MILLISECONDS.sleep(2000);
             final PhotoData photoData = app.dbFacade.getPhoto(featureId, photoIndx);
             return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(photoData))).build();
         } catch (Throwable t) {
@@ -286,7 +286,7 @@ public class MainResource {
                                       , featureId
                                       , photoIndx
                                       , httpServletRequest.getRemoteAddr()));
-            TimeUnit.MILLISECONDS.sleep(200);
+            TimeUnit.MILLISECONDS.sleep(2000);
             return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(app.dbFacade.deletePhoto(featureId, photoIndx)))).build();
             
         } catch (Throwable t) {
