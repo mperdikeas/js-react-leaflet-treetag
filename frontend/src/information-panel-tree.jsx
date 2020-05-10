@@ -3,20 +3,30 @@ var      cx = require('classnames');
 
 const assert = require('chai').assert;
 
+import { connect }          from 'react-redux';
+
+import {axiosAuth} from './axios-setup.js';
+
+
+import {CancelToken} from 'axios';
+
 require('./css/information-panel.css');
 import TargetDataPane     from './target-data-pane.jsx';
 import TargetPhotoPane    from './target-photo-pane.jsx';
 import TargetMetadataPane from './target-metadata-pane.jsx';
 
-// REDUX
-import { connect }          from 'react-redux';
 import {toggleMaximizeInfoPanel, setPaneToOpenInfoPanel}  from './actions/index.js';
 import {INFORMATION, PHOTOS, HISTORY} from './constants/information-panel-panes.js';
 import {MODAL_LOGIN} from './constants/modal-types.js';
 
 import {displayModal} from './actions/index.js';
-import {axiosAuth} from './axios-setup.js';
+
+
 import wrapContexts from './context/contexts-wrapper.jsx';
+
+import {LOGGING_IN, LOADING_TREE_DATA} from './constants/information-panel-tree-server-call-types.js';
+
+import {OP_NO_LONGER_RELEVANT} from './constants/axios-constants.js';
 
 const mapStateToProps = (state) => {
   return {
@@ -37,16 +47,15 @@ const mapDispatchToProps = (dispatch) => {
 class TreeInformationPanel extends React.Component {
 
   constructor(props) {
-    console.log('InformationPanel:: constructor');
     super(props);
     this.state = this.getInitialState();
+    this.source = CancelToken.source();
   }
 
 
   getInitialState = () => {
     return {
-      userIsLoggingIn: false
-      , loadingTreeData: true
+      serverCallInProgress: LOADING_TREE_DATA
       , treeData: null
       , treeDataMutated: false
       , error: null
@@ -57,13 +66,22 @@ class TreeInformationPanel extends React.Component {
   componentDidMount() {
     this.fetchData();
   }
+
+  componentWillUnmount() {
+    console.log('TreeInformationPanel: unmounting and cancelling requests...');
+    this.source.cancel(OP_NO_LONGER_RELEVANT);
+  }
+
   
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.targetId !== this.props.targetId) {
-      console.log('targetId is different');
+      console.log('cancelling pending requests due to new target');
+      this.source.cancel(OP_NO_LONGER_RELEVANT);
+      this.source = CancelToken.source(); // cf. SSE-1589117399
       this.fetchData();
-    } else
-    console.log('targetId is the same');
+    } else {
+      console.log('targetId is the same');
+    }
   }
 
   updateTreeData = (treeData) => {
@@ -79,51 +97,46 @@ class TreeInformationPanel extends React.Component {
   fetchData = () => {
     const url = `/feature/${this.props.targetId}/data`;
     console.log(`fetchData, axios URL is: ${url}`);
-    this.setState({loadingTreeData: true});
-    axiosAuth.get(url
+    this.setState({serverCallInProgress: LOADING_TREE_DATA});
+    axiosAuth.get(url, {cancelToken: this.source.token}
     ).then(res => {
       // corr-id: SSE-1585746250
       console.log(res.data);
       const {t, err} = res.data;
       if (err===null) {
         console.log(t);
-        this.setState({userIsLoggingIn: false
-                     , loadingTreeData: false
+        this.setState({serverCallInProgress: null
                      , treeData: t
                      , error: null});
       } else {
-        this.setState({ userIsLoggingIn: false
-                      , loadingTreeData: false
+        this.setState({ serverCallInProgress: null
                       , treeData: null
                       , error: {message: `server-side error: ${err.message}`
                               , details: err.strServerTrace}});
       }
     }).catch( err => {
-      console.log(JSON.stringify(err));
-      console.log(err);
-      if (err.response && err.response.data) {
+      if (err.message === OP_NO_LONGER_RELEVANT) {
+        console.log('fetchNumOfPhotos operation is no longer relevant and got cancelled');
+      } else if (err.response && err.response.data) {
         // SSE-1585746388: the shape of err.response.data is (code, msg, details)
         // Java class ValidJWSAccessTokenFilter#AbortResponse
         const {code, msg, details} = err.response.data;
         switch(code) {
           case 'JWT-verif-failed':
             this.props.displayModalLogin( ()=>{this.fetchData();} );
-            this.setState({userIsLoggingIn: true
-                         , loadingTreeData: false
+            this.setState({serverCallInProgress: LOGGING_IN
                          , treeData: null
                          , error: {message: `JWT verif. failed. Server message is: [${msg}]`
                                  , details: details}});
             break;
           default:
-            this.setState({userIsLoggingIn: false
-                         , loadingTreeData: false
+            this.setState({serverCallInProgress: null
                          , treeData: null
                          , error: {message: `unexpected error code: ${code}`
                                  , details: msg}});
         }
       } else {
-        this.setState({userIsLoggingIn: false
-                     , loadingTreeData: false
+        this.setState({serverCallInProgress: null
                      , treeData: null
                      , error: {message: 'unexpected error - likely a bug'
                              , details: JSON.stringify(err)}});
@@ -131,9 +144,6 @@ class TreeInformationPanel extends React.Component {
     }) // catch
   } // fetchData
   
-  componentWillUnmount() {
-    console.log('TreeInformationPanel: unmounting...');
-  }
 
   onInformation = () => {
     this.props.setPaneToOpenInfoPanel(INFORMATION);
@@ -212,8 +222,8 @@ class TreeInformationPanel extends React.Component {
       case INFORMATION:
         return (
           <TargetDataPane
-              userIsLoggingIn = {this.state.userIsLoggingIn}
-              loadingTreeData = {this.state.loadingTreeData}
+              userIsLoggingIn = {this.state.serverCallInProgress == LOGGING_IN}
+              loadingTreeData = {this.state.serverCallInProgress  == LOADING_TREE_DATA}
               treeData        = {this.state.treeData}
               treeDataMutated = {this.state.treeDataMutated}
               clearTreeDataMutatedFlag = {this.clearTreeDataMutatedFlag}
@@ -225,9 +235,9 @@ class TreeInformationPanel extends React.Component {
       case HISTORY:
         return (
           <TargetMetadataPane
-          userIsLoggingIn = {this.state.userIsLoggingIn}
-          loadingTreeData = {this.state.loadingTreeData}
-          treeActions     = {this.state.treeData===null?null:this.state.treeData.treeActions}
+              userIsLoggingIn = {this.state.serverCallInProgress == LOGGING_IN}
+              loadingTreeData = {this.state.serverCallInProgress  == LOADING_TREE_DATA}
+              treeActions     = {this.state.treeData===null?null:this.state.treeData.treeActions}
           />
         );
       default:

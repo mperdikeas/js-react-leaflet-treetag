@@ -4,6 +4,10 @@ var      cx = require('classnames');
 const assert = require('chai').assert;
 
 import {Button} from 'react-bootstrap';
+import {axiosAuth} from './axios-setup.js';
+
+
+import {CancelToken} from 'axios';
 
 const loading  = require('./resources/loading.gif');
 // require('../resources/down-arrow.png');
@@ -12,9 +16,8 @@ import DownArrow from './resources/down-arrow.png';
 import {sca_fake_return} from './util.js';
 
 
-import {axiosAuth} from './axios-setup.js';
-import {CancelToken} from 'axios';
-assert.exists(CancelToken);
+
+
 
 // REDUX
 import { connect } from 'react-redux';
@@ -22,10 +25,10 @@ import { connect } from 'react-redux';
 import {MODAL_LOGIN} from './constants/modal-types.js';
 import {displayModal} from './actions/index.js';
 
-import {LOGGING_IN, GETTING_NUM_OF_PHOTOS, GETTING_PHOTO, DELETING_PHOTO} from './target-photo-pane-server-call-types.js';
+import {LOGGING_IN, GETTING_NUM_OF_PHOTOS, GETTING_PHOTO, DELETING_PHOTO} from './constants/target-photo-pane-server-call-types.js';
 
 
-const OP_NO_LONGER_RELEVANT = 'op-no-longer-relevant';
+import {OP_NO_LONGER_RELEVANT} from './constants/axios-constants.js';
   
 const mapStateToProps = (state) => {
   return {
@@ -91,7 +94,9 @@ class TargetPhotoPane extends React.Component {
     if (prevProps.targetId !== this.props.targetId) {
       console.log('cancelling pending requests due to new target');
       this.source.cancel(OP_NO_LONGER_RELEVANT);
-      /* The below is mighty important - we need a new cancel token otherwise the above
+      /*      
+       * SSE-1589117399
+       * The below is mighty important - we need a new cancel token otherwise the above
        * cancel somehow interferes with requests made for the new tree. I still don't
        * get why this is the case but it works better with the next line in file.
        */
@@ -271,10 +276,6 @@ class TargetPhotoPane extends React.Component {
                              , details: err.strServerTrace}});
       }
     }).catch( err => {
-      console.log(JSON.stringify(err));
-      console.log(err);
-      console.log(err.message);
-      console.log(Object.keys(err));
       if (err.message === OP_NO_LONGER_RELEVANT) {
         console.log('fetchNumOfPhotos operation is no longer relevant and got cancelled');
       } else if (err.response && err.response.data) {

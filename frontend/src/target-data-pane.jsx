@@ -54,7 +54,6 @@ class TargetDataPane extends React.Component {
       this.BooleanDataField  = BooleanDataFieldFactory(this.handleChange);
       this.SelectDataField   = SelectDataFieldFactory (this.handleChange);
       this.TextAreaDataField = TextAreaDataFieldFactory(this.handleChange);
-
     }
 
     componentDidMount() {
@@ -67,6 +66,7 @@ class TargetDataPane extends React.Component {
     console.log('handle submit');
     console.log(this.props.treeData);
     console.log(JSON.stringify(this.props.treeData));
+    // the post cannot be cancelled so we don't bother with a cancel token
     axiosAuth.post(`/feature/${this.props.targetId}/data`, this.props.treeData).then(res => {
       if (res.data.err != null) {
         console.log(`/feature/${this.props.targetId}/data POST error`);
