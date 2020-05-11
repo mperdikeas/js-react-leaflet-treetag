@@ -10,7 +10,7 @@ import uploadLayerToCloud       from './resources/upload-layer-to-cloud-32.png';
 import insertGeoJSONToWorkspace from './resources/insert-geoJSON-to-workspace-32.png';
 import selectTree               from './resources/select-tree-32.png';
 import query                    from './resources/question-32.png';
-
+import centerOnTarget           from './resources/target-32.png';
 
 // redux
 import { connect }                          from 'react-redux';
@@ -23,7 +23,12 @@ import {MDL_NOTIFICATION
 
 import {GSN, globalGet} from './globalStore.js';
 
-let i = 0;
+const mapStateToProps = (state) => {
+  return {
+    targetId: state.targetId
+  };
+};
+
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -88,7 +93,6 @@ class Toolbox extends React.Component {
     e.preventDefault();
     e.stopPropagation();
     this.props.selectTree();
-    i++;
   }
 
   query = (e) => {
@@ -97,12 +101,19 @@ class Toolbox extends React.Component {
     this.props.query();
   }
 
+  centerOnTarget = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log(`center on target ${this.props.targetId}`);
+  }
+
   render = () => {
     const tools = [{icon:saveWorkspaceToDisk , mode: null, f: this.saveWorkspaceToDisk}
                  , {icon:uploadLayerToCloud , mode: null, f: this.chooseUploadLayerToCloud}
                  , {icon: insertGeoJSONToWorkspace, mode: null, f: this.insertGeoJSONToWorkspace}
                  , {icon:selectTree, mode: null, f: this.selectTree}
                  , {icon:query, mode: null, f: this.query}
+                 , {icon:centerOnTarget, mode: null, f: this.centerOnTarget}
     ];
     
     const style = {display: 'block'
@@ -149,5 +160,5 @@ class Toolbox extends React.Component {
 }
 
 
-export default connect(null, mapDispatchToProps)(Toolbox);
+export default connect(mapStateToProps, mapDispatchToProps)(Toolbox);
 
