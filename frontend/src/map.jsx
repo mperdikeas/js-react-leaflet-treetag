@@ -295,7 +295,8 @@ class Map extends React.Component {
       });
     treesConfigurationIsNowAvailable.then( ()=> {
       const promise = treeOverlays(this.props.treesConfigurationContext.treesConfiguration);
-      promise.then((overlays) => {
+      promise.then(({overlays, id2marker}) => {
+        this.id2marker = id2marker;
         for (const layerName in overlays) {
           const layerGroup = overlays[layerName];
           layerGroup.addTo(this.map);
@@ -307,6 +308,10 @@ class Map extends React.Component {
     }).catch( (v) => {
       assert.fail('not expecting this promise to fail: '+v); 
     } );
+  }
+
+  getMarker = (id) => {
+    return this.id2marker[id];
   }
 
   componentDidUpdate(prevProps, prevState) {

@@ -53,6 +53,7 @@ function from_kind2layer_to_layer2kinds(configuration) {
 
 const treeOverlays = (treeConfiguration)=> {
     console.log(treeConfiguration);
+    const id2marker = {};
     const overlays = {};
     const overlayNames = extractLayerNames(treeConfiguration);
     console.log(overlayNames);
@@ -86,12 +87,13 @@ const treeOverlays = (treeConfiguration)=> {
                  *  const marker = new CustomCircleMarker(c, effectiveOptions);
                  */
                 const marker = new L.circleMarker(c, effectiveOptions);
+                id2marker[id] = marker;
                 return marker;
 
             })); // const layerGroup = L.layerGroup(...
             overlays[overlayName] = layerGroup;
         }); // overlayNames.forEach
-        return overlays;
+        return {overlays, id2marker};
     });
 };
 

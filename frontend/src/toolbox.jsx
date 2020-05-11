@@ -105,6 +105,8 @@ class Toolbox extends React.Component {
     e.preventDefault();
     e.stopPropagation();
     console.log(`center on target ${this.props.targetId}`);
+    const marker = globalGet(GSN.REACT_MAP).getMarker(this.props.targetId)
+    globalGet(GSN.REACT_MAP).map.setView(marker.getLatLng(), 15);
   }
 
   render = () => {
