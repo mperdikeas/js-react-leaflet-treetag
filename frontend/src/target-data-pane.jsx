@@ -54,6 +54,7 @@ class TargetDataPane extends React.Component {
       this.BooleanDataField  = BooleanDataFieldFactory(this.handleChange);
       this.SelectDataField   = SelectDataFieldFactory (this.handleChange);
       this.TextAreaDataField = TextAreaDataFieldFactory(this.handleChange);
+      this.state = {savingTreeData: false};
     }
 
     componentDidMount() {
@@ -68,6 +69,7 @@ class TargetDataPane extends React.Component {
     console.log(JSON.stringify(this.props.treeData));
     // the post cannot be cancelled so we don't bother with a cancel token
     axiosAuth.post(`/feature/${this.props.targetId}/data`, this.props.treeData).then(res => {
+      this.setState({savingTreeData: false});
       if (res.data.err != null) {
         console.log(`/feature/${this.props.targetId}/data POST error`);
         assert.fail(res.data.err);
@@ -78,6 +80,7 @@ class TargetDataPane extends React.Component {
         this.props.clearTreeDataMutatedFlag();
       }
     }).catch( err => {
+      this.setState({savingTreeData: false});
       if (isInsufficientPrivilleges(err)) {
         console.log('insuf detected');
         this.props.displayNotificationInsufPrivilleges();
@@ -99,6 +102,7 @@ class TargetDataPane extends React.Component {
         }
       }
     });
+    this.setState({savingTreeData: true});
   }
 
   revert = (ev) => {
@@ -145,6 +149,7 @@ class TargetDataPane extends React.Component {
       console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~');
       console.log(this.props.treesConfigurationContext.healthStatuses);
       console.log('============================');
+      console.log('saving tree data is: '+this.state.savingTreeData);
       return (
         <>
         <div>
@@ -174,7 +179,7 @@ class TargetDataPane extends React.Component {
               Ανάκληση
             </Button>
             <Button disabled={! this.props.treeDataMutated} style={{flexGrow: 0}} variant="primary" type="submit">
-              Αποθήκευση
+              {this.state.savingTreeData?'Σε εξέλιξη...':'Αποθήκευση'}
             </Button>
           </ButtonGroup>
         </Form>
