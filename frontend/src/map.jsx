@@ -50,7 +50,7 @@ import '../node_modules/leaflet-measure/dist/leaflet-measure.css';
 
 import {axiosAuth} from './axios-setup.js';
 
-import {Athens, ota_Callicrates, treeOverlays, defaultMarkerStyle} from './tree-markers.js';
+import {Athens, ota_Callicrates, treeOverlays} from './tree-markers.js';
 
 
 

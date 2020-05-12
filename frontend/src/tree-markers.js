@@ -25,11 +25,8 @@ const Athens = [37.98, 23.72];
 
 const myRenderer = L.canvas({ padding: 0.5 });
 
-const defaultMarkerStyle = ()=>{
-    return {
-        radius: 8
-    };
-};
+const defaultMarkerStyle = {radius: 8};
+
 
 
 function extractLayerNames(configuration) {
@@ -72,11 +69,12 @@ const treeOverlays = (treeConfiguration)=> {
                 const baseOptions = {targetId: id, kind, color};
 
                 const useCanvasRenderer = true;
+                const titleStyle = {title: kind, alt: 'foo'};
                 const styleOptions = (()=>{
                     if (useCanvasRenderer)
-                        return Object.assign({}, defaultMarkerStyle(), {renderer: myRenderer});
+                        return Object.assign({}, defaultMarkerStyle, titleStyle, {renderer: myRenderer});
                     else
-                        return Object.assign({}, defaultMarkerStyle());
+                        return Object.assign({}, defaultMarkerStyle, titleStyle);
                 })();
 
                 const effectiveOptions = Object.assign({}, baseOptions, styleOptions);
@@ -87,6 +85,14 @@ const treeOverlays = (treeConfiguration)=> {
                  *  const marker = new CustomCircleMarker(c, effectiveOptions);
                  */
                 const marker = new L.circleMarker(c, effectiveOptions);
+                marker.bindPopup(`<span>${treeConfiguration[kind].name.singular}</span>`);
+                marker.on('mouseover', function(ev) {
+                    ev.target.openPopup();
+                });
+                marker.on('mouseout-', function(ev) {
+                    console.log('cloxes');
+                    ev.target.closePopup();
+                });                
                 id2marker[id] = marker;
                 return marker;
 
@@ -153,4 +159,4 @@ function generateRandomCoordinatesInAthens(N) {
 }
 
 
-export {Athens, ota_Callicrates, treeOverlays, defaultMarkerStyle}
+export {Athens, ota_Callicrates, treeOverlays}

@@ -23,3 +23,18 @@ button:disabled {
   cursor: not-allowed;
   pointer-events: all !important;
 }
+
+
+
+/*
+ *    L E A F L E T    O V E R R I D E S
+ *
+ */
+
+/* this is to hide the close button (tiny 'x' on Leaflet popups) since I only
+ * display the popups on mouseover and hide them on mouseout (as such, no close
+ * button is necessary)
+ */
+div.leaflet-popup.leaflet-zoom-animated > a.leaflet-popup-close-button {
+    display: none;
+}
