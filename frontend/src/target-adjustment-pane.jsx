@@ -54,14 +54,12 @@ class TargetAdjustmentPane extends React.Component {
   componentDidMount = () => {
     const targetId = this.props.targetId;
     console.log(targetId);
-    const marker = globalGet(GSN.REACT_MAP).id2marker[targetId];
-    const map = L.map('target-adjustment-map', {
+    const marker = this.targetId2Marker(targetId);
+    this.map = L.map('target-adjustment-map', {
       center: marker.getLatLng(),
       zoom: DEFAULT_ZOOM+3,
       zoomControl: false
     });
-    this.map = map;
-//    this.map.setView(Athens, 15);
 
     const baseLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
       detectRetina: true,
@@ -69,6 +67,25 @@ class TargetAdjustmentPane extends React.Component {
     });
     baseLayer.addTo(this.map);
   }
+
+  targetId2Marker = (targetId) => {
+    return globalGet(GSN.REACT_MAP).id2marker[targetId];
+  }
+
+  componentDidUpdate = (prevProps, prevState) => {
+    console.log(`target id is: ${this.props.targetId}`);
+    if (prevProps.targetId !== this.props.targetId) {
+      /*
+      console.log('cancelling pending requests due to new target');
+      this.source.cancel(OP_NO_LONGER_RELEVANT);
+      this.source = CancelToken.source(); // cf. SSE-1589117399
+      this.fetchData();
+      */
+      const targetId = this.props.targetId;
+      this.map.panTo(this.targetId2Marker(targetId).getLatLng());
+    }
+  }
+  
 
   render() {
     return (

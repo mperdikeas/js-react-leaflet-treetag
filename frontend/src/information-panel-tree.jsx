@@ -82,8 +82,6 @@ class TreeInformationPanel extends React.Component {
       this.source.cancel(OP_NO_LONGER_RELEVANT);
       this.source = CancelToken.source(); // cf. SSE-1589117399
       this.fetchData();
-    } else {
-      console.log('targetId is the same');
     }
   }
 
