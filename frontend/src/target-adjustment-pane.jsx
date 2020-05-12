@@ -19,6 +19,10 @@ import {displayModal} from './actions/index.js';
 
 import wrapContexts from './context/contexts-wrapper.jsx';
 
+import {ATHENS, DEFAULT_ZOOM} from './constants/map-constants.js';
+
+import {GSN, globalGet} from './globalStore.js';
+
 const mapStateToProps = (state) => {
   return {
     targetId: state.targetId
@@ -47,14 +51,17 @@ class TargetAdjustmentPane extends React.Component {
     this.state = {savingTreeData: false};
   }
 
-  componentDidMount() {
+  componentDidMount = () => {
+    const targetId = this.props.targetId;
+    console.log(targetId);
+    const marker = globalGet(GSN.REACT_MAP).id2marker[targetId];
     const map = L.map('target-adjustment-map', {
-      center: Athens,
-      zoom: 15,
+      center: marker.getLatLng(),
+      zoom: DEFAULT_ZOOM+3,
       zoomControl: false
     });
     this.map = map;
-    this.map.setView(Athens, 15);
+//    this.map.setView(Athens, 15);
 
     const baseLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
       detectRetina: true,

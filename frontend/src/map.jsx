@@ -50,7 +50,9 @@ import '../node_modules/leaflet-measure/dist/leaflet-measure.css';
 
 import {axiosAuth} from './axios-setup.js';
 
-import {Athens, ota_Callicrates, treeOverlays} from './tree-markers.js';
+import {ota_Callicrates, treeOverlays} from './tree-markers.js';
+
+import {ATHENS, DEFAULT_ZOOM} from './constants/map-constants.js';
 
 
 
@@ -208,8 +210,8 @@ class Map extends React.Component {
     
     window.addEventListener    ('resize', this.handleResize);
     this.map = L.map('map-id', {
-      center: Athens,
-      zoom: 15,
+      center: ATHENS,
+      zoom: DEFAULT_ZOOM,
       zoomControl: false
     });
 

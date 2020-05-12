@@ -19,15 +19,11 @@ import {sca_fake_return
 import {axiosAuth} from './axios-setup.js';
 import {possiblyInsufPrivPanicInAnyCase} from './util-privilleges.js';
 
-
-const Athens = [37.98, 23.72];
-
+import {ATHENS} from './constants/map-constants.js';
 
 const myRenderer = L.canvas({ padding: 0.5 });
 
 const defaultMarkerStyle = {radius: 8};
-
-
 
 function extractLayerNames(configuration) {
     return uniqValues(Object.values(configuration).map(x=>x.layer));
@@ -151,11 +147,11 @@ function generateRandomCoordinatesInAthens(N) {
     const spanDegrees = 0.05;
     
     for (let i = 0; i < N; i++) {
-        rv.push([Athens[0]+(Math.random()-.5)*spanDegrees
-                 , Athens[1]+(Math.random()-.5)*spanDegrees]);
+        rv.push([ATHENS[0]+(Math.random()-.5)*spanDegrees
+                 , ATHENS[1]+(Math.random()-.5)*spanDegrees]);
     }
     return rv;
 }
 
 
-export {Athens, ota_Callicrates, treeOverlays}
+export {ota_Callicrates, treeOverlays}
