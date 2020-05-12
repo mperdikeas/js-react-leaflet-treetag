@@ -11,12 +11,13 @@ import {axiosAuth} from './axios-setup.js';
 import {CancelToken} from 'axios';
 
 require('./css/information-panel.css');
-import TargetDataPane     from './target-data-pane.jsx';
-import TargetPhotoPane    from './target-photo-pane.jsx';
-import TargetMetadataPane from './target-metadata-pane.jsx';
+import TargetDataPane       from './target-data-pane.jsx';
+import TargetPhotoPane      from './target-photo-pane.jsx';
+import TargetMetadataPane   from './target-metadata-pane.jsx';
+import TargetAdjustmentPane from './target-adjustment-pane.jsx';
 
 import {toggleMaximizeInfoPanel, setPaneToOpenInfoPanel}  from './actions/index.js';
-import {INFORMATION, PHOTOS, HISTORY} from './constants/information-panel-panes.js';
+import {INFORMATION, PHOTOS, HISTORY, ADJUST} from './constants/information-panel-panes.js';
 import {MODAL_LOGIN} from './constants/modal-types.js';
 
 import {displayModal} from './actions/index.js';
@@ -27,6 +28,8 @@ import wrapContexts from './context/contexts-wrapper.jsx';
 import {LOGGING_IN, LOADING_TREE_DATA} from './constants/information-panel-tree-server-call-types.js';
 
 import {OP_NO_LONGER_RELEVANT} from './constants/axios-constants.js';
+
+
 
 const mapStateToProps = (state) => {
   return {
@@ -157,8 +160,13 @@ class TreeInformationPanel extends React.Component {
     this.props.setPaneToOpenInfoPanel(HISTORY);
   }
 
+  onAdjust = () => {
+    this.props.setPaneToOpenInfoPanel(ADJUST);
+  }
+  
+  
+
   render() {
-    console.log('information panel render');
     if (this.props.targetId===null) {
       return (
         <div id='detailInformation' className='col-4 padding-0' style={{backgroundColor: 'lightgrey'}}>
@@ -171,6 +179,7 @@ class TreeInformationPanel extends React.Component {
       const informationClasses = Object.assign({}, defaultClasses, {'active': this.props.tab===INFORMATION});
       const photoClasses = Object.assign({}, defaultClasses, {'active': this.props.tab===PHOTOS});
       const historyClasses = Object.assign({}, defaultClasses, {'active': this.props.tab===HISTORY});
+      const adjustClasses = Object.assign({}, defaultClasses, {'active': this.props.tab===ADJUST});      
 
       const paneToDisplay = this.paneToDisplay();
       const toggleTxt = this.props.maximizedInfoPanel?'Ελαχιστοποίηση':'Μεγιστοποίηση';
@@ -206,6 +215,9 @@ class TreeInformationPanel extends React.Component {
             <li className="nav-item">
               <a id='history' className={cx(historyClasses)} href="#" onClick={this.onHistory}>Ιστορικό</a>
             </li>
+            <li className="nav-item">
+              <a id='adjust' className={cx(adjustClasses)} href="#" onClick={this.onAdjust}>Μετατόπιση</a>
+            </li>            
           </ul>
           {paneToDisplay}
         </div>
@@ -218,6 +230,7 @@ class TreeInformationPanel extends React.Component {
   }
 
   paneToDisplay = () => {
+    console.log(`displaying pane ${this.props.tab}`);
     switch (this.props.tab) {
       case INFORMATION:
         return (
@@ -240,6 +253,9 @@ class TreeInformationPanel extends React.Component {
               treeActions     = {this.state.treeData===null?null:this.state.treeData.treeActions}
           />
         );
+      case ADJUST: {
+        return <TargetAdjustmentPane/>;
+      }
       default:
         assert.fail(`unhandled case [${this.props.tab}]`);
         return null; // SCA
