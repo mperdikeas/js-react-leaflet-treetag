@@ -36,6 +36,10 @@ const mapDispatchToProps = (dispatch) => {
       const html = (<div style={{marginBottom: '1em'}}>Workspace layer has nothing to save</div>);
       dispatch(displayModal(MDL_NOTIFICATION, {html}));
     }
+    , displayNotificationNoTargetSelected: ()=>{
+      const html = <div style={{marginBottom: '1em'}}>Δεν έχει επιλεγεί κάποιο δένδρο</div>;
+      dispatch(displayModal(MDL_NOTIFICATION, {html}));
+    }
     , saveWorkspaceToDisk: (geoJSON) => dispatch(displayModal(MDL_SAVE_WS_2_DSK, {geoJSON}))
     , insertGeoGSONToWorkspace: () => dispatch(displayModal(MDL_INS_GJSON_2_WS))
     , uploadLayerToCloud: () => dispatch(displayModal())
@@ -105,8 +109,13 @@ class Toolbox extends React.Component {
     e.preventDefault();
     e.stopPropagation();
     console.log(`center on target ${this.props.targetId}`);
-    const marker = globalGet(GSN.REACT_MAP).getMarker(this.props.targetId)
-    globalGet(GSN.REACT_MAP).map.setView(marker.getLatLng(), 15);
+    if (this.props.targetId) {
+      const marker = globalGet(GSN.REACT_MAP).getMarker(this.props.targetId)
+      globalGet(GSN.REACT_MAP).map.setView(marker.getLatLng(), 15);
+    } else {
+      assert.isDefined(this.props.targetId);
+      this.props.displayNotificationNoTargetSelected();        
+    }
   }
 
   render = () => {
