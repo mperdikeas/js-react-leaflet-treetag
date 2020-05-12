@@ -89,8 +89,7 @@ const treeOverlays = (treeConfiguration)=> {
                     ev.target.openPopup();
                 });
                 marker.on('mouseout mouseleave', function(ev) {
-                    // in Chrome 80 I couldn't the handler wouldn't fire with the
-                    // mouseleave event
+                    // in Chrome 80, the handler wouldn't fire with the mouseleave event
                     ev.target.closePopup();
                 });                
                 id2marker[id] = marker;
