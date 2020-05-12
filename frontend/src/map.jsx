@@ -235,7 +235,6 @@ class Map extends React.Component {
     this.map.on('draw:created', (e) => {
       const type = e.layerType,
             layer = e.layer;
-      console.log(layer);
       this.drawnItems.addLayer(layer);
       console.log(this.drawnItems.toGeoJSON(7));
       if (layer instanceof L.Polygon) {
@@ -321,13 +320,11 @@ class Map extends React.Component {
   }
 
   insertGeoJSONIntoWorkspace = (geoJSON) => {
-    console.log('map - I have to insert GeoJSON into the draw workspace');
     const options = {pointToLayer: (geoJsonPoint, latlng) => {
       if (geoJsonPoint.properties.hasOwnProperty("targetId")) {
         const marker =  L.circleMarker(latlng, {targetId: geoJsonPoint.properties.targetId});
         marker.on('click', this.clickOnCircleMarker);
         marker.options.interactive = true;
-        console.log(marker);
         return marker;
       } else {
         return L.marker(latlng);
@@ -365,7 +362,6 @@ class Map extends React.Component {
   
 
   render() {
-    console.log('map rendered');
     const style = {height: `${this.getMapHeight()}px`};
     return (
       <div id='map-id' style={style}>
@@ -383,9 +379,7 @@ class Map extends React.Component {
       this.highlightedMarker.marker.bringToBack();
       this.map.setView(coords, this.map.getZoom());
     };
-    console.log(e.target);
     const targetId = e.target.options.targetId;
-    console.log(targetId);
     const coords = e.target.getLatLng();
 
 
