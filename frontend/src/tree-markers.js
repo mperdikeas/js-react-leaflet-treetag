@@ -69,12 +69,11 @@ const treeOverlays = (treeConfiguration)=> {
                 const baseOptions = {targetId: id, kind, color};
 
                 const useCanvasRenderer = true;
-                const titleStyle = {title: kind, alt: 'foo'};
                 const styleOptions = (()=>{
                     if (useCanvasRenderer)
-                        return Object.assign({}, defaultMarkerStyle, titleStyle, {renderer: myRenderer});
+                        return Object.assign({}, defaultMarkerStyle, {renderer: myRenderer});
                     else
-                        return Object.assign({}, defaultMarkerStyle, titleStyle);
+                        return Object.assign({}, defaultMarkerStyle);
                 })();
 
                 const effectiveOptions = Object.assign({}, baseOptions, styleOptions);
@@ -89,8 +88,9 @@ const treeOverlays = (treeConfiguration)=> {
                 marker.on('mouseover', function(ev) {
                     ev.target.openPopup();
                 });
-                marker.on('mouseout-', function(ev) {
-                    console.log('cloxes');
+                marker.on('mouseout mouseleave', function(ev) {
+                    // in Chrome 80 I couldn't the handler wouldn't fire with the
+                    // mouseleave event
                     ev.target.closePopup();
                 });                
                 id2marker[id] = marker;
