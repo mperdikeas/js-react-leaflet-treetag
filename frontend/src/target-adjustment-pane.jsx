@@ -59,12 +59,12 @@ class TargetAdjustmentPane extends React.Component {
     const markerInMainMap = this.targetId2Marker(targetId);
     this.map = L.map('target-adjustment-map', {
       center: markerInMainMap.getLatLng(),
-      zoom: DEFAULT_ZOOM+3,     /* set all zoom levels */
-      minZoom: DEFAULT_ZOOM+3,  /* to the same value   */
-      maxZoom: DEFAULT_ZOOM+3,  /* to disable zooming  */
+      zoom: DEFAULT_ZOOM+3,     
+      minZoom: DEFAULT_ZOOM+3,  // effectively disables zoom out
       zoomControl: false,
-      dragging: false
+      dragging: true
     });
+    this.map.setMaxBounds(this.map.getBounds());
 
     const baseLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
       detectRetina: true,
@@ -140,7 +140,7 @@ class TargetAdjustmentPane extends React.Component {
 
   render() {
     return (
-      <div id='target-adjustment-map' style={{height: '350px'}}>
+      <div id='target-adjustment-map' style={{width: '90%', height: '350px'}}>
       </div>
     );
   }
