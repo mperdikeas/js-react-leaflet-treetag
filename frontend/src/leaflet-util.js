@@ -41,3 +41,24 @@ export function isMarkerInsidePolygonsOfLayerGroup(marker, layerGroup) {
     });
     return false;
 };
+
+
+export function circleMarkerFromInfo({latlng, radius, kind, color, popup}, targetId, renderer) {
+    let options = {radius, kind, color};
+    if (targetId)
+        Object.assign(options, {targetId});
+    if (renderer)
+        Object.assign(options, {renderer});
+    const marker = new L.circleMarker(latlng, options);
+    marker.bindPopup(popup);
+    marker.on('mouseover', function(ev) {
+        ev.target.openPopup();
+    });
+    marker.on('mouseout mouseleave', function(ev) {
+        // in Chrome 80, the handler wouldn't fire with the mouseleave event
+        ev.target.closePopup();
+    });
+    return marker;
+}
+
+

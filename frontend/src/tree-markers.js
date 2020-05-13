@@ -20,6 +20,7 @@ import {axiosAuth} from './axios-setup.js';
 import {possiblyInsufPrivPanicInAnyCase} from './util-privilleges.js';
 
 import {ATHENS} from './constants/map-constants.js';
+import {circleMarkerFromInfo} from './leaflet-util.js';
 
 const myRenderer = L.canvas({ padding: 0.5 });
 
@@ -59,7 +60,16 @@ const treeOverlays = (treeConfiguration)=> {
                 const rv = kindsInThisLayer.includes(kind);
                 return rv;
             }).map( ({id, kind, coords})=> {
-                assert.isTrue(id != null);
+                assert.isNotNull(id);
+                const useCanvasRenderer = true;
+                const marker = circleMarkerFromInfo({latlng: [coords.latitude, coords.longitude]
+                                                     , radius: 8
+                                                     , kind: kind
+                                                     , color: treeConfiguration[kind].color
+                                                     , popup: `<span>${treeConfiguration[kind].name.singular}</span>`}
+                                                    , id
+                                                    , useCanvasRenderer?myRenderer:undefined);
+                /*
                 let c = [coords.latitude, coords.longitude];
                 const color = treeConfiguration[kind].color;
                 const baseOptions = {targetId: id, kind, color};
@@ -73,13 +83,10 @@ const treeOverlays = (treeConfiguration)=> {
                 })();
 
                 const effectiveOptions = Object.assign({}, baseOptions, styleOptions);
-                /*
-                 *  There is no need to use a custom class to add just one option; adding
-                 *  the option on a vanila L.circleMarker works just as well.
-                 *
-                 *  const marker = new CustomCircleMarker(c, effectiveOptions);
-                 */
+
                 const marker = new L.circleMarker(c, effectiveOptions);
+
+
                 marker.bindPopup(`<span>${treeConfiguration[kind].name.singular}</span>`);
                 marker.on('mouseover', function(ev) {
                     ev.target.openPopup();
@@ -87,7 +94,8 @@ const treeOverlays = (treeConfiguration)=> {
                 marker.on('mouseout mouseleave', function(ev) {
                     // in Chrome 80, the handler wouldn't fire with the mouseleave event
                     ev.target.closePopup();
-                });                
+                });
+                */
                 id2marker[id] = marker;
                 return marker;
 

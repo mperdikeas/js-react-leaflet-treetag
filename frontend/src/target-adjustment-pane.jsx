@@ -23,6 +23,8 @@ import {ATHENS, DEFAULT_ZOOM} from './constants/map-constants.js';
 
 import {GSN, globalGet} from './globalStore.js';
 
+import {circleMarkerFromInfo} from './leaflet-util.js';
+
 const mapStateToProps = (state) => {
   return {
     targetId: state.targetId
@@ -105,18 +107,13 @@ class TargetAdjustmentPane extends React.Component {
     const markersInfo = origMapReactComponent.getInfoOfMarkersInBounds(this.map.getBounds()
                                                                      , this.props.targetId);
     markersInfo.forEach(({latlng, kind}) => {
-      const marker = new L.circleMarker(latlng
-                                      , {radius: 8
-                                       , color: treeConfig[kind].color});
-      marker.bindPopup(`<span>${treeConfig[kind].name.singular}</span>`);
-      marker.on('mouseover', function(ev) {
-        ev.target.openPopup();
-      });
-      marker.on('mouseout mouseleave', function(ev) {
-        // in Chrome 80, the handler wouldn't fire with the mouseleave event
-        ev.target.closePopup();
-      });
 
+      const marker = circleMarkerFromInfo({latlng
+                                         , radius: 8
+                                         , kind
+                                         , name: treeConfig[kind].name.singular
+                                         , color: treeConfig[kind].color
+                                         , popup: `<span>${treeConfig[kind].name.singular}</span>`});
       this.map.addLayer(marker)
     });
 
