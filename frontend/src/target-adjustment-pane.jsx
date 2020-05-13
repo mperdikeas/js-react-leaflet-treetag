@@ -64,7 +64,7 @@ class TargetAdjustmentPane extends React.Component {
       zoomControl: false,
       dragging: true
     });
-    this.map.setMaxBounds(this.map.getBounds());
+
 
     const baseLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
       detectRetina: true,
@@ -105,6 +105,7 @@ class TargetAdjustmentPane extends React.Component {
 
       const marker = L.circleMarker(latlng
                                   , {radius: 8
+                                   , autoPan: false
                                    , color: treeConfig[kind].color});
       addPopup(marker, treeConfig[kind].name.singular)
       this.map.addLayer(marker)
