@@ -401,6 +401,29 @@ class Map extends React.Component {
   }
 
 
+  getLatLngOfMarkersInBounds = (bounds, exceptId) => {
+    assert.isOk(bounds);
+    const rv = []
+    let encounteredExceptedMarker = false;
+    let n = 0;
+    this.clickableLayers.forEach( (markers) => {
+      markers.eachLayer ( (marker)=>{
+        if (marker instanceof L.CircleMarker && bounds.contains(marker.getLatLng())) {
+          n ++;
+          if (marker.options.targetId === exceptId)
+            encounteredExceptedMarker = true;
+          else {
+            console.log(`${marker.options.targetId} != ${exceptId} - pushing`);
+            rv.push(marker.getLatLng());
+          }
+        }
+      });
+    });
+    if (! ((exceptId === undefined) || encounteredExceptedMarker))
+      console.error(`with bounds ${bounds} and excepting id ${exceptId} I encountered ${n} markers, kept ${rv.length}`);
+    // assert.isTrue((exceptId === undefined) || encounteredExceptedMarker);
+    return rv;
+  }
 }
 
 function splitFeatureGroupIntoCircleMarkersAndTheRest(featureGroup) {

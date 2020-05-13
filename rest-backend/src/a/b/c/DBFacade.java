@@ -40,7 +40,7 @@ public class DBFacade implements IDBFacade {
         this.trees = new LinkedHashMap<>();
         this.tree2photo = new LinkedHashMap<>();
         this.r = new Random(0);
-        final int NUM_OF_TREES = 100;
+        final int NUM_OF_TREES = 10000;
         
         final double longAthens = 23.72;
         final double latAthens  = 37.98;

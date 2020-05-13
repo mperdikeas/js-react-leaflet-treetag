@@ -54,9 +54,9 @@ class TargetAdjustmentPane extends React.Component {
   componentDidMount = () => {
     const targetId = this.props.targetId;
     console.log(targetId);
-    const marker = this.targetId2Marker(targetId);
+    const markerInMainMap = this.targetId2Marker(targetId);
     this.map = L.map('target-adjustment-map', {
-      center: marker.getLatLng(),
+      center: markerInMainMap.getLatLng(),
       zoom: DEFAULT_ZOOM+3,
       zoomControl: false
     });
@@ -66,6 +66,37 @@ class TargetAdjustmentPane extends React.Component {
       maxZoom: 50
     });
     baseLayer.addTo(this.map);
+    this.addMarkers();
+  }
+
+
+  clearMarkers = () => {
+    this.map.eachLayer( (layer) => {
+      if ((layer instanceof L.Marker) || (layer instanceof L.CircleMarker))
+        this.map.removeLayer(layer);
+    });
+  }
+
+  addMarkers = () => {
+    this.clearMarkers();
+    const markerInMainMap = this.targetId2Marker(this.props.targetId);
+    const marker = new L.marker(markerInMainMap.getLatLng()
+                              , {radius: 8
+                               , title: markerInMainMap.kind
+                               , autoPan: false // only small size adjustments are foreseen
+                               , draggable: 'true'});
+    this.map.addLayer(marker)
+
+    const origMapReactComponent = globalGet(GSN.REACT_MAP);
+    const originalMap = origMapReactComponent.map;
+
+    const latLngs = origMapReactComponent.getLatLngOfMarkersInBounds(this.map.getBounds()
+                                                                   , this.props.targetId);
+    latLngs.forEach((latlng) => {
+      const marker = new L.circleMarker(latlng, {radius: 8});
+      this.map.addLayer(marker)
+    });
+
   }
 
   targetId2Marker = (targetId) => {
@@ -80,9 +111,14 @@ class TargetAdjustmentPane extends React.Component {
       this.source.cancel(OP_NO_LONGER_RELEVANT);
       this.source = CancelToken.source(); // cf. SSE-1589117399
       this.fetchData();
-      */
+       */
       const targetId = this.props.targetId;
-      this.map.panTo(this.targetId2Marker(targetId).getLatLng());
+      const markerInMainMap = this.targetId2Marker(targetId);
+      this.map.panTo(markerInMainMap.getLatLng(), {animate: true, duration: 5} );
+      this.map.on('moveend', () => {
+        console.log('pan ended');
+        this.addMarkers();
+      });
     }
   }
   
