@@ -59,8 +59,11 @@ class TargetAdjustmentPane extends React.Component {
     const markerInMainMap = this.targetId2Marker(targetId);
     this.map = L.map('target-adjustment-map', {
       center: markerInMainMap.getLatLng(),
-      zoom: DEFAULT_ZOOM+3,
-      zoomControl: false
+      zoom: DEFAULT_ZOOM+3,     /* set all zoom levels */
+      minZoom: DEFAULT_ZOOM+3,  /* to the same value   */
+      maxZoom: DEFAULT_ZOOM+3,  /* to disable zooming  */
+      zoomControl: false,
+      dragging: false
     });
 
     const baseLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
