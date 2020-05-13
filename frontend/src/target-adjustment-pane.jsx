@@ -141,7 +141,11 @@ class TargetAdjustmentPane extends React.Component {
 
   render() {
     return (
-      <div id='target-adjustment-map' style={{width: '90%', height: '350px'}}>
+      <div style={{display:'flex', flexDirection: 'column', justifyContent: 'center'}}>
+        <div id='target-adjustment-map' style={{width: '90%', marginLeft: '5%', height: '350px'}}>
+        </div>
+        <div>Δχ: -24m Δυ: -24m
+        </div>
       </div>
     );
   }
