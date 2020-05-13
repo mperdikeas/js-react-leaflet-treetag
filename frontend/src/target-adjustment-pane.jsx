@@ -114,9 +114,11 @@ class TargetAdjustmentPane extends React.Component {
        */
       const targetId = this.props.targetId;
       const markerInMainMap = this.targetId2Marker(targetId);
-      this.map.panTo(markerInMainMap.getLatLng(), {animate: true, duration: 5} );
+      this.map.panTo(markerInMainMap.getLatLng(), {animate: true, duration: .5} );
       this.map.on('moveend', () => {
-        console.log('pan ended');
+        /* addMarkers() can only be called once the pan has ended otherwise the
+         * boundary of the map won't be computed correctly
+         */
         this.addMarkers();
       });
     }

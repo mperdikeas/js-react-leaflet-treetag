@@ -419,9 +419,7 @@ class Map extends React.Component {
         }
       });
     });
-    if (! ((exceptId === undefined) || encounteredExceptedMarker))
-      console.error(`with bounds ${bounds} and excepting id ${exceptId} I encountered ${n} markers, kept ${rv.length}`);
-    // assert.isTrue((exceptId === undefined) || encounteredExceptedMarker);
+    assert.isTrue((exceptId === undefined) || encounteredExceptedMarker);
     return rv;
   }
 }
