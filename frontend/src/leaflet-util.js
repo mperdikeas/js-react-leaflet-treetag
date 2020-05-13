@@ -43,14 +43,8 @@ export function isMarkerInsidePolygonsOfLayerGroup(marker, layerGroup) {
 };
 
 
-export function circleMarkerFromInfo({latlng, radius, kind, color, popup}, targetId, renderer) {
-    let options = {radius, kind, color};
-    if (targetId)
-        Object.assign(options, {targetId});
-    if (renderer)
-        Object.assign(options, {renderer});
-    const marker = new L.circleMarker(latlng, options);
-    marker.bindPopup(popup);
+export function addPopup(marker, popup) {
+    marker.bindPopup(`<span>${popup}</span>`);
     marker.on('mouseover', function(ev) {
         ev.target.openPopup();
     });
@@ -58,7 +52,6 @@ export function circleMarkerFromInfo({latlng, radius, kind, color, popup}, targe
         // in Chrome 80, the handler wouldn't fire with the mouseleave event
         ev.target.closePopup();
     });
-    return marker;
 }
 
 

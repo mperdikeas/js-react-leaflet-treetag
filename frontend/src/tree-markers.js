@@ -20,7 +20,7 @@ import {axiosAuth} from './axios-setup.js';
 import {possiblyInsufPrivPanicInAnyCase} from './util-privilleges.js';
 
 import {ATHENS} from './constants/map-constants.js';
-import {circleMarkerFromInfo} from './leaflet-util.js';
+import {addPopup} from './leaflet-util.js';
 
 const myRenderer = L.canvas({ padding: 0.5 });
 
@@ -61,17 +61,12 @@ const treeOverlays = (treeConfiguration)=> {
                 return rv;
             }).map( ({id, kind, coords})=> {
                 assert.isNotNull(id);
+
+/*
                 const useCanvasRenderer = true;
-                const marker = circleMarkerFromInfo({latlng: [coords.latitude, coords.longitude]
-                                                     , radius: 8
-                                                     , kind: kind
-                                                     , color: treeConfiguration[kind].color
-                                                     , popup: `<span>${treeConfiguration[kind].name.singular}</span>`}
-                                                    , id
-                                                    , useCanvasRenderer?myRenderer:undefined);
-                /*
-                let c = [coords.latitude, coords.longitude];
-                const color = treeConfiguration[kind].color;
+
+
+
                 const baseOptions = {targetId: id, kind, color};
 
                 const useCanvasRenderer = true;
@@ -84,18 +79,18 @@ const treeOverlays = (treeConfiguration)=> {
 
                 const effectiveOptions = Object.assign({}, baseOptions, styleOptions);
 
-                const marker = new L.circleMarker(c, effectiveOptions);
+                const marker = new L.circleMarker([coords.latitude, coords.longitude]
+                                                  , effectiveOptions);
 
-
-                marker.bindPopup(`<span>${treeConfiguration[kind].name.singular}</span>`);
-                marker.on('mouseover', function(ev) {
-                    ev.target.openPopup();
-                });
-                marker.on('mouseout mouseleave', function(ev) {
-                    // in Chrome 80, the handler wouldn't fire with the mouseleave event
-                    ev.target.closePopup();
-                });
-                */
+*/
+                const marker = new L.circleMarker([coords.latitude, coords.longitude]
+                                                  , {radius: 8
+                                                     , color: treeConfiguration[kind].color
+                                                     , renderer: myRenderer
+                                                     , targetId: id
+                                                     , kind});
+                addPopup(marker, treeConfiguration[kind].name.singular);
+                
                 id2marker[id] = marker;
                 return marker;
 

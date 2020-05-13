@@ -23,7 +23,7 @@ import {ATHENS, DEFAULT_ZOOM} from './constants/map-constants.js';
 
 import {GSN, globalGet} from './globalStore.js';
 
-import {circleMarkerFromInfo} from './leaflet-util.js';
+import {addPopup} from './leaflet-util.js';
 
 const mapStateToProps = (state) => {
   return {
@@ -88,15 +88,7 @@ class TargetAdjustmentPane extends React.Component {
                               , {radius: 8
                                , autoPan: false // only small size adjustments are foreseen
                                , draggable: 'true'});
-    marker.bindPopup(`<span>${treeConfig[markerInMainMap.options.kind].name.singular}</span>`);
-    marker.on('mouseover', function(ev) {
-      ev.target.openPopup();
-    });
-    marker.on('mouseout mouseleave', function(ev) {
-      // in Chrome 80, the handler wouldn't fire with the mouseleave event
-      ev.target.closePopup();
-    });
-
+    addPopup(marker, treeConfig[markerInMainMap.options.kind].name.singular);
 
     
     this.map.addLayer(marker)
@@ -108,12 +100,10 @@ class TargetAdjustmentPane extends React.Component {
                                                                      , this.props.targetId);
     markersInfo.forEach(({latlng, kind}) => {
 
-      const marker = circleMarkerFromInfo({latlng
-                                         , radius: 8
-                                         , kind
-                                         , name: treeConfig[kind].name.singular
-                                         , color: treeConfig[kind].color
-                                         , popup: `<span>${treeConfig[kind].name.singular}</span>`});
+      const marker = L.circleMarker(latlng
+                                  , {radius: 8
+                                   , color: treeConfig[kind].color});
+      addPopup(marker, treeConfig[kind].name.singular)
       this.map.addLayer(marker)
     });
 
