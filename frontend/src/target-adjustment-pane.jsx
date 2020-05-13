@@ -90,10 +90,13 @@ class TargetAdjustmentPane extends React.Component {
     const origMapReactComponent = globalGet(GSN.REACT_MAP);
     const originalMap = origMapReactComponent.map;
 
-    const latLngs = origMapReactComponent.getLatLngOfMarkersInBounds(this.map.getBounds()
-                                                                   , this.props.targetId);
-    latLngs.forEach((latlng) => {
-      const marker = new L.circleMarker(latlng, {radius: 8});
+    const markersInfo = origMapReactComponent.getInfoOfMarkersInBounds(this.map.getBounds()
+                                                                     , this.props.targetId);
+    const treeConfig = this.props.treesConfigurationContext.treesConfiguration;
+    markersInfo.forEach((markerInfo) => {
+      const marker = new L.circleMarker(markerInfo.latlng
+                                      , {radius: 8
+                                       , color: treeConfig[markerInfo.kind].color});
       this.map.addLayer(marker)
     });
 

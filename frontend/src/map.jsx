@@ -401,7 +401,7 @@ class Map extends React.Component {
   }
 
 
-  getLatLngOfMarkersInBounds = (bounds, exceptId) => {
+  getInfoOfMarkersInBounds = (bounds, exceptId) => {
     assert.isOk(bounds);
     const rv = []
     let encounteredExceptedMarker = false;
@@ -413,8 +413,8 @@ class Map extends React.Component {
           if (marker.options.targetId === exceptId)
             encounteredExceptedMarker = true;
           else {
-            console.log(`${marker.options.targetId} != ${exceptId} - pushing`);
-            rv.push(marker.getLatLng());
+            console.log(`${marker.options.targetId} != ${exceptId} - pushing kind = ${marker.options.kind}`);
+            rv.push({latlng: marker.getLatLng(), kind: marker.options.kind});
           }
         }
       });
