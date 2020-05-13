@@ -79,12 +79,24 @@ class TargetAdjustmentPane extends React.Component {
 
   addMarkers = () => {
     this.clearMarkers();
+    const treeConfig = this.props.treesConfigurationContext.treesConfiguration;
+    
     const markerInMainMap = this.targetId2Marker(this.props.targetId);
     const marker = new L.marker(markerInMainMap.getLatLng()
                               , {radius: 8
-                               , title: markerInMainMap.kind
                                , autoPan: false // only small size adjustments are foreseen
                                , draggable: 'true'});
+    marker.bindPopup(`<span>${treeConfig[markerInMainMap.options.kind].name.singular}</span>`);
+    marker.on('mouseover', function(ev) {
+      ev.target.openPopup();
+    });
+    marker.on('mouseout mouseleave', function(ev) {
+      // in Chrome 80, the handler wouldn't fire with the mouseleave event
+      ev.target.closePopup();
+    });
+
+
+    
     this.map.addLayer(marker)
 
     const origMapReactComponent = globalGet(GSN.REACT_MAP);
@@ -92,11 +104,19 @@ class TargetAdjustmentPane extends React.Component {
 
     const markersInfo = origMapReactComponent.getInfoOfMarkersInBounds(this.map.getBounds()
                                                                      , this.props.targetId);
-    const treeConfig = this.props.treesConfigurationContext.treesConfiguration;
-    markersInfo.forEach((markerInfo) => {
-      const marker = new L.circleMarker(markerInfo.latlng
+    markersInfo.forEach(({latlng, kind}) => {
+      const marker = new L.circleMarker(latlng
                                       , {radius: 8
-                                       , color: treeConfig[markerInfo.kind].color});
+                                       , color: treeConfig[kind].color});
+      marker.bindPopup(`<span>${treeConfig[kind].name.singular}</span>`);
+      marker.on('mouseover', function(ev) {
+        ev.target.openPopup();
+      });
+      marker.on('mouseout mouseleave', function(ev) {
+        // in Chrome 80, the handler wouldn't fire with the mouseleave event
+        ev.target.closePopup();
+      });
+
       this.map.addLayer(marker)
     });
 
