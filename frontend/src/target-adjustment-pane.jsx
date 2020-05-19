@@ -25,6 +25,8 @@ import {GSN, globalGet} from './globalStore.js';
 
 import {addPopup} from './leaflet-util.js';
 
+import {haversineGreatCircleDistance, latitudeToMeters, longitudeToMeters} from './geodesy.js';
+
 const mapStateToProps = (state) => {
   return {
     targetId: state.targetId
@@ -50,7 +52,12 @@ class TargetAdjustmentPane extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {savingTreeData: false};
+    this.state = this.initialState();
+  }
+
+  initialState = () => {
+    const latlng = this.targetId2Marker(this.props.targetId).getLatLng();
+    return {savingTreeData: false, latlng};
   }
 
   componentDidMount = () => {
@@ -93,6 +100,16 @@ class TargetAdjustmentPane extends React.Component {
                                , draggable: 'true'});
     addPopup(marker, treeConfig[markerInMainMap.options.kind].name.singular);
 
+    marker.on('drag', (e) => {
+      console.log('marker drag event');
+      this.setState({latlng: e.target.getLatLng()});
+    });
+    marker.on('dragstart', (e) => {
+      console.log(`marker drag event START coords are ${e.target.getLatLng()}`);
+    });
+    marker.on('dragend', (e) => {
+      console.log(`marker drag event END coords are ${e.target.getLatLng()}`);
+    });
     
     this.map.addLayer(marker)
 
@@ -140,12 +157,20 @@ class TargetAdjustmentPane extends React.Component {
   
 
   render() {
+    const initialLatLng = this.targetId2Marker(this.props.targetId).getLatLng();
+    const deltaLat = initialLatLng.lat - this.state.latlng.lat;
+    const deltaLng = initialLatLng.lng - this.state.latlng.lng;
     return (
       <div style={{display:'flex', flexDirection: 'column', justifyContent: 'center'}}>
         <div id='target-adjustment-map' style={{width: '90%', marginLeft: '5%', height: '350px'}}>
         </div>
-        <div>Δχ: -24m Δυ: -24m
+        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around'}}>
+          <span>Δx: {latitudeToMeters(deltaLat, initialLatLng.lat).toFixed(3)}m</span>
+          <span>Δy: {longitudeToMeters(deltaLng, initialLatLng.lng).toFixed(3)}m</span>
         </div>
+        <div style={{textAlign: 'center'}}>
+Απόσταση: {haversineGreatCircleDistance(initialLatLng.lat, initialLatLng.lng, this.state.latlng.lat, this.state.latlng.lng).toFixed(3)}m
+           </div>
       </div>
     );
   }
