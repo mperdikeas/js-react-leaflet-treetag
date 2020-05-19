@@ -78,7 +78,7 @@ class TargetDataPane extends React.Component {
         console.log(' API call success');
         console.log(res.data.t);
         this.props.displayTreeDataHasBeenUpdated(this.props.targetId);
-        this.props.clearTreeDataMutatedFlag();
+        this.props.dataIsNowSaved();
       }
     }).catch( err => {
       this.setState({savingTreeData: false});

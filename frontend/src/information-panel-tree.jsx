@@ -70,7 +70,7 @@ class TreeInformationPanel extends React.Component {
     return {
       serverCallInProgress: LOADING_TREE_DATA
       , treeData: null
-      , treeDataMutated: false // TODO: I likely don't need this anymore
+      , treeDataOriginal: null
       , error: null
     };
   }
@@ -93,6 +93,11 @@ class TreeInformationPanel extends React.Component {
       this.source.cancel(OP_NO_LONGER_RELEVANT);
       this.source = CancelToken.source(); // cf. SSE-1589117399
       this.fetchData();
+    } else {
+      if (JSON.stringify(this.state.treeDataOriginal) !== JSON.stringify(this.state.treeData))
+        this.props.markTargetAsDirty();
+      else
+        this.props.markTargetAsClean();
     }
   }
 
@@ -100,17 +105,16 @@ class TreeInformationPanel extends React.Component {
   
   
   updateTreeData = (treeData) => {
-    console.log('x');
-    this.setState({treeData, treeDataMutated: true});
-    this.props.markTargetAsDirty();
+    this.setState({treeData});
   }
 
-  clearTreeDataMutatedFlag = () => {
-    this.setState({treeDataMutated: false});
-  }
 
   revertData = () => {
-    this.fetchData();
+    this.setState({treeData: this.state.treeDataOriginal});
+  }
+
+  dataIsNowSaved = () => {
+    this.setState({treeDataOriginal: this.state.treeData});
   }
 
   fetchData = () => {
@@ -125,14 +129,15 @@ class TreeInformationPanel extends React.Component {
       console.log(t);
       if (err===null) {
         console.log('error is null');
-        this.props.markTargetAsClean();
         this.setState({serverCallInProgress: null
                      , treeData: t
+                     , treeDataOriginal: t
                      , error: null});
       } else {
         console.error('error is NOT null');
         this.setState({ serverCallInProgress: null
                       , treeData: null
+                      , treeDataOriginal: null
                       , error: {message: `server-side error: ${err.message}`
                               , details: err.strServerTrace}});
       }
@@ -148,18 +153,21 @@ class TreeInformationPanel extends React.Component {
             this.props.displayModalLogin( ()=>{this.fetchData();} );
             this.setState({serverCallInProgress: LOGGING_IN
                          , treeData: null
+                         , treeDataOriginal: null
                          , error: {message: `JWT verif. failed. Server message is: [${msg}]`
                                  , details: details}});
             break;
           default:
             this.setState({serverCallInProgress: null
                          , treeData: null
+                         , treeDataOriginal: null
                          , error: {message: `unexpected error code: ${code}`
                                  , details: msg}});
         }
       } else {
         this.setState({serverCallInProgress: null
                      , treeData: null
+                     , treeDataOriginal: null
                      , error: {message: 'unexpected error - likely a bug'
                              , details: JSON.stringify(err)}});
       }
@@ -261,10 +269,9 @@ class TreeInformationPanel extends React.Component {
               userIsLoggingIn = {this.state.serverCallInProgress == LOGGING_IN}
               loadingTreeData = {this.state.serverCallInProgress  == LOADING_TREE_DATA}
               treeData        = {this.state.treeData}
-              revertData      = {this.revertData}
-              treeDataMutated = {this.state.treeDataMutated}
-              clearTreeDataMutatedFlag = {this.clearTreeDataMutatedFlag}
               updateTreeData  = {this.updateTreeData}
+              revertData      = {this.revertData}
+              dataIsNowSaved  = {this.dataIsNowSaved}
           />
         );
       case PHOTOS:
