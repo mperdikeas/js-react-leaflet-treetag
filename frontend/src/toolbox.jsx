@@ -38,10 +38,9 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 // refid: SSE-1589888176
-const mergeProps = ( {targetId, targetIsDirty}, {dispatch}) => {
+const mergeProps = ( stateProps, {dispatch}) => {
   return {
-    targetId
-    , targetIsDirty
+    ...stateProps
     , displayWorkspaceIsEmptyNotification: () => {
       const html = (<div style={{marginBottom: '1em'}}>Workspace layer has nothing to save</div>);
       dispatch(displayModal(MDL_NOTIFICATION, {html}));
@@ -50,7 +49,7 @@ const mergeProps = ( {targetId, targetIsDirty}, {dispatch}) => {
       const html = <div style={{marginBottom: '1em'}}>Δεν έχει επιλεγεί κάποιο δένδρο</div>;
       dispatch(displayModal(MDL_NOTIFICATION, {html}));
     }
-    , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(targetId)}))    
+    , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(stateProps.targetId)}))    
     , saveWorkspaceToDisk: (geoJSON) => dispatch(displayModal(MDL_SAVE_WS_2_DSK, {geoJSON}))
     , insertGeoGSONToWorkspace: () => dispatch(displayModal(MDL_INS_GJSON_2_WS))
     , uploadLayerToCloud: () => dispatch(displayModal())
