@@ -20,7 +20,7 @@ import {toggleMaximizeInfoPanel, setPaneToOpenInfoPanel}  from './actions/index.
 import {INFORMATION, PHOTOS, HISTORY, ADJUST} from './constants/information-panel-panes.js';
 import {MDL_NOTIFICATION, MODAL_LOGIN} from './constants/modal-types.js';
 
-import {displayModal} from './actions/index.js';
+import {displayModal, markTargetAsDirty, markTargetAsClean} from './actions/index.js';
 
 
 import wrapContexts from './context/contexts-wrapper.jsx';
@@ -51,7 +51,9 @@ const mergeProps = ( stateProps, {dispatch}) => {
     , toggleMaximizeInfoPanel: ()=>dispatch(toggleMaximizeInfoPanel())
     , setPaneToOpenInfoPanel: (pane) => dispatch(setPaneToOpenInfoPanel(pane))
     , displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
-    , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(stateProps.targetId)}))    
+    , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(stateProps.targetId)}))
+    , markTargetAsDirty: ()=>dispatch(markTargetAsDirty())
+    , markTargetAsClean: ()=>dispatch(markTargetAsClean())
     };
 }
 
@@ -100,12 +102,16 @@ class TreeInformationPanel extends React.Component {
   updateTreeData = (treeData) => {
     console.log('x');
     this.setState({treeData, treeDataMutated: true});
+    this.props.markTargetAsDirty();
   }
 
   clearTreeDataMutatedFlag = () => {
     this.setState({treeDataMutated: false});
   }
 
+  revertData = () => {
+    this.fetchData();
+  }
 
   fetchData = () => {
     const url = `/feature/${this.props.targetId}/data`;
@@ -116,12 +122,15 @@ class TreeInformationPanel extends React.Component {
       // corr-id: SSE-1585746250
       console.log(res.data);
       const {t, err} = res.data;
+      console.log(t);
       if (err===null) {
-        console.log(t);
+        console.log('error is null');
+        this.props.markTargetAsClean();
         this.setState({serverCallInProgress: null
                      , treeData: t
                      , error: null});
       } else {
+        console.error('error is NOT null');
         this.setState({ serverCallInProgress: null
                       , treeData: null
                       , error: {message: `server-side error: ${err.message}`
@@ -252,6 +261,7 @@ class TreeInformationPanel extends React.Component {
               userIsLoggingIn = {this.state.serverCallInProgress == LOGGING_IN}
               loadingTreeData = {this.state.serverCallInProgress  == LOADING_TREE_DATA}
               treeData        = {this.state.treeData}
+              revertData      = {this.revertData}
               treeDataMutated = {this.state.treeDataMutated}
               clearTreeDataMutatedFlag = {this.clearTreeDataMutatedFlag}
               updateTreeData  = {this.updateTreeData}

@@ -54,9 +54,11 @@ export function dismissToast(id, msg) {
 }
 
 export function markTargetAsDirty() {
+    console.log('action markTargetAsDirty');
     return {type: MARK_TARGET_AS_DIRTY, payload: null};
 }
 
 export function markTargetAsClean() {
+    console.log('action markTargetAsClean');
     return {type: MARK_TARGET_AS_CLEAN, payload: null};
 }

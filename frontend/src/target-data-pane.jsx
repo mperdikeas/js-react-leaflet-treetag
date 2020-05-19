@@ -17,7 +17,7 @@ import {NumericDataFieldFactory
 import {possiblyInsufPrivPanicInAnyCase, isInsufficientPrivilleges} from './util-privilleges.js';
 
 import {MODAL_LOGIN, MDL_NOTIFICATION} from './constants/modal-types.js';
-import {displayModal, markTargetAsDirty, markTargetAsClean} from './actions/index.js';
+import {displayModal} from './actions/index.js';
 
 const mapStateToProps = (state) => {
   return {
@@ -33,8 +33,6 @@ const mapDispatchToProps = (dispatch) => {
     displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
     , displayNotificationInsufPrivilleges: ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgInsufPriv1}))
     , displayTreeDataHasBeenUpdated: (targetId)=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataHasBeenUpdated(targetId)}))
-    , markTargetAsDirty: ()=>dispatch(markTargetAsDirty())
-    , markTargetAsClean: ()=>dispatch(markTargetAsClean())
   };
 }
 
@@ -111,13 +109,12 @@ class TargetDataPane extends React.Component {
   revert = (ev) => {
     ev.preventDefault();
     ev.stopPropagation();
-    this.props.markTargetAsClean();
+    this.props.revertData();
   }
 
   handleChange = (fieldName, value) => {
     const newTreeData = {...this.props.treeData, [fieldName]: value};
     this.props.updateTreeData(newTreeData);
-    this.props.markTargetAsDirty();
   }
 
   render() {
