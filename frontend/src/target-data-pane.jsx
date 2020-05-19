@@ -21,7 +21,8 @@ import {displayModal, markTargetAsDirty, markTargetAsClean} from './actions/inde
 
 const mapStateToProps = (state) => {
   return {
-    targetId: state.targetId
+    targetIsDirty: state.targetIsDirty
+    , targetId: state.targetId
   };
 };
 
@@ -178,10 +179,10 @@ class TargetDataPane extends React.Component {
                              , display: 'flex'
                              , flexDirection: 'row'
                              , justifyContent: 'space-around'}}className="mb-2">
-            <Button disabled={! this.props.treeDataMutated} style={{flexGrow: 0}} variant="secondary" onClick={this.revert}>
+            <Button disabled={! this.props.targetIsDirty} style={{flexGrow: 0}} variant="secondary" onClick={this.revert}>
               Ανάκληση
             </Button>
-            <Button disabled={! this.props.treeDataMutated} style={{flexGrow: 0}} variant="primary" type="submit">
+            <Button disabled={! this.props.targetIsDirty} style={{flexGrow: 0}} variant="primary" type="submit">
               {this.state.savingTreeData?'Σε εξέλιξη...':'Αποθήκευση'}
             </Button>
           </ButtonGroup>
