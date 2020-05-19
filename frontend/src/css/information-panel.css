@@ -1,3 +1,4 @@
 #detail-information .nav .nav-item > a.active {
     font-weight: bold;
+    pointer-events: none;
 }
