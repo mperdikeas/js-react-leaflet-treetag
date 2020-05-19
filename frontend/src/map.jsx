@@ -67,6 +67,8 @@ import {appIsDoneLoading
 
 import TreeCountStatistic from './tree-count-statistic.js';
 
+import {msgTreeDataIsDirty} from './common.jsx';
+
 
 
 const mapStateToProps = (state) => {
@@ -81,9 +83,13 @@ const mapDispatchToProps = (dispatch) => {
   return {dispatch};
 }
 
-// idiom described in: https://github.com/reduxjs/react-redux/issues/237#issuecomment-168816713
+/*
+ * SSE-1589888176
+ * idiom for [mapDispatchToProps] and [mergeProps] described in:
+ *     https://github.com/reduxjs/react-redux/issues/237#issuecomment-168816713
+ *
+ */
 const mergeProps = ( {targetId, tileProviderId, targetIsDirty}, {dispatch}) => {
-  const msgTargetIsDirty = <>τα δεδομένα του δένδρου <b><tt>{targetId}</tt></b> έχουν μεταβληθεί</>;
   return Object.assign({}, 
                        {targetId
                       , tileProviderId
@@ -91,7 +97,7 @@ const mergeProps = ( {targetId, tileProviderId, targetIsDirty}, {dispatch}) => {
                       , appIsDoneLoading: ()=> dispatch(appIsDoneLoading())
                       , updateCoordinates                 : (latlng)   => dispatch(updateMouseCoords(latlng))
                       , toggleTarget                      : (targetId) => dispatch(toggleTarget(targetId))
-                      , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTargetIsDirty}))
+                      , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(targetId)}))
   });
 }
 

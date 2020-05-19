@@ -23,16 +23,26 @@ import {MDL_NOTIFICATION
 
 import {GSN, globalGet} from './globalStore.js';
 
+import {msgTreeDataIsDirty} from './common.jsx';
+
 const mapStateToProps = (state) => {
   return {
-    targetId: state.targetId
+    targetId      : state.targetId,
+    targetIsDirty : state.targetIsDirty
   };
 };
 
 
 const mapDispatchToProps = (dispatch) => {
+  return {dispatch};
+}
+
+// refid: SSE-1589888176
+const mergeProps = ( {targetId, targetIsDirty}, {dispatch}) => {
   return {
-    displayWorkspaceIsEmptyNotification: () => {
+    targetId
+    , targetIsDirty
+    , displayWorkspaceIsEmptyNotification: () => {
       const html = (<div style={{marginBottom: '1em'}}>Workspace layer has nothing to save</div>);
       dispatch(displayModal(MDL_NOTIFICATION, {html}));
     }
@@ -40,6 +50,7 @@ const mapDispatchToProps = (dispatch) => {
       const html = <div style={{marginBottom: '1em'}}>Δεν έχει επιλεγεί κάποιο δένδρο</div>;
       dispatch(displayModal(MDL_NOTIFICATION, {html}));
     }
+    , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(targetId)}))    
     , saveWorkspaceToDisk: (geoJSON) => dispatch(displayModal(MDL_SAVE_WS_2_DSK, {geoJSON}))
     , insertGeoGSONToWorkspace: () => dispatch(displayModal(MDL_INS_GJSON_2_WS))
     , uploadLayerToCloud: () => dispatch(displayModal())
@@ -59,24 +70,34 @@ class Toolbox extends React.Component {
   componentDidUpdate(prevProps, prevState) {
   }
 
+  displayNotificationIfTargetIsDirty = () => {
+    console.log(`this.props.targetIsDirty = ${this.props.targetIsDirty}`);
+    if (this.props.targetIsDirty) {
+      this.props.displayNotificationTargetIsDirty();
+      return true;
+    } else
+    return false;
+  }
 
   saveWorkspaceToDisk = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    const drawnItems = globalGet(GSN.REACT_MAP).drawnItems;
-    if (drawnItems.getLayers().length === 0) {
-      this.props.displayWorkspaceIsEmptyNotification();
-    } else {
-      let drawnItems2 = drawnItems;
-      const queryResults = globalGet(GSN.REACT_MAP).queryLayer;
-      if (queryResults !== null) {
-        const drawnItems2 = L.featureGroup(drawnItems.getLayers());
-        queryResults.eachLayer( (marker) => {
-          drawnItems2.addLayer(marker);
-        });
-      }
-      const geoJSON = drawnItems2.toGeoJSON(7);
-      this.props.saveWorkspaceToDisk(geoJSON);
+    if (!this.displayNotificationIfTargetIsDirty()) {
+        const drawnItems = globalGet(GSN.REACT_MAP).drawnItems;
+        if (drawnItems.getLayers().length === 0) {
+          this.props.displayWorkspaceIsEmptyNotification();
+        } else {
+          let drawnItems2 = drawnItems;
+          const queryResults = globalGet(GSN.REACT_MAP).queryLayer;
+          if (queryResults !== null) {
+            const drawnItems2 = L.featureGroup(drawnItems.getLayers());
+            queryResults.eachLayer( (marker) => {
+              drawnItems2.addLayer(marker);
+            });
+          }
+          const geoJSON = drawnItems2.toGeoJSON(7);
+          this.props.saveWorkspaceToDisk(geoJSON);
+        }
     }
   }
 
@@ -84,25 +105,33 @@ class Toolbox extends React.Component {
   chooseUploadLayerToCloud = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    const drawnItems = globalGet(GSN.REACT_MAP).drawnItems;
+    if (!this.displayNotificationIfTargetIsDirty()) {
+      const drawnItems = globalGet(GSN.REACT_MAP).drawnItems;
+    }
   }
 
   insertGeoJSONToWorkspace = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    this.props.insertGeoGSONToWorkspace();
+    if (!this.displayNotificationIfTargetIsDirty()) {
+      this.props.insertGeoGSONToWorkspace();
+    }
   }
 
   selectTree = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    this.props.selectTree();
+    if (!this.displayNotificationIfTargetIsDirty()) {
+      this.props.selectTree();
+    }
   }
 
   query = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    this.props.query();
+    if (!this.displayNotificationIfTargetIsDirty()) {
+      this.props.query();
+    }
   }
 
   centerOnTarget = (e) => {
@@ -171,5 +200,5 @@ class Toolbox extends React.Component {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(Toolbox);
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(Toolbox);
 
