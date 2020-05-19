@@ -123,9 +123,14 @@ class TargetAdjustmentPane extends React.Component {
 
     marker.on('drag', (e) => {
       console.log('marker drag event');
+      const latlngs = [this.initialLatLngOfMarker(), e.target.getLatLng()];
+      this.map.removeLayer(this.polyline);
+      this.polyline = L.polyline(latlngs, {color: 'red'}).addTo(this.map);
       this.setState({latlng: e.target.getLatLng()});
     });
     marker.on('dragstart', (e) => {
+      const latlngs = [this.initialLatLngOfMarker(), e.target.getLatLng()];
+      this.polyline = L.polyline(latlngs, {color: 'red'}).addTo(this.map);
       console.log(`marker drag event START coords are ${e.target.getLatLng()}`);
     });
     marker.on('dragend', (e) => {
@@ -162,9 +167,7 @@ class TargetAdjustmentPane extends React.Component {
   }
 
   componentDidUpdate = (prevProps, prevState) => {
-    console.log(`target id is: ${this.props.targetId}`);
     if (prevProps.targetId !== this.props.targetId) {
-      console.log('target has been CHANGED');
       /*
       console.log('cancelling pending requests due to new target');
       this.source.cancel(OP_NO_LONGER_RELEVANT);
@@ -184,8 +187,10 @@ class TargetAdjustmentPane extends React.Component {
   }
 
   revert = () => {
-    this.setState(this.initialState());
+    assert.isOk(this.polyline);
+    this.map.removeLayer(this.polyline);
     this.addMovableMarker();
+    this.setState(this.initialState());
   }
 
   render() {
