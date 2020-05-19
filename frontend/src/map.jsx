@@ -89,16 +89,15 @@ const mapDispatchToProps = (dispatch) => {
  *     https://github.com/reduxjs/react-redux/issues/237#issuecomment-168816713
  *
  */
-const mergeProps = ( {targetId, tileProviderId, targetIsDirty}, {dispatch}) => {
-  return Object.assign({}, 
-                       {targetId
-                      , tileProviderId
-                      , targetIsDirty
-                      , appIsDoneLoading: ()=> dispatch(appIsDoneLoading())
-                      , updateCoordinates                 : (latlng)   => dispatch(updateMouseCoords(latlng))
-                      , toggleTarget                      : (targetId) => dispatch(toggleTarget(targetId))
-                      , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(targetId)}))
-  });
+const mergeProps = (stateProps, {dispatch}) => {
+  return Object.assign({},
+                       {
+                         ...stateProps
+                         , appIsDoneLoading: ()=> dispatch(appIsDoneLoading())
+                         , updateCoordinates                 : (latlng)   => dispatch(updateMouseCoords(latlng))
+                         , toggleTarget                      : (targetId) => dispatch(toggleTarget(targetId))
+                         , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(stateProps.targetId)}))
+                       });
 }
 
 
