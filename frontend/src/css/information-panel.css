@@ -1,4 +1,20 @@
-#detail-information .nav .nav-item > a.active {
-    font-weight: bold;
+#detail-information .nav .nav-item > a.nav-link.active {
+    /*
+     * neither of the below two customizations are necessary; the default
+     * style is good enough
+     */
+
+    /*
     pointer-events: none;
+    cursor: not-allowed;
+   */
+
+}
+
+#detail-information .nav .nav-item {
+    font-size: 1.1em;
+}
+
+#detail-information .nav .nav-item a {
+    padding: 5px;
 }

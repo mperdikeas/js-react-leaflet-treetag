@@ -10,6 +10,8 @@ import {axiosAuth} from './axios-setup.js';
 
 import {CancelToken} from 'axios';
 
+import {Nav} from 'react-bootstrap';
+
 require('./css/information-panel.css');
 import TargetDataPane       from './target-data-pane.jsx';
 import TargetPhotoPane      from './target-photo-pane.jsx';
@@ -226,6 +228,7 @@ class TreeInformationPanel extends React.Component {
           <span style={{fontFamily: 'monospace'}}>198305193817</span>
       </div>);
       const heightStyle = {height: `${this.getInformationPanelHeight()}px`, overflow: 'scroll'};
+
       return (
         <div id='detail-information' className={cx(klasses)} style={Object.assign({}, heightStyle, {backgroundColor: 'lightgrey'})}>
           <div className='row' style={{marginLeft: 0, marginRight: 0}}>
@@ -234,22 +237,42 @@ class TreeInformationPanel extends React.Component {
               <a id='toggle-info-panel' className={cx(defaultClasses)} href="#" onClick={this.props.toggleMaximizeInfoPanel}>{toggleTxt}</a>
             </div>
           </div>
-          <ul className="nav">
-            <li className="nav-item">
-              <a id='information' className={cx(informationClasses)} href="#" onClick={this.onInformation}>Πληροφορίες</a>
-            </li>
-            <li className="nav-item">
-              <a id='photos' className={cx(photoClasses)} href="#" onClick={this.onPhotos}>
-                Φωτογραφίες
-              </a>
-            </li>
-            <li className="nav-item">
-              <a id='history' className={cx(historyClasses)} href="#" onClick={this.onHistory}>Ιστορικό</a>
-            </li>
-            <li className="nav-item">
-              <a id='adjust' className={cx(adjustClasses)} href="#" onClick={this.onAdjust}>Μετατόπιση</a>
-            </li>            
-          </ul>
+
+        <Nav variant='pills' activeKey={this.props.tab} justify={true}
+            onSelect={(selectedKey) => {
+                     switch (selectedKey) {
+                       case INFORMATION:
+                         this.onInformation();
+                         break;
+                       case PHOTOS:
+                         this.onPhotos();
+                         break;
+                       case HISTORY:
+                         this.onHistory();
+                         break;
+                       case ADJUST:
+                         this.onAdjust();
+                         break;
+                       default:
+                         throw `unhandled key: ${selectedKey}`;
+                     }
+                     }
+                     }
+        >
+        <Nav.Item>
+          <Nav.Link eventKey={INFORMATION}>Γενικά</Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link eventKey={PHOTOS}>Φωτό</Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link eventKey={HISTORY}>Ιστορικό</Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link eventKey={ADJUST}>Μετατόπιση</Nav.Link>
+        </Nav.Item>
+        </Nav>
+          
           {paneToDisplay}
         </div>
       );
