@@ -23,7 +23,7 @@ import {MDL_NOTIFICATION
 
 import {GSN, globalGet} from './globalStore.js';
 
-import {msgTreeDataIsDirty} from './common.jsx';
+import {msgTreeDataIsDirty, displayNotificationIfTargetIsDirty} from './common.jsx';
 
 const mapStateToProps = (state) => {
   return {
@@ -49,7 +49,7 @@ const mergeProps = ( stateProps, {dispatch}) => {
       const html = <div style={{marginBottom: '1em'}}>Δεν έχει επιλεγεί κάποιο δένδρο</div>;
       dispatch(displayModal(MDL_NOTIFICATION, {html}));
     }
-    , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(stateProps.targetId)}))    
+    , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(stateProps.targetId)}))
     , saveWorkspaceToDisk: (geoJSON) => dispatch(displayModal(MDL_SAVE_WS_2_DSK, {geoJSON}))
     , insertGeoGSONToWorkspace: () => dispatch(displayModal(MDL_INS_GJSON_2_WS))
     , uploadLayerToCloud: () => dispatch(displayModal())
@@ -69,14 +69,8 @@ class Toolbox extends React.Component {
   componentDidUpdate(prevProps, prevState) {
   }
 
-  displayNotificationIfTargetIsDirty = () => {
-    console.log(`this.props.targetIsDirty = ${this.props.targetIsDirty}`);
-    if (this.props.targetIsDirty) {
-      this.props.displayNotificationTargetIsDirty();
-      return true;
-    } else
-    return false;
-  }
+  displayNotificationIfTargetIsDirty = displayNotificationIfTargetIsDirty.bind(this);
+
 
   saveWorkspaceToDisk = (e) => {
     e.preventDefault();

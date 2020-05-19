@@ -20,4 +20,15 @@ msgTreeDataIsDirty = (targetId) => {
   );
 };
 
+function displayNotificationIfTargetIsDirty() {
+  console.log(`this.props.targetIsDirty = ${this.props.targetIsDirty}`);
+  if (this.props.targetIsDirty) {
+    this.props.displayNotificationTargetIsDirty();
+    return true;
+  } else
+  return false;
+}
+
+
 exports.msgTreeDataIsDirty = msgTreeDataIsDirty;
+exports.displayNotificationIfTargetIsDirty = displayNotificationIfTargetIsDirty;

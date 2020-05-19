@@ -18,7 +18,7 @@ import TargetAdjustmentPane from './target-adjustment-pane.jsx';
 
 import {toggleMaximizeInfoPanel, setPaneToOpenInfoPanel}  from './actions/index.js';
 import {INFORMATION, PHOTOS, HISTORY, ADJUST} from './constants/information-panel-panes.js';
-import {MODAL_LOGIN} from './constants/modal-types.js';
+import {MDL_NOTIFICATION, MODAL_LOGIN} from './constants/modal-types.js';
 
 import {displayModal} from './actions/index.js';
 
@@ -28,22 +28,30 @@ import wrapContexts from './context/contexts-wrapper.jsx';
 import {LOGGING_IN, LOADING_TREE_DATA} from './constants/information-panel-tree-server-call-types.js';
 
 import {OP_NO_LONGER_RELEVANT} from './constants/axios-constants.js';
-
+import {msgTreeDataIsDirty, displayNotificationIfTargetIsDirty} from './common.jsx';
 
 
 const mapStateToProps = (state) => {
   return {
     maximizedInfoPanel: state.maximizedInfoPanel
     , targetId: state.targetId
+    , targetIsDirty: state.targetIsDirty
     , tab: state.paneToOpenInfoPanel
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
+  return {dispatch};
+}
+
+// refid: SSE-1589888176
+const mergeProps = ( stateProps, {dispatch}) => {
   return {
-    toggleMaximizeInfoPanel: ()=>dispatch(toggleMaximizeInfoPanel())
+    ...stateProps
+    , toggleMaximizeInfoPanel: ()=>dispatch(toggleMaximizeInfoPanel())
     , setPaneToOpenInfoPanel: (pane) => dispatch(setPaneToOpenInfoPanel(pane))
     , displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
+    , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(stateProps.targetId)}))    
     };
 }
 
@@ -60,12 +68,13 @@ class TreeInformationPanel extends React.Component {
     return {
       serverCallInProgress: LOADING_TREE_DATA
       , treeData: null
-      , treeDataMutated: false
+      , treeDataMutated: false // TODO: I likely don't need this anymore
       , error: null
     };
   }
 
-
+  displayNotificationIfTargetIsDirty = displayNotificationIfTargetIsDirty.bind(this);
+  
   componentDidMount() {
     this.fetchData();
   }
@@ -85,6 +94,9 @@ class TreeInformationPanel extends React.Component {
     }
   }
 
+
+  
+  
   updateTreeData = (treeData) => {
     console.log('x');
     this.setState({treeData, treeDataMutated: true});
@@ -147,19 +159,23 @@ class TreeInformationPanel extends React.Component {
   
 
   onInformation = () => {
-    this.props.setPaneToOpenInfoPanel(INFORMATION);
+    if (!this.displayNotificationIfTargetIsDirty())
+      this.props.setPaneToOpenInfoPanel(INFORMATION);
   }
 
   onPhotos = () => {
-    this.props.setPaneToOpenInfoPanel(PHOTOS);
+    if (!this.displayNotificationIfTargetIsDirty())
+      this.props.setPaneToOpenInfoPanel(PHOTOS);
   }
 
   onHistory = () => {
-    this.props.setPaneToOpenInfoPanel(HISTORY);
+    if (!this.displayNotificationIfTargetIsDirty())
+      this.props.setPaneToOpenInfoPanel(HISTORY);
   }
 
   onAdjust = () => {
-    this.props.setPaneToOpenInfoPanel(ADJUST);
+    if (!this.displayNotificationIfTargetIsDirty())
+      this.props.setPaneToOpenInfoPanel(ADJUST);
   }
   
   
@@ -263,5 +279,5 @@ class TreeInformationPanel extends React.Component {
 
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(TreeInformationPanel));
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(wrapContexts(TreeInformationPanel));
 

@@ -67,7 +67,7 @@ import {appIsDoneLoading
 
 import TreeCountStatistic from './tree-count-statistic.js';
 
-import {msgTreeDataIsDirty} from './common.jsx';
+import {msgTreeDataIsDirty, displayNotificationIfTargetIsDirty} from './common.jsx';
 
 
 
@@ -121,6 +121,8 @@ class Map extends React.Component {
     globalSet(GSN.REACT_MAP, this);
   }
 
+  displayNotificationIfTargetIsDirty = displayNotificationIfTargetIsDirty.bind(this);
+  
   getMapHeight = () => {
     return this.props.geometryContext.screen.height - this.props.geometryContext.geometry.headerBarHeight
   }
@@ -391,9 +393,7 @@ class Map extends React.Component {
   }
 
   clickOnCircleMarker = (e) => {
-    if (this.props.targetIsDirty) {
-      this.props.displayNotificationTargetIsDirty();
-    } else {
+    if (!this.displayNotificationIfTargetIsDirty()) {
       const installNewHighlightingMarker = (coords, targetId) => {
         const options = {radius: 20, color: 'black', weight: 5, interactive: false};
         const marker = L.circleMarker(coords, options);
