@@ -60,12 +60,16 @@ class TargetAdjustmentPane extends React.Component {
     return {savingTreeData: false, latlng};
   }
 
-  componentDidMount = () => {
+  initialLatLngOfMarker = () => {
     const targetId = this.props.targetId;
     console.log(targetId);
     const markerInMainMap = this.targetId2Marker(targetId);
+    return markerInMainMap.getLatLng();
+  }
+
+  componentDidMount = () => {
     this.map = L.map('target-adjustment-map', {
-      center: markerInMainMap.getLatLng(),
+      center: this.initialLatLngOfMarker(),
       zoom: DEFAULT_ZOOM+3,     
       minZoom: DEFAULT_ZOOM+3,  // effectively disables zoom out
       zoomControl: false,
@@ -78,19 +82,36 @@ class TargetAdjustmentPane extends React.Component {
       maxZoom: 50
     });
     baseLayer.addTo(this.map);
-    this.addMarkers();
+    this.addMovableMarker();
+    this.addNeighbouringMarkers();
   }
 
 
-  clearMarkers = () => {
+  markerHasBeenMoved = () => {
+    return this.state.latlng !== this.initialLatLngOfMarker()
+  }
+
+
+  clearNeighbouringMarkers = () => {
     this.map.eachLayer( (layer) => {
-      if ((layer instanceof L.Marker) || (layer instanceof L.CircleMarker))
+      if (layer instanceof L.CircleMarker)
         this.map.removeLayer(layer);
     });
   }
 
-  addMarkers = () => {
-    this.clearMarkers();
+  clearMovableMarker = () => {
+    let i = 0;
+    this.map.eachLayer( (layer) => {
+      if (layer instanceof L.Marker) {
+        this.map.removeLayer(layer);
+        i ++;
+      }
+    });
+    assert.isAtMost(i, 1);
+  }
+
+  addMovableMarker = () => {
+    this.clearMovableMarker()
     const treeConfig = this.props.treesConfigurationContext.treesConfiguration;
     
     const markerInMainMap = this.targetId2Marker(this.props.targetId);
@@ -112,10 +133,12 @@ class TargetAdjustmentPane extends React.Component {
     });
     
     this.map.addLayer(marker)
+  }
 
+  addNeighbouringMarkers = () => {
+    this.clearNeighbouringMarkers();
+    const treeConfig = this.props.treesConfigurationContext.treesConfiguration;
     const origMapReactComponent = globalGet(GSN.REACT_MAP);
-    const originalMap = origMapReactComponent.map;
-
     const markersInfo = origMapReactComponent.getInfoOfMarkersInBounds(this.map.getBounds()
                                                                      , this.props.targetId);
     markersInfo.forEach(({latlng, kind}) => {
@@ -127,7 +150,11 @@ class TargetAdjustmentPane extends React.Component {
       addPopup(marker, treeConfig[kind].name.singular)
       this.map.addLayer(marker)
     });
+  }
 
+  addMarkers = () => {
+    this.addMovableMarker();
+    this.addNeighbouringMarkers();
   }
 
   targetId2Marker = (targetId) => {
@@ -137,27 +164,32 @@ class TargetAdjustmentPane extends React.Component {
   componentDidUpdate = (prevProps, prevState) => {
     console.log(`target id is: ${this.props.targetId}`);
     if (prevProps.targetId !== this.props.targetId) {
+      console.log('target has been CHANGED');
       /*
       console.log('cancelling pending requests due to new target');
       this.source.cancel(OP_NO_LONGER_RELEVANT);
       this.source = CancelToken.source(); // cf. SSE-1589117399
       this.fetchData();
        */
-      const targetId = this.props.targetId;
-      const markerInMainMap = this.targetId2Marker(targetId);
-      this.map.panTo(markerInMainMap.getLatLng(), {animate: true, duration: .5} );
+
+      this.map.panTo(this.initialLatLngOfMarker(), {animate: true, duration: .5} );
       this.map.on('moveend', () => {
         /* addMarkers() can only be called once the pan has ended otherwise the
          * boundary of the map won't be computed correctly
          */
         this.addMarkers();
       });
+      this.setState(this.initialState());
     }
   }
-  
+
+  revert = () => {
+    this.setState(this.initialState());
+    this.addMovableMarker();
+  }
 
   render() {
-    const initialLatLng = this.targetId2Marker(this.props.targetId).getLatLng();
+    const initialLatLng = this.initialLatLngOfMarker();
     const deltaLat = initialLatLng.lat - this.state.latlng.lat;
     const deltaLng = initialLatLng.lng - this.state.latlng.lng;
     return (
@@ -170,7 +202,18 @@ class TargetAdjustmentPane extends React.Component {
         </div>
         <div style={{textAlign: 'center'}}>
 Απόσταση: {haversineGreatCircleDistance(initialLatLng.lat, initialLatLng.lng, this.state.latlng.lat, this.state.latlng.lng).toFixed(3)}m
-           </div>
+        </div>
+          <ButtonGroup style={{marginTop: '1em'
+                             , display: 'flex'
+                             , flexDirection: 'row'
+                             , justifyContent: 'space-around'}}className="mb-2">
+            <Button disabled={! this.markerHasBeenMoved()} style={{flexGrow: 0}} variant="secondary" onClick={this.revert}>
+              Ανάκληση
+            </Button>
+            <Button disabled={! this.markerHasBeenMoved()} style={{flexGrow: 0}} variant="primary" type="submit">
+              {this.state.savingTreeData?'Σε εξέλιξη...':'Αποθήκευση'}
+            </Button>
+          </ButtonGroup>
       </div>
     );
   }
