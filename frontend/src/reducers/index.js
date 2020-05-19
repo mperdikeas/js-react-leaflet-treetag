@@ -13,6 +13,7 @@ import toggleTargetReducer            from './toggleTargetReducer.js';
 import modalReducer                   from './modalReducer.js';
 import maximizedInfoPanelReducer      from './maximizedInfoPanelReducer.js';
 import paneToOpenInfoPanelReducer     from './paneToOpenInfoPanelReducer.js';
+import targetIsDirtyReducer           from './targetIsDirtyReducer.js';
 
 
 function rootReducer(state = {}, action) {
@@ -22,7 +23,8 @@ function rootReducer(state = {}, action) {
         targetId             : toggleTargetReducer         (state.targetId, action),
         modals               : modalReducer                (state.modals, action),
         maximizedInfoPanel   : maximizedInfoPanelReducer   (state.maximizedInfoPanel, action),
-        paneToOpenInfoPanel  : paneToOpenInfoPanelReducer  (state.paneToOpenInfoPanel, action)
+        paneToOpenInfoPanel  : paneToOpenInfoPanelReducer  (state.paneToOpenInfoPanel, action),
+        targetIsDirty        : targetIsDirtyReducer        (state.targetIsDirty, action)
     };
     return rv;
 };

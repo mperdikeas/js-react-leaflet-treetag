@@ -7,4 +7,6 @@ export const TOGGLE_TARGET                           = "TOGGLE_TARGET";
 export const SET_PANE_TO_OPEN_INFO_PANEL             = "SET_PANE_TO_OPEN_INFO_PANEL";
 export const ADD_TOAST                               = "ADD_TOAST";
 export const DISMISS_TOAST                           = "DISMISS_TOAST";
+export const MARK_TARGET_AS_DIRTY                    = "MARK_TARGET_AS_DIRTY";
+export const MARK_TARGET_AS_CLEAN                    = "MARK_TARGET_AS_CLEAN";
 

@@ -7,7 +7,9 @@ import {APP_IS_DONE_LOADING
         , TOGGLE_TARGET
         , SET_PANE_TO_OPEN_INFO_PANEL
         , ADD_TOAST
-        , DISMISS_TOAST} from '../constants/action-types.js';
+        , DISMISS_TOAST
+        , MARK_TARGET_AS_DIRTY
+        , MARK_TARGET_AS_CLEAN} from '../constants/action-types.js';
 
 import {isValidModalType} from '../constants/modal-types.js';
 
@@ -49,4 +51,12 @@ export function addToast(header, msg) {
 
 export function dismissToast(id, msg) {
     return {type: DISMISS_TOAST, payload: {id}};
+}
+
+export function markTargetAsDirty() {
+    return {type: MARK_TARGET_AS_DIRTY, payload: null};
+}
+
+export function markTargetAsClean() {
+    return {type: MARK_TARGET_AS_CLEAN, payload: null};
 }

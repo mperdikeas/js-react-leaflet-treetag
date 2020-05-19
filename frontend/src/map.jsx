@@ -54,6 +54,8 @@ import {ota_Callicrates, treeOverlays} from './tree-markers.js';
 
 import {ATHENS, DEFAULT_ZOOM} from './constants/map-constants.js';
 
+import {MDL_NOTIFICATION} from './constants/modal-types.js';
+
 
 
 import { connect }          from 'react-redux';
@@ -69,17 +71,29 @@ import TreeCountStatistic from './tree-count-statistic.js';
 
 const mapStateToProps = (state) => {
   return {
-    tileProviderId                 : state.tileProviderId
+    targetId                       : state.targetId,
+    tileProviderId                 : state.tileProviderId,
+    targetIsDirty                  : state.targetIsDirty
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {
-    appIsDoneLoading: ()=> dispatch(appIsDoneLoading())
-    , updateCoordinates                   : (latlng)   => dispatch(updateMouseCoords(latlng))
-    , toggleTarget                      : (targetId) => dispatch(toggleTarget(targetId))
-    };
-  }
+  return {dispatch};
+}
+
+// idiom described in: https://github.com/reduxjs/react-redux/issues/237#issuecomment-168816713
+const mergeProps = ( {targetId, tileProviderId, targetIsDirty}, {dispatch}) => {
+  const msgTargetIsDirty = <>τα δεδομένα του δένδρου <b><tt>{targetId}</tt></b> έχουν μεταβληθεί</>;
+  return Object.assign({}, 
+                       {targetId
+                      , tileProviderId
+                      , targetIsDirty
+                      , appIsDoneLoading: ()=> dispatch(appIsDoneLoading())
+                      , updateCoordinates                 : (latlng)   => dispatch(updateMouseCoords(latlng))
+                      , toggleTarget                      : (targetId) => dispatch(toggleTarget(targetId))
+                      , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTargetIsDirty}))
+  });
+}
 
 
 // https://spatialreference.org/ref/epsg/2100/
@@ -372,32 +386,35 @@ class Map extends React.Component {
   }
 
   clickOnCircleMarker = (e) => {
-    
-    const installNewHighlightingMarker = (coords, targetId) => {
-      const options = {radius: 20, color: 'black', weight: 5, interactive: false};
-      const marker = L.circleMarker(coords, options);
-      this.highlightedMarker = {marker, targetId};
-      this.highlightedMarker.marker.addTo(this.map);
-      this.highlightedMarker.marker.bringToBack();
-      this.map.setView(coords, this.map.getZoom());
-    };
-    const targetId = e.target.options.targetId;
-    const coords = e.target.getLatLng();
-
-
-    
-    if (this.highlightedMarker === null) {
-      installNewHighlightingMarker(coords, targetId);
+    if (this.props.targetIsDirty) {
+      this.props.displayNotificationTargetIsDirty();
     } else {
-      if (this.highlightedMarker.targetId === targetId) {
-        this.highlightedMarker.marker.removeFrom(this.map);
-        this.highlightedMarker = null;
-      } else {
-        this.highlightedMarker.marker.removeFrom(this.map);
+      const installNewHighlightingMarker = (coords, targetId) => {
+        const options = {radius: 20, color: 'black', weight: 5, interactive: false};
+        const marker = L.circleMarker(coords, options);
+        this.highlightedMarker = {marker, targetId};
+        this.highlightedMarker.marker.addTo(this.map);
+        this.highlightedMarker.marker.bringToBack();
+        this.map.setView(coords, this.map.getZoom());
+      };
+      const targetId = e.target.options.targetId;
+      const coords = e.target.getLatLng();
+
+
+      
+      if (this.highlightedMarker === null) {
         installNewHighlightingMarker(coords, targetId);
+      } else {
+        if (this.highlightedMarker.targetId === targetId) {
+          this.highlightedMarker.marker.removeFrom(this.map);
+          this.highlightedMarker = null;
+        } else {
+          this.highlightedMarker.marker.removeFrom(this.map);
+          installNewHighlightingMarker(coords, targetId);
+        }
       }
+      this.props.toggleTarget(e.target.options.targetId);
     }
-    this.props.toggleTarget(e.target.options.targetId);
   }
 
 
@@ -437,5 +454,5 @@ function splitFeatureGroupIntoCircleMarkersAndTheRest(featureGroup) {
         , L.featureGroup(restLayers)];
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(Map));
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(wrapContexts(Map));
 
