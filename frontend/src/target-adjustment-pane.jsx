@@ -15,7 +15,7 @@ import {Athens} from './tree-markers.js';
 import {possiblyInsufPrivPanicInAnyCase, isInsufficientPrivilleges} from './util-privilleges.js';
 
 import {MODAL_LOGIN, MDL_NOTIFICATION} from './constants/modal-types.js';
-import {displayModal} from './actions/index.js';
+import {displayModal, markTargetAsDirty, markTargetAsClean} from './actions/index.js';
 
 import wrapContexts from './context/contexts-wrapper.jsx';
 
@@ -30,6 +30,7 @@ import {haversineGreatCircleDistance, latitudeToMeters, longitudeToMeters} from 
 const mapStateToProps = (state) => {
   return {
     targetId: state.targetId
+    , targetIsDirty: state.targetIsDirty
   };
 };
 
@@ -39,7 +40,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
     , displayNotificationInsufPrivilleges: ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgInsufPriv1}))
-    , displayTreeDataHasBeenUpdated: (targetId)=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataHasBeenUpdated(targetId)}))
+    , displayTreeDataHasBeenUpdated: (targetId)=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataHasBeenUpdated(targetId)})) // TODO: what to do with this ?
+    , markTargetAsDirty: ()=>dispatch(markTargetAsDirty())
+    , markTargetAsClean: ()=>dispatch(markTargetAsClean())
   };
 }
 
@@ -56,13 +59,12 @@ class TargetAdjustmentPane extends React.Component {
   }
 
   initialState = () => {
-    const latlng = this.targetId2Marker(this.props.targetId).getLatLng();
+    const latlng = this.initialLatLngOfMarker();
     return {savingTreeData: false, latlng};
   }
 
   initialLatLngOfMarker = () => {
     const targetId = this.props.targetId;
-    console.log(targetId);
     const markerInMainMap = this.targetId2Marker(targetId);
     return markerInMainMap.getLatLng();
   }
@@ -86,10 +88,6 @@ class TargetAdjustmentPane extends React.Component {
     this.addNeighbouringMarkers();
   }
 
-
-  markerHasBeenMoved = () => {
-    return this.state.latlng !== this.initialLatLngOfMarker()
-  }
 
 
   clearNeighbouringMarkers = () => {
@@ -129,6 +127,8 @@ class TargetAdjustmentPane extends React.Component {
       this.setState({latlng: e.target.getLatLng()});
     });
     marker.on('dragstart', (e) => {
+      if (this.polyline)
+        this.map.removeLayer(this.polyline);
       const latlngs = [this.initialLatLngOfMarker(), e.target.getLatLng()];
       this.polyline = L.polyline(latlngs, {color: 'red'}).addTo(this.map);
       console.log(`marker drag event START coords are ${e.target.getLatLng()}`);
@@ -183,6 +183,14 @@ class TargetAdjustmentPane extends React.Component {
         this.addMarkers();
       });
       this.setState(this.initialState());
+    } else {
+      if (this.state.latlng !== this.initialLatLngOfMarker()) {
+        console.log('xyz marking target as dirty');
+        this.props.markTargetAsDirty();
+      } else {
+        console.log('xyz marking target as clean');
+        this.props.markTargetAsClean();
+      }
     }
   }
 
@@ -212,10 +220,10 @@ class TargetAdjustmentPane extends React.Component {
                              , display: 'flex'
                              , flexDirection: 'row'
                              , justifyContent: 'space-around'}}className="mb-2">
-            <Button disabled={! this.markerHasBeenMoved()} style={{flexGrow: 0}} variant="secondary" onClick={this.revert}>
+            <Button disabled={! this.props.targetIsDirty} style={{flexGrow: 0}} variant="secondary" onClick={this.revert}>
               Ανάκληση
             </Button>
-            <Button disabled={! this.markerHasBeenMoved()} style={{flexGrow: 0}} variant="primary" type="submit">
+            <Button disabled={! this.props.targetIsDirty} style={{flexGrow: 0}} variant="primary" type="submit">
               {this.state.savingTreeData?'Σε εξέλιξη...':'Αποθήκευση'}
             </Button>
           </ButtonGroup>
