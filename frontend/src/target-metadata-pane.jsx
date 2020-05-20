@@ -17,13 +17,13 @@ const mapStateToProps = (state) => {
 
 class TargetMetadataPane extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
+  constructor(props) {
+    super(props);
+  }
 
-    componentDidMount() {
-    }
-    
+  componentDidMount() {
+  }
+  
   componentDidUpdate(prevProps, prevState) {
   }
 
