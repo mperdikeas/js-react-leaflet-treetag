@@ -1,14 +1,16 @@
 const assert = require('chai').assert;
 
+const React = require('react');
+
 import {APP_IS_DONE_LOADING
         , DISPLAY_MODAL
         , CLEAR_MODAL} from '../constants/action-types.js';
 
-import {MODAL_APP_IS_LOADING
+import {MDL_NOTIFICATION_NO_DISMISS
         , MODAL_LOGIN} from '../constants/modal-types.js';
 
 export default (modals = [{modalType: MODAL_LOGIN, modalProps: null}
-                          , {modalType: MODAL_APP_IS_LOADING, modalProps: null}]
+                          , {modalType: MDL_NOTIFICATION_NO_DISMISS, modalProps: {html: (<span>Please wait while the app is loading &hellip;</span>)}}]
                 , action) => {
                     switch (action.type) {
                     case DISPLAY_MODAL: {
@@ -22,7 +24,7 @@ export default (modals = [{modalType: MODAL_LOGIN, modalProps: null}
                         const modals2 = [...modals];
                         const modalToClose =modals2.pop();
                         console.log(modalToClose);
-                        assert.strictEqual(modalToClose.modalType, MODAL_APP_IS_LOADING);
+                        assert.strictEqual(modalToClose.modalType, MDL_NOTIFICATION_NO_DISMISS);
                         // this modal has no props
                         return modals2;
                     }

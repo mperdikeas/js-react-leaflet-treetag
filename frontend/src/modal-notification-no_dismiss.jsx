@@ -14,12 +14,8 @@ import wrapContexts from './context/contexts-wrapper.jsx';
 import {axiosPlain} from './axios-setup.js';
 
 
-// redux
-// TODO: remove all mapDispatchToPros from all redux imports
-import { connect } from 'react-redux';
 
-
-class ModalAppIsLoading extends React.Component {
+class ModalNotificationNoDismiss extends React.Component {
 
   constructor(props) {
     super(props);
@@ -55,7 +51,7 @@ class ModalAppIsLoading extends React.Component {
     return (
       <>
       <dialog ref={this.ref}>
-        <div>Please wait while app is loading &hellip; </div>
+        <div>{this.props.html}</div>
       </dialog>
       {this.props.children}
       </>
@@ -64,6 +60,6 @@ class ModalAppIsLoading extends React.Component {
 }
 
 
-export default ModalAppIsLoading;
+export default ModalNotificationNoDismiss;
 
 

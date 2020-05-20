@@ -19,12 +19,13 @@ import TargetMetadataPane   from './target-metadata-pane.jsx';
 import TargetAdjustmentPane from './target-adjustment-pane.jsx';
 
 import {displayModal
+      , clearModal
       , toggleMaximizeInfoPanel
       , setPaneToOpenInfoPanel
       , setTreeInfo
       , setTreeInfoOriginal}  from './actions/index.js';
 import {INFORMATION, PHOTOS, HISTORY, ADJUST} from './constants/information-panel-panes.js';
-import {MDL_NOTIFICATION, MODAL_LOGIN} from './constants/modal-types.js';
+import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS, MODAL_LOGIN} from './constants/modal-types.js';
 
 
 
@@ -56,12 +57,14 @@ const mapDispatchToProps = (dispatch) => {
 // refid: SSE-1589888176
 const mergeProps = ( stateProps, {dispatch}) => {
   const msgTreeDataHasBeenUpdated = targetId => `τα νέα δεδομένα για το δένδρο #${targetId} αποθηκεύτηκαν`;
+  const msgSavingTreeData = targetId => `αποθήκευση δεδομένων για το δένδρο #${targetId}`;
   return {
     ...stateProps
     , displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
     , displayNotificationInsufPrivilleges: ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgInsufPriv1}))
     , displayTreeDataHasBeenUpdated: (targetId)=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataHasBeenUpdated(targetId)}))
-
+    , displayModalSavingTreeData  : ()=>dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: msgSavingTreeData(stateProps.targetId)}))
+    , clearModal : () => dispatch(clearModal())
     , toggleMaximizeInfoPanel: ()=>dispatch(toggleMaximizeInfoPanel())
     , setPaneToOpenInfoPanel: (pane) => dispatch(setPaneToOpenInfoPanel(pane))
     , displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
@@ -197,7 +200,9 @@ class TreeInformationPanel extends React.Component {
     console.log(JSON.stringify(this.props.treeInfo));    
     // the post cannot be cancelled so we don't bother with a cancel token
     this.setState({serverCallInProgress: SAVING_TREE_DATA});
+    this.props.displayModalSavingTreeData();
     axiosAuth.post(`/feature/${this.props.targetId}/data`, this.props.treeInfo).then(res => {
+      this.props.clearModal();
       this.setState({serverCallInProgress: null});
       if (res.data.err != null) {
         console.log(`/feature/${this.props.targetId}/data POST error`);
@@ -210,6 +215,7 @@ class TreeInformationPanel extends React.Component {
         this.props.setTreeInfoOriginal(this.props.treeInfo);
       }
     }).catch( err => {
+      this.props.clearModal();
       this.setState({serverCallInProgress: null});
       if (isInsufficientPrivilleges(err)) {
         console.log('insuf detected');

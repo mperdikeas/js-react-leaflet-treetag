@@ -11,28 +11,28 @@ import './css/modal-dialog.css'; // TODO: use React emotion for element-scoped C
 
 import wrapContexts from './context/contexts-wrapper.jsx';
 
-import ModalAppIsLoading             from './modal-app-is-loading.jsx';
 import ModalLogin                    from './modal-login.jsx';
 import ModalSaveWorkspaceToDisk      from './modal-save-workspace-to-disk.jsx';
 import ModalInsertGeoJSONToWorkspace from './modal-insert-geoJSON-workspace.jsx';
 import ModalUsernameReminder         from './modal-username-reminder.jsx';
 import ModalNotification             from './modal-notification.jsx';
+import ModalNotificationNoDismiss    from './modal-notification-no_dismiss.jsx';
 import ModalQuery                    from './modal-query.jsx';
 
-import {MODAL_APP_IS_LOADING
-      , MODAL_LOGIN
+import {MODAL_LOGIN
       , MDL_SAVE_WS_2_DSK
       , MDL_INS_GJSON_2_WS
       , MDL_NOTIFICATION
+      , MDL_NOTIFICATION_NO_DISMISS
       , MDL_QUERY} from './constants/modal-types.js';
 
 const MODAL_COMPONENTS = {
-  MODAL_APP_IS_LOADING: ModalAppIsLoading,
   MODAL_LOGIN: ModalLogin,
   MDL_SAVE_WS_2_DSK: ModalSaveWorkspaceToDisk,
   MDL_INS_GJSON_2_WS: ModalInsertGeoJSONToWorkspace,
   MDL_USERNAME_REMINDER: ModalUsernameReminder,
   MDL_NOTIFICATION: ModalNotification,
+  MDL_NOTIFICATION_NO_DISMISS: ModalNotificationNoDismiss,  
   MDL_QUERY: ModalQuery
 };
 
