@@ -306,7 +306,6 @@ class TreeInformationPanel extends React.Component {
           <TargetMetadataPane
               userIsLoggingIn = {this.state.serverCallInProgress == LOGGING_IN}
               loadingTreeData = {this.state.serverCallInProgress  == LOADING_TREE_DATA}
-              treeActions     = {this.state.treeData===null?null:this.state.treeData.treeActions}
           />
         );
       case ADJUST: {

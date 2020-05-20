@@ -6,12 +6,13 @@ const assert = require('chai').assert;
 // REDUX
 import { connect }          from 'react-redux';
 
+
 const mapStateToProps = (state) => {
   return {
     targetId: state.targetId
+    , treeActions: (state.treeInfo.current===null)?null:state.treeInfo.current.treeActions
   };
 };
-
 
 
 class TargetMetadataPane extends React.Component {
@@ -31,7 +32,7 @@ class TargetMetadataPane extends React.Component {
     if (this.props.userIsLoggingIn)
       return <div>user is logging in &hellip;</div>;
     else if (this.props.loadingTreeData)
-      return <div>querying the server for tree {this.props.targetId} &hellip;</div>;
+      return <div>querying for history of tree {this.props.targetId} &hellip;</div>;
     else {
       const stuff = (Array.from(Array(50).keys())).map( (x, idx)=>{
         return (
