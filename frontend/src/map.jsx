@@ -72,10 +72,20 @@ import {msgTreeDataIsDirty, displayNotificationIfTargetIsDirty} from './common.j
 
 
 const mapStateToProps = (state) => {
+  if (state.treeInfo.original != null) {
+    assert.isOk(state.treeInfo.current);
+    console.log(`xyw map:mapStateToProps original coords = ${JSON.stringify(state.treeInfo.original.coords)} current coords = ${JSON.stringify(state.treeInfo.current.coords)}`);
+  } else
+      console.log('xyw map:mapStateToProps treeInfo is null');
+
+  const targetIsDirty = JSON.stringify(state.treeInfo.original) !== JSON.stringify(state.treeInfo.current);
+  console.log(`xyw targetIsDirty = ${targetIsDirty}`);
+  if (targetIsDirty)
+    console.log(`xyw a = [${JSON.stringify(state.treeInfo.original)}] b = [${JSON.stringify(state.treeInfo.current)}]`);
   return {
     targetId                       : state.targetId,
     tileProviderId                 : state.tileProviderId,
-    targetIsDirty                  : state.targetIsDirty
+    targetIsDirty
   };
 };
 
@@ -435,7 +445,6 @@ class Map extends React.Component {
           if (marker.options.targetId === exceptId)
             encounteredExceptedMarker = true;
           else {
-            console.log(`${marker.options.targetId} != ${exceptId} - pushing kind = ${marker.options.kind}`);
             rv.push({latlng: marker.getLatLng(), kind: marker.options.kind});
           }
         }

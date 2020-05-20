@@ -17,12 +17,13 @@ import {NumericDataFieldFactory
 import {possiblyInsufPrivPanicInAnyCase, isInsufficientPrivilleges} from './util-privilleges.js';
 
 import {MODAL_LOGIN, MDL_NOTIFICATION} from './constants/modal-types.js';
-import {displayModal} from './actions/index.js';
+import {displayModal, revertTreeInfo, setTreeInfoOriginal} from './actions/index.js';
 
 const mapStateToProps = (state) => {
   return {
-    targetIsDirty: state.targetIsDirty
+    targetIsDirty: JSON.stringify(state.treeInfo.original)!==JSON.stringify(state.treeInfo.current)
     , targetId: state.targetId
+    , treeInfo: state.treeInfo.current
   };
 };
 
@@ -33,6 +34,8 @@ const mapDispatchToProps = (dispatch) => {
     displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
     , displayNotificationInsufPrivilleges: ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgInsufPriv1}))
     , displayTreeDataHasBeenUpdated: (targetId)=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataHasBeenUpdated(targetId)}))
+    , setTreeInfoOriginal: (treeInfo) => dispatch(setTreeInfoOriginal(treeInfo))
+    , revertTreeInfo     : (treeInfo) => dispatch(revertTreeInfo     (treeInfo))
   };
 }
 
@@ -66,10 +69,14 @@ class TargetDataPane extends React.Component {
     ev.preventDefault();
     ev.stopPropagation();
     console.log('handle submit');
+    /*
     console.log(this.props.treeData);
     console.log(JSON.stringify(this.props.treeData));
+    */
+    console.log(this.props.treeInfo);
+    console.log(JSON.stringify(this.props.treeInfo));    
     // the post cannot be cancelled so we don't bother with a cancel token
-    axiosAuth.post(`/feature/${this.props.targetId}/data`, this.props.treeData).then(res => {
+    axiosAuth.post(`/feature/${this.props.targetId}/data`, /*this.props.treeData*/ this.props.treeInfo).then(res => {
       this.setState({savingTreeData: false});
       if (res.data.err != null) {
         console.log(`/feature/${this.props.targetId}/data POST error`);
@@ -78,7 +85,8 @@ class TargetDataPane extends React.Component {
         console.log(' API call success');
         console.log(res.data.t);
         this.props.displayTreeDataHasBeenUpdated(this.props.targetId);
-        this.props.dataIsNowSaved();
+        // this.props.dataIsNowSaved();
+        this.props.setTreeInfoOriginal(this.props.treeInfo);
       }
     }).catch( err => {
       this.setState({savingTreeData: false});
@@ -109,12 +117,13 @@ class TargetDataPane extends React.Component {
   revert = (ev) => {
     ev.preventDefault();
     ev.stopPropagation();
-    this.props.revertData();
+    this.props.revertTreeInfo();
   }
 
   handleChange = (fieldName, value) => {
-    const newTreeData = {...this.props.treeData, [fieldName]: value};
-    this.props.updateTreeData(newTreeData);
+    //    const newTreeData = {...this.props.treeData, [fieldName]: value};
+    const newTreeInfo = {...this.props.treeInfo, [fieldName]: value};
+    this.props.updateTreeData(newTreeInfo);
   }
 
   render() {
@@ -130,9 +139,9 @@ class TargetDataPane extends React.Component {
         </>
       );
     } else {
-      assert.exists(this.props.treeData);
+      assert.exists(this.props.treeInfo);
       console.log('tree data follows:');
-      console.log(this.props.treeData);
+      console.log(this.props.treeInfo);
       console.log('---------------------');
       const {yearPlanted, healthStatus, heightCm,
              crownHeightCm,
@@ -146,7 +155,7 @@ class TargetDataPane extends React.Component {
              fallHazard,
              publicInterest,
              disease,
-             comments} = this.props.treeData;
+             comments} = this.props.treeInfo; //treeData;
       console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~');
       console.log(this.props.treesConfigurationContext.healthStatuses);
       console.log('============================');

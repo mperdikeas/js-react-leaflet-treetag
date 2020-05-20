@@ -9,7 +9,14 @@ import {APP_IS_DONE_LOADING
         , ADD_TOAST
         , DISMISS_TOAST
         , MARK_TARGET_AS_DIRTY
-        , MARK_TARGET_AS_CLEAN} from '../constants/action-types.js';
+        , MARK_TARGET_AS_CLEAN
+        , SET_TREE_INFO_ORIGINAL
+        , SET_TREE_INFO
+        , REVERT_TREE_INFO
+        , SET_TREE_COORDS_ORIGINAL
+        , SET_TREE_COORDS
+        , REVERT_TREE_COORDS
+       } from '../constants/action-types.js';
 
 import {isValidModalType} from '../constants/modal-types.js';
 
@@ -61,4 +68,29 @@ export function markTargetAsDirty() {
 export function markTargetAsClean() {
     console.log('action markTargetAsClean');
     return {type: MARK_TARGET_AS_CLEAN, payload: null};
+}
+
+export function setTreeInfoOriginal(treeInfo) {
+    return {type: SET_TREE_INFO_ORIGINAL, payload: treeInfo};
+}
+
+export function setTreeInfo(treeInfo) {
+    return {type: SET_TREE_INFO, payload: treeInfo};
+}
+
+export function revertTreeInfo() {
+    return {type: REVERT_TREE_INFO, payload: null};
+}
+
+
+export function setTreeCoordsOriginal(coords) {
+    return {type: SET_TREE_COORDS_ORIGINAL, payload: coords};
+}
+
+export function setTreeCoords(coords) {
+    return {type: SET_TREE_COORDS, payload: coords};
+}
+
+export function revertTreeCoords() {
+    return {type: REVERT_TREE_COORDS, payload: null};
 }

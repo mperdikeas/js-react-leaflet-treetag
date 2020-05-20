@@ -18,11 +18,14 @@ import TargetPhotoPane      from './target-photo-pane.jsx';
 import TargetMetadataPane   from './target-metadata-pane.jsx';
 import TargetAdjustmentPane from './target-adjustment-pane.jsx';
 
-import {toggleMaximizeInfoPanel, setPaneToOpenInfoPanel}  from './actions/index.js';
+import {displayModal
+      , toggleMaximizeInfoPanel
+      , setPaneToOpenInfoPanel
+      , setTreeInfo
+      , setTreeInfoOriginal}  from './actions/index.js';
 import {INFORMATION, PHOTOS, HISTORY, ADJUST} from './constants/information-panel-panes.js';
 import {MDL_NOTIFICATION, MODAL_LOGIN} from './constants/modal-types.js';
 
-import {displayModal, markTargetAsDirty, markTargetAsClean} from './actions/index.js';
 
 
 import wrapContexts from './context/contexts-wrapper.jsx';
@@ -37,7 +40,7 @@ const mapStateToProps = (state) => {
   return {
     maximizedInfoPanel: state.maximizedInfoPanel
     , targetId: state.targetId
-    , targetIsDirty: state.targetIsDirty
+    , targetIsDirty: JSON.stringify(state.treeInfo.original)!==JSON.stringify(state.treeInfo.current)
     , tab: state.paneToOpenInfoPanel
   };
 };
@@ -54,9 +57,11 @@ const mergeProps = ( stateProps, {dispatch}) => {
     , setPaneToOpenInfoPanel: (pane) => dispatch(setPaneToOpenInfoPanel(pane))
     , displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
     , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(stateProps.targetId)}))
-    , markTargetAsDirty: ()=>dispatch(markTargetAsDirty())
-    , markTargetAsClean: ()=>dispatch(markTargetAsClean())
-    };
+//    , markTargetAsDirty: ()=>dispatch(markTargetAsDirty())
+    //    , markTargetAsClean: ()=>dispatch(markTargetAsClean())
+    , setTreeInfoOriginal: (treeInfo) => dispatch(setTreeInfoOriginal(treeInfo))
+    , setTreeInfo        : (treeInfo) => dispatch(setTreeInfo        (treeInfo))
+  };
 }
 
 class TreeInformationPanel extends React.Component {
@@ -71,8 +76,8 @@ class TreeInformationPanel extends React.Component {
   getInitialState = () => {
     return {
       serverCallInProgress: LOADING_TREE_DATA
-      , treeData: null
-      , treeDataOriginal: null
+//      , treeData: null
+//      , treeDataOriginal: null
       , error: null
     };
   }
@@ -95,29 +100,31 @@ class TreeInformationPanel extends React.Component {
       this.source.cancel(OP_NO_LONGER_RELEVANT);
       this.source = CancelToken.source(); // cf. SSE-1589117399
       this.fetchData();
-    } else {
+    } /* else {
       if (JSON.stringify(this.state.treeDataOriginal) !== JSON.stringify(this.state.treeData))
         this.props.markTargetAsDirty();
       else
         this.props.markTargetAsClean();
-    }
+    }*/
   }
 
 
   
   
-  updateTreeData = (treeData) => {
-    this.setState({treeData});
+  updateTreeData = (treeInfo) => {
+    this.props.setTreeInfo(treeInfo);
   }
 
 
-  revertData = () => {
-    this.setState({treeData: this.state.treeDataOriginal});
+
+  setTreeInfoOriginal = (treeInfo) => {
+    this.props.setTreeInfoOriginal(treeInfo);
   }
 
+  /*
   dataIsNowSaved = () => {
     this.setState({treeDataOriginal: this.state.treeData});
-  }
+  }*/
 
   fetchData = () => {
     const url = `/feature/${this.props.targetId}/data`;
@@ -131,15 +138,17 @@ class TreeInformationPanel extends React.Component {
       console.log(t);
       if (err===null) {
         console.log('error is null');
-        this.setState({serverCallInProgress: null
-                     , treeData: t
-                     , treeDataOriginal: t
-                     , error: null});
+        this.props.setTreeInfoOriginal(t);
+        this.setState({serverCallInProgress: null});
+        // TODO: maybe the serverCallInProgress should also be part of the redux store
       } else {
         console.error('error is NOT null');
+
+        //   , treeData: null
+        // , treeDataOriginal: null
+
+        this.props.setTreeInfoOriginal(null);
         this.setState({ serverCallInProgress: null
-                      , treeData: null
-                      , treeDataOriginal: null
                       , error: {message: `server-side error: ${err.message}`
                               , details: err.strServerTrace}});
       }
@@ -153,25 +162,31 @@ class TreeInformationPanel extends React.Component {
         switch(code) {
           case 'JWT-verif-failed':
             this.props.displayModalLogin( ()=>{this.fetchData();} );
+            this.props.setTreeInfoOriginal(null);
             this.setState({serverCallInProgress: LOGGING_IN
-                         , treeData: null
-                         , treeDataOriginal: null
+//                         , treeData: null
+  //                       , treeDataOriginal: null
                          , error: {message: `JWT verif. failed. Server message is: [${msg}]`
                                  , details: details}});
+
             break;
           default:
+            this.props.setTreeInfoOriginal(null);
             this.setState({serverCallInProgress: null
-                         , treeData: null
-                         , treeDataOriginal: null
+//                         , treeData: null
+  //                       , treeDataOriginal: null
                          , error: {message: `unexpected error code: ${code}`
                                  , details: msg}});
+
         }
       } else {
+        this.props.setTreeInfoOriginal(null);
         this.setState({serverCallInProgress: null
-                     , treeData: null
-                     , treeDataOriginal: null
+    //                 , treeData: null
+      //               , treeDataOriginal: null
                      , error: {message: 'unexpected error - likely a bug'
                              , details: JSON.stringify(err)}});
+
       }
     }) // catch
   } // fetchData
@@ -291,10 +306,8 @@ class TreeInformationPanel extends React.Component {
           <TargetDataPane
               userIsLoggingIn = {this.state.serverCallInProgress == LOGGING_IN}
               loadingTreeData = {this.state.serverCallInProgress  == LOADING_TREE_DATA}
-              treeData        = {this.state.treeData}
               updateTreeData  = {this.updateTreeData}
-              revertData      = {this.revertData}
-              dataIsNowSaved  = {this.dataIsNowSaved}
+              setTreeInfoOriginal = {this.setTreeInfoOriginal}
           />
         );
       case PHOTOS:
@@ -308,7 +321,9 @@ class TreeInformationPanel extends React.Component {
           />
         );
       case ADJUST: {
-        return <TargetAdjustmentPane/>;
+        return <TargetAdjustmentPane
+                   loadingTreeData = {this.state.serverCallInProgress  == LOADING_TREE_DATA}
+               />;
       }
       default:
         assert.fail(`unhandled case [${this.props.tab}]`);
