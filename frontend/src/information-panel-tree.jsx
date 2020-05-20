@@ -67,7 +67,6 @@ const mergeProps = ( stateProps, {dispatch}) => {
     , clearModal : () => dispatch(clearModal())
     , toggleMaximizeInfoPanel: ()=>dispatch(toggleMaximizeInfoPanel())
     , setPaneToOpenInfoPanel: (pane) => dispatch(setPaneToOpenInfoPanel(pane))
-    , displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
     , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(stateProps.targetId)}))
     , setTreeInfoOriginal: (treeInfo) => dispatch(setTreeInfoOriginal(treeInfo))
     , setTreeInfo        : (treeInfo) => dispatch(setTreeInfo        (treeInfo))
@@ -140,7 +139,7 @@ class TreeInformationPanel extends React.Component {
       if (err===null) {
         console.log('error is null');
         this.props.setTreeInfoOriginal(t);
-        this.setState({serverCallInProgress: null});
+        this.setState({serverCallInProgress: null, error: null});
         // TODO: maybe the serverCallInProgress should also be part of the redux store
       } else {
         console.error('error is NOT null');
@@ -162,12 +161,12 @@ class TreeInformationPanel extends React.Component {
         const {code, msg, details} = err.response.data;
         switch(code) {
           case 'JWT-verif-failed':
-            this.props.displayModalLogin( ()=>{this.fetchData();} );
+            this.props.displayModalLogin( ()=>{this.setState({error: null}); this.fetchData();} );
             this.props.setTreeInfoOriginal(null);
             this.setState({serverCallInProgress: LOGGING_IN
 //                         , treeData: null
   //                       , treeDataOriginal: null
-                         , error: {message: `JWT verif. failed. Server message is: [${msg}]`
+                         , error: {message: `JWT verif. failed. Server message is: [${msg}] - waiting for user login`
                                  , details: details}});
 
             break;
@@ -227,7 +226,7 @@ class TreeInformationPanel extends React.Component {
           const {code, msg, details} = err.response.data;
           switch(code) {
             case 'JWT-verif-failed':
-              this.props.displayModalLogin( ()=>{this.handleSubmit();});
+              this.props.displayModalLogin( ()=>{this.setState({error: null}); this.handleSubmit();});
               break;
             default:
               assert.fail(`unexpected condition: code=${code}, msg=${msg}, details=${details}`);
@@ -349,35 +348,46 @@ class TreeInformationPanel extends React.Component {
 
   paneToDisplay = () => {
     console.log(`displaying pane ${this.props.tab}`);
-    switch (this.props.tab) {
-      case INFORMATION:
-        return (
-          <TargetDataPane
-              userIsLoggingIn     = {this.state.serverCallInProgress === LOGGING_IN}
-              loadingTreeData     = {this.state.serverCallInProgress  === LOADING_TREE_DATA}
-              updateTreeData      = {this.updateTreeData}
-              setTreeInfoOriginal = {this.setTreeInfoOriginal}
-              handleSubmit        = {this.handleSubmit}
-              savingTreeData      = {this.state.serverCallInProgress === SAVING_TREE_DATA}
-          />
-        );
-      case PHOTOS:
-        return <TargetPhotoPane/>
-      case HISTORY:
-        return (
-          <TargetMetadataPane
-              userIsLoggingIn = {this.state.serverCallInProgress == LOGGING_IN}
-              loadingTreeData = {this.state.serverCallInProgress  == LOADING_TREE_DATA}
-          />
-        );
-      case ADJUST: {
-        return <TargetAdjustmentPane
-                   loadingTreeData = {this.state.serverCallInProgress  == LOADING_TREE_DATA}
-               />;
+    if (this.state.error)
+      return (
+        <>
+        <div>Σφάλμα</div>
+        <div style={{color: 'red'}}>{JSON.stringify(this.state.error)}</div>
+        </>
+      );
+    else if (this.state.serverCallInProgress === LOGGING_IN) {
+      return <div>user is logging in &hellip;</div>;
+    }
+    else if (this.state.serverCallInProgress  === LOADING_TREE_DATA) {
+      return <div>querying the server for tree {this.props.targetId} &hellip;</div>;
+    }
+    else {
+      switch (this.props.tab) {
+        case INFORMATION:
+          return (
+            <TargetDataPane
+                updateTreeData      = {this.updateTreeData}
+                setTreeInfoOriginal = {this.setTreeInfoOriginal}
+                handleSubmit        = {this.handleSubmit}
+                savingTreeData      = {this.state.serverCallInProgress === SAVING_TREE_DATA}
+            />
+          );
+        case PHOTOS:
+          return <TargetPhotoPane/>
+        case HISTORY:
+          return (
+            <TargetMetadataPane/>
+          );
+        case ADJUST: {
+          return <TargetAdjustmentPane
+                     handleSubmit        = {this.handleSubmit}
+                     savingTreeData      = {this.state.serverCallInProgress === SAVING_TREE_DATA}
+                 />;
+        }
+        default:
+          assert.fail(`unhandled case [${this.props.tab}]`);
+          return null; // SCA
       }
-      default:
-        assert.fail(`unhandled case [${this.props.tab}]`);
-        return null; // SCA
     }
   }
 }

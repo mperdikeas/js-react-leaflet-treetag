@@ -220,7 +220,7 @@ class TargetAdjustmentPane extends React.Component {
             <Button disabled={! this.markerHasBeenDisplaced()} style={{flexGrow: 0}} variant="secondary" onClick={this.revert}>
               Ανάκληση
             </Button>
-            <Button disabled={! this.markerHasBeenDisplaced} style={{flexGrow: 0}} variant="primary" type="submit">
+            <Button disabled={! this.markerHasBeenDisplaced} style={{flexGrow: 0}} variant="primary" onClick={this.props.handleSubmit}>
               {this.state.savingTreeData?'Σε εξέλιξη...':'Αποθήκευση'}
             </Button>
           </ButtonGroup>
