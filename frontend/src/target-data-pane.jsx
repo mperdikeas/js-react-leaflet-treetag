@@ -14,10 +14,9 @@ import {NumericDataFieldFactory
       , SelectDataFieldFactory
       , TextAreaDataFieldFactory} from './data-field-controls.jsx';
 
-import {possiblyInsufPrivPanicInAnyCase, isInsufficientPrivilleges} from './util-privilleges.js';
 
 import {MODAL_LOGIN, MDL_NOTIFICATION} from './constants/modal-types.js';
-import {displayModal, revertTreeInfo, setTreeInfoOriginal} from './actions/index.js';
+import {revertTreeInfo} from './actions/index.js';
 
 const mapStateToProps = (state) => {
   return {
@@ -31,11 +30,7 @@ const mapDispatchToProps = (dispatch) => {
   const msgInsufPriv1 = 'ο χρήστης δεν έχει τα προνόμια για να εκτελέσει αυτήν την λειτουργία';
   const msgTreeDataHasBeenUpdated = targetId => `τα νέα δεδομένα για το δένδρο #${targetId} αποθηκεύτηκαν`;
   return {
-    displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
-    , displayNotificationInsufPrivilleges: ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgInsufPriv1}))
-    , displayTreeDataHasBeenUpdated: (targetId)=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataHasBeenUpdated(targetId)}))
-    , setTreeInfoOriginal: (treeInfo) => dispatch(setTreeInfoOriginal(treeInfo))
-    , revertTreeInfo     : (treeInfo) => dispatch(revertTreeInfo     (treeInfo))
+    revertTreeInfo     : (treeInfo) => dispatch(revertTreeInfo     (treeInfo))
   };
 }
 
@@ -58,61 +53,12 @@ class TargetDataPane extends React.Component {
       this.BooleanDataField  = BooleanDataFieldFactory(this.handleChange);
       this.SelectDataField   = SelectDataFieldFactory (this.handleChange);
       this.TextAreaDataField = TextAreaDataFieldFactory(this.handleChange);
-      this.state = {savingTreeData: false};
     }
 
     componentDidMount() {
     }
 
 
-  handleSubmit = (ev) => {
-    ev.preventDefault();
-    ev.stopPropagation();
-    console.log('handle submit');
-    /*
-    console.log(this.props.treeData);
-    console.log(JSON.stringify(this.props.treeData));
-    */
-    console.log(this.props.treeInfo);
-    console.log(JSON.stringify(this.props.treeInfo));    
-    // the post cannot be cancelled so we don't bother with a cancel token
-    axiosAuth.post(`/feature/${this.props.targetId}/data`, /*this.props.treeData*/ this.props.treeInfo).then(res => {
-      this.setState({savingTreeData: false});
-      if (res.data.err != null) {
-        console.log(`/feature/${this.props.targetId}/data POST error`);
-        assert.fail(res.data.err);
-      } else {
-        console.log(' API call success');
-        console.log(res.data.t);
-        this.props.displayTreeDataHasBeenUpdated(this.props.targetId);
-        // this.props.dataIsNowSaved();
-        this.props.setTreeInfoOriginal(this.props.treeInfo);
-      }
-    }).catch( err => {
-      this.setState({savingTreeData: false});
-      if (isInsufficientPrivilleges(err)) {
-        console.log('insuf detected');
-        this.props.displayNotificationInsufPrivilleges();
-      } else {
-        if (err.response && err.response.data) {
-          // SSE-1585746388: the shape of err.response.data is (code, msg, details)
-          // Java class ValidJWSAccessTokenFilter#AbortResponse
-          const {code, msg, details} = err.response.data;
-          switch(code) {
-            case 'JWT-verif-failed':
-              this.props.displayModalLogin( ()=>{this.handleSubmit();});
-              break;
-            default:
-              assert.fail(`unexpected condition: code=${code}, msg=${msg}, details=${details}`);
-          }
-        } else {
-          console.log(err);
-          assert.fail(`unexpected condition: ${JSON.stringify(err)}`);
-        }
-      }
-    });
-    this.setState({savingTreeData: true});
-  }
 
   revert = (ev) => {
     ev.preventDefault();
@@ -159,13 +105,13 @@ class TargetDataPane extends React.Component {
       console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~');
       console.log(this.props.treesConfigurationContext.healthStatuses);
       console.log('============================');
-      console.log('saving tree data is: '+this.state.savingTreeData);
+      console.log('saving tree data is: '+this.props.savingTreeData);
       return (
         <>
         <div>
         Data for tree {this.props.targetId} follow
         </div>
-        <Form noValidate onSubmit={this.handleSubmit}>
+        <Form noValidate onSubmit={this.props.handleSubmit}>
           <this.NumericDataField  name='yearPlanted'  label='έτος φύτευσης' value={yearPlanted} />
           <this.SelectDataField   name='healthStatus' label='Υγεία'         value={healthStatus} codeToName={this.props.treesConfigurationContext.healthStatuses}/>
           <this.NumericDataField  name='heightCm'            label='Ύψος (cm)'              value={heightCm} />
@@ -189,7 +135,7 @@ class TargetDataPane extends React.Component {
               Ανάκληση
             </Button>
             <Button disabled={! this.props.targetIsDirty} style={{flexGrow: 0}} variant="primary" type="submit">
-              {this.state.savingTreeData?'Σε εξέλιξη...':'Αποθήκευση'}
+              {this.props.savingTreeData?'Σε εξέλιξη...':'Αποθήκευση'}
             </Button>
           </ButtonGroup>
         </Form>

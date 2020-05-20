@@ -30,10 +30,13 @@ import {MDL_NOTIFICATION, MODAL_LOGIN} from './constants/modal-types.js';
 
 import wrapContexts from './context/contexts-wrapper.jsx';
 
-import {LOGGING_IN, LOADING_TREE_DATA} from './constants/information-panel-tree-server-call-types.js';
+import {LOGGING_IN
+      , LOADING_TREE_DATA
+      , SAVING_TREE_DATA} from './constants/information-panel-tree-server-call-types.js';
 
 import {OP_NO_LONGER_RELEVANT} from './constants/axios-constants.js';
 import {msgTreeDataIsDirty, displayNotificationIfTargetIsDirty} from './common.jsx';
+import {possiblyInsufPrivPanicInAnyCase, isInsufficientPrivilleges} from './util-privilleges.js';
 
 
 const mapStateToProps = (state) => {
@@ -42,6 +45,7 @@ const mapStateToProps = (state) => {
     , targetId: state.targetId
     , targetIsDirty: JSON.stringify(state.treeInfo.original)!==JSON.stringify(state.treeInfo.current)
     , tab: state.paneToOpenInfoPanel
+    , treeInfo: state.treeInfo.current
   };
 };
 
@@ -51,8 +55,13 @@ const mapDispatchToProps = (dispatch) => {
 
 // refid: SSE-1589888176
 const mergeProps = ( stateProps, {dispatch}) => {
+  const msgTreeDataHasBeenUpdated = targetId => `τα νέα δεδομένα για το δένδρο #${targetId} αποθηκεύτηκαν`;
   return {
     ...stateProps
+    , displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
+    , displayNotificationInsufPrivilleges: ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgInsufPriv1}))
+    , displayTreeDataHasBeenUpdated: (targetId)=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataHasBeenUpdated(targetId)}))
+
     , toggleMaximizeInfoPanel: ()=>dispatch(toggleMaximizeInfoPanel())
     , setPaneToOpenInfoPanel: (pane) => dispatch(setPaneToOpenInfoPanel(pane))
     , displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
@@ -179,7 +188,52 @@ class TreeInformationPanel extends React.Component {
       }
     }) // catch
   } // fetchData
-  
+
+  handleSubmit = (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    console.log('handle submit');
+    console.log(this.props.treeInfo);
+    console.log(JSON.stringify(this.props.treeInfo));    
+    // the post cannot be cancelled so we don't bother with a cancel token
+    this.setState({serverCallInProgress: SAVING_TREE_DATA});
+    axiosAuth.post(`/feature/${this.props.targetId}/data`, this.props.treeInfo).then(res => {
+      this.setState({serverCallInProgress: null});
+      if (res.data.err != null) {
+        console.log(`/feature/${this.props.targetId}/data POST error`);
+        assert.fail(res.data.err);
+      } else {
+        console.log('API call success');
+        console.log(res.data.t);
+        this.props.displayTreeDataHasBeenUpdated(this.props.targetId);
+        // this.props.dataIsNowSaved();
+        this.props.setTreeInfoOriginal(this.props.treeInfo);
+      }
+    }).catch( err => {
+      this.setState({serverCallInProgress: null});
+      if (isInsufficientPrivilleges(err)) {
+        console.log('insuf detected');
+        this.props.displayNotificationInsufPrivilleges();
+      } else {
+        if (err.response && err.response.data) {
+          // SSE-1585746388: the shape of err.response.data is (code, msg, details)
+          // Java class ValidJWSAccessTokenFilter#AbortResponse
+          const {code, msg, details} = err.response.data;
+          switch(code) {
+            case 'JWT-verif-failed':
+              this.props.displayModalLogin( ()=>{this.handleSubmit();});
+              break;
+            default:
+              assert.fail(`unexpected condition: code=${code}, msg=${msg}, details=${details}`);
+          }
+        } else {
+          console.log(err);
+          assert.fail(`unexpected condition: ${JSON.stringify(err)}`);
+        }
+      }
+    });
+  }
+
 
   onInformation = () => {
     if (!this.displayNotificationIfTargetIsDirty())
@@ -293,10 +347,12 @@ class TreeInformationPanel extends React.Component {
       case INFORMATION:
         return (
           <TargetDataPane
-              userIsLoggingIn = {this.state.serverCallInProgress == LOGGING_IN}
-              loadingTreeData = {this.state.serverCallInProgress  == LOADING_TREE_DATA}
-              updateTreeData  = {this.updateTreeData}
+              userIsLoggingIn     = {this.state.serverCallInProgress === LOGGING_IN}
+              loadingTreeData     = {this.state.serverCallInProgress  === LOADING_TREE_DATA}
+              updateTreeData      = {this.updateTreeData}
               setTreeInfoOriginal = {this.setTreeInfoOriginal}
+              handleSubmit        = {this.handleSubmit}
+              savingTreeData      = {this.state.serverCallInProgress === SAVING_TREE_DATA}
           />
         );
       case PHOTOS:
