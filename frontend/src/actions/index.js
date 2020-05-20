@@ -8,8 +8,6 @@ import {APP_IS_DONE_LOADING
         , SET_PANE_TO_OPEN_INFO_PANEL
         , ADD_TOAST
         , DISMISS_TOAST
-        , MARK_TARGET_AS_DIRTY
-        , MARK_TARGET_AS_CLEAN
         , SET_TREE_INFO_ORIGINAL
         , SET_TREE_INFO
         , REVERT_TREE_INFO
@@ -58,16 +56,6 @@ export function addToast(header, msg) {
 
 export function dismissToast(id, msg) {
     return {type: DISMISS_TOAST, payload: {id}};
-}
-
-export function markTargetAsDirty() {
-    console.log('xyz action markTargetAsDirty');
-    return {type: MARK_TARGET_AS_DIRTY, payload: null};
-}
-
-export function markTargetAsClean() {
-    console.log('action markTargetAsClean');
-    return {type: MARK_TARGET_AS_CLEAN, payload: null};
 }
 
 export function setTreeInfoOriginal(treeInfo) {
