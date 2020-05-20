@@ -53,10 +53,12 @@ const mergeProps = ( stateProps, {dispatch}) => {
     , saveWorkspaceToDisk: (geoJSON) => dispatch(displayModal(MDL_SAVE_WS_2_DSK, {geoJSON}))
     , insertGeoGSONToWorkspace: () => dispatch(displayModal(MDL_INS_GJSON_2_WS))
     , uploadLayerToCloud: () => dispatch(displayModal())
-    , selectTree: ()=>dispatch(addToast(i, 'this is some random toast'))
+    , selectTree: ()=>dispatch(addToast(`header - ${i}`, 'this is some random toast'))
     , query: ()=>dispatch(displayModal(MDL_QUERY))
     };
-  }
+}
+
+let i = 0;
 
 
 class Toolbox extends React.Component {
