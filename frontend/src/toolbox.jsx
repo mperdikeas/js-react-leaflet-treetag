@@ -28,7 +28,7 @@ import {msgTreeDataIsDirty, displayNotificationIfTargetIsDirty} from './common.j
 const mapStateToProps = (state) => {
   return {
     targetId      : state.targetId,
-    targetIsDirty : state.targetIsDirty
+    targetIsDirty: JSON.stringify(state.treeInfo.original)!==JSON.stringify(state.treeInfo.current)
   };
 };
 

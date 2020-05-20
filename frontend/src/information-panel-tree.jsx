@@ -57,8 +57,6 @@ const mergeProps = ( stateProps, {dispatch}) => {
     , setPaneToOpenInfoPanel: (pane) => dispatch(setPaneToOpenInfoPanel(pane))
     , displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
     , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(stateProps.targetId)}))
-//    , markTargetAsDirty: ()=>dispatch(markTargetAsDirty())
-    //    , markTargetAsClean: ()=>dispatch(markTargetAsClean())
     , setTreeInfoOriginal: (treeInfo) => dispatch(setTreeInfoOriginal(treeInfo))
     , setTreeInfo        : (treeInfo) => dispatch(setTreeInfo        (treeInfo))
   };
@@ -100,12 +98,7 @@ class TreeInformationPanel extends React.Component {
       this.source.cancel(OP_NO_LONGER_RELEVANT);
       this.source = CancelToken.source(); // cf. SSE-1589117399
       this.fetchData();
-    } /* else {
-      if (JSON.stringify(this.state.treeDataOriginal) !== JSON.stringify(this.state.treeData))
-        this.props.markTargetAsDirty();
-      else
-        this.props.markTargetAsClean();
-    }*/
+    }
   }
 
 
@@ -121,10 +114,6 @@ class TreeInformationPanel extends React.Component {
     this.props.setTreeInfoOriginal(treeInfo);
   }
 
-  /*
-  dataIsNowSaved = () => {
-    this.setState({treeDataOriginal: this.state.treeData});
-  }*/
 
   fetchData = () => {
     const url = `/feature/${this.props.targetId}/data`;
