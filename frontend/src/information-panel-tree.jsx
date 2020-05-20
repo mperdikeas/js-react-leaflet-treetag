@@ -12,6 +12,8 @@ import {CancelToken} from 'axios';
 
 import {Nav} from 'react-bootstrap';
 
+import L from 'leaflet';
+
 require('./css/information-panel.css');
 import TargetDataPane       from './target-data-pane.jsx';
 import TargetPhotoPane      from './target-photo-pane.jsx';
@@ -39,6 +41,7 @@ import {OP_NO_LONGER_RELEVANT} from './constants/axios-constants.js';
 import {msgTreeDataIsDirty, displayNotificationIfTargetIsDirty} from './common.jsx';
 import {possiblyInsufPrivPanicInAnyCase, isInsufficientPrivilleges} from './util-privilleges.js';
 
+import {GSN, globalGet} from './globalStore.js';
 
 const mapStateToProps = (state) => {
   return {
@@ -191,6 +194,11 @@ class TreeInformationPanel extends React.Component {
     }) // catch
   } // fetchData
 
+
+  targetId2Marker = (targetId) => {
+    return globalGet(GSN.REACT_MAP).id2marker[targetId];
+  }
+  
   handleSubmit = (ev) => {
     ev.preventDefault();
     ev.stopPropagation();
@@ -200,20 +208,28 @@ class TreeInformationPanel extends React.Component {
     // the post cannot be cancelled so we don't bother with a cancel token
     this.setState({serverCallInProgress: SAVING_TREE_DATA});
     this.props.displayModalSavingTreeData();
+    const self = this;
     axiosAuth.post(`/feature/${this.props.targetId}/data`, this.props.treeInfo).then(res => {
+      console.log('in axios;:then');
       this.props.clearModal();
       this.setState({serverCallInProgress: null});
       if (res.data.err != null) {
         console.log(`/feature/${this.props.targetId}/data POST error`);
         assert.fail(res.data.err);
       } else {
-        console.log('API call success');
+        console.log('abc - API call success');
+        const targetId = self.props.targetId;
+        const markerInMainMap = self.targetId2Marker(targetId);
+        const {latitude: lat, longitude: lng} = self.props.treeInfo.coords;
+        markerInMainMap.setLatLng(L.latLng(lat, lng));
+        console.log('abc - updated marker on main map');
         console.log(res.data.t);
         this.props.displayTreeDataHasBeenUpdated(this.props.targetId);
         // this.props.dataIsNowSaved();
         this.props.setTreeInfoOriginal(this.props.treeInfo);
       }
     }).catch( err => {
+      console.log('in axios;:catch');
       this.props.clearModal();
       this.setState({serverCallInProgress: null});
       if (isInsufficientPrivilleges(err)) {

@@ -30,6 +30,9 @@ import {haversineGreatCircleDistance, latitudeToMeters, longitudeToMeters} from 
 const mapStateToProps = (state) => {
   return {
     targetId: state.targetId
+    , markerHasBeenDisplaced: (state.treeInfo.current.coords !== state.treeInfo.original.coords)
+    , originalLatLng: state.treeInfo.original.coords
+    , currentLatLng: state.treeInfo.current.coords
   };
 };
 
@@ -54,18 +57,20 @@ class TargetAdjustmentPane extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = this.initialState();
   }
 
-  initialState = () => {
-    const latlng = this.initialLatLngOfMarker();
-    return {savingTreeData: false, latlng};
-  }
 
   initialLatLngOfMarker = () => {
     const targetId = this.props.targetId;
     const markerInMainMap = this.targetId2Marker(targetId);
-    return markerInMainMap.getLatLng();
+
+    const {lat, lng} = markerInMainMap.getLatLng();
+    const {latitude, longitude} = this.props.originalLatLng;
+    assert.strictEqual(lat, latitude);
+    assert.strictEqual(lng, longitude);
+    
+    return {lat, lng}
+    
   }
 
   componentDidMount = () => {
@@ -123,8 +128,7 @@ class TargetAdjustmentPane extends React.Component {
       const latlngs = [this.initialLatLngOfMarker(), e.target.getLatLng()];
       this.map.removeLayer(this.polyline);
       this.polyline = L.polyline(latlngs, {color: 'red'}).addTo(this.map);
-      this.setState({latlng: e.target.getLatLng()});
-      this.props.setTreeCoords(e.target.getLatLng()); // maybe I should keep reading the current latlng from props.treeInfo.current.coords and remove the local state
+      this.props.setTreeCoords(e.target.getLatLng());
     });
     marker.on('dragstart', (e) => {
       if (this.polyline)
@@ -182,26 +186,24 @@ class TargetAdjustmentPane extends React.Component {
          */
         this.addMarkers();
       });
-      this.setState(this.initialState());
     }
   }
 
-  markerHasBeenDisplaced = () => {
-    return (this.state.latlng !== this.initialLatLngOfMarker());
-  }
 
   revert = () => {
     assert.isOk(this.polyline);
     this.map.removeLayer(this.polyline);
     this.addMovableMarker();
-    this.setState(this.initialState());
     this.props.revertTreeCoords();
   }
 
   render() {
+    console.warn('abc-render');
     const initialLatLng = this.initialLatLngOfMarker();
-    const deltaLat = initialLatLng.lat - this.state.latlng.lat;
-    const deltaLng = initialLatLng.lng - this.state.latlng.lng;
+    console.warn('abc-render - NED');
+    const {latitude: lat, longitude: lng} = this.props.currentLatLng;
+    const deltaLat = initialLatLng.lat - lat;
+    const deltaLng = initialLatLng.lng - lng;
     return (
       <div style={{display:'flex', flexDirection: 'column', justifyContent: 'center'}}>
         <div id='target-adjustment-map' style={{width: '90%', marginLeft: '5%', height: '350px'}}>
@@ -211,17 +213,17 @@ class TargetAdjustmentPane extends React.Component {
           <span>Δy: {longitudeToMeters(deltaLng, initialLatLng.lng).toFixed(3)}m</span>
         </div>
         <div style={{textAlign: 'center'}}>
-Απόσταση: {haversineGreatCircleDistance(initialLatLng.lat, initialLatLng.lng, this.state.latlng.lat, this.state.latlng.lng).toFixed(3)}m
+Απόσταση: {haversineGreatCircleDistance(initialLatLng.lat, initialLatLng.lng, lat, lng).toFixed(3)}m
         </div>
           <ButtonGroup style={{marginTop: '1em'
                              , display: 'flex'
                              , flexDirection: 'row'
                              , justifyContent: 'space-around'}}className="mb-2">
-            <Button disabled={! this.markerHasBeenDisplaced()} style={{flexGrow: 0}} variant="secondary" onClick={this.revert}>
+            <Button disabled={! this.props.markerHasBeenDisplaced} style={{flexGrow: 0}} variant="secondary" onClick={this.revert}>
               Ανάκληση
             </Button>
-            <Button disabled={! this.markerHasBeenDisplaced} style={{flexGrow: 0}} variant="primary" onClick={this.props.handleSubmit}>
-              {this.state.savingTreeData?'Σε εξέλιξη...':'Αποθήκευση'}
+            <Button disabled={! this.props.markerHasBeenDisplaced} style={{flexGrow: 0}} variant="primary" onClick={this.props.handleSubmit}>
+              {this.props.savingTreeData?'Σε εξέλιξη...':'Αποθήκευση'}
             </Button>
           </ButtonGroup>
       </div>

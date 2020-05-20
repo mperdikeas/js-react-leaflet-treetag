@@ -10,6 +10,7 @@ export default (state = {original: null, current: null}, action) => {
     case SET_TREE_INFO_ORIGINAL: {
         const original = JSON.parse(JSON.stringify(action.payload));
         const current  = JSON.parse(JSON.stringify(action.payload));
+        console.log('abc - set tree info original');
         return {original, current};
     }
     case SET_TREE_INFO: {
