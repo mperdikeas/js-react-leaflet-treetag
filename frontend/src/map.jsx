@@ -35,7 +35,6 @@ import {BaseLayersForLayerControl} from './baseLayers.js';
 import {DefaultIcon, TreeIcon}          from './icons.js';
 import rainbow from './rainbow.js';
 
-import {CustomCircleMarker} from './custom-markers.js';
 import wrapContexts from './context/contexts-wrapper.jsx';
 
 import {layerIsEmpty, numOfLayersInLayerGroup} from './leaflet-util.js';
@@ -431,6 +430,11 @@ class Map extends React.Component {
       this.props.toggleTarget(e.target.options.targetId);
     }
   }
+
+  adjustHighlightingMarker = (latlng) => {
+    this.highlightedMarker.marker.setLatLng(latlng);
+  }
+  
 
 
   getInfoOfMarkersInBounds = (bounds, exceptId) => {

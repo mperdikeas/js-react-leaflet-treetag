@@ -227,6 +227,7 @@ class TreeInformationPanel extends React.Component {
         const {latitude: lat, longitude: lng} = self.props.treeInfo.coords;
         const latlng = L.latLng(lat, lng);
         markerInMainMap.setLatLng(latlng);
+        globalGet(GSN.REACT_MAP).adjustHighlightingMarker(latlng);
         console.log('abc - updated marker on main map');
 
         const targAdjPane = globalGet(GSN.TARG_ADJ_PANE);
