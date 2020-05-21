@@ -401,32 +401,58 @@ class Map extends React.Component {
     );
   }
 
+
   clickOnCircleMarker = (e) => {
+
+    function createFuncToPulsateMarker (marker) {
+      let i = 0;
+      return ()=>{
+        const weights = [1,2,3,4,5,4,3,2,1,0,0];
+        i++;
+        marker.setStyle({weight: weights[i % weights.length]});
+        if (i % 10 === 0)
+          console.log('abd - pulse cycle');
+      }
+    }
+
+    /*
+     * returns the target id of the currently highlighted marker or null
+     * if no highlighting marker is currently installed 
+     */
+    const clearCurrentHighlightedMarker = () => {
+      if (this.highlightedMarker) {
+        assert.isNotNull(this.highlightedMarker.interval);
+        assert.isNotNull(this.highlightedMarker.targetId);
+        const rv = this.highlightedMarker.targetId;
+        console.log('abd - clearing interval');
+        clearInterval(this.highlightedMarker.interval);
+        this.highlightedMarker.marker.removeFrom(this.map);
+        this.highlightedMarker = null;
+        return rv;
+      } else {
+        return null;
+      }
+    }
+
     if (!this.displayNotificationIfTargetIsDirty()) {
+      const oldTargetId = clearCurrentHighlightedMarker();
       const installNewHighlightingMarker = (coords, targetId) => {
-        const options = {radius: 20, color: 'black', weight: 5, interactive: false};
+        const options = {radius: 20, color: 'red', weight: 5, interactive: false};
         const marker = L.circleMarker(coords, options);
         this.highlightedMarker = {marker, targetId};
         this.highlightedMarker.marker.addTo(this.map);
         this.highlightedMarker.marker.bringToBack();
+
+
+        const interval = setInterval(createFuncToPulsateMarker(marker), 50);
+        this.highlightedMarker.interval = interval;
         this.map.setView(coords, this.map.getZoom());
       };
       const targetId = e.target.options.targetId;
       const coords = e.target.getLatLng();
 
-
-      
-      if (this.highlightedMarker === null) {
-        installNewHighlightingMarker(coords, targetId);
-      } else {
-        if (this.highlightedMarker.targetId === targetId) {
-          this.highlightedMarker.marker.removeFrom(this.map);
-          this.highlightedMarker = null;
-        } else {
-          this.highlightedMarker.marker.removeFrom(this.map);
-          installNewHighlightingMarker(coords, targetId);
-        }
-      }
+      if (oldTargetId != targetId)
+        installNewHighlightingMarker(coords, targetId);      
       this.props.toggleTarget(e.target.options.targetId);
     }
   }
