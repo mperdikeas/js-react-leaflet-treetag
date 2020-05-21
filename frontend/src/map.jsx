@@ -33,7 +33,6 @@ require('../node_modules/leaflet.markercluster/dist/leaflet.markercluster.js');
 import {exactlyOne, allStrictEqual} from './util.js';
 import {BaseLayersForLayerControl} from './baseLayers.js';
 import {DefaultIcon, TreeIcon}          from './icons.js';
-import rainbow from './rainbow.js';
 
 import wrapContexts from './context/contexts-wrapper.jsx';
 
