@@ -14,18 +14,13 @@ export default (modals = [{modalType: MODAL_LOGIN, modalProps: null}
                 , action) => {
                     switch (action.type) {
                     case DISPLAY_MODAL: {
-                        const modals2 = [...modals];
                         const newModal = {modalType: action.payload.modalType, modalProps: action.payload.modalProps};
-                        modals2.push(newModal);
-                        return modals2;
+                        return [...modals, newModal];
                     }
                     case APP_IS_DONE_LOADING: {
-                        console.log(`yyyyyyyyy modalreducer ${modals.length} modals`);
                         const modals2 = [...modals];
-                        const modalToClose =modals2.pop();
-                        console.log(modalToClose);
+                        const modalToClose = modals2.pop();
                         assert.strictEqual(modalToClose.modalType, MDL_NOTIFICATION_NO_DISMISS);
-                        // this modal has no props
                         return modals2;
                     }
                     case CLEAR_MODAL: {
@@ -33,7 +28,6 @@ export default (modals = [{modalType: MODAL_LOGIN, modalProps: null}
                             console.log(`xxxxxxxxxxxx modalreducer ${modals.length} modals`);
                             const modals2 = [...modals];
                             const modalToClose =modals2.pop();
-                            console.log(modalToClose);
                             if (modalToClose.modalProps) {
                                 if (modalToClose.modalProps.followUpFunction) {
                                     console.log('calling follow up function');

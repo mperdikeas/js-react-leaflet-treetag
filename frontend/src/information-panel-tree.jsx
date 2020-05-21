@@ -253,11 +253,13 @@ class TreeInformationPanel extends React.Component {
             case 'JWT-verif-failed':
               this.props.displayModalLogin( ()=>{this.setState({error: null}); this.handleSubmit();});
               break;
-            default:
+            default: {
+              console.err(err);
               assert.fail(`unexpected condition: code=${code}, msg=${msg}, details=${details}`);
+            }
           }
         } else {
-          console.log(err);
+          console.err(err);
           assert.fail(`unexpected condition: ${JSON.stringify(err)}`);
         }
       }

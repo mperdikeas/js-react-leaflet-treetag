@@ -16,14 +16,11 @@ function findIndexOfToast(toasts, id) {
 export default (toasts = {}, action) => {
     switch (action.type) {
     case ADD_TOAST: {
+        const currentMaxKey = Math.max(-1, ...Object.keys(toasts).map(x=>parseInt(x)));
         const {header, msg} = action.payload;
-        const toasts2 = {...toasts};
-        const currentMaxKey = Math.max(-1, ...Object.keys(toasts2).map(x=>parseInt(x)));
-        toasts2[currentMaxKey+1]={header, msg};
-        return toasts2;
+        return Object.assign({}, toasts, {[currentMaxKey+1]: action.payload});
     }
     case DISMISS_TOAST: {
-        console.log(`type: ${action.type}, id: ${action.payload.id}`);
         const {id} = action.payload;
         const toasts2 = {...toasts};
         delete toasts2[id];
