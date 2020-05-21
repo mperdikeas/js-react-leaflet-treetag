@@ -200,8 +200,12 @@ class TreeInformationPanel extends React.Component {
   }
   
   handleSubmit = (ev) => {
-    ev.preventDefault();
-    ev.stopPropagation();
+    if (ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+    } else
+    console.warn('weird ev in handleSubmit is null');
+    
     console.log('handle submit');
     console.log(this.props.treeInfo);
     console.log(JSON.stringify(this.props.treeInfo));    
@@ -221,8 +225,12 @@ class TreeInformationPanel extends React.Component {
         const targetId = self.props.targetId;
         const markerInMainMap = self.targetId2Marker(targetId);
         const {latitude: lat, longitude: lng} = self.props.treeInfo.coords;
-        markerInMainMap.setLatLng(L.latLng(lat, lng));
+        const latlng = L.latLng(lat, lng);
+        markerInMainMap.setLatLng(latlng);
         console.log('abc - updated marker on main map');
+
+        const targAdjPane = globalGet(GSN.TARG_ADJ_PANE);
+        targAdjPane.adjustMovableMarker(latlng);
         console.log(res.data.t);
         this.props.displayTreeDataHasBeenUpdated(this.props.targetId);
         // this.props.dataIsNowSaved();

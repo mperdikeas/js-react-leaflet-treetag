@@ -21,16 +21,18 @@ import wrapContexts from './context/contexts-wrapper.jsx';
 
 import {ATHENS, DEFAULT_ZOOM} from './constants/map-constants.js';
 
-import {GSN, globalGet} from './globalStore.js';
+import {GSN, TARG_ADJ_PANE, globalGet, globalSet} from './globalStore.js';
 
 import {addPopup} from './leaflet-util.js';
 
 import {haversineGreatCircleDistance, latitudeToMeters, longitudeToMeters} from './geodesy.js';
 
 const mapStateToProps = (state) => {
+  const markerHasBeenDisplaced = (JSON.stringify(state.treeInfo.current.coords) !== JSON.stringify(state.treeInfo.original.coords));
+  console.log(`inside TargetAdjustmentPane::mapStateToProps markerHasBeenDisplaced = ${markerHasBeenDisplaced}`);
   return {
     targetId: state.targetId
-    , markerHasBeenDisplaced: (state.treeInfo.current.coords !== state.treeInfo.original.coords)
+    , markerHasBeenDisplaced
     , originalLatLng: state.treeInfo.original.coords
     , currentLatLng: state.treeInfo.current.coords
   };
@@ -57,6 +59,7 @@ class TargetAdjustmentPane extends React.Component {
 
   constructor(props) {
     super(props);
+    globalSet(GSN.TARG_ADJ_PANE, this);
   }
 
 
@@ -101,15 +104,39 @@ class TargetAdjustmentPane extends React.Component {
     });
   }
 
-  clearMovableMarker = () => {
+
+  /*
+   * The movable marker that marks the spot of the tree is
+   * the only layer in the target adjustment pane that's of
+   * type 'L.marker'
+   */
+  getMovableMarker = (tolerateNoneFound) => {
     let i = 0;
+    let rv = null;
     this.map.eachLayer( (layer) => {
       if (layer instanceof L.Marker) {
-        this.map.removeLayer(layer);
+        rv = layer;
         i ++;
       }
     });
-    assert.isAtMost(i, 1);
+    if (tolerateNoneFound)
+      assert.isAtMost(i, 1);
+    else
+      assert.strictEqual(i, 1);
+    return rv;
+  }
+
+  clearMovableMarker = () => {
+    const marker = this.getMovableMarker(true);
+    if (marker !== null)
+        this.map.removeLayer(marker);
+  }
+
+  adjustMovableMarker = (latlng) => {
+    const marker = this.getMovableMarker(false);
+    marker.setLatLng(latlng);
+    if (this.polyline)
+      this.map.removeLayer(this.polyline);
   }
 
   addMovableMarker = () => {
