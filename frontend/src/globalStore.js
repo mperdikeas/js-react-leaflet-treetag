@@ -2,21 +2,17 @@ const assert = require('chai').assert;
 const theStore = {};
 
 export function globalSet(name, value) {
-    assert.isDefined(name);
-    assert.isNotNull(name);    
-    assert.isDefined(null);
-    assert.isNotNull(undefined);        
+    assert.isDefined(name, 'name is undefined in globalSet');
+    assert.isNotNull(name, 'name is null in globalSet');
     theStore[name] = value;
 };
 
 export function globalGet(name, expectFound=true) {
-    assert.isDefined(name);
-    assert.isNotNull(name);    
-    assert.isDefined(null);
-    assert.isNotNull(undefined);
+    assert.isDefined(name, 'name is undefined in globalGet');
+    assert.isNotNull(name, 'name is null in globalGet');
     const rv = theStore[name];
     if (expectFound) {
-        assert.isDefined(rv);
+        assert.isDefined(rv, `unable to find [${name}] in globalGet when expecting to find it`);
     }
     return rv;
 }

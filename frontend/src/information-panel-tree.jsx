@@ -228,10 +228,12 @@ class TreeInformationPanel extends React.Component {
         const latlng = L.latLng(lat, lng);
         markerInMainMap.setLatLng(latlng);
         globalGet(GSN.REACT_MAP).adjustHighlightingMarker(latlng);
-        console.log('abc - updated marker on main map');
 
-        const targAdjPane = globalGet(GSN.TARG_ADJ_PANE);
-        targAdjPane.adjustMovableMarker(latlng);
+
+        const targAdjPane = globalGet(GSN.TARG_ADJ_PANE, false);
+        if (targAdjPane) {
+          targAdjPane.adjustMovableMarker(latlng);
+        }
         console.log(res.data.t);
         this.props.displayTreeDataHasBeenUpdated(this.props.targetId);
         // this.props.dataIsNowSaved();
@@ -254,12 +256,13 @@ class TreeInformationPanel extends React.Component {
               this.props.displayModalLogin( ()=>{this.setState({error: null}); this.handleSubmit();});
               break;
             default: {
-              console.err(err);
+              console.error(err);
               assert.fail(`unexpected condition: code=${code}, msg=${msg}, details=${details}`);
             }
           }
         } else {
-          console.err(err);
+          console.trace();
+          console.error(err);
           assert.fail(`unexpected condition: ${JSON.stringify(err)}`);
         }
       }
