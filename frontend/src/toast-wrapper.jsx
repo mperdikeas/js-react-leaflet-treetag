@@ -19,18 +19,6 @@ require('./css/toast.css');
 
 import time_from_now from './time-from-now.js';
 
-const mapStateToProps = (state) => {
-  return {
-    toasts: state.toasts
-
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    dismissToast: (id)=>dispatch(dismissToast(id))
-  };
-};
 
 export default class ToastWrapper extends React.Component {
 
