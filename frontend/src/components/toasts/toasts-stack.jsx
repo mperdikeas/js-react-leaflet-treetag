@@ -49,27 +49,9 @@ class ToastsStack extends React.Component {
   }
 
 
-  componentDidUpdate(prevProps, prevState) {
-    // if a new state was added with show:false set it to true (to make it appear)
-    const prevIndices = Object.keys(prevState.idToShow);
-    const newIndices =  Object.keys(this.state.idToShow);
-    if (prevIndices.length < newIndices.length) {
-      if (isSubsetOf(Object.keys(prevState.idToShow), Object.keys(this.state.idToShow))) {
-        const idToShow2 = {...this.state.idToShow};
-        let n = 0;
-        Object.keys(this.state.idToShow).forEach( (idx) => {
-          if ((this.state.idToShow[idx]===false) && (prevState.idToShow[idx]===undefined)) {
-            idToShow2[idx]=true;
-            n ++;
-          }
-        });
-        // maybe I ought to be more lenient and relax the following to n>=1
-        assert.isTrue(n===1, `unexpected number of updates: ${n}`);
-        this.setState({idToShow:idToShow2});
-      } else {
-        assert.fail(`unexpected situation prevIndices=${JSON.stringify(prevIndices)}, newIndices=${JSON.stringify(newIndices)}`);
-      }
-   }
+  makeToastVisible = (id) => {
+    assert.isFalse(this.state.idToShow[id]);
+    this.setState({idToShow: Object.assign({}, this.state.idToShow, {[id]: true})});
   }
 
   dismissToast = (id)=>{
@@ -112,16 +94,19 @@ class ToastsStack extends React.Component {
                              , width: this.props.geometryContext.geometry.toastDiv.width
                              , zIndex: 99999};
 
+    console.log(`abg -rendering toasts stack`);
     const toastsDiv = Object.keys(this.props.toasts).map( (key) => {
       const {header, msg} = this.props.toasts[key];
+      console.log(`abg toast ${key} has show set to ${this.state.idToShow[key]}`);
       return (
         <Toast
             key = {key}
             key2 = {key}
-        show={this.state.idToShow[key]}
-        dismissToast={this.dismissToast}
-        header={header}
-        msg={msg}
+            show={this.state.idToShow[key]}
+            makeToastVisible={this.makeToastVisible}
+            dismissToast={this.dismissToast}
+            header={header}
+            msg={msg}
         />
       );
     });

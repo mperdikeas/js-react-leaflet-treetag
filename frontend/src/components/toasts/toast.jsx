@@ -23,6 +23,7 @@ export default class Toast extends React.PureComponent {
   componentDidMount = () => {
     this.timeMounted = new Date();
     this.ageUpdateInterval = setInterval(this.updateTime, 5000);
+    window.setTimeout(this.makeToastVisible, 0);
   }
 
   updateTime = ()=>{
@@ -33,8 +34,12 @@ export default class Toast extends React.PureComponent {
     clearInterval(this.ageUpdateInterval);
   }
 
+  makeToastVisible = () => {
+    this.props.makeToastVisible(this.props.key2);
+  }
+
   dismissToast = () => {
-    return this.props.dismissToast(this.props.key2);
+    this.props.dismissToast(this.props.key2);
   }
 
   render() {
