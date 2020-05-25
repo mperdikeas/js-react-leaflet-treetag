@@ -99,27 +99,6 @@ class ModalLogin extends React.Component {
 
 
   render() {
-    const logErrMsg = (()=>{
-      const msg = this.state.logErrMsg
-      if (msg)
-        return <div style={{color: 'red'}}>{msg}</div>;
-      else
-        return null;
-    })();
-    const {installationInput, nameInput, passInput} = (()=>{
-      const useHardcodedValues = true;
-      if (useHardcodedValues)
-        return {installationInput: <><input ref={this.inputInstallationRef} type='text' id='installation-input' value='a1'/><br/></>
-          , nameInput: <><input ref={this.inputUsernameRef} type='text' id='login-name-input' value='admin'/><br/></>
-              , passInput: <><input ref={this.inputPasswordRef} type='text' id='login-pass-input' value='pass'/><br/></>};
-      else return {
-        installationInput: <><input ref={this.inputInstallationRef} type='text' id='installation-input' /><br/></>
-        , nameInput: <><input ref={this.inputUsernameRef} type='text' id='login-name-input' /><br/></>
-                 , passInput: <><input ref={this.inputPasswordRef} type='text' id='login-pass-input' /><br/></>};
-      
-
-    })();
-
     return (
       <>
       <dialog style={this.props.style} id='dialog' ref={this.ref}>
