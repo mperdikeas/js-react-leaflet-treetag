@@ -9,7 +9,9 @@ export default (toasts = {}, action) => {
     case ADD_TOAST: {
         const currentMaxKey = Math.max(-1, ...Object.keys(toasts).map(x=>parseInt(x)));
         const {header, msg} = action.payload;
-        return Object.assign({}, toasts, {[currentMaxKey+1]: action.payload});
+        assert.isOk(header);
+        assert.isOk(msg);
+        return Object.assign({}, toasts, {[currentMaxKey+1]: {header, msg}});
     }
     case DISMISS_TOAST: {
         const {id} = action.payload;
