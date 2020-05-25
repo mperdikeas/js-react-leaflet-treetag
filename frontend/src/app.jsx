@@ -81,11 +81,11 @@ class App extends React.Component {
 
 
     return (
-      <ToastsStack>
       <ModalRoot>
-      {gui}
+        <ToastsStack>
+          {gui}
+        </ToastsStack>
       </ModalRoot>
-      </ToastsStack>
     );
   }
 }
