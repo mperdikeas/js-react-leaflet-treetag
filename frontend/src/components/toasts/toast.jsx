@@ -13,7 +13,7 @@ require('./toast.css');
 import time_from_now from './../../util/time-from-now.js';
 
 
-export default class Toast extends React.Component {
+export default class Toast extends React.PureComponent {
 
   constructor(props) {
     super(props);
@@ -33,6 +33,9 @@ export default class Toast extends React.Component {
     clearInterval(this.ageUpdateInterval);
   }
 
+  dismissToast = () => {
+    return this.props.dismissToast(this.props.key2);
+  }
 
   render() {
     const toastStyle={
@@ -42,7 +45,7 @@ export default class Toast extends React.Component {
     return (
       <ToastBootSTRP style={toastStyle}
              show={this.props.show}
-             onClose={this.props.onClose}
+             onClose={this.dismissToast}
              animation={true}
              delay={5*60*1000}
              autohide={true}>

@@ -116,9 +116,10 @@ class ToastsStack extends React.Component {
       const {header, msg} = this.props.toasts[key];
       return (
         <Toast
-        key = {key}
+            key = {key}
+            key2 = {key}
         show={this.state.idToShow[key]}
-        onClose={()=>this.dismissToast(key)}
+        dismissToast={this.dismissToast}
         header={header}
         msg={msg}
         />
