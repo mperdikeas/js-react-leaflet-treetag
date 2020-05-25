@@ -3,24 +3,17 @@ var      cx = require('classnames');
 
 const assert = require('chai').assert;
 
-import {GeometryContext} from './context/geometry-context.jsx';
 
-import wrapContexts from './context/contexts-wrapper.jsx';
-
-// redux
-import {  connect   }              from 'react-redux';
-import { dismissToast } from './actions/index.js';
-
-import {Toast} from 'react-bootstrap';
+import {Toast as ToastBootSTRP} from 'react-bootstrap';
 
 import { isSubsetOf } from 'is-subset-of';
 
-require('./css/toast.css');
+require('./toast.css');
 
-import time_from_now from './time-from-now.js';
+import time_from_now from './../../util/time-from-now.js';
 
 
-export default class ToastWrapper extends React.Component {
+export default class Toast extends React.Component {
 
   constructor(props) {
     super(props);
@@ -47,18 +40,18 @@ export default class ToastWrapper extends React.Component {
     };
 
     return (
-      <Toast style={toastStyle}
+      <ToastBootSTRP style={toastStyle}
              show={this.props.show}
              onClose={this.props.onClose}
              animation={true}
              delay={5*60*1000}
              autohide={true}>
-        <Toast.Header>
+        <ToastBootSTRP.Header>
           <strong className="mr-auto">{this.props.header}</strong>
           <small ref={this.ageRef}>just now</small>
-        </Toast.Header>
-        <Toast.Body>{this.props.msg}</Toast.Body>
-      </Toast>
+        </ToastBootSTRP.Header>
+        <ToastBootSTRP.Body>{this.props.msg}</ToastBootSTRP.Body>
+      </ToastBootSTRP>
     );
   }
 }

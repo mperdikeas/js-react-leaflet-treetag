@@ -13,7 +13,7 @@ const loading  = require('./resources/loading.gif');
 // require('../resources/down-arrow.png');
 import DownArrow from './resources/down-arrow.png';
 // const download = url('../resources/
-import {sca_fake_return} from './util.js';
+import {sca_fake_return} from './util/util.js';
 
 
 

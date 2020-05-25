@@ -15,7 +15,7 @@ import {DefaultIcon, TreeIcon}       from './icons.js';
 import {CustomCircleMarker}          from './custom-markers.js';
 import rainbow                       from './rainbow.js';
 import {sca_fake_return
-        , uniqValues}                from './util.js';
+        , uniqValues}                from './util/util.js';
 import {axiosAuth} from './axios-setup.js';
 import {possiblyInsufPrivPanicInAnyCase} from './util-privilleges.js';
 

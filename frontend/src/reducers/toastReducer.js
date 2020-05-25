@@ -1,17 +1,8 @@
 const assert = require('chai').assert;
 
 import {ADD_TOAST, DISMISS_TOAST} from '../constants/action-types.js';
-import {sca_fake_return} from '../util.js';
 
 
-function findIndexOfToast(toasts, id) {
-    for (let i = 0 ; i < toasts.length ; i++) {
-        if (toasts[i].id===id)
-            return i;
-    }
-    assert.fail(`unable to find toast with id=[${id}]`);
-    return sca_fake_return();
-}
 
 export default (toasts = {}, action) => {
     switch (action.type) {

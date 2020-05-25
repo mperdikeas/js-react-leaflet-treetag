@@ -7,7 +7,7 @@ import Map                                     from './map.jsx';
 import TreeInformationPanel                    from './information-panel-tree.jsx';
 import PointCoordinates                        from './point-coordinates.jsx';
 import Toolbox                                 from './toolbox.jsx';
-import ToastLayer                              from './toast-layer.jsx';
+import ToastsStack                             from './components/toasts/toasts-stack.jsx';
 import ModalRoot                               from './modal-root.jsx';
 import UserControl                             from './user-control.jsx';
 
@@ -81,11 +81,11 @@ class App extends React.Component {
 
 
     return (
-      <ToastLayer>
+      <ToastsStack>
       <ModalRoot>
       {gui}
       </ModalRoot>
-      </ToastLayer>
+      </ToastsStack>
     );
   }
 }

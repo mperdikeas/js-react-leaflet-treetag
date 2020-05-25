@@ -30,7 +30,7 @@ import keycode from 'keycode';
 require('../node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css');
 require('../node_modules/leaflet.markercluster/dist/leaflet.markercluster.js');
 
-import {exactlyOne, allStrictEqual} from './util.js';
+import {exactlyOne, allStrictEqual} from './util/util.js';
 import {BaseLayersForLayerControl} from './baseLayers.js';
 import {DefaultIcon, TreeIcon}          from './icons.js';
 

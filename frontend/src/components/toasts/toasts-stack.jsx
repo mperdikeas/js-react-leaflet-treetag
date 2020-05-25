@@ -3,21 +3,20 @@ var      cx = require('classnames');
 
 const assert = require('chai').assert;
 
-import {GeometryContext} from './context/geometry-context.jsx';
+import {GeometryContext} from '../../context/geometry-context.jsx';
 
-import wrapContexts from './context/contexts-wrapper.jsx';
+import wrapContexts from '../../context/contexts-wrapper.jsx';
 
 // redux
 import {  connect   }              from 'react-redux';
-import { dismissToast } from './actions/index.js';
+import { dismissToast } from '../../actions/index.js';
 
-import {Toast} from 'react-bootstrap';
 
-import ToastWrapper from './toast-wrapper.jsx';
+import Toast from './toast.jsx';
 
 import { isSubsetOf } from 'is-subset-of';
 
-require('./css/toast.css');
+require('./toast.css');
 
 const mapStateToProps = (state) => {
   return {
@@ -33,7 +32,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 
-class ToastLayer extends React.Component {
+class ToastsStack extends React.Component {
 
   constructor(props) {
     super(props);
@@ -115,9 +114,8 @@ class ToastLayer extends React.Component {
 
     const toastsDiv = Object.keys(this.props.toasts).map( (key) => {
       const {header, msg} = this.props.toasts[key];
-      console.log(`toast-layer::render() key is ${key}, show is: ${this.state.idToShow[key]}`);
       return (
-        <ToastWrapper
+        <Toast
         key = {key}
         show={this.state.idToShow[key]}
         onClose={()=>this.dismissToast(key)}
@@ -137,6 +135,6 @@ class ToastLayer extends React.Component {
 
   }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(ToastLayer));
+export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(ToastsStack));
 
 
