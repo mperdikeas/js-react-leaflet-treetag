@@ -54,7 +54,8 @@ export function addToast(header, msg) {
     return {type: ADD_TOAST, payload: {header, msg}};
 }
 
-export function dismissToast(id, msg) {
+export function dismissToast(id) {
+    console.log(`abg - dismissToast(${id}`);
     return {type: DISMISS_TOAST, payload: {id}};
 }
 
