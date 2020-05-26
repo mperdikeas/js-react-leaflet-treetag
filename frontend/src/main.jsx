@@ -8,6 +8,9 @@ import App      from './app.jsx';
 
 import 'reset-css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+import { BrowserRouter } from 'react-router-dom';
+
 import './css/style.css';
 
 import LoginContextProvider              from './context/login-context.jsx'
@@ -35,7 +38,9 @@ function doRender() {
       <LoginContextProvider>
         <TreeConfigurationContextProvider>
           <GeometryContextProvider>
-            <App/>
+            <BrowserRouter>
+              <App/>
+            </BrowserRouter>              
           </GeometryContextProvider>
         </TreeConfigurationContextProvider>
       </LoginContextProvider>

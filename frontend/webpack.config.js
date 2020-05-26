@@ -21,7 +21,8 @@ const config = {
     mode: mode, // https://stackoverflow.com/a/51163094/274677
     devtool: 'source-map',
     devServer: {
-        contentBase: './dist'
+        contentBase: './dist',
+        historyApiFallback: true // https://stackoverflow.com/a/44810474/274677
     },
     entry: './src/main.jsx',
     output: {
