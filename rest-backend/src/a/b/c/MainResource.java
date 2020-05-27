@@ -272,6 +272,32 @@ public class MainResource {
         }
     }
 
+
+    @Path("/feature/{featureId}/photos")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postFeaturePhoto(@Context javax.ws.rs.core.Application _app
+                                    , @Context final HttpServletRequest httpServletRequest
+                                    , @PathParam("featureId") final int featureId
+                                    , final String featureData
+                                    ) {
+        try {
+            final JaxRsApplication app = (JaxRsApplication) _app;
+            logger.info(String.format("postFeaturePhoto(%d) ~*~ remote address: [%s]"
+                                      , featureId
+                                      , httpServletRequest.getRemoteAddr()));
+            final PhotoData photoData = Globals.gson.fromJson(featureData, PhotoData.class);
+            final int photoIndx = app.dbFacade.postPhoto(featureId, photoData);
+            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(photoIndx))).build();
+        } catch (Throwable t) {
+            logger.error(String.format("Problem when calling postFeaturePhoto(%d) from remote address [%s]"
+                                       , featureId
+                                       , httpServletRequest.getRemoteAddr())
+                         , t);
+            return ResourceUtil.softFailureResponse(t);
+        }
+    }
+    
     @Path("/feature/{featureId}/photos/elem/{photoIndx}")
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)

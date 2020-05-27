@@ -45,8 +45,17 @@ curl -k https://127.0.0.1:8445/tree-cadaster-backend/jax-rs/main/feature/42/phot
 echo
 echo
 echo
-echo 'specific PHOTO FOR SINGLE TREE - 42 is the tree id, 0 is the photo num'
+echo 'GET specific PHOTO FOR SINGLE TREE - 42 is the tree id, 0 is the photo num'
 echo '----------------------------------------------------------------------'
-curl -k https://127.0.0.1:8445/tree-cadaster-backend/jax-rs/main/feature/42/photos/elem/0 -H "Authorization: Bearer ${accessToken}"
+curl -k https://127.0.0.1:8445/tree-cadaster-backend/jax-rs/main/feature/42/photos/elem/0 -H "Authorization: Bearer ${accessToken}" -o photo-from-server.json
+
+echo
+echo
+echo
+echo 'POST PHOTO to TREE - 42 is the tree id (returns the index of the newly posted photo)'
+echo '------------------------------------------------------------------------------------'
+curl -vX POST -k https://127.0.0.1:8445/tree-cadaster-backend/jax-rs/main/feature/42/photos -H "Authorization: Bearer ${accessToken}" -d @photo-to-server.json --header "Content-Type: application/json"
+
+
 
 

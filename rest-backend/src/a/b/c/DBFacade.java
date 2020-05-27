@@ -31,14 +31,14 @@ public class DBFacade implements IDBFacade {
 
     private final Map<String, UserInfo> users;
     private final Map<Integer, TreeInfo> trees;
-    private final Map<Integer, Map<Integer, PhotoData>> tree2photo;
+    private final Map<Integer, Map<Integer, PhotoData>> tree2photos;
     private final Random r;
     
     public DBFacade() {
         this.users = new LinkedHashMap<String, UserInfo>();
         users.put("admin", new UserInfo("pass", "mperdikeas@gmail.com"));
         this.trees = new LinkedHashMap<>();
-        this.tree2photo = new LinkedHashMap<>();
+        this.tree2photos = new LinkedHashMap<>();
         this.r = new Random(0);
         final int NUM_OF_TREES = 10000;
         
@@ -77,7 +77,7 @@ public class DBFacade implements IDBFacade {
             for (int j = 0; j < numOfPhotos; j++) {
                 Assert.assertNull(photosForThisTree.put(j, allPhotos.get(r.nextInt(30000) % allPhotos.size())));
             }
-            Assert.assertNull(tree2photo.put(i, photosForThisTree));
+            Assert.assertNull(tree2photos.put(i, photosForThisTree));
         } // for (int i = 0;
 
     }
@@ -197,20 +197,31 @@ public class DBFacade implements IDBFacade {
 
     @Override
     public int getNumOfPhotos(int treeId) {
-        return tree2photo.get(treeId).size();
+        return tree2photos.get(treeId).size();
     }
 
     @Override
     public PhotoData getPhoto(int treeId, int photoIdx) {
-        return tree2photo.get(treeId).get(photoIdx);
+        return tree2photos.get(treeId).get(photoIdx);
+    }
+
+    @Override
+    public int postPhoto(int treeId, PhotoData photoData) {
+        final Map<Integer, PhotoData> photos = tree2photos.get(treeId);
+        if (photos==null)
+            tree2photos.put(treeId, new LinkedHashMap<>());
+        final int nextKey = photos.keySet().isEmpty()?0:(Collections.max(photos.keySet())+1);
+        Assert.assertNull(photos.put(nextKey, photoData));
+        Assert.assertNotNull(tree2photos.put(treeId, photos));
+        return nextKey;
     }
 
     @Override
     public boolean deletePhoto(int treeId, int photoIdx) {
-        final Map<Integer, PhotoData> treePhotos = this.tree2photo.get(treeId);
+        final Map<Integer, PhotoData> treePhotos = this.tree2photos.get(treeId);
         final PhotoData photoData = treePhotos.remove(photoIdx);
         final Map<Integer, PhotoData> treePhotosShifted = shiftToFillGaps(treePhotos);
-        Assert.assertNotNull(this.tree2photo.put(treeId, treePhotosShifted));
+        Assert.assertNotNull(this.tree2photos.put(treeId, treePhotosShifted));
         return photoData != null;
     }
 

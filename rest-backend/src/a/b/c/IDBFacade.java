@@ -17,6 +17,7 @@ public interface IDBFacade {
     boolean setTreeInfo(int treeId, TreeInfo treeInfo);
     int getNumOfPhotos(int treeId);
     PhotoData getPhoto(int treeId, int photoIdx);
+    int postPhoto(int treeId, PhotoData photoData);
     boolean deletePhoto(int treeId, int photoIdx);
     List<BasicTreeInfo> getTrees(String installation);
 
