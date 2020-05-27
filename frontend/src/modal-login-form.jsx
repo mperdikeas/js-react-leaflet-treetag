@@ -31,10 +31,6 @@ class LoginForm extends React.Component {
     this.inputInstallationRef = React.createRef();
     this.inputUsernameRef     = React.createRef();
     this.inputPasswordRef     = React.createRef();
-
-    this.state = {
-      logErrMsg: null
-    };    
   }
 
 

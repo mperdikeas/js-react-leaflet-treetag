@@ -38,10 +38,6 @@ class ModalLogin extends React.Component {
   constructor(props) {
     super(props);
     this.ref = React.createRef();
-
-    this.state = {
-      logErrMsg: null
-    };    
   }
 
   componentDidMount() {
@@ -86,7 +82,8 @@ class ModalLogin extends React.Component {
           this.props.loginContext.updateLogin(username);
         } else {
           console.log('login was unsuccessful');
-          this.setState({logErrMsg: res.data.t.loginFailureReason});
+          if (false) // TODO: I should be logging these messages on a message / activity tab
+            this.setState({logErrMsg: res.data.t.loginFailureReason});
         }
       }
     }).catch( err => {
