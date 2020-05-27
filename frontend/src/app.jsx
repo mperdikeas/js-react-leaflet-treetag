@@ -22,9 +22,10 @@ export default function App() {
   return (
     <main>
     <Switch>
-      <PrivateRoute path='/main'>
+ {/*     <PrivateRoute path='/main'> 
         <MainMapContainer/>
-      </PrivateRoute>
+     </PrivateRoute> */}
+      <Route path='/main' component={MainMapContainer}/>
       <Route path='/about' component={About}/>
       <Route path='/login' component={Login}/>
       <Route path='/' render={()=><Redirect to={{pathname:'/main'}}/>}/>

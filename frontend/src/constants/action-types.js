@@ -18,3 +18,4 @@ export const REVERT_TREE_COORDS                      = "REVERT_TREE_COORDS";
 
 
 
+export const LOGIN                                   = "LOGIN";

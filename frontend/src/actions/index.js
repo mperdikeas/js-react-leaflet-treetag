@@ -14,6 +14,7 @@ import {APP_IS_DONE_LOADING
         , SET_TREE_COORDS_ORIGINAL
         , SET_TREE_COORDS
         , REVERT_TREE_COORDS
+        , LOGIN
        } from '../constants/action-types.js';
 
 import {isValidModalType} from '../constants/modal-types.js';
@@ -83,3 +84,7 @@ export function setTreeCoords(coords) {
 export function revertTreeCoords() {
     return {type: REVERT_TREE_COORDS, payload: null};
 }
+
+export {default as login} from './login.js';
+
+

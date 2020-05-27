@@ -11,14 +11,17 @@ import {axiosAuth} from './axios-setup.js';
 const LinkEventKeys = {FORGOT_USERNAME: 'forgot-username'
                      , FORGOT_PASSWORD: 'forgot-password'};
 
-import {displayModal} from './actions/index.js';
+import {displayModal, login} from './actions/index.js';
 
 import {connect} from 'react-redux';
+
+import wrapContexts from './context/contexts-wrapper.jsx';
 
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    displayUsernameReminderModal: () => dispatch(displayModal(MDL_USERNAME_REMINDER))
+    login: (updateLogin, installation, username, password)=>dispatch(login(updateLogin, installation, username, password))
+    , displayUsernameReminderModal: () => dispatch(displayModal(MDL_USERNAME_REMINDER))
     };
   }
 
@@ -41,7 +44,8 @@ class LoginForm extends React.Component {
     const installation = this.inputInstallationRef.current.value;
     const username     = this.inputUsernameRef.current.value;
     const password     = this.inputPasswordRef.current.value;
-    this.props.doLogin(installation, username, password);
+    //    this.props.doLogin(installation, username, password);
+    this.props.login(this.props.loginContext.updateLogin, installation, username, password);
   };
 
   onSelect = (eventKey)=>{
@@ -120,4 +124,5 @@ class LoginForm extends React.Component {
 
 } // class
 
-export default connect(null, mapDispatchToProps)(LoginForm);
+// TODO: only wrap the necessary context - loginContext in this case
+export default connect(null, mapDispatchToProps)(wrapContexts(LoginForm));
