@@ -3,7 +3,7 @@ var      cx = require('classnames');
 
 const assert = require('chai').assert;
 
-require('./toolbox.css');
+//require('./toolbox.css');
 
 import saveWorkspaceToDisk      from './resources/save-workspace-to-disk-32.png';
 import uploadLayerToCloud       from './resources/upload-layer-to-cloud-32.png';
@@ -143,34 +143,22 @@ class Toolbox extends React.Component {
   }
 
   render = () => {
-    const tools = [{icon:saveWorkspaceToDisk , mode: null, f: this.saveWorkspaceToDisk}
-                 , {icon:uploadLayerToCloud , mode: null, f: this.chooseUploadLayerToCloud}
-                 , {icon: insertGeoJSONToWorkspace, mode: null, f: this.insertGeoJSONToWorkspace}
-                 , {icon:selectTree, mode: null, f: this.selectTree}
-                 , {icon:query, mode: null, f: this.query}
-                 , {icon:centerOnTarget, mode: null, f: this.centerOnTarget}
+    const tools = [{icon:saveWorkspaceToDisk , f: this.saveWorkspaceToDisk}
+                 , {icon:uploadLayerToCloud ,  f: this.chooseUploadLayerToCloud}
+                 , {icon: insertGeoJSONToWorkspace, f: this.insertGeoJSONToWorkspace}
+                 , {icon:selectTree, f: this.selectTree}
+                 , {icon:query, f: this.query}
+                 , {icon:centerOnTarget, f: this.centerOnTarget}
     ];
     
-    const style = {display: 'block'
-                 , margin: 'auto'
-                 , width: 40
-                 , boxSizing: 'border-box'};
-    const styleFirstIcon       = Object.assign({}, style, {marginTop: '100px'});
-    const styleSubsequentIcons = Object.assign({}, style, {marginTop: '10px'});
 
-    const self = this;
     const elems = tools.map( (el, idx) => {
-      const applicableStyle1 = (idx===0)?styleFirstIcon:styleSubsequentIcons;
-      const applicableStyle2 = Object.assign({}
-                                           , applicableStyle1
-                                           , (el.mode===self.props.mode)?{border: '3px solid red'}:{});
-      return (
-        <div key={idx} className='col-12'>
-          <a href='/' onClick={el.f}>
-            <img src={el.icon} style={applicableStyle2}/>
-          </a>
-        </div>
-      );
+      return (<ToolIcon
+                 key = {idx}
+                 isFirst = {idx===0}
+                 onClick={el.f}
+                 src={el.icon}
+             />);
     });
 
     return (
@@ -180,6 +168,45 @@ class Toolbox extends React.Component {
     );
   }
 }
+
+class ToolIcon extends React.PureComponent {
+
+
+  constructor(props) {
+    super(props);
+    this.state = {hover: false};
+  }
+
+  baseStyle = () => {
+    const style = {display: 'block'
+                 , margin: 'auto'
+                 , width: 40
+                 , boxSizing: 'border-box'};
+    const styleFirstIcon   = Object.assign({}, style, {marginTop: '100px'});
+    const styleSubseqIcons = Object.assign({}, style, {marginTop: '10px'});
+    return this.props.isFirst?styleFirstIcon:styleSubseqIcons
+  }
+
+  toggleHover = () => {
+    this.setState({hover: !this.state.hover});
+  }
+
+  render = () => {
+    const hoverStyle = {border: '3px dotted black'};
+    const style = Object.assign(this.baseStyle(), this.state.hover?hoverStyle:{});
+    return (
+    <div className='col-12'>
+      <a href='/' onClick={this.props.onClick}>
+        <img src={this.props.src}
+             style={style}
+             onMouseEnter={this.toggleHover}
+             onMouseLeave={this.toggleHover}/>
+      </a>
+    </div>
+    );
+  }
+}
+  
 
 
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(Toolbox);
