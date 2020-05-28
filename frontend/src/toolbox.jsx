@@ -164,26 +164,13 @@ class Toolbox extends React.Component {
       const applicableStyle2 = Object.assign({}
                                            , applicableStyle1
                                            , (el.mode===self.props.mode)?{border: '3px solid red'}:{});
-      const linkedVersion = (
+      return (
         <div key={idx} className='col-12'>
           <a href='/' onClick={el.f}>
             <img src={el.icon} style={applicableStyle2}/>
           </a>
         </div>
       );
-      const unlinkedVersion = (
-        <div key={idx} className='col-12'>
-          <img src={el.icon} style={Object.assign({}, applicableStyle2, {opacity: 0.2})}/>
-        </div>
-      );
-      if (this.props.geometryUnderDefinition) {
-        if (el.mode===self.props.mode)
-          return linkedVersion;
-        else
-          return unlinkedVersion;
-      } else {
-        return linkedVersion;
-      }
     });
 
     return (
