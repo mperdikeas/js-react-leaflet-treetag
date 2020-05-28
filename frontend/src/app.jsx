@@ -33,6 +33,7 @@ export default function App() {
       {protectedMap}
       <Route path='/main' component={MainMapContainer}/>
       <Route path='/about' component={About}/>
+      {/* it is very likely that the below method is fully equivalent: */}
       {/*        <Route path='/login' component={LoginPage}/> */}
       <Route path='/login'>
         <LoginPage/>
