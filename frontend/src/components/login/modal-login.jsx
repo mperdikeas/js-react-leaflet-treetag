@@ -5,24 +5,12 @@ const assert = require('chai').assert;
 
 // redux
 import {  connect   }     from 'react-redux';
-import { clearModal }     from '../../actions/index.js';
 import {storeAccessToken} from '../../access-token-util.js';
 import wrapContexts       from '../../context/contexts-wrapper.jsx';
 import {axiosPlain}       from '../../axios-setup.js';
 
 import LoginForm     from './login-form.jsx';
 
-const mapStateToProps = (state) => {
-  return {
-    modal: state.modal
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    clearModal : () => dispatch(clearModal())
-  };
-}
 
 class ModalLogin extends React.Component {
 
@@ -67,6 +55,6 @@ class ModalLogin extends React.Component {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(ModalLogin));
+export default wrapContexts(ModalLogin);
 
 

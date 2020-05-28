@@ -13,7 +13,7 @@ import {
 
 import MainMapContainer from './main-map-container.jsx';
 import About            from './about.jsx';
-import Login            from './components/login/login.jsx';
+import LoginPage        from './components/login/login-page.jsx';
 
 // TODO: maybe I should implement different context wrappers for each individual context
 import wrapContexts from './context/contexts-wrapper.jsx';
@@ -35,7 +35,7 @@ export default function App() {
 {publicMap}
         <Route path='/main' component={MainMapContainer}/>
         <Route path='/about' component={About}/>
-        <Route path='/login' component={Login}/>
+        <Route path='/login' component={LoginPage}/>
         <Route path='/' render={()=><Redirect to={{pathname:'/main'}}/>}/>
       </Switch>
     </main>

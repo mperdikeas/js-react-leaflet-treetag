@@ -14,7 +14,7 @@ import LoginForm from './login-form.jsx';
 import SynelixisLogo from '../../resources/synelixis-logo-300x66.png';
 import wrapContexts from '../../context/contexts-wrapper.jsx';
 
-function Login() {
+function LoginPage() {
   return (
     <div style={{display: 'flex'
                , flexDirection: 'column'
@@ -40,4 +40,4 @@ function Login() {
   );
 }
 
-export default wrapContexts(Login);
+export default wrapContexts(LoginPage);
