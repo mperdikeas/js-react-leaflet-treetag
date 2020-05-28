@@ -4,18 +4,20 @@ const assert = require('chai').assert;
 
 import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
 
-import {MDL_USERNAME_REMINDER} from './constants/modal-types.js';
+import {connect} from 'react-redux';
 
-import {axiosAuth} from './axios-setup.js';
+import {MDL_USERNAME_REMINDER} from '../../constants/modal-types.js';
+
 
 const LinkEventKeys = {FORGOT_USERNAME: 'forgot-username'
                      , FORGOT_PASSWORD: 'forgot-password'};
 
-import {displayModal, login} from './actions/index.js';
+import {displayModal} from '../../actions/index.js';
+import login          from '../../actions/login.js';
 
-import {connect} from 'react-redux';
 
-import wrapContexts from './context/contexts-wrapper.jsx';
+
+import wrapContexts from '../../context/contexts-wrapper.jsx';
 
 
 const mapDispatchToProps = (dispatch) => {
@@ -44,7 +46,6 @@ class LoginForm extends React.Component {
     const installation = this.inputInstallationRef.current.value;
     const username     = this.inputUsernameRef.current.value;
     const password     = this.inputPasswordRef.current.value;
-    //    this.props.doLogin(installation, username, password);
     this.props.login(this.props.loginContext.updateLogin, installation, username, password);
   };
 

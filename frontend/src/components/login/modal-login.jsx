@@ -3,23 +3,14 @@ var      cx = require('classnames');
 
 const assert = require('chai').assert;
 
-
-
-import {storeAccessToken} from './access-token-util.js';
-
-import wrapContexts from './context/contexts-wrapper.jsx';
-
-import {axiosPlain} from './axios-setup.js';
-
-
 // redux
-import {  connect   } from 'react-redux';
-import { clearModal } from './actions/index.js';
+import {  connect   }     from 'react-redux';
+import { clearModal }     from '../../actions/index.js';
+import {storeAccessToken} from '../../access-token-util.js';
+import wrapContexts       from '../../context/contexts-wrapper.jsx';
+import {axiosPlain}       from '../../axios-setup.js';
 
-
-
-
-import ModalLoginForm from './modal-login-form.jsx';
+import LoginForm     from './login-form.jsx';
 
 const mapStateToProps = (state) => {
   return {
@@ -63,43 +54,11 @@ class ModalLogin extends React.Component {
     }
 
 
-  doLogin = (installation, username, password) => {
-    console.log(`modal-login::doLogin(${installation}, ${username}, ${password}`);
-    const url = '/login';
-    axiosPlain.post(url, {
-      installation: installation,
-      username: username,
-      password: password
-    }).then(res => {
-      if (res.data.err != null) {
-        console.log('login API call error');
-        assert.fail(res.data.err);
-      } else {
-        console.log('login API call success');
-        if (res.data.t.loginFailureReason===null) {
-          storeAccessToken(res.data.t.accessToken);
-          this.props.clearModal();
-          this.props.loginContext.updateLogin(username);
-        } else {
-          console.log('login was unsuccessful');
-          if (false) // TODO: I should be logging these messages on a message / activity tab
-            this.setState({logErrMsg: res.data.t.loginFailureReason});
-        }
-      }
-    }).catch( err => {
-      console.log(err);
-      console.log(JSON.stringify(err));
-      assert.fail(err);
-    });
-  }
-
-
-
   render() {
     return (
       <>
       <dialog style={this.props.style} id='dialog' ref={this.ref}>
-          <ModalLoginForm doLogin={this.doLogin}/>
+          <LoginForm/>
       </dialog>
       {this.props.children}
       </>
