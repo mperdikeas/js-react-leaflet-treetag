@@ -31,7 +31,16 @@ echo
 echo 'DETAIL INFORMATION FOR SINGLE TREE (EXCEPT PHOTOS) - 42 is the tree id'
 echo '---------------------------------------------------------------------'
 
-curl -k https://127.0.0.1:8445/tree-cadaster-backend/jax-rs/main/feature/42/data -H "Authorization: Bearer ${accessToken}"
+curl -k https://127.0.0.1:8445/tree-cadaster-backend/jax-rs/main/feature/42/data -H "Authorization: Bearer ${accessToken}"  -o tree-info-from-server.json
+
+
+echo
+echo
+echo
+echo 'POST DETAIL INFORMATION FOR SINGLE TREE (EXCEPT PHOTOS) - 42 is the tree id'
+echo '---------------------------------------------------------------------'
+
+curl -vX POST -k https://127.0.0.1:8445/tree-cadaster-backend/jax-rs/main/feature/42/data -H "Authorization: Bearer ${accessToken}"  -d @tree-info-to-server.json --header "Content-Type: application/json"
 
 
 
