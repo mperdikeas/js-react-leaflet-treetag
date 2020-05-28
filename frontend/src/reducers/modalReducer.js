@@ -18,10 +18,21 @@ export default (modals = [/*{modalType: MODAL_LOGIN, modalProps: null}
                         return [...modals, newModal];
                     }
                     case APP_IS_DONE_LOADING: {
-                        const modals2 = [...modals];
-                        const modalToClose = modals2.pop();
-                        assert.strictEqual(modalToClose.modalType, MDL_NOTIFICATION_NO_DISMISS);
-                        return modals2;
+                        /* TODO: the need for this check was introduced AFTER I started saving the redux
+                         * store in localStorage. I saw the assertion below failing when I was reloading
+                         * I suspect this is due to the map remounting (and so fetching the markers anew) and then dismissing the
+                         * modal that says "please wait while the application is loading".
+                         * I should definitely revisit this.
+                         */
+//                        if (modals.length !== 0) {
+                            const modals2 = [...modals];
+                            const modalToClose = modals2.pop();
+                            assert.strictEqual(modalToClose.modalType, MDL_NOTIFICATION_NO_DISMISS);
+                            return modals2;
+  /*                      } else {
+                            console.warn('check TODO in sources');
+                            return modals;
+                        }*/
                     }
                     case CLEAR_MODAL: {
                         if (modals.length>0) {
