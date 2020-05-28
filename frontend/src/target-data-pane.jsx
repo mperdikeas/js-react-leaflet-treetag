@@ -15,7 +15,6 @@ import {NumericDataFieldFactory
       , TextAreaDataFieldFactory} from './data-field-controls.jsx';
 
 
-import {MODAL_LOGIN, MDL_NOTIFICATION} from './constants/modal-types.js';
 import {revertTreeInfo} from './actions/index.js';
 
 const mapStateToProps = (state) => {

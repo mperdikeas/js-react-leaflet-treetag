@@ -9,8 +9,8 @@ import {APP_IS_DONE_LOADING
 import {MDL_NOTIFICATION_NO_DISMISS
         , MODAL_LOGIN} from '../constants/modal-types.js';
 
-export default (modals = [{modalType: MODAL_LOGIN, modalProps: null}
-                          , {modalType: MDL_NOTIFICATION_NO_DISMISS, modalProps: {html: (<span>Please wait while the app is loading &hellip;</span>)}}]
+export default (modals = [/*{modalType: MODAL_LOGIN, modalProps: null}
+                          , */{modalType: MDL_NOTIFICATION_NO_DISMISS, modalProps: {html: (<span>Please wait while the app is loading &hellip;</span>)}}]
                 , action) => {
                     switch (action.type) {
                     case DISPLAY_MODAL: {
@@ -25,12 +25,10 @@ export default (modals = [{modalType: MODAL_LOGIN, modalProps: null}
                     }
                     case CLEAR_MODAL: {
                         if (modals.length>0) {
-                            console.log(`xxxxxxxxxxxx modalreducer ${modals.length} modals`);
                             const modals2 = [...modals];
                             const modalToClose =modals2.pop();
                             if (modalToClose.modalProps) {
                                 if (modalToClose.modalProps.followUpFunction) {
-                                    console.log('calling follow up function');
                                     /* without the setTimeout I encountered the following problem:
                                      *
                                      *     Error: You may not call store.getState() while the reducer is executing.
@@ -41,10 +39,7 @@ export default (modals = [{modalType: MODAL_LOGIN, modalProps: null}
                                      */
 
                                     setTimeout(()=>modalToClose.modalProps.followUpFunction(), 0);
-                                } else
-                                    console.log('no follow up function upon clear modal');
-                            } else {
-                                console.log('no props at all in modal');
+                                }
                             }
                             return modals2;
                         } else {

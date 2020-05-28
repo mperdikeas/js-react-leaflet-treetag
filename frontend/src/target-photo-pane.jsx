@@ -80,17 +80,14 @@ class TargetPhotoPane extends React.Component {
   }    
 
   componentDidMount() {
-    console.log('componentDidMount');
     this.fetchNumOfPhotos();
   }
 
   componentWillUnmount() {
-    console.log('cancelling requests');
     this.source.cancel(OP_NO_LONGER_RELEVANT);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log('componentDidUpdate');
     if (prevProps.targetId !== this.props.targetId) {
       console.log('cancelling pending requests due to new target');
       this.source.cancel(OP_NO_LONGER_RELEVANT);
@@ -157,7 +154,6 @@ class TargetPhotoPane extends React.Component {
       } // switch
     } else {
       const {numOfPhotos, currentPhotoIndx, photoBase64, photoBase64Instant} = this.state;
-      console.log(`render: # = ${numOfPhotos}`);
       if (this.state.error===null) {
 
         if (numOfPhotos===0) {

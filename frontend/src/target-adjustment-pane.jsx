@@ -7,14 +7,12 @@ import {Form, Col, Row, Button, Nav, ButtonGroup} from 'react-bootstrap';
 // REDUX
 import { connect }          from 'react-redux';
 
-import {axiosAuth} from './axios-setup.js';
-
 import L from 'leaflet';
 import {Athens} from './tree-markers.js';
 
 import {possiblyInsufPrivPanicInAnyCase, isInsufficientPrivilleges} from './util-privilleges.js';
 
-import {MODAL_LOGIN, MDL_NOTIFICATION} from './constants/modal-types.js';
+import {MDL_NOTIFICATION} from './constants/modal-types.js';
 import {displayModal, setTreeCoords, revertTreeCoords} from './actions/index.js';
 
 import wrapContexts from './context/contexts-wrapper.jsx';

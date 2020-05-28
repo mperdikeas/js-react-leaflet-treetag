@@ -1,20 +1,19 @@
 const React = require('react');
 
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  Redirect,
   useHistory,
   useLocation
-} from "react-router-dom";
+} from 'react-router-dom';
 
 import LoginForm from './login-form.jsx';
 import SynelixisLogo from '../../resources/synelixis-logo-300x66.png';
 import wrapContexts from '../../context/contexts-wrapper.jsx';
 
-function LoginPage() {
+function LoginPage(props) {
+  let location = useLocation();
+  const referrer = location.state?location.state.from:'/main';
+  const history = useHistory();
+
   return (
     <div style={{display: 'flex'
                , flexDirection: 'column'
@@ -34,7 +33,7 @@ function LoginPage() {
       </a>
       <div style={{marginTop: '5em'}}>You need to login in order to access this application</div>
       <div style={{marginTop: '3em', width: '25em'}}> 
-        <LoginForm/>
+        <LoginForm followupFunc={()=>{history.replace(referrer);}}/>
       </div>
     </div>
   );

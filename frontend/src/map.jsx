@@ -260,7 +260,7 @@ class Map extends React.Component {
 
 
     this.addLayerGroupsExceptPromisingLayers();
-
+    this.addLayerGroupsForPromisingLayers();
     this.installNewDrawWorkspace(new L.FeatureGroup());
 
     this.map.on('draw:created', (e) => {
@@ -346,7 +346,7 @@ class Map extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if ((prevProps.loginContext.username===null) && (this.props.loginContext.username!==null)) {
-      this.addLayerGroupsForPromisingLayers();
+//      this.addLayerGroupsForPromisingLayers();
     }
   }
 

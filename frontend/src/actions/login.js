@@ -5,7 +5,7 @@ import {axiosPlain} from '../axios-setup.js';
 import { clearModal } from './index.js';
 
 
-export default function login(updateLogin, installation, username, password) {
+export default function login({installation, username, password}, updateLogin, followupActionCreator, followupFunc) {
 
     return (dispatch) => {
         console.log(`login action creator: login(${installation}, ${username}, ${password}`);
@@ -19,11 +19,13 @@ export default function login(updateLogin, installation, username, password) {
                 console.log('login API call error');
                 assert.fail(res.data.err);
             } else {
-                console.log('login API call success');
                 if (res.data.t.loginFailureReason===null) {
                     storeAccessToken(res.data.t.accessToken);
-                    dispatch(clearModal());
                     updateLogin(username);
+                    if (followupActionCreator)
+                        dispatch(followupActionCreator());
+                    if (followupFunc)
+                        followupFunc();
                 } else {
                     console.log('login was unsuccessful');
                     if (false) // TODO: I should be logging these messages on a message / activity tab

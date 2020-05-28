@@ -1,14 +1,13 @@
 const React = require('react');
 
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
   Link,
   Redirect,
   useHistory,
   useLocation
-} from "react-router-dom";
+} from 'react-router-dom';
 
 
 import MainMapContainer from './main-map-container.jsx';
@@ -30,25 +29,27 @@ export default function App() {
     </Route> 
   );  
   return (
-    <main>
-      <Switch>
-{publicMap}
-        <Route path='/main' component={MainMapContainer}/>
-        <Route path='/about' component={About}/>
-        <Route path='/login' component={LoginPage}/>
-        <Route path='/' render={()=><Redirect to={{pathname:'/main'}}/>}/>
-      </Switch>
-    </main>
+    <Switch>
+      {protectedMap}
+      <Route path='/main' component={MainMapContainer}/>
+      <Route path='/about' component={About}/>
+      {/*        <Route path='/login' component={LoginPage}/> */}
+      <Route path='/login'>
+        <LoginPage/>
+      </Route>
+      <Route path='/' render={()=><Redirect to={{pathname:'/main'}}/>}/>
+    </Switch>
   );
 }
 
 const PrivateRoute = wrapContexts(function ({ children, ...rest }) {
   console.log('inside private route');
+  console.log(rest);
   return (
     <Route
       {...rest}
         render={function ({ location }) {
-            console.log(`PrivateRoute, location = ${location}`);
+            console.log(`inside render of private route, username is ${rest.loginContext.username}`);
             if (rest.loginContext.username)
               return children;
             else return (

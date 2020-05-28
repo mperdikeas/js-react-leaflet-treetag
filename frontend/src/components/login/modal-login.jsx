@@ -6,8 +6,9 @@ const assert = require('chai').assert;
 // redux
 import {  connect   }     from 'react-redux';
 import {storeAccessToken} from '../../access-token-util.js';
-import wrapContexts       from '../../context/contexts-wrapper.jsx';
 import {axiosPlain}       from '../../axios-setup.js';
+
+import {clearModal} from '../../actions/index.js';
 
 import LoginForm     from './login-form.jsx';
 
@@ -46,7 +47,7 @@ class ModalLogin extends React.Component {
     return (
       <>
       <dialog style={this.props.style} id='dialog' ref={this.ref}>
-          <LoginForm/>
+          <LoginForm followupActionCreator={clearModal}/>
       </dialog>
       {this.props.children}
       </>
@@ -55,6 +56,6 @@ class ModalLogin extends React.Component {
 }
 
 
-export default wrapContexts(ModalLogin);
+export default ModalLogin;
 
 

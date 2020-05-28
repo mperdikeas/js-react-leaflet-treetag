@@ -14,7 +14,6 @@ import {APP_IS_DONE_LOADING
         , SET_TREE_COORDS_ORIGINAL
         , SET_TREE_COORDS
         , REVERT_TREE_COORDS
-        , LOGIN
        } from '../constants/action-types.js';
 
 import {isValidModalType} from '../constants/modal-types.js';

@@ -22,7 +22,7 @@ import wrapContexts from '../../context/contexts-wrapper.jsx';
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    login: (updateLogin, installation, username, password)=>dispatch(login(updateLogin, installation, username, password))
+    login: ({installation, username, password}, updateLogin, followupActionCreator, followupFunc)=>dispatch(login({installation, username, password}, updateLogin, followupActionCreator, followupFunc))
     , displayUsernameReminderModal: () => dispatch(displayModal(MDL_USERNAME_REMINDER))
     };
   }
@@ -40,13 +40,15 @@ class LoginForm extends React.Component {
 
 
   handleSubmit = (event) => {
-    console.log('modal-login-form::handleSubmit');
     event.preventDefault();
     event.stopPropagation();
     const installation = this.inputInstallationRef.current.value;
     const username     = this.inputUsernameRef.current.value;
     const password     = this.inputPasswordRef.current.value;
-    this.props.login(this.props.loginContext.updateLogin, installation, username, password);
+    this.props.login({installation, username, password}
+                   , this.props.loginContext.updateLogin
+                   , this.props.followupActionCreator
+                   , this.props.followupFunc);
   };
 
   onSelect = (eventKey)=>{
