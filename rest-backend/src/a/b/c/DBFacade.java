@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import java.util.LinkedHashMap;
 import java.util.Random;
 import java.util.Base64;
+import java.util.Comparator;
 import java.io.InputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -30,7 +31,7 @@ import a.b.c.SCAUtil;
 public class DBFacade implements IDBFacade {
 
     private final Map<String, UserInfo> users;
-    private final Map<Integer, TreeInfo> trees;
+    private final Map<Integer, TreeInfoWithId> trees;
     private final Map<Integer, Map<Integer, PhotoData>> tree2photos;
     private final Random r;
     
@@ -51,7 +52,7 @@ public class DBFacade implements IDBFacade {
             final int heightCm = 100 + (int) r.nextInt(1900);
             final int crownHeightCm = (int) (heightCm * r.nextFloat() * 0.5);
             final int circumferenceCm = (int) (heightCm*0.1);
-            Assert.assertNull(this.trees.put(i, new TreeInfo(i
+            Assert.assertNull(this.trees.put(i, new TreeInfoWithId(i
                                                              , r.nextInt(30)
                                                              , new Coordinates(longAthens + (widthOfCoverageInDegrees*r.nextDouble()-widthOfCoverageInDegrees/2)
                                                                                , latAthens + (widthOfCoverageInDegrees*r.nextDouble()-widthOfCoverageInDegrees/2))
@@ -179,19 +180,31 @@ public class DBFacade implements IDBFacade {
     }
     
     @Override
-    public BasicTreeInfo getBasicTreeInfo(final int treeId) {
-        return this.trees.get(treeId);
+    public BasicTreeInfoWithId getBasicTreeInfo(final int treeId) {
+        return BasicTreeInfoWithId.from(this.trees.get(treeId));
     }
 
 
     @Override
-    public TreeInfo getTreeInfo(final int treeId) {
+    public TreeInfoWithId getTreeInfo(final int treeId) {
         return this.trees.get(treeId);
     }
 
     @Override
-    public boolean setTreeInfo(int treeId, TreeInfo treeInfo) {
-        final TreeInfo oldValue = this.trees.put(treeId, treeInfo);
+    public int createTree(TreeInfo treeInfo) {
+        final int key = maxKeyInTrees() + 1;
+        final TreeInfoWithId treeInfoWithId = new TreeInfoWithId(key, treeInfo);
+        Assert.assertNull(trees.put(key, treeInfoWithId));
+        return key;
+    }
+
+    private int maxKeyInTrees() {
+        return Collections.max(trees.entrySet(), Map.Entry.comparingByKey()).getKey();
+    }
+
+    @Override
+    public boolean setTreeInfo(int treeId, TreeInfoWithId treeInfo) {
+        final TreeInfoWithId oldValue = this.trees.put(treeId, treeInfo);
         return oldValue != null;
     }
 
@@ -239,13 +252,13 @@ public class DBFacade implements IDBFacade {
     }
 
     @Override
-    public List<BasicTreeInfo> getTrees(final String installation) {
+    public List<BasicTreeInfoWithId> getTrees(final String installation) {
         /* TODO: ignoring the installation value for this demo and returning *all*
          *       the trees in the database.
          */
 
-        final List<TreeInfo> a = new ArrayList<TreeInfo>(this.trees.values());
-        final List<BasicTreeInfo> b = a.stream().map(x -> x.toBasicTreeInfo()).collect(Collectors.toList());
+        final List<TreeInfoWithId> a = new ArrayList<TreeInfoWithId>(this.trees.values());
+        final List<BasicTreeInfoWithId> b = a.stream().map(x -> x.toBasicTreeInfoWithId()).collect(Collectors.toList());
         return b;
     }
 

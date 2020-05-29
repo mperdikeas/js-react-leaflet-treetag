@@ -174,7 +174,7 @@ public class MainResource {
                                       , featureId
                                       , httpServletRequest.getRemoteAddr()));
             TimeUnit.MILLISECONDS.sleep(2000);
-            final TreeInfo treeInfo = app.dbFacade.getTreeInfo(featureId);
+            final TreeInfoWithId treeInfo = app.dbFacade.getTreeInfo(featureId);
             return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(treeInfo))).build();
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling getFeatureData(%d) from remote address [%s]"
@@ -185,6 +185,9 @@ public class MainResource {
         }
     }
 
+    /* TODO: I need to change that to PUT (and many other POST methods as well that ought to be idempotent)
+     *
+     */
     @Path("/feature/{featureId}/data")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -203,7 +206,7 @@ public class MainResource {
 
             // TODO: write a method to assert that the JSON object is stable
                 
-            final TreeInfo treeInfo = Globals.gson.fromJson(featureData, TreeInfo.class);
+            final TreeInfoWithId treeInfo = Globals.gson.fromJson(featureData, TreeInfoWithId.class);
             final String treeInfoJSON = Globals.gson.toJson(treeInfo);
             Assert.assertEquals("something's not right"
                                 , featureData
@@ -213,6 +216,37 @@ public class MainResource {
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling setFeatureData(%d) from remote address [%s]"
                                        , featureId
+                                       , httpServletRequest.getRemoteAddr())
+                         , t);
+            return ResourceUtil.softFailureResponse(t);
+        }
+    }
+
+    @Path("/feature")
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response createNewFeature(@Context javax.ws.rs.core.Application _app,
+                                   @Context final HttpServletRequest httpServletRequest
+                                   , final String featureData
+                                    ) {
+        final JaxRsApplication app = (JaxRsApplication) _app;
+        try {
+            logger.info(String.format("createNewFeature ~*~ remote address: [%s]"
+                                      , httpServletRequest.getRemoteAddr()));
+            logger.info(String.format("featureData is [%s]", featureData));
+            TimeUnit.MILLISECONDS.sleep(2000);
+
+            // TODO: write a method to assert that the JSON object is stable
+                
+            final TreeInfo treeInfo = Globals.gson.fromJson(featureData, TreeInfo.class);
+            final String treeInfoJSON = Globals.gson.toJson(treeInfo);
+            Assert.assertEquals("something's not right"
+                                , featureData
+                                , treeInfoJSON);
+            final int key = app.dbFacade.createTree(treeInfo);
+            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(key))).build();
+        } catch (Throwable t) {
+            logger.error(String.format("Problem when calling createNewFeature from remote address [%s]"
                                        , httpServletRequest.getRemoteAddr())
                          , t);
             return ResourceUtil.softFailureResponse(t);

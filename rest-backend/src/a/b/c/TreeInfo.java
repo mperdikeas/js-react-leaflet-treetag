@@ -22,8 +22,7 @@ public class TreeInfo extends BasicTreeInfo {
     public List<TreeAction> treeActions;
 
 
-    public TreeInfo(final int id,
-                    final int kind,
+    public TreeInfo(final int kind,
                     final Coordinates coords,
                     final int yearPlanted,
                     final HealthStatus healthStatus,
@@ -41,7 +40,7 @@ public class TreeInfo extends BasicTreeInfo {
                     final boolean disease,
                     final String comments,
                     final List<TreeAction> treeActions) {
-        super(id, kind, coords);
+        super(kind, coords);
         this.yearPlanted = yearPlanted;
         this.healthStatus = healthStatus;
         this.heightCm = heightCm;
@@ -61,7 +60,7 @@ public class TreeInfo extends BasicTreeInfo {
     }
 
     public BasicTreeInfo toBasicTreeInfo() {
-        return new BasicTreeInfo(this.id, this.kind, this.coords);
+        return new BasicTreeInfo(this.kind, this.coords);
     }
 
 }

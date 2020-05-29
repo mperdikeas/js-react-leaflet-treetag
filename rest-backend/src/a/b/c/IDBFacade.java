@@ -12,14 +12,15 @@ public interface IDBFacade {
     boolean checkCredentials(String installation, String username, String password);
     String userEmail(String installation, String username);
     String emailToUsername(String installation, String email);
-    BasicTreeInfo getBasicTreeInfo(int treeId);
-    TreeInfo getTreeInfo(int treeId);
-    boolean setTreeInfo(int treeId, TreeInfo treeInfo);
+    BasicTreeInfoWithId getBasicTreeInfo(int treeId);
+    TreeInfoWithId getTreeInfo(int treeId);
+    int createTree(TreeInfo treeInfo);    
+    boolean setTreeInfo(int treeId, TreeInfoWithId treeInfo);
     int getNumOfPhotos(int treeId);
     PhotoData getPhoto(int treeId, int photoIdx);
     int postPhoto(int treeId, PhotoData photoData);
     boolean deletePhoto(int treeId, int photoIdx);
-    List<BasicTreeInfo> getTrees(String installation);
+    List<BasicTreeInfoWithId> getTrees(String installation);
 
 
     Set<Privillege> getPrivilleges(String installation, String username);

@@ -102,6 +102,8 @@ public class LoginResource {
     }
 
 
+    // TODO: I am left here to implement the getUser method that will check credentials
+
     @Path("/login")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
