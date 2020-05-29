@@ -115,6 +115,27 @@ public class MainResource {
                                   , System.identityHashCode(this)));
     }
 
+    @Path("/getUser/")
+    @GET 
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUser(@Context final HttpServletRequest httpServletRequest) {
+        String methodInfo = null;
+        try {
+            final String installation = Installation.getFromServletRequest(httpServletRequest);
+            methodInfo = String.format("getConfiguration() ~*~ installation: [%s], remote address: [%s]"
+                                                    , installation
+                                                    , httpServletRequest.getRemoteAddr());
+            logger.info(methodInfo);
+            final Configuration x = getConfiguration(installation);
+            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(x))).build();
+        } catch (Throwable t) {
+            logger.error(String.format("%s - shit happened", methodInfo), t);
+            return ResourceUtil.softFailureResponse(t);
+        }
+    }
+
+
+    
     @Path("/getConfiguration/")
     @GET 
     @Produces(MediaType.APPLICATION_JSON)

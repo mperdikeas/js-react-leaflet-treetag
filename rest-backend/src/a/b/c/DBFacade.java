@@ -282,7 +282,7 @@ public class DBFacade implements IDBFacade {
                     return true;
             } catch (NoSuchMethodException e) {
                 Assert.fail(e.getMessage());
-                return SCAUtil.satisfyReturn(true);
+                return SCAUtil.satisfyReturn(Boolean.class);
             }
         } else return true;
     }
