@@ -15,17 +15,14 @@ import wrapContexts from '../../context/contexts-wrapper.jsx';
 
 // REDUX
 import { connect }          from 'react-redux';
-import {displayModal}       from '../../actions/index.js';
 import checkCredentials     from '../../actions/check-credentials.js';
 
 
-import {MDL_NOTIFICATION_NO_DISMISS} from '../../constants/modal-types.js';
+
 
 const mapDispatchToProps = (dispatch) => {
-  const msgCheckCred = 'παρακαλώ περιμένετε ενόσω το σύστημα ελέγχει τα διαπιστευτήριά σας';
   return {
-    displayNotificationWaitToCheckCredentials: ()=>dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: msgCheckCred}))
-    , checkCredentials: (redirectTo, history, updateLogin)=>dispatch(checkCredentials(redirectTo, history, updateLogin))
+    checkCredentials: (redirectTo, history, updateLogin)=>dispatch(checkCredentials(redirectTo, history, updateLogin))
   };
 }
 
@@ -37,7 +34,6 @@ class LoginPage extends React.Component {
   }
 
   componentDidMount = () => {
-    this.props.displayNotificationWaitToCheckCredentials();
     this.props.checkCredentials(this.getFrom()
                               , this.props.history
                               , this.props.loginContext.updateLogin);
