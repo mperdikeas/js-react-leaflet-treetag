@@ -27,6 +27,7 @@ import {displayModal
       , setTreeInfo
       , setTreeInfoOriginal}  from './redux/actions/index.js';
 import getFeatureData from './redux/actions/get-feature-data.jsx';
+import saveFeatureData from './redux/actions/save-feature-data.jsx';
 import {INFORMATION, PHOTOS, HISTORY, ADJUST} from './constants/information-panel-panes.js';
 import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS, MODAL_LOGIN} from './constants/modal-types.js';
 
@@ -71,7 +72,8 @@ const mergeProps = ( stateProps, {dispatch}) => {
   const msgSavingTreeData = targetId => `αποθήκευση δεδομένων για το δένδρο #${targetId}`;
   return {
     ...stateProps
-     , getFeatureData:(id, cancelToken) => dispatch(getFeatureData(id, cancelToken))
+    , getFeatureData:(id, cancelToken) => dispatch(getFeatureData(id, cancelToken))
+    , saveFeatureData: (treeInfo) => dispatch(saveFeatureData(treeInfo))
     , displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func})) // TODO: obsolete
     , displayNotificationInsufPrivilleges: ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgInsufPriv1}))
     , displayTreeDataHasBeenUpdated: (targetId)=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataHasBeenUpdated(targetId)}))
@@ -191,12 +193,18 @@ class TreeInformationPanel extends React.Component {
   }
   
   handleSubmit = (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    this.props.saveFeatureData(this.props.treeInfo);
+  }
+
+  handleSubmitDELME = (ev) => {
     if (ev) {
       ev.preventDefault();
       ev.stopPropagation();
     } else
     console.warn('weird ev in handleSubmit is null');
-    
+    /*
     console.log('handle submit');
     console.log(this.props.treeInfo);
     console.log(JSON.stringify(this.props.treeInfo));    
@@ -258,6 +266,7 @@ class TreeInformationPanel extends React.Component {
         }
       }
     });
+    */
   }
 
 
