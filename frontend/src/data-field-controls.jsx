@@ -7,7 +7,7 @@ import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
 const style={marginLeft: 0, marginRight: 0, marginBottom: 0};
 
 
-export function NumericDataFieldFactory (onChange) {
+export function IntegerDataFieldFactory (onChange) {
 
   return (props) => {
 

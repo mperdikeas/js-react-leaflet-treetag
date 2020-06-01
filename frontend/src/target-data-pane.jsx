@@ -7,7 +7,7 @@ import {Form, Col, Row, Button, Nav, ButtonGroup} from 'react-bootstrap';
 // REDUX
 import { connect }          from 'react-redux';
 
-import {NumericDataFieldFactory
+import {IntegerDataFieldFactory
       , BooleanDataFieldFactory
       , SelectDataFieldFactory
       , TextAreaDataFieldFactory} from './data-field-controls.jsx';
@@ -46,7 +46,7 @@ class TargetDataPane extends React.Component {
        *    https://stackoverflow.com/a/49688084/274677
        *
        */
-      this.NumericDataField  = NumericDataFieldFactory(this.handleChange);
+      this.IntegerDataField  = IntegerDataFieldFactory(this.handleChange);
       this.BooleanDataField  = BooleanDataFieldFactory(this.handleChange);
       this.SelectDataField   = SelectDataFieldFactory (this.handleChange);
       this.TextAreaDataField = TextAreaDataFieldFactory(this.handleChange);
@@ -97,11 +97,11 @@ class TargetDataPane extends React.Component {
         Data for tree {this.props.targetId} follow
       </div>
       <Form noValidate onSubmit={this.props.handleSubmit}>
-        <this.NumericDataField  name='yearPlanted'  label='έτος φύτευσης' value={yearPlanted} />
+        <this.IntegerDataField  name='yearPlanted'  label='έτος φύτευσης' value={yearPlanted} />
         <this.SelectDataField   name='healthStatus' label='Υγεία'         value={healthStatus} codeToName={this.props.treesConfigurationContext.healthStatuses}/>
-        <this.NumericDataField  name='heightCm'            label='Ύψος (cm)'              value={heightCm} />
-        <this.NumericDataField  name='crownHeightCm'       label='Έναρξη κόμης (cm)'      value={crownHeightCm} />
-        <this.NumericDataField  name='circumferenceCm'     label='Περιφέρεια (cm)'        value={circumferenceCm} />
+        <this.IntegerDataField  name='heightCm'            label='Ύψος (cm)'              value={heightCm} />
+        <this.IntegerDataField  name='crownHeightCm'       label='Έναρξη κόμης (cm)'      value={crownHeightCm} />
+        <this.IntegerDataField  name='circumferenceCm'     label='Περιφέρεια (cm)'        value={circumferenceCm} />
         <this.BooleanDataField  name='raisedSidewalk'      label='Ανασηκωμένο πεζοδρόμιο' value={raisedSidewalk}/>
         <this.BooleanDataField  name='powerlineProximity'  label='Εγγύτητα σε ΔΕΗ'        value={powerlineProximity}/>
         <this.BooleanDataField  name='obstruction'         label='Εμποδίζει διεύλευση'    value={obstruction}/>
