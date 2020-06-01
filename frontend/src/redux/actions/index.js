@@ -57,7 +57,7 @@ export function toggleTarget(targetId) {
 };
 
 
-export function toggleTargetAndOptionallyFetchData(targetId, cancelToken) {
+export function toggleTargetAndOptionallyFetchData(targetId) {
     return (dispatch, getState) => {
         /* If the current target is the same, simply toggle the target and do nothing
            else. Otherwise toggle the target AND dispatch a getFeatureData action */
@@ -65,8 +65,7 @@ export function toggleTargetAndOptionallyFetchData(targetId, cancelToken) {
             dispatch(toggleTarget(targetId));
         else {
             dispatch(toggleTarget(targetId));
-            const source = CancelToken.source();
-            dispatch(getFeatureData(targetId, source.token));
+            dispatch(getFeatureData(targetId));
         }
     };
 }
@@ -88,8 +87,8 @@ export function dismissToast(id) {
 /* TODO: if these actions are only used from get-feature-data maybe they
  * can stop being independent actions
  */
-export function markGetFeatureInfoInProgress(cancelToken) {
-    return {type: MARK_GET_FEATURE_INFO_IN_PROGRESS, payload: {cancelToken}};
+export function markGetFeatureInfoInProgress(axiosSource) {
+    return {type: MARK_GET_FEATURE_INFO_IN_PROGRESS, payload: {axiosSource}};
 }
 
 export function setTreeInfoOriginal(treeInfo) {

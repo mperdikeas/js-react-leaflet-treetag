@@ -14,7 +14,9 @@ export default (state = {original: null
                          , fetchFailed: false}, action) => {
                              switch (action.type) {
                              case MARK_GET_FEATURE_INFO_IN_PROGRESS: {
-                                 return Object.assign({}, state, {fetchInProgress: true, axiosSource: action.payload.cancelToken});
+                                 console.log('abd axios source is: ', action.payload);
+                                 console.log('abd axios source is: ', action.payload.axiosSource);
+                                 return Object.assign({}, state, {fetchInProgress: true, axiosSource: action.payload.axiosSource});
                              }
                              case MARK_GET_FEATURE_INFO_FAILED: {
                                  return Object.assign({}, state, {fetchInProgress: false, axiosSource: null});

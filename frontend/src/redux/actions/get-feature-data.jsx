@@ -2,6 +2,7 @@ const React = require('react');
 const assert = require('chai').assert;
 import {getAccessToken} from '../../access-token-util.js';
 import {axiosAuth} from '../../axios-setup.js';
+import {CancelToken} from 'axios';
 
 
 import {markGetFeatureInfoInProgress
@@ -13,19 +14,19 @@ import {MODAL_LOGIN, MDL_NOTIFICATION_NO_DISMISS} from '../../constants/modal-ty
 
 import {OP_NO_LONGER_RELEVANT} from '../../constants/axios-constants.js';
 
-export default function getFeatureData(id, cancelToken) {
-  console.log(`abd getting feature data for ${id}`);
+export default function getFeatureData(id) {
+  const source = CancelToken.source();
   return (dispatch, getState) => {
     const url = `/feature/${id}/data`;
     console.log(`fetchData, axios URL is: ${url}`);
     if (getState().treeInfo.axiosSource) {
-      getState().treeInfo.axiosSource.cancel();
+      getState().treeInfo.axiosSource.cancel(OP_NO_LONGER_RELEVANT);
       console.log('abd cancelled previous pending request');
-    } else
-    console.log('abd no previous pending request found to cancel');
-    console.log(cancelToken);
-    dispatch (markGetFeatureInfoInProgress(cancelToken));
-    axiosAuth.get(url, {cancelToken}
+    }
+
+    dispatch (markGetFeatureInfoInProgress(source));
+    
+    axiosAuth.get(url, {cancelToken: source.token}
     ).then(res => {
       // corr-id: SSE-1585746250
       console.log(res.data);
@@ -47,7 +48,6 @@ export default function getFeatureData(id, cancelToken) {
         */
       }
     }).catch( err => {
-      console.error(err);
       if (err.message === OP_NO_LONGER_RELEVANT) {
         console.log(`${url} operation is no longer relevant and got cancelled`);
       } else if (err.response && err.response.data) {
@@ -57,7 +57,7 @@ export default function getFeatureData(id, cancelToken) {
         switch(code) {
           case 'JWT-verif-failed': {
             dispatch( markGetFeatureInfoFailed() );
-            dispatch( displayModal(MODAL_LOGIN, {followUpFunction: ()=>{dispatch(getFeatureData(id, cancelToken))}}));
+            dispatch( displayModal(MODAL_LOGIN, {followUpFunction: ()=>{dispatch(getFeatureData(id))}}));
             //                                 dispatch( displayModalLogin( ()=>{this.setState({error: null}); this.fetchData();} );
             //                                   this.props.setTreeInfoOriginal(null);
             /*
@@ -89,6 +89,7 @@ export default function getFeatureData(id, cancelToken) {
           }
         }
       } else {
+        console.log(err);
         dispatch(markGetFeatureInfoFailed());
         dispatch( displayModal(MDL_NOTIFICATION_NO_DISMISS,
                                {html: (<div>
