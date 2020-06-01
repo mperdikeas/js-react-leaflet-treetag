@@ -52,7 +52,7 @@ const mapStateToProps = (state) => {
     , tab: state.paneToOpenInfoPanel
     , treeInfo: state.treeInfo.current
     , modalLoginInProgress: ()=>{throw 'xxx';}
-    , fetchInProgress: state.fetchInProgress
+    , fetchInProgress: state.treeInfo.fetchInProgress
   };
 };
 
@@ -73,7 +73,7 @@ const mergeProps = ( stateProps, {dispatch}) => {
   const msgSavingTreeData = targetId => `αποθήκευση δεδομένων για το δένδρο #${targetId}`;
   return {
     ...stateProps
-    , displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
+    , displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func})) // TODO: obsolete
     , displayNotificationInsufPrivilleges: ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgInsufPriv1}))
     , displayTreeDataHasBeenUpdated: (targetId)=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataHasBeenUpdated(targetId)}))
     , displayModalSavingTreeData  : ()=>dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: msgSavingTreeData(stateProps.targetId)}))

@@ -88,8 +88,8 @@ export function dismissToast(id) {
 /* TODO: if these actions are only used from get-feature-data maybe they
  * can stop being independent actions
  */
-export function markGetFeatureInfoInProgress() {
-    return {type: MARK_GET_FEATURE_INFO_IN_PROGRESS, payload: null};
+export function markGetFeatureInfoInProgress(cancelToken) {
+    return {type: MARK_GET_FEATURE_INFO_IN_PROGRESS, payload: {cancelToken}};
 }
 
 export function setTreeInfoOriginal(treeInfo) {

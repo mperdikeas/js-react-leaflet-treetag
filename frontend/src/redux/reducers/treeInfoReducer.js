@@ -14,7 +14,7 @@ export default (state = {original: null
                          , fetchFailed: false}, action) => {
                              switch (action.type) {
                              case MARK_GET_FEATURE_INFO_IN_PROGRESS: {
-                                 return Object.assign({}, state, {fetchInProgress: true});
+                                 return Object.assign({}, state, {fetchInProgress: true, axiosSource: action.payload.cancelToken});
                              }
                              case MARK_GET_FEATURE_INFO_FAILED: {
                                  return Object.assign({}, state, {fetchInProgress: false, axiosSource: null});

@@ -422,8 +422,6 @@ class Map extends React.Component {
         const weights = [1,2,3,4,5,4,3,2,1,0,0];
         i++;
         marker.setStyle({weight: weights[i % weights.length]});
-        if (i % 10 === 0)
-          console.log('abd - pulse cycle');
       }
     }
 
@@ -436,7 +434,7 @@ class Map extends React.Component {
         assert.isNotNull(this.highlightedMarker.interval);
         assert.isNotNull(this.highlightedMarker.targetId);
         const rv = this.highlightedMarker.targetId;
-        console.log('abd - clearing interval');
+        console.log('clearing interval for pulsating marker');
         clearInterval(this.highlightedMarker.interval);
         this.highlightedMarker.marker.removeFrom(this.map);
         this.highlightedMarker = null;
