@@ -26,6 +26,7 @@ import {displayModal
       , setPaneToOpenInfoPanel
       , setTreeInfo
       , setTreeInfoOriginal}  from './redux/actions/index.js';
+import getFeatureData from './redux/actions/get-feature-data.jsx';
 import {INFORMATION, PHOTOS, HISTORY, ADJUST} from './constants/information-panel-panes.js';
 import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS, MODAL_LOGIN} from './constants/modal-types.js';
 
@@ -34,16 +35,14 @@ import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS, MODAL_LOGIN} from './cons
 import wrapContexts from './context/contexts-wrapper.jsx';
 
 import {LOGGING_IN
-      , LOADING_TREE_DATA
+      , LOADING_TREE_DATA // todo: not used any more - clear junk
       , SAVING_TREE_DATA} from './constants/information-panel-tree-server-call-types.js';
 
-import {OP_NO_LONGER_RELEVANT} from './constants/axios-constants.js';
+//import {OP_NO_LONGER_RELEVANT} from './constants/axios-constants.js';
 import {msgTreeDataIsDirty, displayNotificationIfTargetIsDirty} from './common.jsx';
 import {possiblyInsufPrivPanicInAnyCase, isInsufficientPrivilleges} from './util-privilleges.js';
 
 import {GSN, globalGet} from './globalStore.js';
-
-import {treeInfoIsBeingUpdated} from './redux/selectors.js';
 
 const mapStateToProps = (state) => {
   return {
@@ -53,13 +52,20 @@ const mapStateToProps = (state) => {
     , tab: state.paneToOpenInfoPanel
     , treeInfo: state.treeInfo.current
     , modalLoginInProgress: ()=>{throw 'xxx';}
-    , treeInfoIsBeingUpdated: treeInfoIsBeingUpdated(state)
+    , fetchInProgress: state.fetchInProgress
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps_delme = (dispatch) => {
   return {dispatch};
 }
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getFeatureData:(id, cancelToken) => dispatch(getFeatureData(id, cancelToken))
+  };
+}
+
 
 // refid: SSE-1589888176
 const mergeProps = ( stateProps, {dispatch}) => {
@@ -98,21 +104,21 @@ class TreeInformationPanel extends React.Component {
   displayNotificationIfTargetIsDirty = displayNotificationIfTargetIsDirty.bind(this);
   
   componentDidMount() {
-    this.fetchData();
+//    this.fetchData();
   }
 
   componentWillUnmount() {
     console.log('TreeInformationPanel: unmounting and cancelling requests...');
-    this.source.cancel(OP_NO_LONGER_RELEVANT);
+//    this.source.cancel(OP_NO_LONGER_RELEVANT);
   }
 
   
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.targetId !== this.props.targetId) {
       console.log('cancelling pending requests due to new target');
-      this.source.cancel(OP_NO_LONGER_RELEVANT);
-      this.source = CancelToken.source(); // cf. SSE-1589117399
-      this.fetchData();
+//      this.source.cancel(OP_NO_LONGER_RELEVANT);
+//      this.source = CancelToken.source(); // cf. SSE-1589117399
+//      this.fetchData();
     }
   }
 
@@ -130,7 +136,9 @@ class TreeInformationPanel extends React.Component {
   }
 
 
-  fetchData = () => {
+  fetchDataDELME = () => {
+    this.props.getFeatureData(this.props.targetId, this.source.token);
+  /*
     const url = `/feature/${this.props.targetId}/data`;
     console.log(`fetchData, axios URL is: ${url}`);
     axiosAuth.get(url, {cancelToken: this.source.token}
@@ -141,11 +149,9 @@ class TreeInformationPanel extends React.Component {
       console.log(t);
       if (err===null) {
         this.props.setTreeInfoOriginal(t);
-        // TODO: maybe the serverCallInProgress should also be part of the redux store
       } else {
         this.props.setTreeInfoOriginal(null);
-        this.setState({/* serverCallInProgress: null
-                      , */error: {message: `server-side error: ${err.message}`
+        this.setState({error: {message: `server-side error: ${err.message}`
                               , details: err.strServerTrace}});
       }
     }).catch( err => {
@@ -177,6 +183,7 @@ class TreeInformationPanel extends React.Component {
 
       }
     }) // catch
+    */
   } // fetchData
 
 
@@ -370,10 +377,11 @@ class TreeInformationPanel extends React.Component {
         <div style={{color: 'red'}}>{JSON.stringify(this.state.error)}</div>
         </>
       );
-    else if (this.props.treeInfoIsBeingUpdated) {
+    else if (this.props.fetchInProgress) {
+      console.log('abd  - a');
       return <div>querying the server for tree {this.props.targetId} &hellip;</div>;
-    }
-    else {
+    } else {
+      console.log('abd  - b');
       switch (this.props.tab) {
         case INFORMATION:
           return (

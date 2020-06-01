@@ -60,7 +60,8 @@ import { connect }          from 'react-redux';
 import {appIsDoneLoading
       , updateMouseCoords
       , displayModal
-      , toggleTarget}  from './redux/actions/index.js';
+      , toggleTarget
+      , toggleTargetAndOptionallyFetchData}  from './redux/actions/index.js';
 
 
 import TreeCountStatistic from './tree-count-statistic.js';
@@ -111,7 +112,7 @@ const mergeProps = (stateProps, {dispatch}) => {
                          , pleaseWaitWhileAppIsLoading: ()=>dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: pleaseWaitWhileAppIsLoading}))
                          , appIsDoneLoading: ()=> dispatch(appIsDoneLoading())
                          , updateCoordinates                 : (latlng)   => dispatch(updateMouseCoords(latlng))
-                         , toggleTarget                      : (targetId) => dispatch(toggleTarget(targetId))
+                         , toggleTargetAndOptionallyFetchData : (targetId) => dispatch(toggleTargetAndOptionallyFetchData(targetId))
                          , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(stateProps.targetId)}))
                        });
 }
@@ -464,7 +465,7 @@ class Map extends React.Component {
 
       if (oldTargetId != targetId)
         installNewHighlightingMarker(coords, targetId);      
-      this.props.toggleTarget(e.target.options.targetId);
+      this.props.toggleTargetAndOptionallyFetchData(e.target.options.targetId);
     }
   }
 

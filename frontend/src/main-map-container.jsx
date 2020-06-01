@@ -20,7 +20,7 @@ import {changeTileProvider} from './redux/actions/index.js';
 
 const mapStateToProps = (state) => {
   return {
-    isTargetSelected: state.targetId !== null
+    isTargetSelected: state.treeInfo.original!=null // TODO: rename that to is target data available
     , modalType: state.modalType
     , maximizedInfoPanel: state.maximizedInfoPanel
   };
