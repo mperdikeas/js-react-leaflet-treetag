@@ -17,7 +17,8 @@ function createAxiosAuthHeader() {
                      +`given session storage contract`);
     assert.isNotNull(accessToken, `access token [${ACCESS_TOKEN_KEY}] was read `
                      +`from the session storage as null. This indicates a bug `
-                     +`in my application`);
+                     +`in my application or, perhaps, the user cleared the session`
+                     +`storage (if we may be as bold as to envision such depravity`);
     return {
         Authorization: `Bearer ${accessToken}`
     };
