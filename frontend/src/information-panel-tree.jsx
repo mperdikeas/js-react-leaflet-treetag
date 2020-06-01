@@ -61,9 +61,7 @@ const mapDispatchToProps_delme = (dispatch) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return {
-    getFeatureData:(id, cancelToken) => dispatch(getFeatureData(id, cancelToken))
-  };
+  return {dispatch};
 }
 
 
@@ -73,6 +71,7 @@ const mergeProps = ( stateProps, {dispatch}) => {
   const msgSavingTreeData = targetId => `αποθήκευση δεδομένων για το δένδρο #${targetId}`;
   return {
     ...stateProps
+     , getFeatureData:(id, cancelToken) => dispatch(getFeatureData(id, cancelToken))
     , displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func})) // TODO: obsolete
     , displayNotificationInsufPrivilleges: ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgInsufPriv1}))
     , displayTreeDataHasBeenUpdated: (targetId)=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataHasBeenUpdated(targetId)}))
