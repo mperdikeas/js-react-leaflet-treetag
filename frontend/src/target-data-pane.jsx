@@ -7,8 +7,6 @@ import {Form, Col, Row, Button, Nav, ButtonGroup} from 'react-bootstrap';
 // REDUX
 import { connect }          from 'react-redux';
 
-import {axiosAuth} from './axios-setup.js';
-
 import {NumericDataFieldFactory
       , BooleanDataFieldFactory
       , SelectDataFieldFactory

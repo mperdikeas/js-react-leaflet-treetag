@@ -27,7 +27,6 @@ import {haversineGreatCircleDistance, latitudeToMeters, longitudeToMeters} from 
 
 const mapStateToProps = (state) => {
   const markerHasBeenDisplaced = (JSON.stringify(state.treeInfo.current.coords) !== JSON.stringify(state.treeInfo.original.coords));
-  console.log(`inside TargetAdjustmentPane::mapStateToProps markerHasBeenDisplaced = ${markerHasBeenDisplaced}`);
   return {
     targetId: state.targetId
     , markerHasBeenDisplaced

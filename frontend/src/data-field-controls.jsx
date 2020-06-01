@@ -19,7 +19,7 @@ export function NumericDataFieldFactory (onChange) {
                         type="number"
                         name={props.name}
                         value={props.value}
-                        onChange={(ev)=>onChange(ev.target.name, ev.target.value)}
+                        onChange={(ev)=>onChange(ev.target.name, parseInt(ev.target.value))}
           />
         </Col>
       </Form.Group>
