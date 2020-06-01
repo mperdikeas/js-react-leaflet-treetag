@@ -9,8 +9,9 @@ import {APP_IS_DONE_LOADING
 import {MDL_NOTIFICATION_NO_DISMISS
         , MODAL_LOGIN} from '../constants/modal-types.js';
 
-export default (modals = [/*{modalType: MODAL_LOGIN, modalProps: null}
-                          , */{modalType: MDL_NOTIFICATION_NO_DISMISS, modalProps: {html: (<span>Please wait while the app is loading &hellip;</span>)}}]
+export default (modals = [/*{modalType: MODAL_LOGIN, modalProps: null} */
+    //,
+    /*{modalType: MDL_NOTIFICATION_NO_DISMISS, modalProps: {html: (<span>Please wait while the app is loading &hellip;</span>)}}*/]
                 , action) => {
                     switch (action.type) {
                     case DISPLAY_MODAL: {

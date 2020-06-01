@@ -86,6 +86,8 @@ import java.time.temporal.ChronoUnit;
 
 import a.b.c.constants.Installation;
 
+import a.b.html.BearerAuthorizationUtil;
+
 
 // To support the Singleton annotation in a Tomcat 8.5 container see: http://stackoverflow.com/a/19003725/274677
 //@Singleton
@@ -118,22 +120,54 @@ public class MainResource {
     @Path("/getUser/")
     @GET 
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getUser(@Context final HttpServletRequest httpServletRequest) {
+    public Response getUser(@Context final HttpServletRequest request) {
         String methodInfo = null;
         try {
-            final String installation = Installation.getFromServletRequest(httpServletRequest);
-            methodInfo = String.format("getConfiguration() ~*~ installation: [%s], remote address: [%s]"
-                                                    , installation
-                                                    , httpServletRequest.getRemoteAddr());
+            methodInfo = String.format("getUser() ~*~ remote address: [%s]"
+                                                    , request.getRemoteAddr());
             logger.info(methodInfo);
-            final Configuration x = getConfiguration(installation);
-            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(x))).build();
+            final String accessToken = BearerAuthorizationUtil.getAccessTokenFromRequest(logger, request);
+            final ConnectionInfo connInfo = ClaimsUtil.getConnInfoFromAccessToken(accessToken);
+            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(connInfo))).build();
         } catch (Throwable t) {
             logger.error(String.format("%s - shit happened", methodInfo), t);
             return ResourceUtil.softFailureResponse(t);
         }
     }
 
+    /*
+        try {
+
+            if (accessToken == null) {
+                try {
+                    final String header = HTTPHeaderUtil.getBearerAuthorizationHeader(logger, request);
+
+                    abortUnauthorizedRequest(requestContext
+                                             , Response.Status.FORBIDDEN
+                                             , new AbortResponse(BearerAuthorizationFailureMode.NO_BEARER_TOKEN
+                                                                 , String.format("no bearer token found in Auth header: [%s]", header)
+                                                                 , (String) null));
+                } catch (NoHeaderFoundException | MoreThanOneHeaderFoundException e) {
+                    Assert.fail(String.format("impossible to throw an exception of type [%s] or type [%s] at this point"
+                                              , NoHeaderFoundException.class.getName()
+                                              , MoreThanOneHeaderFoundException.class.getName()));
+                }
+            } else {
+                // must match the value in the webmvc-login app
+                final String secretKeySpecS = "eyJhbGdvcml0aG0iOiJIbWFjU0hBMjU2IiwiZW5jb2RlZEtleSI6InhUMzQ4ZWlXTmMvTVhoeE5ucXU5bG5ZUVBRdVB0WWlQbVM1UGpoc2wrY1FcdTAwM2QifQ==";
+                try {
+                    final Claims claims = JWTUtil.verifyJWS(secretKeySpecS, accessToken);
+                    final String installation = Installation.getFromClaims(claims);
+                    final String username     = claims.getSubject();
+
+                    final IDBFacade dbFacade = ( (JaxRsApplication) _app).dbFacade;
+
+                    final Set<Privillege> privilleges = dbFacade.getPrivilleges(installation, username);
+
+                    if (dbFacade.arePrivillegesSufficient(privilleges, klass, method)) {
+                        Installation.setInContainerRequestContext(requestContext, installation);
+    
+    */
 
     
     @Path("/getConfiguration/")
@@ -431,4 +465,6 @@ public class MainResource {
         return Base64.getEncoder().encodeToString(imageData);
     }
 }
+
+
 

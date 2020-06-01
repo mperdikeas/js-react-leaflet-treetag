@@ -25,6 +25,8 @@ class TreesConfigurationContextProvider extends React.Component {
 
   }
 
+
+  // TODO: this is dog-shit, fetching the trees configuration should be a redux action
   componentDidUpdate(prevProps) {
     if ((prevProps.loginContext.username === null) && (this.props.loginContext.username!=null)) {
       // we're now logged-in and can obtain the trees configuration

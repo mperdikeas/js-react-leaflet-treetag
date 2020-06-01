@@ -53,6 +53,7 @@ const treeOverlays = (treeConfiguration)=> {
     console.log(overlayNames);
     const layer2kinds = from_kind2layer_to_layer2kinds(treeConfiguration);
     return getTrees(10000).then( (data)=> {
+        console.log('got tree');
         overlayNames.forEach( (overlayName) => {
             const layerGroup = L.layerGroup(data.filter(({kind})=>{
                 const kindsInThisLayer = layer2kinds[overlayName];

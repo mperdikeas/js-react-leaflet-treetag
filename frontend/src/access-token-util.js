@@ -24,4 +24,5 @@ function createAxiosAuthHeader() {
 }
 
 exports.storeAccessToken = storeAccessToken;
+exports.getAccessToken = getAccessToken;
 exports.createAxiosAuthHeader = createAxiosAuthHeader;

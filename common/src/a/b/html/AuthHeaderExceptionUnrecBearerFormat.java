@@ -8,7 +8,9 @@ public class AuthHeaderExceptionUnrecBearerFormat extends HeaderException {
 
     @Override
     public String getMessage() {
-        return String.format("unrecognized bearer format in this auth header: [%s]", header);
+        return String.format("unrecognized bearer format in this auth header: [%s] - context: [%s]"
+                             , header
+                             , context);
     }
 
 }

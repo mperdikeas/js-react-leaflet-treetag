@@ -29,6 +29,7 @@ export function updateMouseCoords(latlng) {
 }
 
 export function displayModal(modalType, modalProps) {
+    console.log(`bac - displaying modal ${modalType}`);
     assert.isTrue(isValidModalType(modalType), `unrecognized modal type: [${modalType}]`);
     return {type: DISPLAY_MODAL, payload: {modalType, modalProps}};
 }

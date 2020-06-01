@@ -102,8 +102,6 @@ public class LoginResource {
     }
 
 
-    // TODO: I am left here to implement the getUser method that will check credentials
-
     @Path("/login")
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -241,7 +239,7 @@ public class LoginResource {
     }
 
     private static Date createExpirationDate() {
-        final int VALIDITY_FOR_JWT_AUTHORIZATION_SECS = 30*60;
+        final int VALIDITY_FOR_JWT_AUTHORIZATION_SECS = 5;//30*60;
         final LocalDateTime x = LocalDateTime.now().plusSeconds(VALIDITY_FOR_JWT_AUTHORIZATION_SECS);
         final Date rv = Date.from( x.atZone( ZoneId.systemDefault()).toInstant() );
         return rv;

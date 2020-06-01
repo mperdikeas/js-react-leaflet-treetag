@@ -55,7 +55,7 @@ import com.google.common.base.Throwables;
 public final class HTTPHeaderUtil {
     private HTTPHeaderUtil() {}
 
-    public static String getBearerAuthorizationHeader(final Logger logger, final HttpServletRequest request) throws NoHeaderFoundException, MoreThanOneHeaderFoundException {
+    public static String getAuthorizationHeader(final Logger logger, final HttpServletRequest request) throws NoHeaderFoundException, MoreThanOneHeaderFoundException {
         return getHeader(logger, request, HttpHeaders.AUTHORIZATION);
     }
 

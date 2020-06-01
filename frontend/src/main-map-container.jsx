@@ -80,13 +80,8 @@ class MainMapContainer extends React.Component {
     );
 
 
-    return (
-      <ModalRoot>
-        <ToastsStack>
-          {gui}
-        </ToastsStack>
-      </ModalRoot>
-    );
+    return gui;
+
   }
 }
 

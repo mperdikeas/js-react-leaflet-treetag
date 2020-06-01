@@ -72,14 +72,20 @@ import {msgTreeDataIsDirty, displayNotificationIfTargetIsDirty} from './common.j
 const mapStateToProps = (state) => {
   if (state.treeInfo.original != null) {
     assert.isOk(state.treeInfo.current);
+    if (false)
     console.log(`xyw map:mapStateToProps original coords = ${JSON.stringify(state.treeInfo.original.coords)} current coords = ${JSON.stringify(state.treeInfo.current.coords)}`);
-  } else
-      console.log('xyw map:mapStateToProps treeInfo is null');
+  } else {
+    if (false)
+    console.log('xyw map:mapStateToProps treeInfo is null');
+    }
 
   const targetIsDirty = JSON.stringify(state.treeInfo.original) !== JSON.stringify(state.treeInfo.current);
+  if (false)
   console.log(`xyw targetIsDirty = ${targetIsDirty}`);
-  if (targetIsDirty)
+  if (targetIsDirty) {
+    if (false)
     console.log(`xyw a = [${JSON.stringify(state.treeInfo.original)}] b = [${JSON.stringify(state.treeInfo.current)}]`);
+    }
   return {
     targetId                       : state.targetId,
     tileProviderId                 : state.tileProviderId,
@@ -261,6 +267,7 @@ class Map extends React.Component {
 
     this.addLayerGroupsExceptPromisingLayers();
     this.addLayerGroupsForPromisingLayers();
+    console.log('bab - 0');
     this.installNewDrawWorkspace(new L.FeatureGroup());
 
     this.map.on('draw:created', (e) => {
@@ -316,12 +323,15 @@ class Map extends React.Component {
       (resolution, rejection) => {
         const testAvailability = () => {
           if (this.props.treesConfigurationContext.treesConfiguration!=null) {
+            console.log('treeConfiguration is now available');
             clearInterval(intervalId);
             resolution();
-          } else
-          ; // wait some more (it typically takes 5 ms to populate the treesConfiguration structure)
+          } else {
+          console.log('treeConfiguration is not yet available');
+            ; // wait some more (it typically takes 5 ms to populate the treesConfiguration structure)
+          }
         }
-        const intervalId = setInterval(testAvailability, 1);
+        const intervalId = setInterval(testAvailability, 100);
       });
     treesConfigurationIsNowAvailable.then( ()=> {
       const promise = treeOverlays(this.props.treesConfigurationContext.treesConfiguration);
@@ -333,6 +343,7 @@ class Map extends React.Component {
           this.clickableLayers.push(layerGroup);
           this.addClickListenersToMarkersOnLayer(layerGroup);
           this.layersControl.addOverlay(layerGroup, layerName);
+          console.log('bab');
         }
       });
     }).catch( (v) => {

@@ -63,6 +63,7 @@ import a.b.html.NoHeaderFoundException;
 import a.b.html.MoreThanOneHeaderFoundException;
 import a.b.html.AuthHeaderExceptionUnrecBearerFormat;
 import a.b.html.AuthHeaderExceptionMoreThanOneBearerToken;
+import a.b.html.NoBearerAuthHeaderException;
 
 public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
     
@@ -127,67 +128,53 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
                                        , klass.getName()));
             return;
         }
-
+        String accessToken = null;
         try {
-            final String accessToken = BearerAuthorizationUtil.getAccessTokenFromRequest(logger, request);
-            if (accessToken == null) {
-                try {
-                    final String header = HTTPHeaderUtil.getBearerAuthorizationHeader(logger, request);
-
-                    abortUnauthorizedRequest(requestContext
-                                             , Response.Status.FORBIDDEN
-                                             , new AbortResponse(BearerAuthorizationFailureMode.NO_BEARER_TOKEN
-                                                                 , String.format("no bearer token found in Auth header: [%s]", header)
-                                                                 , (String) null));
-                } catch (NoHeaderFoundException | MoreThanOneHeaderFoundException e) {
-                    Assert.fail(String.format("impossible to throw an exception of type [%s] or type [%s] at this point"
-                                              , NoHeaderFoundException.class.getName()
-                                              , MoreThanOneHeaderFoundException.class.getName()));
-                }
-            } else {
-                // must match the value in the webmvc-login app
-                final String secretKeySpecS = "eyJhbGdvcml0aG0iOiJIbWFjU0hBMjU2IiwiZW5jb2RlZEtleSI6InhUMzQ4ZWlXTmMvTVhoeE5ucXU5bG5ZUVBRdVB0WWlQbVM1UGpoc2wrY1FcdTAwM2QifQ==";
-                try {
-                    final Claims claims = JWTUtil.verifyJWS(secretKeySpecS, accessToken);
-                    final String installation = Installation.getFromClaims(claims);
-                    final String username     = claims.getSubject();
-
-                    final IDBFacade dbFacade = ( (JaxRsApplication) _app).dbFacade;
-
-                    final Set<Privillege> privilleges = dbFacade.getPrivilleges(installation, username);
-
-                    if (dbFacade.arePrivillegesSufficient(privilleges, klass, method)) {
-                        Installation.setInContainerRequestContext(requestContext, installation);
-                        return;
-                    } else {
-                        abortUnauthorizedRequest(requestContext
-                                                 , Response.Status.FORBIDDEN
-                                                 , new AbortResponse(BearerAuthorizationFailureMode.INSUFFICIENT_PRIVILEGES
-                                                                     , String.format("privilleges [%s] are not sufficient for %s::%s"
-                                                                                     , Joiner.on(", ").join(Privillege.toStrings(privilleges))
-                                                                                     , klass
-                                                                                     , method)
-                                                                     , (String) null));
-                    }
-
-                } catch (final Throwable t) {
-                    final String msg = String.format("JWT Bearer %s access token [%s] was not verified. Error msg is [%s]"
-                                                     , HttpHeaders.AUTHORIZATION
-                                                     , accessToken
-                                                     , t.getMessage());
-                    abortUnauthorizedRequest(requestContext
-                                             , Response.Status.FORBIDDEN
-                                             , new AbortResponse(BearerAuthorizationFailureMode.JWT_VERIFICATION_FAILED
-                                                                 , msg
-                                                                 , Throwables.getStackTraceAsString(t)));
-                }
-            }
-        } catch (NoHeaderFoundException | MoreThanOneHeaderFoundException | AuthHeaderExceptionUnrecBearerFormat | AuthHeaderExceptionMoreThanOneBearerToken e) {
+            accessToken = BearerAuthorizationUtil.getAccessTokenFromRequest(logger, request);
+        } catch (NoHeaderFoundException
+                 | MoreThanOneHeaderFoundException
+                 | AuthHeaderExceptionUnrecBearerFormat
+                 | AuthHeaderExceptionMoreThanOneBearerToken
+                 | NoBearerAuthHeaderException e) {
             abortUnauthorizedRequest(requestContext
                                      , Response.Status.FORBIDDEN
                                      , new AbortResponse(BearerAuthorizationFailureMode.fromHeaderExceptionClass(e.getClass())
                                                          , e.getMessage()
-                                                         , (String) null));            
+                                                         , Throwables.getStackTraceAsString(e)));
+        }
+        Assert.assertNotNull(accessToken);
+        try {
+
+            final ConnectionInfo connInfo = ClaimsUtil.getConnInfoFromAccessToken(accessToken);
+
+            final IDBFacade dbFacade = ( (JaxRsApplication) _app).dbFacade;
+
+            final Set<Privillege> privilleges = dbFacade.getPrivilleges(connInfo.installation, connInfo.username);
+
+            if (dbFacade.arePrivillegesSufficient(privilleges, klass, method)) {
+                Installation.setInContainerRequestContext(requestContext, connInfo.installation);
+                return;
+            } else {
+                abortUnauthorizedRequest(requestContext
+                                         , Response.Status.FORBIDDEN
+                                         , new AbortResponse(BearerAuthorizationFailureMode.INSUFFICIENT_PRIVILEGES
+                                                             , String.format("privilleges [%s] are not sufficient for %s::%s"
+                                                                             , Joiner.on(", ").join(Privillege.toStrings(privilleges))
+                                                                             , klass
+                                                                             , method)
+                                                             , (String) null));
+            }
+
+        } catch (final Throwable t) {
+            final String msg = String.format("JWT Bearer %s access token [%s] was not verified. Error msg is [%s]"
+                                             , HttpHeaders.AUTHORIZATION
+                                             , accessToken
+                                             , t.getMessage());
+            abortUnauthorizedRequest(requestContext
+                                     , Response.Status.FORBIDDEN
+                                     , new AbortResponse(BearerAuthorizationFailureMode.JWT_VERIFICATION_FAILED
+                                                         , msg
+                                                         , Throwables.getStackTraceAsString(t)));
         }
         return;
     }

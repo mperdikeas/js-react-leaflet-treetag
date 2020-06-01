@@ -58,6 +58,7 @@ const ModalRoot = ({geometryContext, modals, children}) => {
     const Y = 0.3*geometryContext.screen.height;
     const step = 20;
     const specificModals = modals.map( (modal, idx) => {
+      console.log(`bac - modal #{idx} is of type:`, modal);
       const {modalType, modalProps} = modal;
       const SpecificModal = MODAL_COMPONENTS[modalType]
       return <SpecificModal style={{top: Y+idx*step, left: X+idx*step}} key={idx} {...modalProps}/>

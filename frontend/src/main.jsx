@@ -40,7 +40,7 @@ function doRender() {
           <GeometryContextProvider>
             <BrowserRouter>
               <App/>
-            </BrowserRouter>              
+            </BrowserRouter>
           </GeometryContextProvider>
         </TreeConfigurationContextProvider>
       </LoginContextProvider>
