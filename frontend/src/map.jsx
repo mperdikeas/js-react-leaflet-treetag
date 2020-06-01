@@ -52,7 +52,7 @@ import {ota_Callicrates, treeOverlays} from './tree-markers.js';
 
 import {ATHENS, DEFAULT_ZOOM} from './constants/map-constants.js';
 
-import {MDL_NOTIFICATION} from './constants/modal-types.js';
+import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS} from './constants/modal-types.js';
 
 
 
@@ -104,9 +104,11 @@ const mapDispatchToProps = (dispatch) => {
  *
  */
 const mergeProps = (stateProps, {dispatch}) => {
+  const pleaseWaitWhileAppIsLoading = <span>please wait while fetching map data &hellip; </span>;
   return Object.assign({},
                        {
                          ...stateProps
+                         , pleaseWaitWhileAppIsLoading: ()=>dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: pleaseWaitWhileAppIsLoading}))
                          , appIsDoneLoading: ()=> dispatch(appIsDoneLoading())
                          , updateCoordinates                 : (latlng)   => dispatch(updateMouseCoords(latlng))
                          , toggleTarget                      : (targetId) => dispatch(toggleTarget(targetId))
@@ -242,7 +244,8 @@ class Map extends React.Component {
   componentDidMount = () => {
 
 
-    
+    this.props.pleaseWaitWhileAppIsLoading();
+
     window.addEventListener    ('resize', this.handleResize);
     this.map = L.map('map-id', {
       center: ATHENS,
@@ -267,7 +270,6 @@ class Map extends React.Component {
 
     this.addLayerGroupsExceptPromisingLayers();
     this.addLayerGroupsForPromisingLayers();
-    console.log('bab - 0');
     this.installNewDrawWorkspace(new L.FeatureGroup());
 
     this.map.on('draw:created', (e) => {
@@ -343,7 +345,6 @@ class Map extends React.Component {
           this.clickableLayers.push(layerGroup);
           this.addClickListenersToMarkersOnLayer(layerGroup);
           this.layersControl.addOverlay(layerGroup, layerName);
-          console.log('bab');
         }
       });
     }).catch( (v) => {

@@ -54,13 +54,10 @@ export default function App() {
 }
 
 const PrivateRoute = wrapContexts(function ({ children, ...rest }) {
-  console.log('inside private route');
-  console.log(rest);
   return (
     <Route
       {...rest}
         render={function ({ location }) {
-            console.log(`inside render of private route, username is ${rest.loginContext.username}`);
             if (rest.loginContext.username)
               return children;
             else return (

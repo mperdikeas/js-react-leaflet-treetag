@@ -16,27 +16,25 @@ export default function checkCredentials(redirectTo, history, updateLogin) {
              * in trying to get the user
              */
             dispatch(clearModal());
+        } else {
+            const url = '/getUser';
+            axiosAuth.get(url).then(res => {
+                dispatch(clearModal());
+                if (res.data.err != null) {
+                    assert.fail(res.data.err);
+                } else {
+                    const {installation, username} = res.data.t;
+                    updateLogin(username);
+                    history.replace(redirectTo);
+                }
+            }).catch( err => {
+                if (err.response.status === 403) // in case the JWT token has expired, the back-end code responds with 403 
+                    dispatch(clearModal());
+                else {
+                    console.log(err);
+                    assert.fail(`unexpected status: [${err.response.status}]`);
+                }
+            });
         }
-        const url = '/getUser';
-        axiosAuth.get(url).then(res => {
-            console.error(res.data);
-            if (res.data.err != null) {
-                console.log('bac getUser API call error');
-                assert.fail(res.data.err);
-            } else {
-                console.log('bac getUser API call success');
-                console.log(res.data);
-                const {installation, username} = res.data.t;
-                updateLogin(username);
-                // not sure what to do here ..
-                // assert.fail('unhandled branch');
-                history.replace(redirectTo);
-            }
-        }).catch( err => {
-            console.log('bac getUser exception');
-            console.log(err);
-            console.log(JSON.stringify(err));
-            dispatch(clearModal());
-        });
     };
 }

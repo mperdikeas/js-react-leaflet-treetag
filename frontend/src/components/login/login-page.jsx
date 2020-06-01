@@ -52,7 +52,6 @@ class LoginPage extends React.Component {
   render = () => {
     const referrer = this.getFrom();
     const { history } = this.props;
-    console.log(`bac login page from ${referrer}`);
 
     return (
       <div style={{display: 'flex'
