@@ -1,16 +1,14 @@
 
-export function modalLoginInProgress(state) {
-    const rv = {
-        toasts               : toastReducer                (state.toasts, action),
-        latlng               : mouseCoordsReducer          (state.latlng, action),
-        targetId             : toggleTargetReducer         (state.targetId, action),
-        modals               : modalReducer                (state.modals, action),
-        maximizedInfoPanel   : maximizedInfoPanelReducer   (state.maximizedInfoPanel, action),
-        paneToOpenInfoPanel  : paneToOpenInfoPanelReducer  (state.paneToOpenInfoPanel, action),
-        treeInfo             : treeInfoReducer             (state.treeInfo, action)
-    };
-    return rv;
+export function treeInfoIsBeingUpdated(state) {
+    if (state.targetId===null) {
+        return false;
+    } else {
+        if (state.treeInfo.original===null) {
+            return true;
+        } else {
+            return (state.targetId !== state.treeInfo.original.id);
+        }
+    }
 };
 
 
-export default rootReducer;

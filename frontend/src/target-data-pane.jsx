@@ -70,7 +70,7 @@ class TargetDataPane extends React.Component {
   }
 
   render() {
-    assert.exists(this.props.treeInfo);
+    assert.exists(this.props.treeInfo, 'target-data-pane.jsx::render');
     console.log('tree data follows:');
     console.log(this.props.treeInfo);
     console.log('---------------------');

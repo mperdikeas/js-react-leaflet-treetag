@@ -43,6 +43,8 @@ import {possiblyInsufPrivPanicInAnyCase, isInsufficientPrivilleges} from './util
 
 import {GSN, globalGet} from './globalStore.js';
 
+import {treeInfoIsBeingUpdated} from './redux/selectors.js';
+
 const mapStateToProps = (state) => {
   return {
     maximizedInfoPanel: state.maximizedInfoPanel
@@ -51,6 +53,7 @@ const mapStateToProps = (state) => {
     , tab: state.paneToOpenInfoPanel
     , treeInfo: state.treeInfo.current
     , modalLoginInProgress: ()=>{throw 'xxx';}
+    , treeInfoIsBeingUpdated: treeInfoIsBeingUpdated(state)
   };
 };
 
@@ -88,10 +91,7 @@ class TreeInformationPanel extends React.Component {
 
   getInitialState = () => {
     return {
-      serverCallInProgress: LOADING_TREE_DATA
-//      , treeData: null
-//      , treeDataOriginal: null
-      , error: null
+      error: null
     };
   }
 
@@ -133,7 +133,6 @@ class TreeInformationPanel extends React.Component {
   fetchData = () => {
     const url = `/feature/${this.props.targetId}/data`;
     console.log(`fetchData, axios URL is: ${url}`);
-    this.setState({serverCallInProgress: LOADING_TREE_DATA});
     axiosAuth.get(url, {cancelToken: this.source.token}
     ).then(res => {
       // corr-id: SSE-1585746250
@@ -141,19 +140,12 @@ class TreeInformationPanel extends React.Component {
       const {t, err} = res.data;
       console.log(t);
       if (err===null) {
-        console.log('error is null');
         this.props.setTreeInfoOriginal(t);
-        this.setState({serverCallInProgress: null, error: null});
         // TODO: maybe the serverCallInProgress should also be part of the redux store
       } else {
-        console.error('error is NOT null');
-
-        //   , treeData: null
-        // , treeDataOriginal: null
-
         this.props.setTreeInfoOriginal(null);
-        this.setState({ serverCallInProgress: null
-                      , error: {message: `server-side error: ${err.message}`
+        this.setState({/* serverCallInProgress: null
+                      , */error: {message: `server-side error: ${err.message}`
                               , details: err.strServerTrace}});
       }
     }).catch( err => {
@@ -167,29 +159,21 @@ class TreeInformationPanel extends React.Component {
           case 'JWT-verif-failed':
             this.props.displayModalLogin( ()=>{this.setState({error: null}); this.fetchData();} );
             this.props.setTreeInfoOriginal(null);
-            this.setState({serverCallInProgress: LOGGING_IN
-//                         , treeData: null
-  //                       , treeDataOriginal: null
-                         , error: {message: `JWT verif. failed. Server message is: [${msg}] - waiting for user login`
+            this.setState({error: {message: `JWT verif. failed. Server message is: [${msg}] - waiting for user login`
                                  , details: details}});
 
             break;
           default:
             this.props.setTreeInfoOriginal(null);
-            this.setState({serverCallInProgress: null
-//                         , treeData: null
-  //                       , treeDataOriginal: null
-                         , error: {message: `unexpected error code: ${code}`
+            this.setState({error: {message: `unexpected error code: ${code}`
                                  , details: msg}});
 
         }
       } else {
         this.props.setTreeInfoOriginal(null);
-        this.setState({serverCallInProgress: null
-    //                 , treeData: null
-      //               , treeDataOriginal: null
-                     , error: {message: 'unexpected error - likely a bug'
-                             , details: JSON.stringify(err)}});
+        this.setState({
+          error: {message: 'unexpected error - likely a bug'
+                , details: JSON.stringify(err)}});
 
       }
     }) // catch
@@ -211,7 +195,7 @@ class TreeInformationPanel extends React.Component {
     console.log(this.props.treeInfo);
     console.log(JSON.stringify(this.props.treeInfo));    
     // the post cannot be cancelled so we don't bother with a cancel token
-    this.setState({serverCallInProgress: SAVING_TREE_DATA});
+//    this.setState({serverCallInProgress: SAVING_TREE_DATA});
     this.props.displayModalSavingTreeData();
     const self = this;
     axiosAuth.post(`/feature/${this.props.targetId}/data`, this.props.treeInfo).then(res => {
@@ -386,10 +370,7 @@ class TreeInformationPanel extends React.Component {
         <div style={{color: 'red'}}>{JSON.stringify(this.state.error)}</div>
         </>
       );
-    else if (this.state.serverCallInProgress === LOGGING_IN) {
-      return <div>user is logging in &hellip;</div>;
-    }
-    else if (this.state.serverCallInProgress  === LOADING_TREE_DATA) {
+    else if (this.props.treeInfoIsBeingUpdated) {
       return <div>querying the server for tree {this.props.targetId} &hellip;</div>;
     }
     else {
