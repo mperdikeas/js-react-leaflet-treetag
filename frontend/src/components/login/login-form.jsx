@@ -12,8 +12,8 @@ import {MDL_USERNAME_REMINDER} from '../../constants/modal-types.js';
 const LinkEventKeys = {FORGOT_USERNAME: 'forgot-username'
                      , FORGOT_PASSWORD: 'forgot-password'};
 
-import {displayModal} from '../../actions/index.js';
-import login          from '../../actions/login.js';
+import {displayModal} from '../../redux/actions/index.js';
+import login          from '../../redux/actions/login.js';
 
 
 

@@ -3,7 +3,7 @@ import {CHANGE_TILE_PROVIDER
         , DISPLAY_MODAL
         , CLEAR_MODAL
         , TOGGLE_MAXIMIZE_INFO_PANEL
-        , UPDATE_TARGET} from '../constants/action-types.js';
+        , UPDATE_TARGET} from '../actions/action-types.js';
 
 const assert = require('chai').assert;
 

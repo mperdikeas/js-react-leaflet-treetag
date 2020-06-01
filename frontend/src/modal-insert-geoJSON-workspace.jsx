@@ -13,7 +13,7 @@ import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
 
 // redux
 import {  connect   } from 'react-redux';
-import { clearModal } from './actions/index.js';
+import { clearModal } from './redux/actions/index.js';
 
 import {globalGet, GSN} from './globalStore.js';
 

@@ -15,7 +15,7 @@ import wrapContexts                            from './context/contexts-wrapper.
 
 // REDUX
 import { connect }          from 'react-redux';
-import {changeTileProvider} from './actions/index.js';
+import {changeTileProvider} from './redux/actions/index.js';
 
 
 const mapStateToProps = (state) => {

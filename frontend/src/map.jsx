@@ -60,7 +60,7 @@ import { connect }          from 'react-redux';
 import {appIsDoneLoading
       , updateMouseCoords
       , displayModal
-      , toggleTarget}  from './actions/index.js';
+      , toggleTarget}  from './redux/actions/index.js';
 
 
 import TreeCountStatistic from './tree-count-statistic.js';

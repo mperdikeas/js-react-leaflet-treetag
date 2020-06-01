@@ -2,7 +2,7 @@ import {SET_TREE_INFO_ORIGINAL
         , SET_TREE_INFO
         , SET_TREE_COORDS
         , REVERT_TREE_INFO
-        , REVERT_TREE_COORDS}  from '../constants/action-types.js';
+        , REVERT_TREE_COORDS}  from '../actions/action-types.js';
 
 
 export default (state = {original: null, current: null}, action) => {

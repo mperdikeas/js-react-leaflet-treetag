@@ -23,7 +23,7 @@ import {sca_fake_return} from './util/util.js';
 import { connect } from 'react-redux';
 
 import {MODAL_LOGIN} from './constants/modal-types.js';
-import {displayModal} from './actions/index.js';
+import {displayModal} from './redux/actions/index.js';
 
 import {LOGGING_IN, GETTING_NUM_OF_PHOTOS, GETTING_PHOTO, DELETING_PHOTO} from './constants/target-photo-pane-server-call-types.js';
 

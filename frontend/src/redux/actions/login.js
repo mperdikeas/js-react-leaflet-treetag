@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
-import {storeAccessToken} from '../access-token-util.js';
-import {axiosPlain} from '../axios-setup.js';
+import {storeAccessToken} from '../../access-token-util.js';
+import {axiosPlain} from '../../axios-setup.js';
 
 import { clearModal } from './index.js';
 

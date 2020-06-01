@@ -14,11 +14,11 @@ import {APP_IS_DONE_LOADING
         , SET_TREE_COORDS_ORIGINAL
         , SET_TREE_COORDS
         , REVERT_TREE_COORDS
-       } from '../constants/action-types.js';
+       } from './action-types.js';
 
-import {isValidModalType} from '../constants/modal-types.js';
+import {isValidModalType} from '../../constants/modal-types.js';
 
-import {CT_UNIT} from '../constants.js';
+import {CT_UNIT} from '../../constants.js';
 
 export function appIsDoneLoading() {
     return {type: APP_IS_DONE_LOADING, payload: null};

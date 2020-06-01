@@ -1,5 +1,5 @@
-import {INFORMATION}                 from '../constants/information-panel-panes.js';
-import {SET_PANE_TO_OPEN_INFO_PANEL} from '../constants/action-types.js';
+import {INFORMATION}                 from '../../constants/information-panel-panes.js';
+import {SET_PANE_TO_OPEN_INFO_PANEL} from '../actions/action-types.js';
 
 export default (state = INFORMATION, action) => {
     switch (action.type) {

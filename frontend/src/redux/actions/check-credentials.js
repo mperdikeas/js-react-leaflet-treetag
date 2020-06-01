@@ -1,11 +1,10 @@
 const assert = require('chai').assert;
-import {storeAccessToken} from '../access-token-util.js';
-import {axiosAuth} from '../axios-setup.js';
+import {getAccessToken} from '../../access-token-util.js';
+import {axiosAuth} from '../../axios-setup.js';
 
-import {getAccessToken} from '../access-token-util.js';
 
 import {displayModal, clearModal } from './index.js';
-import {MDL_NOTIFICATION_NO_DISMISS} from '../constants/modal-types.js';
+import {MDL_NOTIFICATION_NO_DISMISS} from '../../constants/modal-types.js';
 
 export default function checkCredentials(redirectTo, history, updateLogin) {
     console.log(`checkCredentials(${JSON.stringify(redirectTo)}`);

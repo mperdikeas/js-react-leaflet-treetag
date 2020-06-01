@@ -38,9 +38,8 @@ const MODAL_COMPONENTS = {
 
 
 
-// redux
 import {  connect   }              from 'react-redux';
-import { clearModal, addGeometry } from './actions/index.js';
+import { clearModal, addGeometry } from './redux/actions/index.js';
 
 const mapStateToProps = (state) => {
   return state;

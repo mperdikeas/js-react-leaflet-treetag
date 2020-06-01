@@ -12,11 +12,8 @@ import SynelixisLogo from '../../resources/synelixis-logo-300x66.png';
 import wrapContexts from '../../context/contexts-wrapper.jsx';
 
 
-
-// REDUX
 import { connect }          from 'react-redux';
-import checkCredentials     from '../../actions/check-credentials.js';
-
+import checkCredentials     from '../../redux/actions/check-credentials.js';
 
 
 

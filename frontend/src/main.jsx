@@ -18,7 +18,7 @@ import TreeConfigurationContextProvider  from './context/trees-configuration-con
 import GeometryContextProvider           from './context/geometry-context.jsx'
 
 import { Provider }             from "react-redux";
-import store                    from './store/index.js';
+import store                    from './redux/store/index.js';
 
 import 'leaflet-draw';
 

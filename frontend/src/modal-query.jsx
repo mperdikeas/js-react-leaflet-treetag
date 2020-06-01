@@ -12,7 +12,7 @@ import {  connect   } from 'react-redux';
 import {storeAccessToken} from './access-token-util.js';
 import wrapContexts from './context/contexts-wrapper.jsx';
 
-import { displayModal, clearModal, addToast } from './actions/index.js';
+import { displayModal, clearModal, addToast } from './redux/actions/index.js';
 import {MDL_NOTIFICATION} from './constants/modal-types.js';
 
 import ModalQueryForm from './modal-query-form.jsx';

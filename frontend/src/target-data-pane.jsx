@@ -13,7 +13,7 @@ import {IntegerDataFieldFactory
       , TextAreaDataFieldFactory} from './data-field-controls.jsx';
 
 
-import {revertTreeInfo} from './actions/index.js';
+import {revertTreeInfo} from './redux/actions/index.js';
 
 const mapStateToProps = (state) => {
   return {

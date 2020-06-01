@@ -25,7 +25,7 @@ import {displayModal
       , toggleMaximizeInfoPanel
       , setPaneToOpenInfoPanel
       , setTreeInfo
-      , setTreeInfoOriginal}  from './actions/index.js';
+      , setTreeInfoOriginal}  from './redux/actions/index.js';
 import {INFORMATION, PHOTOS, HISTORY, ADJUST} from './constants/information-panel-panes.js';
 import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS, MODAL_LOGIN} from './constants/modal-types.js';
 
@@ -50,6 +50,7 @@ const mapStateToProps = (state) => {
     , targetIsDirty: JSON.stringify(state.treeInfo.original)!==JSON.stringify(state.treeInfo.current)
     , tab: state.paneToOpenInfoPanel
     , treeInfo: state.treeInfo.current
+    , modalLoginInProgress: ()=>{throw 'xxx';}
   };
 };
 

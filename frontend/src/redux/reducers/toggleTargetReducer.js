@@ -1,4 +1,4 @@
-import {TOGGLE_TARGET} from '../constants/action-types.js';
+import {TOGGLE_TARGET} from '../actions/action-types.js';
 
 const assert = require('chai').assert;
 

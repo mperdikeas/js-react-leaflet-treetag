@@ -4,10 +4,10 @@ const React = require('react');
 
 import {APP_IS_DONE_LOADING
         , DISPLAY_MODAL
-        , CLEAR_MODAL} from '../constants/action-types.js';
+        , CLEAR_MODAL} from '../actions/action-types.js';
 
 import {MDL_NOTIFICATION_NO_DISMISS
-        , MODAL_LOGIN} from '../constants/modal-types.js';
+        , MODAL_LOGIN} from '../../constants/modal-types.js';
 
 export default (modals = [/*{modalType: MODAL_LOGIN, modalProps: null} */
     //,

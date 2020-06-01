@@ -13,7 +13,7 @@ import {Athens} from './tree-markers.js';
 import {possiblyInsufPrivPanicInAnyCase, isInsufficientPrivilleges} from './util-privilleges.js';
 
 import {MDL_NOTIFICATION} from './constants/modal-types.js';
-import {displayModal, setTreeCoords, revertTreeCoords} from './actions/index.js';
+import {displayModal, setTreeCoords, revertTreeCoords} from './redux/actions/index.js';
 
 import wrapContexts from './context/contexts-wrapper.jsx';
 

@@ -11,7 +11,7 @@ import {axiosAuth} from './axios-setup.js';
 const LinkEventKeys = {FORGOT_USERNAME: 'forgot-username'
                      , FORGOT_PASSWORD: 'forgot-password'};
 
-import {clearModal, displayModal} from './actions/index.js';
+import {clearModal, displayModal} from './redux/actions/index.js';
 
 import {connect} from 'react-redux';
 
