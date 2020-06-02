@@ -77,11 +77,12 @@ export function unsetOrFetch(targetId) {
         else {
             switch (getState().paneToOpenInfoPanel) {
             case INFORMATION:
+            case ADJUST:
                 dispatch(getFeatureData(targetId));
                 break;
             case PHOTOS:
             case HISTORY:
-            case ADJUST:
+
             default:
                 assert.fail(`unhandled pane: [${getState().paneToOpenInfoPanel}]`);
             }

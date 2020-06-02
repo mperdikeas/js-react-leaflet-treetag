@@ -28,8 +28,6 @@ import {addPopup} from './leaflet-util.js';
 import {haversineGreatCircleDistance, latitudeToMeters, longitudeToMeters} from './geodesy.js';
 
 const mapStateToProps = (state) => {
-  console.log(state.target.treeInfo.original);
-  console.log(state.target.treeInfo.current);
   const markerHasBeenDisplaced = (JSON.stringify(state.target.treeInfo.current.coords) !== JSON.stringify(state.target.treeInfo.original.coords));
   return {
     targetId: state.target.id
@@ -154,7 +152,6 @@ class TargetAdjustmentPane extends React.Component {
     addPopup(marker, treeConfig[markerInMainMap.options.kind].name.singular);
 
     marker.on('drag', (e) => {
-      console.log('marker drag event');
       const latlngs = [this.initialLatLngOfMarker(), e.target.getLatLng()];
       this.map.removeLayer(this.polyline);
       this.polyline = L.polyline(latlngs, {color: 'red'}).addTo(this.map);
@@ -165,7 +162,6 @@ class TargetAdjustmentPane extends React.Component {
         this.map.removeLayer(this.polyline);
       const latlngs = [this.initialLatLngOfMarker(), e.target.getLatLng()];
       this.polyline = L.polyline(latlngs, {color: 'red'}).addTo(this.map);
-      console.log(`marker drag event START coords are ${e.target.getLatLng()}`);
     });
     marker.on('dragend', (e) => {
       console.log(`marker drag event END coords are ${e.target.getLatLng()}`);
@@ -233,9 +229,7 @@ class TargetAdjustmentPane extends React.Component {
   }
 
   render() {
-    console.warn('abc-render');
     const initialLatLng = this.initialLatLngOfMarker();
-    console.warn('abc-render - NED');
     const {latitude: lat, longitude: lng} = this.props.currentLatLng;
     const deltaLat = initialLatLng.lat - lat;
     const deltaLng = initialLatLng.lng - lng;
