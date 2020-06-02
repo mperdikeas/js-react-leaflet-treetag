@@ -21,6 +21,8 @@ import {displayModal
       , setTreeInfoCurrent
       , setTreeInfoOriginal}  from './redux/actions/index.js';
 
+import saveFeatureData from './redux/actions/save-feature-data.jsx';
+
 import {targetIsDirty} from './redux/selectors.js';
 
 const mapStateToProps = (state) => {
@@ -38,6 +40,7 @@ const mapDispatchToProps = (dispatch) => {
     revertTreeInfo        : ()       => dispatch(revertTreeInfo     ())
     , setTreeInfoCurrent: (treeInfo) => dispatch(setTreeInfoCurrent (treeInfo))
     , setTreeInfoOriginal: (treeInfo) => dispatch(setTreeInfoOriginal(treeInfo))
+    , saveFeatureData: (treeInfo) => dispatch(saveFeatureData(treeInfo))
   };
 }
 
@@ -86,6 +89,13 @@ class TargetDataPane extends React.Component {
     this.updateTreeData(newTreeInfo);
   }
 
+  handleSubmit = (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    this.props.saveFeatureData(this.props.treeInfo);
+  }
+
+
   render() {
     assert.exists(this.props.treeInfo, 'target-data-pane.jsx::render');
     console.log('tree data follows:');
@@ -113,7 +123,7 @@ class TargetDataPane extends React.Component {
       <div>
         Data for tree {this.props.targetId} follow
       </div>
-      <Form noValidate onSubmit={this.props.handleSubmit}>
+      <Form noValidate onSubmit={this.handleSubmit}>
         <this.IntegerDataField  name='yearPlanted'  label='έτος φύτευσης' value={yearPlanted} />
         <this.SelectDataField   name='healthStatus' label='Υγεία'         value={healthStatus} codeToName={this.props.treesConfigurationContext.healthStatuses}/>
         <this.IntegerDataField  name='heightCm'            label='Ύψος (cm)'              value={heightCm} />

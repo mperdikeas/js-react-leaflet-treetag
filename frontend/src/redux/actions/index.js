@@ -123,6 +123,10 @@ export function setTreeInfoCurrent(treeInfo) {
     return {type: SET_TREE_INFO_CURRENT, payload: treeInfo};
 }
 
+export function setTreeInfoOriginal(treeInfo) {
+    return {type: SET_TREE_INFO_ORIGINAL, payload: treeInfo};
+}
+
 export function revertTreeInfo() {
     return {type: REVERT_TREE_INFO, payload: null};
 }
