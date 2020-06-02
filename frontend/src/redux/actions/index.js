@@ -30,7 +30,11 @@ import {isValidModalType} from '../../constants/modal-types.js';
 
 import {CT_UNIT} from '../../constants.js';
 
+import {cancelToken} from '../selectors.js';
 
+import {INFORMATION, PHOTOS, HISTORY, ADJUST}                 from '../../constants/information-panel-panes.js';
+
+import {OP_NO_LONGER_RELEVANT} from '../../constants/axios-constants.js';
 
 export function appIsDoneLoading() {
     return {type: APP_IS_DONE_LOADING, payload: null};
@@ -64,17 +68,21 @@ export function toggleTargetDELME(targetId) {
     return {type: TOGGLE_TARGET, payload: {targetId}};
 };
 
-export function fetchTreeInfo(targetId) {
 
-};
-
-import {INFORMATION, PHOTOS, HISTORY, ADJUST}                 from '../../constants/information-panel-panes.js';
 
 export function unsetOrFetch(targetId) {
     return (dispatch, getState) => {
-        if (getState().targetId === targetId)
+        if (getState().target.id === targetId) {
+            /* If there are any pending axios requests we have to cancel them.
+             */
+            const cancelTokenV = cancelToken(getState());
+            if (cancelTokenV) {
+                cancelTokenV.cancel(OP_NO_LONGER_RELEVANT);
+                console.log('cancelled axios GET request due to unsetting of target');
+            } else
+                console.log('no cancel token found');
             dispatch(unsetTarget());
-        else {
+        } else {
             switch (getState().paneToOpenInfoPanel) {
             case INFORMATION:
             case ADJUST:
