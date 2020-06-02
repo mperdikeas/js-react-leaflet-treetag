@@ -462,7 +462,8 @@ class Map extends React.Component {
       const coords = e.target.getLatLng();
 
       if (oldTargetId != targetId)
-        installNewHighlightingMarker(coords, targetId);      
+        installNewHighlightingMarker(coords, targetId);
+      console.log('abd in map: about to toggle target');
       this.props.toggleTargetAndOptionallyFetchData(e.target.options.targetId);
     }
   }

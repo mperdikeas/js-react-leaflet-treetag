@@ -64,7 +64,9 @@ export function toggleTargetAndOptionallyFetchData(targetId) {
         if (getState().targetId === targetId)
             dispatch(toggleTarget(targetId));
         else {
+            console.log(`abd - case 2`);
             dispatch(toggleTarget(targetId));
+            console.log(`abd - getting feature data for target ${targetId}`);
             dispatch(getFeatureData(targetId));
         }
     };
