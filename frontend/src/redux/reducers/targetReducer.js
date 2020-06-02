@@ -61,11 +61,16 @@ export default (state = {id: null, treeInfo: null}, action) => {
                                                         , {original: JSON.parse(JSON.stringify(action.payload))})});
     }        
     case SET_TREE_COORDS: {
-        const currentDeepCopy = (state.treeInfo.current)==={}?{}:JSON.parse(JSON.stringify(state.treeInfo.current));
-        const newCurrent = Object.assign(currentDeepCopy, {coords: JSON.parse(JSON.stringify(action.payload))});
+        console.log('setting tree coords');
+//        const currentDeepCopy = (state.treeInfo.current)==={}?{}:JSON.parse(JSON.stringify(state.treeInfo.current));
+  //      const newCurrent = Object.assign(currentDeepCopy, {coords: JSON.parse(JSON.stringify(action.payload))});
         return Object.assign({}
                              , state
-                             , {treeInfo: {current: newCurrent}});
+                             , {treeInfo: Object.assign({}
+                                                        , state.treeInfo
+                                                        , {current: Object.assign({}
+                                                                                  , state.treeInfo.current
+                                                                                  , {coords: action.payload})})});
     }
     case REVERT_TREE_INFO: {
         console.log(state.treeInfo.current);

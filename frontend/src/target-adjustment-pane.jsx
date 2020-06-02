@@ -15,6 +15,8 @@ import {possiblyInsufPrivPanicInAnyCase, isInsufficientPrivilleges} from './util
 import {MDL_NOTIFICATION} from './constants/modal-types.js';
 import {displayModal, setTreeCoords, revertTreeCoords} from './redux/actions/index.js';
 
+import saveFeatureData from './redux/actions/save-feature-data.jsx';
+
 import wrapContexts from './context/contexts-wrapper.jsx';
 
 import {ATHENS, DEFAULT_ZOOM} from './constants/map-constants.js';
@@ -26,12 +28,15 @@ import {addPopup} from './leaflet-util.js';
 import {haversineGreatCircleDistance, latitudeToMeters, longitudeToMeters} from './geodesy.js';
 
 const mapStateToProps = (state) => {
-  const markerHasBeenDisplaced = (JSON.stringify(state.treeInfo.current.coords) !== JSON.stringify(state.treeInfo.original.coords));
+  console.log(state.target.treeInfo.original);
+  console.log(state.target.treeInfo.current);
+  const markerHasBeenDisplaced = (JSON.stringify(state.target.treeInfo.current.coords) !== JSON.stringify(state.target.treeInfo.original.coords));
   return {
-    targetId: state.targetId
+    targetId: state.target.id
+    , treeInfo: state.target.treeInfo.current
     , markerHasBeenDisplaced
-    , originalLatLng: state.treeInfo.original.coords
-    , currentLatLng: state.treeInfo.current.coords
+    , originalLatLng: state.target.treeInfo.original.coords
+    , currentLatLng: state.target.treeInfo.current.coords
   };
 };
 
@@ -39,7 +44,8 @@ const mapDispatchToProps = (dispatch) => {
   const msgInsufPriv1 = 'ο χρήστης δεν έχει τα προνόμια για να εκτελέσει αυτήν την λειτουργία';
   const msgTreeDataHasBeenUpdated = targetId => `τα νέα δεδομένα για το δένδρο #${targetId} αποθηκεύτηκαν`;
   return {
-    displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
+    saveFeatureData: (treeInfo) => dispatch(saveFeatureData(treeInfo))
+    , displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
     , displayNotificationInsufPrivilleges: ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgInsufPriv1}))
     , displayTreeDataHasBeenUpdated: (targetId)=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataHasBeenUpdated(targetId)})) // TODO: what to do with this ?
     , setTreeCoords: ({lat, lng}) => dispatch(setTreeCoords({longitude: lng, latitude: lat}))
@@ -213,6 +219,11 @@ class TargetAdjustmentPane extends React.Component {
     }
   }
 
+  handleSubmit = (ev) => {
+    ev.preventDefault();
+    ev.stopPropagation();
+    this.props.saveFeatureData(this.props.treeInfo);
+  }
 
   revert = () => {
     assert.isOk(this.polyline);
@@ -246,8 +257,8 @@ class TargetAdjustmentPane extends React.Component {
             <Button disabled={! this.props.markerHasBeenDisplaced} style={{flexGrow: 0}} variant="secondary" onClick={this.revert}>
               Ανάκληση
             </Button>
-            <Button disabled={! this.props.markerHasBeenDisplaced} style={{flexGrow: 0}} variant="primary" onClick={this.props.handleSubmit}>
-              {this.props.savingTreeData?'Σε εξέλιξη...':'Αποθήκευση'}
+            <Button disabled={! this.props.markerHasBeenDisplaced} style={{flexGrow: 0}} variant="primary" onClick={this.handleSubmit}>
+              {'Αποθήκευση'}
             </Button>
           </ButtonGroup>
       </div>

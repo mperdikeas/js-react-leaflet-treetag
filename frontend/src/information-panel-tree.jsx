@@ -391,10 +391,7 @@ class TreeInformationPanel extends React.Component {
       switch (this.props.tab) {
         case INFORMATION:
           return (
-            <TargetDataPane
-                handleSubmit        = {this.handleSubmit}
-                savingTreeData      = {this.state.serverCallInProgress === SAVING_TREE_DATA}
-            />
+            <TargetDataPane />
           );
         case PHOTOS:
           return <TargetPhotoPane/>
@@ -403,10 +400,7 @@ class TreeInformationPanel extends React.Component {
             <TargetMetadataPane/>
           );
         case ADJUST: {
-          return <TargetAdjustmentPane
-                     handleSubmit        = {this.handleSubmit}
-                     savingTreeData      = {this.state.serverCallInProgress === SAVING_TREE_DATA}
-                 />;
+          return <TargetAdjustmentPane />;
         }
         default:
           assert.fail(`unhandled case [${this.props.tab}]`);

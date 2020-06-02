@@ -117,7 +117,6 @@ class TargetDataPane extends React.Component {
     console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~');
     console.log(this.props.treesConfigurationContext.healthStatuses);
     console.log('============================');
-    console.log('saving tree data is: '+this.props.savingTreeData);
     return (
       <>
       <div>
@@ -147,7 +146,7 @@ class TargetDataPane extends React.Component {
             Ανάκληση
           </Button>
           <Button disabled={! this.props.targetIsDirty} style={{flexGrow: 0}} variant="primary" type="submit">
-            {this.props.savingTreeData?'Σε εξέλιξη...':'Αποθήκευση'}
+            {'Αποθήκευση'}
           </Button>
         </ButtonGroup>
       </Form>
