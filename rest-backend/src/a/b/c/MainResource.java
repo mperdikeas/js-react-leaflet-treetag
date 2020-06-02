@@ -88,7 +88,7 @@ import a.b.c.constants.Installation;
 
 import a.b.html.BearerAuthorizationUtil;
 
-
+import a.b.gson.GsonUtil;
 // To support the Singleton annotation in a Tomcat 8.5 container see: http://stackoverflow.com/a/19003725/274677
 //@Singleton
 // The above is commented as I am not using it in a JBoss deployment.
@@ -259,13 +259,20 @@ public class MainResource {
             logger.info(String.format("featureData is [%s]", featureData));
             TimeUnit.MILLISECONDS.sleep(2000);
 
-            // TODO: write a method to assert that the JSON object is stable
+
                 
             final TreeInfoWithId treeInfo = Globals.gson.fromJson(featureData, TreeInfoWithId.class);
+            Assert.assertTrue(String.format("internal representation deemed unstable for json: [%s] and class [%s]"
+                                              , featureData
+                                            , TreeInfoWithId.class.getName())
+                              , GsonUtil.isInternalizedRepresentationStable(logger, Globals.gson, featureData, treeInfo));
+
+            /*
             final String treeInfoJSON = Globals.gson.toJson(treeInfo);
             Assert.assertEquals("something's not right"
                                 , featureData
                                 , treeInfoJSON);
+            */
             final boolean valueUpdated = app.dbFacade.setTreeInfo(featureId, treeInfo);
             return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(valueUpdated))).build();
         } catch (Throwable t) {
@@ -291,13 +298,19 @@ public class MainResource {
             logger.info(String.format("featureData is [%s]", featureData));
             TimeUnit.MILLISECONDS.sleep(2000);
 
-            // TODO: write a method to assert that the JSON object is stable
                 
             final TreeInfo treeInfo = Globals.gson.fromJson(featureData, TreeInfo.class);
+
+            Assert.assertTrue(String.format("internal representation deemed unstable for json: [%s] and class [%s]"
+                                              , featureData
+                                            , TreeInfoWithId.class.getName())
+                              , GsonUtil.isInternalizedRepresentationStable(logger, Globals.gson, featureData, treeInfo));
+            /*            
             final String treeInfoJSON = Globals.gson.toJson(treeInfo);
             Assert.assertEquals("something's not right"
                                 , featureData
                                 , treeInfoJSON);
+            */
             final int key = app.dbFacade.createTree(treeInfo);
             return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(key))).build();
         } catch (Throwable t) {
