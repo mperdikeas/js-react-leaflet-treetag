@@ -44,6 +44,7 @@ import {msgTreeDataIsDirty, displayNotificationIfTargetIsDirty} from './common.j
 import {possiblyInsufPrivPanicInAnyCase, isInsufficientPrivilleges} from './util-privilleges.js';
 
 import {GSN, globalGet} from './globalStore.js';
+import {areEqualShallow} from './util/util.js';
 
 const mapStateToProps = (state) => {
   return {
@@ -52,14 +53,10 @@ const mapStateToProps = (state) => {
     , targetIsDirty: JSON.stringify(state.treeInfo.original)!==JSON.stringify(state.treeInfo.current)
     , tab: state.paneToOpenInfoPanel
     , treeInfo: state.treeInfo.current
-    , modalLoginInProgress: ()=>{throw 'xxx';}
     , fetchInProgress: state.treeInfo.fetchInProgress
   };
 };
 
-const mapDispatchToProps_delme = (dispatch) => {
-  return {dispatch};
-}
 
 const mapDispatchToProps = (dispatch) => {
   return {dispatch};
@@ -94,6 +91,10 @@ class TreeInformationPanel extends React.Component {
     this.state = this.getInitialState();
     this.source = CancelToken.source();
   }
+
+  shouldComponentUpdate(nextProps) {
+    return !areEqualShallow(this.props, nextProps);
+    }
 
 
   getInitialState = () => {
@@ -386,7 +387,7 @@ class TreeInformationPanel extends React.Component {
         </>
       );
     else if (this.props.fetchInProgress) {
-      console.log('abd  - a');
+      console.log('abd  - fetch in progress');
       return <div>querying the server for tree {this.props.targetId} &hellip;</div>;
     } else {
       console.log('abd  - b');
