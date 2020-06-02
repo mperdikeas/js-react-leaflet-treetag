@@ -32,7 +32,7 @@ import {OP_NO_LONGER_RELEVANT} from './constants/axios-constants.js';
   
 const mapStateToProps = (state) => {
   return {
-    targetId: state.targetId
+    targetId: state.target.id
   };
 };
 

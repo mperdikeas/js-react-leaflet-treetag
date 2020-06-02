@@ -64,10 +64,6 @@ export function unsetTarget() {
     return {type: UNSET_TARGET, payload: undefined};
 };
 
-export function toggleTargetDELME(targetId) {
-    return {type: TOGGLE_TARGET, payload: {targetId}};
-};
-
 
 
 export function unsetOrFetch(targetId) {
@@ -85,11 +81,11 @@ export function unsetOrFetch(targetId) {
         } else {
             switch (getState().paneToOpenInfoPanel) {
             case INFORMATION:
+            case HISTORY:
             case ADJUST:
                 dispatch(getFeatureData(targetId));
                 break;
             case PHOTOS:
-            case HISTORY:
 
             default:
                 assert.fail(`unhandled pane: [${getState().paneToOpenInfoPanel}]`);

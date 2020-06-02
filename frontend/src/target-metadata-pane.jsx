@@ -9,8 +9,8 @@ import { connect }          from 'react-redux';
 
 const mapStateToProps = (state) => {
   return {
-    targetId: state.targetId
-    , treeActions: (state.treeInfo.current===null)?null:state.treeInfo.current.treeActions
+    targetId: state.target.id
+    , treeActions: (state.target.treeInfo.current===null)?null:state.target.treeInfo.current.treeActions
   };
 };
 
