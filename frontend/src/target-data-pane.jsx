@@ -13,13 +13,21 @@ import {IntegerDataFieldFactory
       , TextAreaDataFieldFactory} from './data-field-controls.jsx';
 
 
-import {revertTreeInfo} from './redux/actions/index.js';
+import {displayModal
+      , clearModal
+      , revertTreeInfo
+      , toggleMaximizeInfoPanel
+      , setPaneToOpenInfoPanel
+      , setTreeInfoCurrent
+      , setTreeInfoOriginal}  from './redux/actions/index.js';
+
+import {targetIsDirty} from './redux/selectors.js';
 
 const mapStateToProps = (state) => {
   return {
-    targetIsDirty: JSON.stringify(state.treeInfo.original)!==JSON.stringify(state.treeInfo.current)
-    , targetId: state.targetId
-    , treeInfo: state.treeInfo.current
+    targetIsDirty: targetIsDirty(state)
+    , targetId: state.target.id
+    , treeInfo: state.target.treeInfo.current
   };
 };
 
@@ -27,7 +35,9 @@ const mapDispatchToProps = (dispatch) => {
   const msgInsufPriv1 = 'ο χρήστης δεν έχει τα προνόμια για να εκτελέσει αυτήν την λειτουργία';
   const msgTreeDataHasBeenUpdated = targetId => `τα νέα δεδομένα για το δένδρο #${targetId} αποθηκεύτηκαν`;
   return {
-    revertTreeInfo     : (treeInfo) => dispatch(revertTreeInfo     (treeInfo))
+    revertTreeInfo        : ()       => dispatch(revertTreeInfo     ())
+    , setTreeInfoCurrent: (treeInfo) => dispatch(setTreeInfoCurrent (treeInfo))
+    , setTreeInfoOriginal: (treeInfo) => dispatch(setTreeInfoOriginal(treeInfo))
   };
 }
 
@@ -52,8 +62,6 @@ class TargetDataPane extends React.Component {
       this.TextAreaDataField = TextAreaDataFieldFactory(this.handleChange);
     }
 
-    componentDidMount() {
-    }
 
 
 
@@ -63,10 +71,19 @@ class TargetDataPane extends React.Component {
     this.props.revertTreeInfo();
   }
 
+  updateTreeData = (treeInfo) => {
+    this.props.setTreeInfoCurrent(treeInfo);
+  }
+
+  setTreeInfoOriginal = (treeInfo) => {
+    this.props.setTreeInfoOriginal(treeInfo);
+  }
+
+
   handleChange = (fieldName, value) => {
     //    const newTreeData = {...this.props.treeData, [fieldName]: value};
     const newTreeInfo = {...this.props.treeInfo, [fieldName]: value};
-    this.props.updateTreeData(newTreeInfo);
+    this.updateTreeData(newTreeInfo);
   }
 
   render() {

@@ -5,7 +5,9 @@ import {axiosAuth} from '../../axios-setup.js';
 import {CancelToken} from 'axios';
 
 
-import {markGetFeatureInfoInProgress
+import {getTreeInfoInProgress
+      , getTreeInfoConcluded
+      , getTreeInfoSuccess
       , displayModal
       , clearModal
       , setTreeInfoOriginal
@@ -14,29 +16,32 @@ import {MODAL_LOGIN, MDL_NOTIFICATION_NO_DISMISS} from '../../constants/modal-ty
 
 import {OP_NO_LONGER_RELEVANT} from '../../constants/axios-constants.js';
 
+import {cancelToken} from '../selectors.js';
+
 export default function getFeatureData(id) {
   const source = CancelToken.source();
   return (dispatch, getState) => {
-    const url = `/feature/${id}/data`;
-    console.log(`fetchData, axios URL is: ${url}`);
-    if (getState().treeInfo.axiosSource) {
-      getState().treeInfo.axiosSource.cancel(OP_NO_LONGER_RELEVANT);
+    const cancelTokenV = cancelToken(getState());
+    if (cancelTokenV) {
+      cancelTokenV.cancel(OP_NO_LONGER_RELEVANT);
       console.log('abd cancelled previous pending request');
     }
 
-    dispatch (markGetFeatureInfoInProgress(source));
-    
+    dispatch (getTreeInfoInProgress(id, source));
+    const url = `/feature/${id}/data`;
+    console.log(`fetchData, axios URL is: ${url}`);
+
     axiosAuth.get(url, {cancelToken: source.token}
     ).then(res => {
+      dispatch(getTreeInfoConcluded());
       // corr-id: SSE-1585746250
       console.log(res.data);
       const {t, err} = res.data;
       console.log(t);
       if (err===null) {
         console.log('abd - obtained data, setting it');
-        dispatch( setTreeInfoOriginal(t) );
+        dispatch( getTreeInfoSuccess(t) );
       } else {
-        dispatch( markGetFeatureInfoFailed() );
         dispatch( displayModal(MDL_NOTIFICATION_NO_DISMISS,
                                {html: (<div>
   τ' αρχίδια μου κουνιούνται
@@ -56,18 +61,10 @@ export default function getFeatureData(id) {
         const {code, msg, details} = err.response.data;
         switch(code) {
           case 'JWT-verif-failed': {
-            dispatch( markGetFeatureInfoFailed() );
             dispatch( displayModal(MODAL_LOGIN, {followUpFunction: ()=>{dispatch(getFeatureData(id))}}));
-            //                                 dispatch( displayModalLogin( ()=>{this.setState({error: null}); this.fetchData();} );
-            //                                   this.props.setTreeInfoOriginal(null);
-            /*
-               this.setState({error: {message: `JWT verif. failed. Server message is: [${msg}] - waiting for user login`
-               , details: details}});
-             */
             break;
           }
           default: {
-            dispatch( markGetFeatureInfoFailed() );
             dispatch( displayModal(MDL_NOTIFICATION_NO_DISMISS,
                                    {html: (<div>
                                      <h1>
@@ -81,16 +78,10 @@ export default function getFeatureData(id) {
                                                     </p>
                                </div>
                                    )}));                               
-            /*
-               this.props.setTreeInfoOriginal(null);
-               this.setState({error: {message: `unexpected error code: ${code}`
-               , details: msg}});
-             */
           }
         }
       } else {
         console.log(err);
-        dispatch(markGetFeatureInfoFailed());
         dispatch( displayModal(MDL_NOTIFICATION_NO_DISMISS,
                                {html: (<div>
                                  <h1>
@@ -102,12 +93,6 @@ export default function getFeatureData(id) {
                                </div>
                                )}));                               
 
-        /*
-        this.props.setTreeInfoOriginal(null);
-        this.setState({
-          error: {message: 'unexpected error - likely a bug'
-                , details: JSON.stringify(err)}});
-        */
       }
     });
   }; // return (dispatch) =>

@@ -60,37 +60,23 @@ import { connect }          from 'react-redux';
 import {appIsDoneLoading
       , updateMouseCoords
       , displayModal
-      , toggleTarget
-      , toggleTargetAndOptionallyFetchData}  from './redux/actions/index.js';
+      , unsetOrFetch}  from './redux/actions/index.js';
 
 
 import TreeCountStatistic from './tree-count-statistic.js';
 
 import {msgTreeDataIsDirty, displayNotificationIfTargetIsDirty} from './common.jsx';
 
-
+import {targetIsDirty} from './redux/selectors.js';
 
 const mapStateToProps = (state) => {
-  if (state.treeInfo.original != null) {
-    assert.isOk(state.treeInfo.current);
-    if (false)
-    console.log(`xyw map:mapStateToProps original coords = ${JSON.stringify(state.treeInfo.original.coords)} current coords = ${JSON.stringify(state.treeInfo.current.coords)}`);
-  } else {
-    if (false)
-    console.log('xyw map:mapStateToProps treeInfo is null');
-    }
-
-  const targetIsDirty = JSON.stringify(state.treeInfo.original) !== JSON.stringify(state.treeInfo.current);
-  if (false)
-  console.log(`xyw targetIsDirty = ${targetIsDirty}`);
-  if (targetIsDirty) {
-    if (false)
-    console.log(`xyw a = [${JSON.stringify(state.treeInfo.original)}] b = [${JSON.stringify(state.treeInfo.current)}]`);
-    }
+  if ((state.target.treeInfo != null) && (state.target.treeInfo.original != null)) {
+    assert.isOk(state.target.treeInfo.current);
+  }
   return {
     targetId                       : state.targetId,
     tileProviderId                 : state.tileProviderId,
-    targetIsDirty
+    targetIsDirty: targetIsDirty(state)
   };
 };
 
@@ -112,7 +98,7 @@ const mergeProps = (stateProps, {dispatch}) => {
                          , pleaseWaitWhileAppIsLoading: ()=>dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: pleaseWaitWhileAppIsLoading}))
                          , appIsDoneLoading: ()=> dispatch(appIsDoneLoading())
                          , updateCoordinates                 : (latlng)   => dispatch(updateMouseCoords(latlng))
-                         , toggleTargetAndOptionallyFetchData : (targetId) => dispatch(toggleTargetAndOptionallyFetchData(targetId))
+                         , unsetOrFetch : (targetId) => dispatch(unsetOrFetch(targetId))
                          , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(stateProps.targetId)}))
                        });
 }
@@ -464,7 +450,7 @@ class Map extends React.Component {
       if (oldTargetId != targetId)
         installNewHighlightingMarker(coords, targetId);
       console.log('abd in map: about to toggle target');
-      this.props.toggleTargetAndOptionallyFetchData(e.target.options.targetId);
+      this.props.unsetOrFetch(e.target.options.targetId);
     }
   }
 

@@ -24,7 +24,7 @@ import {displayModal
       , clearModal
       , toggleMaximizeInfoPanel
       , setPaneToOpenInfoPanel
-      , setTreeInfo
+      , setTreeInfoCurrent
       , setTreeInfoOriginal}  from './redux/actions/index.js';
 import getFeatureData from './redux/actions/get-feature-data.jsx';
 import saveFeatureData from './redux/actions/save-feature-data.jsx';
@@ -46,14 +46,18 @@ import {possiblyInsufPrivPanicInAnyCase, isInsufficientPrivilleges} from './util
 import {GSN, globalGet} from './globalStore.js';
 import {areEqualShallow} from './util/util.js';
 
+import {targetIsDirty, targetAjaxReadInProgress} from './redux/selectors.js';
+
+
+
+
 const mapStateToProps = (state) => {
   return {
     maximizedInfoPanel: state.maximizedInfoPanel
-    , targetId: state.targetId
-    , targetIsDirty: JSON.stringify(state.treeInfo.original)!==JSON.stringify(state.treeInfo.current)
+    , targetId: state.target.id
+    , targetIsDirty: targetIsDirty(state)
     , tab: state.paneToOpenInfoPanel
-    , treeInfo: state.treeInfo.current
-    , fetchInProgress: state.treeInfo.fetchInProgress
+    , targetAjaxReadInProgress: targetAjaxReadInProgress(state)
   };
 };
 
@@ -79,8 +83,7 @@ const mergeProps = ( stateProps, {dispatch}) => {
     , toggleMaximizeInfoPanel: ()=>dispatch(toggleMaximizeInfoPanel())
     , setPaneToOpenInfoPanel: (pane) => dispatch(setPaneToOpenInfoPanel(pane))
     , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(stateProps.targetId)}))
-    , setTreeInfoOriginal: (treeInfo) => dispatch(setTreeInfoOriginal(treeInfo))
-    , setTreeInfo        : (treeInfo) => dispatch(setTreeInfo        (treeInfo))
+    , setTreeInfoCurrent: (treeInfo) => dispatch(setTreeInfoCurrent (treeInfo))
   };
 }
 
@@ -115,7 +118,7 @@ class TreeInformationPanel extends React.Component {
   }
 
   
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdateDELME(prevProps, prevState) {
     if (prevProps.targetId !== this.props.targetId) {
       console.log('cancelling pending requests due to new target');
 //      this.source.cancel(OP_NO_LONGER_RELEVANT);
@@ -127,15 +130,9 @@ class TreeInformationPanel extends React.Component {
 
   
   
-  updateTreeData = (treeInfo) => {
-    this.props.setTreeInfo(treeInfo);
-  }
 
 
 
-  setTreeInfoOriginal = (treeInfo) => {
-    this.props.setTreeInfoOriginal(treeInfo);
-  }
 
 
   fetchDataDELME = () => {
@@ -386,7 +383,7 @@ class TreeInformationPanel extends React.Component {
         <div style={{color: 'red'}}>{JSON.stringify(this.state.error)}</div>
         </>
       );
-    else if (this.props.fetchInProgress) {
+    else if (this.props.targetAjaxReadInProgress) {
       console.log('abd  - fetch in progress');
       return <div>querying the server for tree {this.props.targetId} &hellip;</div>;
     } else {
@@ -395,8 +392,6 @@ class TreeInformationPanel extends React.Component {
         case INFORMATION:
           return (
             <TargetDataPane
-                updateTreeData      = {this.updateTreeData}
-                setTreeInfoOriginal = {this.setTreeInfoOriginal}
                 handleSubmit        = {this.handleSubmit}
                 savingTreeData      = {this.state.serverCallInProgress === SAVING_TREE_DATA}
             />

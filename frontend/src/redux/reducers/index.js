@@ -9,22 +9,20 @@ const assert = require('chai').assert;
 
 import toastReducer                   from './toastReducer.js';
 import mouseCoordsReducer             from './mouseCoordsReducer.js';
-import toggleTargetReducer            from './toggleTargetReducer.js';
+import targetReducer                  from './targetReducer.js';
 import modalReducer                   from './modalReducer.js';
 import maximizedInfoPanelReducer      from './maximizedInfoPanelReducer.js';
 import paneToOpenInfoPanelReducer     from './paneToOpenInfoPanelReducer.js';
-import treeInfoReducer                from './treeInfoReducer.js';
 
 
 function rootReducer(state = {}, action) {
     const rv = {
         toasts               : toastReducer                (state.toasts, action),
         latlng               : mouseCoordsReducer          (state.latlng, action),
-        targetId             : toggleTargetReducer         (state.targetId, action),
+        target               : targetReducer               (state.target, action),
         modals               : modalReducer                (state.modals, action),
         maximizedInfoPanel   : maximizedInfoPanelReducer   (state.maximizedInfoPanel, action),
-        paneToOpenInfoPanel  : paneToOpenInfoPanelReducer  (state.paneToOpenInfoPanel, action),
-        treeInfo             : treeInfoReducer             (state.treeInfo, action)
+        paneToOpenInfoPanel  : paneToOpenInfoPanelReducer  (state.paneToOpenInfoPanel, action)
     };
     return rv;
 };

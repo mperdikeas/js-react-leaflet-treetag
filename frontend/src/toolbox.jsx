@@ -15,6 +15,7 @@ import centerOnTarget           from './resources/target-32.png';
 // redux
 import { connect }                          from 'react-redux';
 import {toggleMode, displayModal, addToast} from './redux/actions/index.js';
+import {targetIsDirty} from './redux/selectors.js';
 
 import {MDL_NOTIFICATION
       , MDL_SAVE_WS_2_DSK
@@ -28,7 +29,7 @@ import {msgTreeDataIsDirty, displayNotificationIfTargetIsDirty} from './common.j
 const mapStateToProps = (state) => {
   return {
     targetId      : state.targetId,
-    targetIsDirty: JSON.stringify(state.treeInfo.original)!==JSON.stringify(state.treeInfo.current)
+    targetIsDirty: targetIsDirty(state)
   };
 };
 

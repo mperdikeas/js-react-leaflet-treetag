@@ -4,14 +4,18 @@ import {APP_IS_DONE_LOADING
         , DISPLAY_MODAL
         , CLEAR_MODAL
         , TOGGLE_MAXIMIZE_INFO_PANEL
-        , TOGGLE_TARGET
+        , UNSET_TARGET
         , SET_PANE_TO_OPEN_INFO_PANEL
         , ADD_TOAST
         , DISMISS_TOAST
-        , MARK_GET_FEATURE_INFO_IN_PROGRESS
-        , MARK_GET_FEATURE_INFO_FAILED
+
+        , GET_TREE_INFO_IN_PROGRESS
+        , GET_TREE_INFO_CONCLUDED
+        , GET_TREE_INFO_SUCCESS
+
+
         , SET_TREE_INFO_ORIGINAL
-        , SET_TREE_INFO
+        , SET_TREE_INFO_CURRENT
         , REVERT_TREE_INFO
         , SET_TREE_COORDS_ORIGINAL
         , SET_TREE_COORDS
@@ -52,22 +56,35 @@ export function toggleMaximizeInfoPanel() {
 }
 
 
-export function toggleTarget(targetId) {
+export function unsetTarget() {
+    return {type: UNSET_TARGET, payload: undefined};
+};
+
+export function toggleTargetDELME(targetId) {
     return {type: TOGGLE_TARGET, payload: {targetId}};
 };
 
+export function fetchTreeInfo(targetId) {
 
-export function toggleTargetAndOptionallyFetchData(targetId) {
+};
+
+import {INFORMATION, PHOTOS, HISTORY, ADJUST}                 from '../../constants/information-panel-panes.js';
+
+export function unsetOrFetch(targetId) {
     return (dispatch, getState) => {
-        /* If the current target is the same, simply toggle the target and do nothing
-           else. Otherwise toggle the target AND dispatch a getFeatureData action */
         if (getState().targetId === targetId)
-            dispatch(toggleTarget(targetId));
+            dispatch(unsetTarget());
         else {
-            console.log(`abd - case 2`);
-            dispatch(toggleTarget(targetId));
-            console.log(`abd - getting feature data for target ${targetId}`);
-            dispatch(getFeatureData(targetId));
+            switch (getState().paneToOpenInfoPanel) {
+            case INFORMATION:
+                dispatch(getFeatureData(targetId));
+                break;
+            case PHOTOS:
+            case HISTORY:
+            case ADJUST:
+            default:
+                assert.fail(`unhandled pane: [${getState().paneToOpenInfoPanel}]`);
+            }
         }
     };
 }
@@ -86,23 +103,24 @@ export function dismissToast(id) {
 
 
 
-/* TODO: if these actions are only used from get-feature-data maybe they
- * can stop being independent actions
- */
-export function markGetFeatureInfoInProgress(axiosSource) {
-    return {type: MARK_GET_FEATURE_INFO_IN_PROGRESS, payload: {axiosSource}};
+export function getTreeInfoInProgress(id, axiosSource) {
+    return {type: GET_TREE_INFO_IN_PROGRESS, payload: {id, axiosSource}};
 }
 
-export function setTreeInfoOriginal(treeInfo) {
-    return {type: SET_TREE_INFO_ORIGINAL, payload: treeInfo};
+export function getTreeInfoConcluded() {
+    return {type: GET_TREE_INFO_CONCLUDED, payload: undefined};
+}
+
+export function getTreeInfoSuccess(treeInfo) {
+    return {type: GET_TREE_INFO_SUCCESS, payload: treeInfo};
 }
 
 export function markGetFeatureInfoFailed() {
     return {type: MARK_GET_FEATURE_INFO_FAILED, payload: null};
 }
 
-export function setTreeInfo(treeInfo) {
-    return {type: SET_TREE_INFO, payload: treeInfo};
+export function setTreeInfoCurrent(treeInfo) {
+    return {type: SET_TREE_INFO_CURRENT, payload: treeInfo};
 }
 
 export function revertTreeInfo() {

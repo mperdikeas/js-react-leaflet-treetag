@@ -16,4 +16,22 @@ export function treeInfoNotFetchedYetOrIsBeingUpdated(state) {
 //    }
 };
 
+export function targetIsDirty(state) {
+    if (state.target.treeInfo != null)
+        return JSON.stringify(state.target.treeInfo.original)!==JSON.stringify(state.target.treeInfo.current);
+    else
+        return false;
+}
+
+export function targetAjaxReadInProgress(state) {
+    return (state.target.id != null) && (state.target.treeInfo.original === null);
+}
+
+export function cancelToken(state) {
+    if (state.target && state.target.treeInfo)
+        return state.target.treeInfo.axiosSource;
+    else
+        return null;
+}
+
 

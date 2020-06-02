@@ -1,3 +1,4 @@
+/*
 import {MARK_GET_FEATURE_INFO_IN_PROGRESS
         , MARK_GET_FEATURE_INFO_FAILED
         , SET_TREE_INFO_ORIGINAL
@@ -47,3 +48,4 @@ export default (state = {original: null
                                  return state;
                              }
                              }
+*/
