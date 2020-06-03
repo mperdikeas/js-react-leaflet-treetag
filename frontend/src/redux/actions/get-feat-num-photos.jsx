@@ -22,16 +22,13 @@ import {cancelToken} from '../selectors.js';
 
 import {urlForNumOfPhotos} from './feature-photo-util.js';
 
+import {cancelPendingRequests} from './action-util.js';
+
 export default function getFeatNumOfPhotos(id) {
   const source = CancelToken.source();
   return (dispatch, getState) => {
-    const cancelTokenV = cancelToken(getState());
-    if (cancelTokenV) {
-      cancelTokenV.cancel(OP_NO_LONGER_RELEVANT);
-      console.log('abf:: get-feat-num-photos: cancelled previous pending request');
-    } else
-    console.log('abf:: get-feat-num-photos: NO previous pending request found to cancel');
 
+    cancelPendingRequests(getState());
 
 
     const url = urlForNumOfPhotos(id);

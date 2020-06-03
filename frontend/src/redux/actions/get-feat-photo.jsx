@@ -22,17 +22,15 @@ import {cancelToken} from '../selectors.js';
 
 import {urlForPhoto} from './feature-photo-util.js';
 
+import {cancelPendingRequests} from './action-util.js';
 
 
 export default function getFeatPhoto(id, idx) {
   assert.isTrue(idx>=0,`idx value of [${idx}] is not GTE 0`);
   const source = CancelToken.source();
   return (dispatch, getState) => {
-    const cancelTokenV = cancelToken(getState());
-    if (cancelTokenV) {
-      cancelTokenV.cancel(OP_NO_LONGER_RELEVANT);
-      console.log('abf:: get-feat-photo: cancelled previous pending request');
-    }
+
+    cancelPendingRequests(getState());
 
 
 

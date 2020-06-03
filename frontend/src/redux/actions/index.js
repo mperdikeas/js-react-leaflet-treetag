@@ -47,11 +47,9 @@ import {isValidModalType} from '../../constants/modal-types.js';
 
 import {CT_UNIT} from '../../constants.js';
 
-import {cancelToken} from '../selectors.js';
+import {cancelPendingRequests} from './action-util.js';
 
 import {INFORMATION, PHOTOS, HISTORY, ADJUST}                 from '../../constants/information-panel-panes.js';
-
-import {OP_NO_LONGER_RELEVANT} from '../../constants/axios-constants.js';
 
 export function appIsDoneLoading() {
     return {type: APP_IS_DONE_LOADING, payload: null};
@@ -82,16 +80,6 @@ export function unsetTarget() {
 };
 
 
-function cancelPendingRequests(state) {
-    /* If there are any pending axios requests we have to cancel them.
-     */
-    const cancelTokenV = cancelToken(state);
-    if (cancelTokenV) {
-        cancelTokenV.cancel(OP_NO_LONGER_RELEVANT);
-        console.log('abf :: cancelPendingRequests: cancelled axios GET request due to unsetting of target');
-    } else
-        console.log('abf :: cancelPendingRequests: no cancel token found');
-}
 
 export function unsetOrFetch(targetId) {
     return (dispatch, getState) => {

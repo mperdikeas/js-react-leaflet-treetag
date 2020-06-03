@@ -18,15 +18,14 @@ import {OP_NO_LONGER_RELEVANT} from '../../constants/axios-constants.js';
 
 import {cancelToken} from '../selectors.js';
 
+
+import {cancelPendingRequests} from './action-util.js';
+
 export default function getFeatureData(id) {
   console.log(`abe getFeatureData(${id}`);
   const source = CancelToken.source();
   return (dispatch, getState) => {
-    const cancelTokenV = cancelToken(getState());
-    if (cancelTokenV) {
-      cancelTokenV.cancel(OP_NO_LONGER_RELEVANT);
-      console.log('abd cancelled previous pending request');
-    }
+    cancelPendingRequests(getState());
 
     dispatch (getTreeInfoInProgress(id, source));
     const url = `/feature/${id}/data`;
