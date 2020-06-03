@@ -31,7 +31,7 @@ export default function getFeatPhoto(id, idx) {
     const cancelTokenV = cancelToken(getState());
     if (cancelTokenV) {
       cancelTokenV.cancel(OP_NO_LONGER_RELEVANT);
-      console.log('abd cancelled previous pending request');
+      console.log('abf:: get-feat-photo: cancelled previous pending request');
     }
 
 

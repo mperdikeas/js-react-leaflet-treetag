@@ -50,6 +50,7 @@ export default (state = initState(null), action) => {
     }
 
     case GET_FEAT_NUM_PHOTOS_IN_PROGRESS: {
+        console.log('abf GET_FEAT_NUM_PHOTOS_IN_PROGRESS installing new cancel token');
         return Object.assign({}
                              , state
                              , {id: action.payload.id
@@ -60,6 +61,7 @@ export default (state = initState(null), action) => {
                                 , axiosSource: action.payload.axiosSource});
     }
     case GET_FEAT_PHOTO_IN_PROGRESS: {
+        console.log('abf GET_FEAT_PHOTO_IN_PROGRESS installing new cancel token');
         const img = (state.photos.img === undefined)?undefined:null; // mighty deep
         const t = img;
         return Object.assign({}
@@ -71,6 +73,7 @@ export default (state = initState(null), action) => {
                                 , axiosSource: action.payload.axiosSource});
     }
     case GET_FEATURE_AJAX_CONCLUDED: {
+        console.log('abf GET_FEATURE_AJAX_CONCLUDED cleaning cancel token');
         return Object.assign({}
                              , state
                              , {axiosSource: null});

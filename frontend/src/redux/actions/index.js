@@ -82,18 +82,21 @@ export function unsetTarget() {
 };
 
 
+function cancelPendingRequests(state) {
+    /* If there are any pending axios requests we have to cancel them.
+     */
+    const cancelTokenV = cancelToken(state);
+    if (cancelTokenV) {
+        cancelTokenV.cancel(OP_NO_LONGER_RELEVANT);
+        console.log('abf :: cancelPendingRequests: cancelled axios GET request due to unsetting of target');
+    } else
+        console.log('abf :: cancelPendingRequests: no cancel token found');
+}
 
 export function unsetOrFetch(targetId) {
     return (dispatch, getState) => {
+        cancelPendingRequests(getState());        
         if (getState().target.id === targetId) {
-            /* If there are any pending axios requests we have to cancel them.
-             */
-            const cancelTokenV = cancelToken(getState());
-            if (cancelTokenV) {
-                cancelTokenV.cancel(OP_NO_LONGER_RELEVANT);
-                console.log('cancelled axios GET request due to unsetting of target');
-            } else
-                console.log('no cancel token found');
             dispatch(unsetTarget());
         } else {
             dispatch(newTarget(targetId));
@@ -116,7 +119,7 @@ export function unsetOrFetch(targetId) {
 }
 
 function newTarget(targetId) {
-    console.log('abe dispatch newtarget');
+    console.log('abf dispatch newtarget');
     return {type: NEW_TARGET, payload: {targetId}};
 }
 

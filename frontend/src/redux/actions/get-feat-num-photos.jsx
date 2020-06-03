@@ -28,8 +28,9 @@ export default function getFeatNumOfPhotos(id) {
     const cancelTokenV = cancelToken(getState());
     if (cancelTokenV) {
       cancelTokenV.cancel(OP_NO_LONGER_RELEVANT);
-      console.log('abd cancelled previous pending request');
-    }
+      console.log('abf:: get-feat-num-photos: cancelled previous pending request');
+    } else
+    console.log('abf:: get-feat-num-photos: NO previous pending request found to cancel');
 
 
 
