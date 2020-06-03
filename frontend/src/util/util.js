@@ -92,6 +92,10 @@ function areEqualShallow(a, b) {
     return true;
 }
 
+function isNotNullOrUndefined(v) {
+    return (v!==undefined) && (v!==null);
+}
+
 
 exports.theAnswer         = theAnswer;
 exports.allStrictEqual    = allStrictEqual;
@@ -102,3 +106,4 @@ exports.readCookie        = readCookie;
 exports.uniqValues        = uniqValues;
 exports.randomItem        = randomItem;
 exports.areEqualShallow   = areEqualShallow;
+exports.isNotNullOrUndefined = isNotNullOrUndefined;

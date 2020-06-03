@@ -25,9 +25,13 @@ import {displayModal
       , toggleMaximizeInfoPanel
       , setPaneToOpenInfoPanel
       , setTreeInfoCurrent
-      , setTreeInfoOriginal}  from './redux/actions/index.js';
-import getFeatureData from './redux/actions/get-feature-data.jsx';
-import saveFeatureData from './redux/actions/save-feature-data.jsx';
+      , setTreeInfoOriginal
+      , getFeatNumOfPhotos
+      , getFeatData
+      , saveFeatData}  from './redux/actions/index.js';
+
+
+
 import {INFORMATION, PHOTOS, HISTORY, ADJUST} from './constants/information-panel-panes.js';
 import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS, MODAL_LOGIN} from './constants/modal-types.js';
 
@@ -44,11 +48,13 @@ import {msgTreeDataIsDirty, displayNotificationIfTargetIsDirty} from './common.j
 import {possiblyInsufPrivPanicInAnyCase, isInsufficientPrivilleges} from './util-privilleges.js';
 
 import {GSN, globalGet} from './globalStore.js';
-import {areEqualShallow} from './util/util.js';
+import {areEqualShallow, sca_fake_return} from './util/util.js';
 
-import {targetIsDirty, targetAjaxReadInProgress} from './redux/selectors.js';
+import {targetIsDirty
+      , targetAjaxReadInProgress
+      , typeOfTargetAjaxReadInProgress} from './redux/selectors.js';
 
-
+const loading  = require('./resources/loading.gif');
 
 
 const mapStateToProps = (state) => {
@@ -57,7 +63,9 @@ const mapStateToProps = (state) => {
     , targetId: state.target.id
     , targetIsDirty: targetIsDirty(state)
     , tab: state.paneToOpenInfoPanel
+    , photos: state.target.photos
     , targetAjaxReadInProgress: targetAjaxReadInProgress(state)
+    , typeOfTargetAjaxReadInProgress: typeOfTargetAjaxReadInProgress(state)
   };
 };
 
@@ -73,8 +81,8 @@ const mergeProps = ( stateProps, {dispatch}) => {
   const msgSavingTreeData = targetId => `αποθήκευση δεδομένων για το δένδρο #${targetId}`;
   return {
     ...stateProps
-    , getFeatureData:(id, cancelToken) => dispatch(getFeatureData(id, cancelToken))
-    , saveFeatureData: (treeInfo) => dispatch(saveFeatureData(treeInfo))
+    , getFeatData:(id, cancelToken) => dispatch(getFeatData(id, cancelToken))
+    , saveFeatData: (treeInfo) => dispatch(saveFeatData(treeInfo))
     , displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func})) // TODO: obsolete
     , displayNotificationInsufPrivilleges: ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgInsufPriv1}))
     , displayTreeDataHasBeenUpdated: (targetId)=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataHasBeenUpdated(targetId)}))
@@ -82,6 +90,12 @@ const mergeProps = ( stateProps, {dispatch}) => {
     , clearModal : () => dispatch(clearModal())
     , toggleMaximizeInfoPanel: ()=>dispatch(toggleMaximizeInfoPanel())
     , setPaneToOpenInfoPanel: (pane) => dispatch(setPaneToOpenInfoPanel(pane))
+    , setPaneToOpenInfoPanelAndPossiblyFetchPhoto: (pane) => {
+      dispatch(setPaneToOpenInfoPanel(pane))
+      if (stateProps.photos===null) {
+        dispatch(getFeatNumOfPhotos(stateProps.targetId));
+      }
+    }
     , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(stateProps.targetId)}))
     , setTreeInfoCurrent: (treeInfo) => dispatch(setTreeInfoCurrent (treeInfo))
   };
@@ -193,7 +207,7 @@ class TreeInformationPanel extends React.Component {
   handleSubmit = (ev) => {
     ev.preventDefault();
     ev.stopPropagation();
-    this.props.saveFeatureData(this.props.treeInfo);
+    this.props.saveFeatData(this.props.treeInfo);
   }
 
   handleSubmitDELME = (ev) => {
@@ -275,7 +289,7 @@ class TreeInformationPanel extends React.Component {
 
   onPhotos = () => {
     if (!this.displayNotificationIfTargetIsDirty())
-      this.props.setPaneToOpenInfoPanel(PHOTOS);
+      this.props.setPaneToOpenInfoPanelAndPossiblyFetchPhoto(PHOTOS);
   }
 
   onHistory = () => {
@@ -375,7 +389,6 @@ class TreeInformationPanel extends React.Component {
   }
 
   paneToDisplay = () => {
-    console.log(`displaying pane ${this.props.tab}`);
     if (this.state.error)
       return (
         <>
@@ -384,8 +397,36 @@ class TreeInformationPanel extends React.Component {
         </>
       );
     else if (this.props.targetAjaxReadInProgress) {
-      console.log('abd  - fetch in progress');
-      return <div>querying the server for tree {this.props.targetId} &hellip;</div>;
+      const spinner = <img src={loading} className='img-fluid'/>;
+      switch (this.props.typeOfTargetAjaxReadInProgress) {
+        case 'feat-data-retrieval':
+          return (
+            <>
+            {spinner}
+            <div>retrieving data of feature {this.props.targetId} &hellip;</div>
+            </>
+          );
+        case 'feat-num-photos-retrieval':
+          return (
+            <>
+            {spinner}
+            <div>retrieving # of photos of feature {this.props.targetId} &hellip;</div>
+            </>
+          );
+        case 'feat-photo-retrieval':
+          assert.isDefined(this.props.photos.num);
+          assert.isDefined(this.props.photos.idx);
+          return (
+            <>
+            {spinner}
+            <div>retrieving photo {this.props.photos.idx} (of {this.props.photos.num})
+              of feature {this.props.targetId} &hellip;</div>
+            </>
+          );
+        default:
+          assert.fail(`snafu in information-panel-tree.jsx :: unrecognized pane: [${this.props.typeOfTargetAjaxReadInProgress}]`);
+          return sca_fake_return();
+      } // switch
     } else {
       console.log('abd  - b');
       switch (this.props.tab) {
@@ -394,6 +435,7 @@ class TreeInformationPanel extends React.Component {
             <TargetDataPane />
           );
         case PHOTOS:
+          console.log('abd - bbbb2');
           return <TargetPhotoPane/>
         case HISTORY:
           return (

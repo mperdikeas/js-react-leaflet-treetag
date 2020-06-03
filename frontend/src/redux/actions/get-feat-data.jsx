@@ -6,7 +6,7 @@ import {CancelToken} from 'axios';
 
 
 import {getTreeInfoInProgress
-      , getTreeInfoConcluded
+      , getFeatureAjaxConcluded
       , getTreeInfoSuccess
       , displayModal
       , clearModal
@@ -33,7 +33,7 @@ export default function getFeatureData(id) {
 
     axiosAuth.get(url, {cancelToken: source.token}
     ).then(res => {
-      dispatch(getTreeInfoConcluded());
+      dispatch(getFeatureAjaxConcluded());
       // corr-id: SSE-1585746250
       console.log(res.data);
       const {t, err} = res.data;

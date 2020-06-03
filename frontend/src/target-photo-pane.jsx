@@ -13,7 +13,7 @@ const loading  = require('./resources/loading.gif');
 // require('../resources/down-arrow.png');
 import DownArrow from './resources/down-arrow.png';
 // const download = url('../resources/
-import {sca_fake_return} from './util/util.js';
+import {sca_fake_return, isNotNullOrUndefined} from './util/util.js';
 
 
 
@@ -29,10 +29,13 @@ import {LOGGING_IN, GETTING_NUM_OF_PHOTOS, GETTING_PHOTO, DELETING_PHOTO} from '
 
 
 import {OP_NO_LONGER_RELEVANT} from './constants/axios-constants.js';
+
+import TargetPhotoPaneImgWithControls from './target-photo-pane-img-wt-controls.jsx';
   
 const mapStateToProps = (state) => {
   return {
     targetId: state.target.id
+    , photos: state.target.photos
   };
 };
 
@@ -79,15 +82,17 @@ class TargetPhotoPane extends React.Component {
                  , photoBase64: null});
   }    
 
-  componentDidMount() {
+  componentDidMountDELME() {
     this.fetchNumOfPhotos();
   }
 
-  componentWillUnmount() {
+// TODO: I should cancel the save axios requests as well
+  
+  componentWillUnmountDELME() {
     this.source.cancel(OP_NO_LONGER_RELEVANT);
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdateDELME(prevProps, prevState) {
     if (prevProps.targetId !== this.props.targetId) {
       console.log('cancelling pending requests due to new target');
       this.source.cancel(OP_NO_LONGER_RELEVANT);
@@ -117,8 +122,36 @@ class TargetPhotoPane extends React.Component {
         }
       }
   }
-
   render() {
+    assert.isTrue(isNotNullOrUndefined(this.props.photos), 'target-photo-pane.jsx::render 0');
+    const {num, idx, img, t} = this.props.photos;
+    assert.isTrue(isNotNullOrUndefined(num), 'target-photo-pane.jsx::render 1');
+    if (this.props.photos.num===0) {
+      return (
+        <>
+        <div>no photos are available</div>
+        </>
+      );
+    } else if (img===null) {
+      assert.isTrue(isNotNullOrUndefined(num), 'target-photo-pane.jsx::render 2');
+      assert.isTrue(isNotNullOrUndefined(idx), 'target-photo-pane.jsx::render 3');
+      return (
+        <>
+        <img src={loading} className='img-fluid' alt='Retrieving photo &hellip;'/>
+        <div>Retrieving photo {idx} (of {num}) for {targetId} &hellip;</div>
+        </>
+      )
+    } else {
+      assert.isTrue(isNotNullOrUndefined(num), 'target-photo-pane.jsx::render 4');
+      assert.isTrue(isNotNullOrUndefined(idx) , 'target-photo-pane.jsx::render 5');
+      assert.isTrue(isNotNullOrUndefined(img), 'target-photo-pane.jsx::render 6');
+      assert.isTrue(isNotNullOrUndefined(t)  , 'target-photo-pane.jsx::render 7');
+      return <TargetPhotoPaneImgWithControls/>;
+    }
+  }
+
+  
+  renderDELME() {
     if (this.state.serverCallInProgress) {
       switch (this.state.serverCallInProgress) {
         case LOGGING_IN:

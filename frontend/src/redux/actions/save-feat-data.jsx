@@ -20,6 +20,8 @@ import {isInsufficientPrivilleges} from '../../util-privilleges.js';
 
 import {GSN, globalGet} from '../../globalStore.js';
 
+import {isNotNullOrUndefined} from '../../util/util.js';
+
 const targetId2Marker = (targetId) => {
   return globalGet(GSN.REACT_MAP).id2marker[targetId];
 }
@@ -39,10 +41,10 @@ const displayModalSavingTreeData = (dispatch, id)=>{
   dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: msgSavingTreeData(id)}))
 };
 
-export default function saveFeatureData(treeInfo) {
+export default function saveFeatData(treeInfo) {
   assert.isOk(treeInfo);
   const {id} = treeInfo;
-  assert.isOk(id);
+  assert.isTrue(isNotNullOrUndefined(id));
   return (dispatch) => {
     const url = `/feature/${id}/data`;
     console.log(`saveFeatureData, axios URL is: ${url}`);

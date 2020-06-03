@@ -10,8 +10,15 @@ import {APP_IS_DONE_LOADING
         , DISMISS_TOAST
 
         , GET_TREE_INFO_IN_PROGRESS
-        , GET_TREE_INFO_CONCLUDED
+        , GET_FEAT_NUM_PHOTOS_IN_PROGRESS
+        , GET_FEAT_PHOTO_IN_PROGRESS
+        , GET_FEAT_PHOTO_SUCCESS
+        
         , GET_TREE_INFO_SUCCESS
+        , GET_FEAT_NUM_PHOTOS_SUCCESS
+        
+
+        
 
 
         , SET_TREE_INFO_ORIGINAL
@@ -20,11 +27,16 @@ import {APP_IS_DONE_LOADING
         , SET_TREE_COORDS_ORIGINAL
         , SET_TREE_COORDS
         , REVERT_TREE_COORDS
+
+
+
+        , GET_FEATURE_AJAX_CONCLUDED
+        
        } from './action-types.js';
 
 import {CancelToken} from 'axios';
 
-import getFeatureData from './get-feature-data.jsx';
+import getFeatData from './get-feat-data.jsx';
 
 import {isValidModalType} from '../../constants/modal-types.js';
 
@@ -83,7 +95,7 @@ export function unsetOrFetch(targetId) {
             case INFORMATION:
             case HISTORY:
             case ADJUST:
-                dispatch(getFeatureData(targetId));
+                dispatch(getFeatData(targetId));
                 break;
             case PHOTOS:
 
@@ -112,13 +124,32 @@ export function getTreeInfoInProgress(id, axiosSource) {
     return {type: GET_TREE_INFO_IN_PROGRESS, payload: {id, axiosSource}};
 }
 
-export function getTreeInfoConcluded() {
-    return {type: GET_TREE_INFO_CONCLUDED, payload: undefined};
+export function getFeatNumPhotosInProgress(id, axiosSource) {
+    return {type: GET_FEAT_NUM_PHOTOS_IN_PROGRESS, payload: {id, axiosSource}};
+}
+
+export function getFeatPhotoInProgress(id, idx, axiosSource) {
+    return {type: GET_FEAT_PHOTO_IN_PROGRESS, payload: {id, idx, axiosSource}};
+}
+
+
+export function getFeatureAjaxConcluded() {
+    return {type: GET_FEATURE_AJAX_CONCLUDED, payload: undefined};
 }
 
 export function getTreeInfoSuccess(treeInfo) {
     return {type: GET_TREE_INFO_SUCCESS, payload: treeInfo};
 }
+
+export function getFeatNumPhotosSuccess(num) {
+    return {type: GET_FEAT_NUM_PHOTOS_SUCCESS, payload: num};
+}
+
+export function getFeatPhotoSuccess(img, t) {
+    return {type: GET_FEAT_PHOTO_SUCCESS, payload: {img, t}};
+}
+
+
 
 export function markGetFeatureInfoFailed() {
     return {type: MARK_GET_FEATURE_INFO_FAILED, payload: null};
@@ -151,4 +182,9 @@ export function revertTreeCoords() {
 
 export {default as login} from './login.js';
 
+export {default as getFeatData}        from './get-feat-data.jsx';
+export {default as getFeatPhoto}       from './get-feat-photo.jsx';
+export {default as getFeatNumOfPhotos} from './get-feat-num-photos.jsx';
+
+export {default as saveFeatData}       from './save-feat-data.jsx';
 

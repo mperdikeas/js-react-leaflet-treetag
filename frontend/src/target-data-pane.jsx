@@ -19,9 +19,9 @@ import {displayModal
       , toggleMaximizeInfoPanel
       , setPaneToOpenInfoPanel
       , setTreeInfoCurrent
-      , setTreeInfoOriginal}  from './redux/actions/index.js';
+      , setTreeInfoOriginal
+      , saveFeatData}  from './redux/actions/index.js';
 
-import saveFeatureData from './redux/actions/save-feature-data.jsx';
 
 import {targetIsDirty} from './redux/selectors.js';
 
@@ -40,7 +40,7 @@ const mapDispatchToProps = (dispatch) => {
     revertTreeInfo        : ()       => dispatch(revertTreeInfo     ())
     , setTreeInfoCurrent: (treeInfo) => dispatch(setTreeInfoCurrent (treeInfo))
     , setTreeInfoOriginal: (treeInfo) => dispatch(setTreeInfoOriginal(treeInfo))
-    , saveFeatureData: (treeInfo) => dispatch(saveFeatureData(treeInfo))
+    , saveFeatData: (treeInfo) => dispatch(saveFeatData(treeInfo))
   };
 }
 
@@ -92,7 +92,7 @@ class TargetDataPane extends React.Component {
   handleSubmit = (ev) => {
     ev.preventDefault();
     ev.stopPropagation();
-    this.props.saveFeatureData(this.props.treeInfo);
+    this.props.saveFeatData(this.props.treeInfo);
   }
 
 

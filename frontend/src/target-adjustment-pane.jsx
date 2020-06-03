@@ -13,9 +13,7 @@ import {Athens} from './tree-markers.js';
 import {possiblyInsufPrivPanicInAnyCase, isInsufficientPrivilleges} from './util-privilleges.js';
 
 import {MDL_NOTIFICATION} from './constants/modal-types.js';
-import {displayModal, setTreeCoords, revertTreeCoords} from './redux/actions/index.js';
-
-import saveFeatureData from './redux/actions/save-feature-data.jsx';
+import {displayModal, setTreeCoords, revertTreeCoords, saveFeatData} from './redux/actions/index.js';
 
 import wrapContexts from './context/contexts-wrapper.jsx';
 
@@ -42,7 +40,7 @@ const mapDispatchToProps = (dispatch) => {
   const msgInsufPriv1 = 'ο χρήστης δεν έχει τα προνόμια για να εκτελέσει αυτήν την λειτουργία';
   const msgTreeDataHasBeenUpdated = targetId => `τα νέα δεδομένα για το δένδρο #${targetId} αποθηκεύτηκαν`;
   return {
-    saveFeatureData: (treeInfo) => dispatch(saveFeatureData(treeInfo))
+    saveFeatData: (treeInfo) => dispatch(saveFeatData(treeInfo))
     , displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
     , displayNotificationInsufPrivilleges: ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgInsufPriv1}))
     , displayTreeDataHasBeenUpdated: (targetId)=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataHasBeenUpdated(targetId)})) // TODO: what to do with this ?
@@ -218,7 +216,7 @@ class TargetAdjustmentPane extends React.Component {
   handleSubmit = (ev) => {
     ev.preventDefault();
     ev.stopPropagation();
-    this.props.saveFeatureData(this.props.treeInfo);
+    this.props.saveFeatData(this.props.treeInfo);
   }
 
   revert = () => {
