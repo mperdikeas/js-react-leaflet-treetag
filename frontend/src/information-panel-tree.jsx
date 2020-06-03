@@ -419,7 +419,7 @@ class TreeInformationPanel extends React.Component {
           return (
             <>
             {spinner}
-            <div>retrieving photo {this.props.photos.idx} (of {this.props.photos.num})
+            <div>retrieving photo {this.props.photos.idx + 1} (of {this.props.photos.num})
               of feature {this.props.targetId} &hellip;</div>
             </>
           );

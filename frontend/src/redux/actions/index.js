@@ -38,6 +38,9 @@ import {CancelToken} from 'axios';
 
 import getFeatData from './get-feat-data.jsx';
 
+import getFeatNumOfPhotos from './get-feat-num-photos.jsx';
+
+
 import {isValidModalType} from '../../constants/modal-types.js';
 
 import {CT_UNIT} from '../../constants.js';
@@ -98,7 +101,8 @@ export function unsetOrFetch(targetId) {
                 dispatch(getFeatData(targetId));
                 break;
             case PHOTOS:
-
+                dispatch(getFeatNumOfPhotos(targetId));
+                break;
             default:
                 assert.fail(`unhandled pane: [${getState().paneToOpenInfoPanel}]`);
             }
