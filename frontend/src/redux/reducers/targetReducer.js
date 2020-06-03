@@ -55,12 +55,14 @@ export default (state = {id: null
                                 , axiosSource: action.payload.axiosSource});
     }
     case GET_FEAT_PHOTO_IN_PROGRESS: {
+        const img = (state.photos.img === undefined)?undefined:null; // mighty deep
+        const t = img;
         return Object.assign({}
                              , state
                              , {id: action.payload.id
                                 , photos: Object.assign({}
                                                         , state.photos
-                                                        , {idx: action.payload.idx})
+                                                        , {idx: action.payload.idx, img, t})
                                 , axiosSource: action.payload.axiosSource});
     }
     case GET_FEATURE_AJAX_CONCLUDED: {

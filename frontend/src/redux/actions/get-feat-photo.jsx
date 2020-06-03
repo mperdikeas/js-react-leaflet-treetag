@@ -25,6 +25,7 @@ import {urlForPhoto} from './feature-photo-util.js';
 
 
 export default function getFeatPhoto(id, idx) {
+  assert.isTrue(idx>=0,`idx value of [${idx}] is not GTE 0`);
   const source = CancelToken.source();
   return (dispatch, getState) => {
     const cancelTokenV = cancelToken(getState());

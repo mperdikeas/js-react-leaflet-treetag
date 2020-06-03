@@ -51,8 +51,8 @@ import {GSN, globalGet} from './globalStore.js';
 import {areEqualShallow, sca_fake_return} from './util/util.js';
 
 import {targetIsDirty
-      , targetAjaxReadInProgress
-      , typeOfTargetAjaxReadInProgress} from './redux/selectors.js';
+      , targetInitialAjaxReadInProgress
+      , typeOfTargetInitialAjaxReadInProgress} from './redux/selectors.js';
 
 const loading  = require('./resources/loading.gif');
 
@@ -64,8 +64,8 @@ const mapStateToProps = (state) => {
     , targetIsDirty: targetIsDirty(state)
     , tab: state.paneToOpenInfoPanel
     , photos: state.target.photos
-    , targetAjaxReadInProgress: targetAjaxReadInProgress(state)
-    , typeOfTargetAjaxReadInProgress: typeOfTargetAjaxReadInProgress(state)
+    , targetInitialAjaxReadInProgress: targetInitialAjaxReadInProgress(state)
+    , typeOfTargetInitialAjaxReadInProgress: typeOfTargetInitialAjaxReadInProgress(state)
   };
 };
 
@@ -396,9 +396,9 @@ class TreeInformationPanel extends React.Component {
         <div style={{color: 'red'}}>{JSON.stringify(this.state.error)}</div>
         </>
       );
-    else if (this.props.targetAjaxReadInProgress) {
+    else if (this.props.targetInitialAjaxReadInProgress) {
       const spinner = <img src={loading} className='img-fluid'/>;
-      switch (this.props.typeOfTargetAjaxReadInProgress) {
+      switch (this.props.typeOfTargetInitialAjaxReadInProgress) {
         case 'feat-data-retrieval':
           return (
             <>
@@ -424,7 +424,7 @@ class TreeInformationPanel extends React.Component {
             </>
           );
         default:
-          assert.fail(`snafu in information-panel-tree.jsx :: unrecognized pane: [${this.props.typeOfTargetAjaxReadInProgress}]`);
+          assert.fail(`snafu in information-panel-tree.jsx :: unrecognized pane: [${this.props.typeOfTargetInitialAjaxReadInProgress}]`);
           return sca_fake_return();
       } // switch
     } else {

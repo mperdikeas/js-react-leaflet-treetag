@@ -34,7 +34,7 @@ export function targetIsDirty(state) {
         return false;
 }
 
-export function targetAjaxReadInProgress(state) {
+export function targetInitialAjaxReadInProgress(state) {
     assert.isOk(state.paneToOpenInfoPanel, 'SNAFU 1 in targetAjaxReadInProgress');
     switch (state.paneToOpenInfoPanel) {
     case INFORMATION:
@@ -46,7 +46,7 @@ export function targetAjaxReadInProgress(state) {
         return v;
     case PHOTOS:
         console.log('abd - sel2');
-        const v2 = ((state.target.id != null) && ((state.target.photos.num === undefined) || (state.target.photos.img === undefined)));
+        const v2 = (state.target.id != null) && (state.target.photos.img === undefined);
         console.log(`abd - sel2 ${v2}`);
         return v2;
     default:
@@ -55,7 +55,7 @@ export function targetAjaxReadInProgress(state) {
     }
 }
 
-export function typeOfTargetAjaxReadInProgress(state) {
+export function typeOfTargetInitialAjaxReadInProgress(state) {
     assert.isOk(state.paneToOpenInfoPanel, 'SNAFU 1 in typeOfTargetAjaxReadInProgress');
     assert.isTrue(isNotNullOrUndefined(state.target.id), 'SNAFU 2 in typeOfTargetAjaxReadInProgress');
     switch (state.paneToOpenInfoPanel) {
@@ -73,6 +73,20 @@ export function typeOfTargetAjaxReadInProgress(state) {
         return sca_fake_return();
     }
 }
+
+export function fetchingNewPhotoForExistingTarget(state) {
+    assert.isOk(state.paneToOpenInfoPanel, 'SNAFU 1 in fetchingNewPhotoForExistingTarget');
+    assert.strictEqual(state.paneToOpenInfoPanel, PHOTOS, 'SNAFU 2 in fetchingNewPhotoForExistingTarget');
+    assert.isTrue(isNotNullOrUndefined(state.target.photos.num), 'SNAFU 3 in typeOfTargetAjaxReadInProgress');
+    assert.isTrue(isNotNullOrUndefined(state.target.photos.idx), 'SNAFU 4 in typeOfTargetAjaxReadInProgress');
+    assert.isDefined(state.target.photos.img, 'SNAFU 5 in typeOfTargetAjaxReadInProgress');
+    assert.isDefined(state.target.photos.t, 'SNAFU 6 in typeOfTargetAjaxReadInProgress');
+    if ((state.target.photos.t == null) || (state.target.photos.img == null)) {
+        assert.isTrue(state.target.photos.t === state.target.photos.img);
+    }
+    return state.target.photos.img === null;
+}
+
 
 export function cancelToken(state) {
     if (state.target)

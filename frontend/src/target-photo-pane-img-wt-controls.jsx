@@ -13,17 +13,17 @@ const loading  = require('./resources/loading.gif');
 // require('../resources/down-arrow.png');
 import DownArrow from './resources/down-arrow.png';
 // const download = url('../resources/
-import {sca_fake_return} from './util/util.js';
+import {sca_fake_return, isNotNullOrUndefined} from './util/util.js';
 
 
-
+import {fetchingNewPhotoForExistingTarget} from './redux/selectors.js';
 
 
 // REDUX
 import { connect } from 'react-redux';
 
 import {MODAL_LOGIN} from './constants/modal-types.js';
-import {displayModal} from './redux/actions/index.js';
+import {displayModal, getFeatPhoto} from './redux/actions/index.js';
 
 import {LOGGING_IN, GETTING_NUM_OF_PHOTOS, GETTING_PHOTO, DELETING_PHOTO} from './constants/target-photo-pane-server-call-types.js';
 
@@ -31,15 +31,29 @@ import {LOGGING_IN, GETTING_NUM_OF_PHOTOS, GETTING_PHOTO, DELETING_PHOTO} from '
 import {OP_NO_LONGER_RELEVANT} from './constants/axios-constants.js';
   
 const mapStateToProps = (state) => {
+  const {num, idx, img: photoBase64, t} = state.target.photos;
+  assert.isTrue(isNotNullOrUndefined(num), 'target-photo-pane-img-wt-controls.jsx::render 1');
+  assert.isDefined(idx                   , 'target-photo-pane-img-wt-controls.jsx::render 2');
+  assert.isDefined(photoBase64           , 'target-photo-pane-img-wt-controls.jsx::render 3');
+  assert.isDefined(t                     , 'target-photo-pane-img-wt-controls.jsx::render 4');
   return {
     targetId: state.target.id
     , photos: state.target.photos
+    , fetchingNewPhotoForExistingTarget: fetchingNewPhotoForExistingTarget(state)
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
+    , prevImage: (id, idx) => {
+      assert.isTrue(idx>0
+                  , `target-photo-pane-img-wt-controls.jsx :: mapDispatchToProps, prevImage ~ idx value of [${idx}] is not GT 0`);
+      dispatch(getFeatPhoto(id, idx-1));
+    }
+    , nextImage: (id, idx) => {
+      dispatch(getFeatPhoto(id, idx+1));
+    }    
   };
 }
 
@@ -55,15 +69,23 @@ class TargetPhotoPaneImgWithControls extends React.Component {
   }
 
   prevImage = () => {
+    this.props.prevImage(this.props.targetId, this.props.photos.idx);
+    /*
     this.setState({serverCallInProgress: GETTING_PHOTO
                  , currentPhotoIndx: this.state.currentPhotoIndx-1
                  , photoBase64: null});
+    */
   }
   
   nextImage = () => {
+    assert.isTrue(this.props.photos.idx < this.props.photos.num-1
+                , `target-photo-pane-img-wt-controls.jsx :: nextImage idx=${this.props.photos.idx}, num=${this.props.photos.num}`);
+    this.props.nextImage(this.props.targetId, this.props.photos.idx);
+    /*
     this.setState({serverCallInProgress: GETTING_PHOTO
                  , currentPhotoIndx: this.state.currentPhotoIndx+1
                  , photoBase64: null});
+    */
   }    
 
 // TODO: I should cancel the save axios requests as well
@@ -85,9 +107,7 @@ class TargetPhotoPaneImgWithControls extends React.Component {
   }
   
   render() {
-      const {num, idx, img: photoBase64, t} = this.props.photos;
-
-
+    const {num, idx, img: photoBase64, t} = this.props.photos;
         if (num===0) {
           assert.isNull(photoBase64);
           return (
@@ -98,14 +118,11 @@ class TargetPhotoPaneImgWithControls extends React.Component {
         }
 
 
-        const imageDiv = (()=>{
-          if ((num>0) && (photoBase64===null))
-            return (
-              <>
-              <div>fetching photo...</div>
-              </>
-            );
-          else {
+    const imageDiv = (()=>{
+      if (this.props.fetchingNewPhotoForExistingTarget) {
+        throw '42 - this is dead code / remove it!';
+        return <div>fetching new shit</div>
+      } else {
             const style = {cursor: `url(${DownArrow})`};
             return (
               <>
@@ -114,10 +131,9 @@ class TargetPhotoPaneImgWithControls extends React.Component {
               </a>
               </>
             );
-          }
+        }
+    })();
 
-
-        })();
         const buttonClasses = {
           'btn': true,
           'btn-outline-info': true

@@ -138,14 +138,14 @@ class TargetPhotoPane extends React.Component {
       return (
         <>
         <img src={loading} className='img-fluid' alt='Retrieving photo &hellip;'/>
-        <div>Retrieving photo {idx} (of {num}) for {targetId} &hellip;</div>
+        <div>Retrieving photo {idx+1} (of {num}) for {this.props.targetId} &hellip;</div>
         </>
       )
     } else {
       assert.isTrue(isNotNullOrUndefined(num), 'target-photo-pane.jsx::render 4');
       assert.isTrue(isNotNullOrUndefined(idx) , 'target-photo-pane.jsx::render 5');
-      assert.isTrue(isNotNullOrUndefined(img), 'target-photo-pane.jsx::render 6');
-      assert.isTrue(isNotNullOrUndefined(t)  , 'target-photo-pane.jsx::render 7');
+      assert.isDefined(img, 'target-photo-pane.jsx::render 6');
+      assert.isDefined(t, 'target-photo-pane.jsx::render 7');
       return <TargetPhotoPaneImgWithControls/>;
     }
   }
