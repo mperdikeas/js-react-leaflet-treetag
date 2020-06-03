@@ -41,12 +41,12 @@ export function targetInitialAjaxReadInProgress(state) {
     case HISTORY:
     case ADJUST:
         console.log('abd - sel1');
-        const v = (state.target.id != null) && (state.target.treeInfo.original === null);
+        const v = (state.target.id != null) && ((state.target.treeInfo === null) || (state.target.treeInfo.original === null));
         console.log(`abd - sel1 ${v}`);
         return v;
     case PHOTOS:
         console.log('abd - sel2');
-        const v2 = (state.target.id != null) && (state.target.photos.img === undefined);
+        const v2 = (state.target.id != null) && ((state.target.photos == null) || (state.target.photos.img === undefined));
         console.log(`abd - sel2 ${v2}`);
         return v2;
     default:
@@ -64,7 +64,7 @@ export function typeOfTargetInitialAjaxReadInProgress(state) {
     case ADJUST:
         return 'feat-data-retrieval';
     case PHOTOS:
-        if (state.target.photos.num === undefined)
+        if ((state.target.photos == null) || (state.target.photos.num === undefined))
             return 'feat-num-photos-retrieval';
         else
             return 'feat-photo-retrieval';
@@ -75,15 +75,17 @@ export function typeOfTargetInitialAjaxReadInProgress(state) {
 }
 
 export function fetchingNewPhotoForExistingTarget(state) {
+    /*
     assert.isOk(state.paneToOpenInfoPanel, 'SNAFU 1 in fetchingNewPhotoForExistingTarget');
     assert.strictEqual(state.paneToOpenInfoPanel, PHOTOS, 'SNAFU 2 in fetchingNewPhotoForExistingTarget');
-    assert.isTrue(isNotNullOrUndefined(state.target.photos.num), 'SNAFU 3 in typeOfTargetAjaxReadInProgress');
-    assert.isTrue(isNotNullOrUndefined(state.target.photos.idx), 'SNAFU 4 in typeOfTargetAjaxReadInProgress');
-    assert.isDefined(state.target.photos.img, 'SNAFU 5 in typeOfTargetAjaxReadInProgress');
-    assert.isDefined(state.target.photos.t, 'SNAFU 6 in typeOfTargetAjaxReadInProgress');
+    assert.isTrue(isNotNullOrUndefined(state.target.photos.num), 'SNAFU 3 in fetchingNewPhotoForExistingTarget');
+    assert.isTrue(isNotNullOrUndefined(state.target.photos.idx), 'SNAFU 4 in fetchingNewPhotoForExistingTarget');
+    assert.isDefined(state.target.photos.img, 'SNAFU 5 in fetchingNewPhotoForExistingTarget');
+    assert.isDefined(state.target.photos.t, 'SNAFU 6 in fetchingNewPhotoForExistingTarget');
     if ((state.target.photos.t == null) || (state.target.photos.img == null)) {
         assert.isTrue(state.target.photos.t === state.target.photos.img);
     }
+*/
     return state.target.photos.img === null;
 }
 

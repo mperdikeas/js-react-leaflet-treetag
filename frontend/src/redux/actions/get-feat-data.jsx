@@ -19,6 +19,7 @@ import {OP_NO_LONGER_RELEVANT} from '../../constants/axios-constants.js';
 import {cancelToken} from '../selectors.js';
 
 export default function getFeatureData(id) {
+  console.log(`abe getFeatureData(${id}`);
   const source = CancelToken.source();
   return (dispatch, getState) => {
     const cancelTokenV = cancelToken(getState());

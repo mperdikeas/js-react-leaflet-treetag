@@ -16,7 +16,8 @@ import {UNSET_TARGET
         , REVERT_TREE_INFO
         , REVERT_TREE_COORDS
 
-        , GET_NUM_PHOTOS_IN_PROGRESS}  from '../actions/action-types.js';
+        , GET_NUM_PHOTOS_IN_PROGRESS
+        , NEW_TARGET}  from '../actions/action-types.js';
 
 
 
@@ -27,13 +28,17 @@ const assert = require('chai').assert;
  *       for every target, be it for tree data or photos
  */
 
-export default (state = {id: null
-                         , treeInfo: null
-                         , photos: null
-                         , axiosSource: null}, action) => {
+
+function initState(id) {
+    return {id, treeInfo: null, photos: null, axiosSource: null};
+}
+export default (state = initState(null), action) => {
     switch (action.type) {
     case UNSET_TARGET: {
         return {id: null, treeInfo: null, photos: null};
+    }
+    case NEW_TARGET: {
+        return initState(action.payload.targetId);
     }
     case GET_TREE_INFO_IN_PROGRESS: {
         return Object.assign({}

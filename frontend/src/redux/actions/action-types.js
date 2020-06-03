@@ -29,3 +29,4 @@ export const REVERT_TREE_COORDS                      = 'REVERT_TREE_COORDS';
 export const GET_FEATURE_AJAX_CONCLUDED             = 'GET_FEATURE_AJAX_CONCLUDED';
 
 export const LOGIN                                   = 'LOGIN';
+export const NEW_TARGET                             = 'NEW_TARGET';

@@ -16,6 +16,7 @@ import DownArrow from './resources/down-arrow.png';
 import {sca_fake_return, isNotNullOrUndefined} from './util/util.js';
 
 
+import {fetchingNewPhotoForExistingTarget} from './redux/selectors.js';
 
 
 
@@ -36,6 +37,7 @@ const mapStateToProps = (state) => {
   return {
     targetId: state.target.id
     , photos: state.target.photos
+    , fetchingNewPhotoForExistingTarget: fetchingNewPhotoForExistingTarget(state)
   };
 };
 
@@ -44,7 +46,6 @@ const mapDispatchToProps = (dispatch) => {
     displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
   };
 }
-
 
 
 
@@ -125,19 +126,26 @@ class TargetPhotoPane extends React.Component {
   render() {
     assert.isTrue(isNotNullOrUndefined(this.props.photos), 'target-photo-pane.jsx::render 0');
     const {num, idx, img, t} = this.props.photos;
-    assert.isTrue(isNotNullOrUndefined(num), 'target-photo-pane.jsx::render 1');
-    if (this.props.photos.num===0) {
+    assert.isNotNull(num, 'target-photo-pane.jsx::render 1');
+    if (this.props.photos.num===undefined) {
+      return (
+        <>
+        <img src={loading} className='img-fluid'/>
+        <div>Retrieving number of photos for {this.props.targetId} &hellip;</div>
+        </>
+      );
+    } else if (this.props.photos.num===0) {
       return (
         <>
         <div>no photos are available</div>
         </>
       );
-    } else if (img===null) {
+    } else if (this.props.fetchingNewPhotoForExistingTarget) {
       assert.isTrue(isNotNullOrUndefined(num), 'target-photo-pane.jsx::render 2');
       assert.isTrue(isNotNullOrUndefined(idx), 'target-photo-pane.jsx::render 3');
       return (
         <>
-        <img src={loading} className='img-fluid' alt='Retrieving photo &hellip;'/>
+        <img src={loading} className='img-fluid'/>
         <div>Retrieving photo {idx+1} (of {num}) for {this.props.targetId} &hellip;</div>
         </>
       )

@@ -1,10 +1,3 @@
-import {CHANGE_TILE_PROVIDER
-        , UPDATE_MOUSE_COORDS
-        , DISPLAY_MODAL
-        , CLEAR_MODAL
-        , TOGGLE_MAXIMIZE_INFO_PANEL
-        , UPDATE_TARGET} from '../actions/action-types.js';
-
 const assert = require('chai').assert;
 
 import toastReducer                   from './toastReducer.js';

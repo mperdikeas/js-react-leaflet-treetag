@@ -63,6 +63,7 @@ const mapStateToProps = (state) => {
     , targetId: state.target.id
     , targetIsDirty: targetIsDirty(state)
     , tab: state.paneToOpenInfoPanel
+    , treeInfo: state.target.treeInfo
     , photos: state.target.photos
     , targetInitialAjaxReadInProgress: targetInitialAjaxReadInProgress(state)
     , typeOfTargetInitialAjaxReadInProgress: typeOfTargetInitialAjaxReadInProgress(state)
@@ -81,7 +82,7 @@ const mergeProps = ( stateProps, {dispatch}) => {
   const msgSavingTreeData = targetId => `αποθήκευση δεδομένων για το δένδρο #${targetId}`;
   return {
     ...stateProps
-    , getFeatData:(id, cancelToken) => dispatch(getFeatData(id, cancelToken))
+    , getFeatData:(id) => dispatch(getFeatData(id))
     , saveFeatData: (treeInfo) => dispatch(saveFeatData(treeInfo))
     , displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func})) // TODO: obsolete
     , displayNotificationInsufPrivilleges: ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgInsufPriv1}))
@@ -283,8 +284,11 @@ class TreeInformationPanel extends React.Component {
 
 
   onInformation = () => {
-    if (!this.displayNotificationIfTargetIsDirty())
+    if (!this.displayNotificationIfTargetIsDirty()) {
       this.props.setPaneToOpenInfoPanel(INFORMATION);
+      if (this.props.treeInfo == null)
+        this.props.getFeatData(this.props.targetId);
+    }
   }
 
   onPhotos = () => {

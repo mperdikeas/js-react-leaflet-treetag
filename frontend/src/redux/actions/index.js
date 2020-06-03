@@ -31,6 +31,8 @@ import {APP_IS_DONE_LOADING
 
 
         , GET_FEATURE_AJAX_CONCLUDED
+
+        , NEW_TARGET
         
        } from './action-types.js';
 
@@ -94,7 +96,10 @@ export function unsetOrFetch(targetId) {
                 console.log('no cancel token found');
             dispatch(unsetTarget());
         } else {
-            switch (getState().paneToOpenInfoPanel) {
+            dispatch(newTarget(targetId));
+            const pane = getState().paneToOpenInfoPanel;
+            console.log(`abe pane = ${pane}`);
+            switch (pane) {
             case INFORMATION:
             case HISTORY:
             case ADJUST:
@@ -104,10 +109,15 @@ export function unsetOrFetch(targetId) {
                 dispatch(getFeatNumOfPhotos(targetId));
                 break;
             default:
-                assert.fail(`unhandled pane: [${getState().paneToOpenInfoPanel}]`);
+                assert.fail(`unhandled pane: [${pane}]`);
             }
         }
     };
+}
+
+function newTarget(targetId) {
+    console.log('abe dispatch newtarget');
+    return {type: NEW_TARGET, payload: {targetId}};
 }
 
 export function setPaneToOpenInfoPanel(pane) {
