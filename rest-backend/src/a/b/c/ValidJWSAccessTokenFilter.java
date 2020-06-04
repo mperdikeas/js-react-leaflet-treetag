@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Collections;
+import java.util.Random;
 
 import java.lang.reflect.Method;
 
@@ -69,6 +70,7 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
     
     final private Map<Class<?>, Set<Method>> guardedClassesAndMethods;
     final private Logger                     logger;
+    final private Random                     random;
     
     public ValidJWSAccessTokenFilter(final Map<Class<?>, Set<Method>> guardedClassesAndMethods
                                      , final Logger logger) {
@@ -76,6 +78,7 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
         Assert.assertNotNull(logger);
         this.guardedClassesAndMethods = guardedClassesAndMethods;
         this.logger         = logger;
+        this.random         = new Random();
     }
 
     @Context
@@ -170,9 +173,12 @@ public class ValidJWSAccessTokenFilter implements ContainerRequestFilter {
                                              , HttpHeaders.AUTHORIZATION
                                              , accessToken
                                              , t.getMessage());
+            final BearerAuthorizationFailureMode failMode = (random.nextInt(3)==0)
+                ?BearerAuthorizationFailureMode.MORE_THAN_ONE_AUTHORIZATION_HEADER
+                :BearerAuthorizationFailureMode.JWT_VERIFICATION_FAILED;
             abortUnauthorizedRequest(requestContext
                                      , Response.Status.FORBIDDEN
-                                     , new AbortResponse(BearerAuthorizationFailureMode.JWT_VERIFICATION_FAILED
+                                     , new AbortResponse(failMode
                                                          , msg
                                                          , Throwables.getStackTraceAsString(t)));
         }

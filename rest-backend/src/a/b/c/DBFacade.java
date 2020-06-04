@@ -194,7 +194,11 @@ public class DBFacade implements IDBFacade {
     public int createTree(TreeInfo treeInfo) {
         final int key = maxKeyInTrees() + 1;
         final TreeInfoWithId treeInfoWithId = new TreeInfoWithId(key, treeInfo);
-        Assert.assertNull(trees.put(key, treeInfoWithId));
+        Assert.assertNull(this.trees.put(key, treeInfoWithId));
+
+
+        final Map<Integer, PhotoData> photos = new LinkedHashMap<>();
+        Assert.assertNull(this.tree2photos.put(key, photos));
         return key;
     }
 

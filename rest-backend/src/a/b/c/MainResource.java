@@ -99,6 +99,8 @@ public class MainResource {
 
     final static Logger logger = Logger.getLogger(MainResource.class);
 
+    final Random random;
+
     private static AtomicInteger numberOfInstances = new AtomicInteger();
 
     public MainResource(final ServletContext servletContext) {
@@ -115,6 +117,8 @@ public class MainResource {
 
         logger.info(String.format("instance hashcode: [%s]"
                                   , System.identityHashCode(this)));
+        this.random = new Random();
+            
     }
 
     @Path("/getUser/")
@@ -230,7 +234,10 @@ public class MainResource {
                                       , httpServletRequest.getRemoteAddr()));
             TimeUnit.MILLISECONDS.sleep(2000);
             final TreeInfoWithId treeInfo = app.dbFacade.getTreeInfo(featureId);
-            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(treeInfo))).build();
+            if (random.nextInt(5)==0)
+                return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.err("msg", "some stack trace"))).build();
+            else
+                return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(treeInfo))).build();
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling getFeatureData(%d) from remote address [%s]"
                                        , featureId
