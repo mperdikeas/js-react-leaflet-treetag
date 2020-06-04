@@ -11,6 +11,7 @@ export const DISMISS_TOAST                           = 'DISMISS_TOAST';
 export const GET_TREE_INFO_IN_PROGRESS               = 'GET_TREE_INFO_IN_PROGRESS';
 export const GET_FEAT_NUM_PHOTOS_IN_PROGRESS         = 'GET_FEAT_NUM_PHOTOS_IN_PROGRESS';
 export const GET_FEAT_PHOTO_IN_PROGRESS              = 'GET_FEAT_PHOTO_IN_PROGRESS';
+export const DEL_FEAT_PHOTO_IN_PROGRESS              = 'DEL_FEAT_PHOTO_IN_PROGRESS';
 
 export const GET_TREE_INFO_SUCCESS                   = 'GET_TREE_INFO_SUCCESS';
 export const GET_FEAT_NUM_PHOTOS_SUCCESS             = 'GET_FEAT_NUM_PHOTOS_SUCCESS';

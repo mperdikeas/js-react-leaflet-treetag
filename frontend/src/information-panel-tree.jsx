@@ -26,7 +26,7 @@ import {displayModal
       , setPaneToOpenInfoPanel
       , setTreeInfoCurrent
       , setTreeInfoOriginal
-      , getFeatNumOfPhotos
+      , getFeatNumPhotos
       , getFeatData
       , saveFeatData}  from './redux/actions/index.js';
 
@@ -94,7 +94,7 @@ const mergeProps = ( stateProps, {dispatch}) => {
     , setPaneToOpenInfoPanelAndPossiblyFetchPhoto: (pane) => {
       dispatch(setPaneToOpenInfoPanel(pane))
       if (stateProps.photos===null) {
-        dispatch(getFeatNumOfPhotos(stateProps.targetId));
+        dispatch(getFeatNumPhotos(stateProps.targetId));
       }
     }
     , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(stateProps.targetId)}))
@@ -282,28 +282,39 @@ class TreeInformationPanel extends React.Component {
     */
   }
 
+  fetchTreeDataIfNecessary = () => {
+      if (this.props.treeInfo == null)
+        this.props.getFeatData(this.props.targetId);
+  }
+
 
   onInformation = () => {
     if (!this.displayNotificationIfTargetIsDirty()) {
       this.props.setPaneToOpenInfoPanel(INFORMATION);
-      if (this.props.treeInfo == null)
-        this.props.getFeatData(this.props.targetId);
+      this.fetchTreeDataIfNecessary();
     }
   }
 
   onPhotos = () => {
-    if (!this.displayNotificationIfTargetIsDirty())
+    if (!this.displayNotificationIfTargetIsDirty()) {
       this.props.setPaneToOpenInfoPanelAndPossiblyFetchPhoto(PHOTOS);
+/*      if (this.props.photos == null)
+        this.props.getFeatData(this.props.targetId);*/
+    }
   }
 
   onHistory = () => {
-    if (!this.displayNotificationIfTargetIsDirty())
+    if (!this.displayNotificationIfTargetIsDirty()) {
       this.props.setPaneToOpenInfoPanel(HISTORY);
+      this.fetchTreeDataIfNecessary();
+    }
   }
 
   onAdjust = () => {
-    if (!this.displayNotificationIfTargetIsDirty())
+    if (!this.displayNotificationIfTargetIsDirty()) {
       this.props.setPaneToOpenInfoPanel(ADJUST);
+      this.fetchTreeDataIfNecessary();
+    }
   }
   
   

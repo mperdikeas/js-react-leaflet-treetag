@@ -23,9 +23,14 @@ import {fetchingNewPhotoForExistingTarget} from './redux/selectors.js';
 import { connect } from 'react-redux';
 
 import {MODAL_LOGIN} from './constants/modal-types.js';
-import {displayModal, getFeatPhoto} from './redux/actions/index.js';
+import {displayModal
+      , delFeatPhoto
+      , getFeatPhoto} from './redux/actions/index.js';
 
-import {LOGGING_IN, GETTING_NUM_OF_PHOTOS, GETTING_PHOTO, DELETING_PHOTO} from './constants/target-photo-pane-server-call-types.js';
+import {LOGGING_IN
+      , GETTING_NUM_OF_PHOTOS
+      , GETTING_PHOTO
+      , DELETING_PHOTO} from './constants/target-photo-pane-server-call-types.js';
 
 
 import {OP_NO_LONGER_RELEVANT} from './constants/axios-constants.js';
@@ -51,9 +56,8 @@ const mapDispatchToProps = (dispatch) => {
                   , `target-photo-pane-img-wt-controls.jsx :: mapDispatchToProps, prevImage ~ idx value of [${idx}] is not GT 0`);
       dispatch(getFeatPhoto(id, idx-1));
     }
-    , nextImage: (id, idx) => {
-      dispatch(getFeatPhoto(id, idx+1));
-    }    
+    , nextImage: (id, idx) => {dispatch(getFeatPhoto(id, idx+1));}
+    , delFeatPhoto: (id, idx) => {dispatch(delFeatPhoto(id, idx));}
   };
 }
 
@@ -167,7 +171,7 @@ class TargetPhotoPaneImgWithControls extends React.Component {
 
 
 
-  getPhotoDateAndDeletion = (targetId, photoIndx, t) => {
+  getPhotoDateAndDeletion = (targetId, idx, t) => {
     const localDate = new Date();
     localDate.setUTCSeconds(t);
     const localDateString = localDate.toLocaleDateString('el-GR');
@@ -180,12 +184,12 @@ class TargetPhotoPaneImgWithControls extends React.Component {
                  , marginTop: '.5em'
                  , marginBottom: '.5em'}}>
         <span>λήψη {localDateString}</span>
-        <Button variant='outline-danger' onClick={()=>this.deletePhoto(photoIndx)}>Διαγραφή</Button>
+        <Button variant='outline-danger' onClick={()=>this.props.delFeatPhoto(targetId, idx)}>Διαγραφή</Button>
       </div>
     );
   }
 
-  deletePhoto = () => {
+  deletePhoto_UNUSED = () => {
     const url = urlForPhotoDeletion(this.props.targetId, this.state.idx);
     axiosAuth.delete(url, {cancelToken: this.source.token}).then(res => {
       const {t, err} = res.data; 
@@ -232,23 +236,6 @@ class TargetPhotoPaneImgWithControls extends React.Component {
 
 
   
-
-
-
-function urlForPhotoDeletion(targetId, indx) {
-  return urlForPhoto(targetId, indx);
-}
-
-function urlForPhoto(targetId, indx) {
-  const url = `/feature/${targetId}/photos/elem/${indx}`;
-  return url;
-}
-
-
-function urlForNumOfPhotos(targetId) {
-  const url=`/feature/${targetId}/photos/num`;
-  return url;
-}
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(TargetPhotoPaneImgWithControls);

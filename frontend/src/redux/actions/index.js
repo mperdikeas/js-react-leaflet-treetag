@@ -12,6 +12,7 @@ import {APP_IS_DONE_LOADING
         , GET_TREE_INFO_IN_PROGRESS
         , GET_FEAT_NUM_PHOTOS_IN_PROGRESS
         , GET_FEAT_PHOTO_IN_PROGRESS
+        , DEL_FEAT_PHOTO_IN_PROGRESS
         , GET_FEAT_PHOTO_SUCCESS
         
         , GET_TREE_INFO_SUCCESS
@@ -40,7 +41,7 @@ import {CancelToken} from 'axios';
 
 import getFeatData from './get-feat-data.jsx';
 
-import getFeatNumOfPhotos from './get-feat-num-photos.jsx';
+import getFeatNumPhotos from './get-feat-num-photos.jsx';
 
 
 import {isValidModalType} from '../../constants/modal-types.js';
@@ -97,7 +98,7 @@ export function unsetOrFetch(targetId) {
                 dispatch(getFeatData(targetId));
                 break;
             case PHOTOS:
-                dispatch(getFeatNumOfPhotos(targetId));
+                dispatch(getFeatNumPhotos(targetId));
                 break;
             default:
                 assert.fail(`unhandled pane: [${pane}]`);
@@ -136,6 +137,12 @@ export function getFeatNumPhotosInProgress(id, axiosSource) {
 export function getFeatPhotoInProgress(id, idx, axiosSource) {
     return {type: GET_FEAT_PHOTO_IN_PROGRESS, payload: {id, idx, axiosSource}};
 }
+
+
+export function delFeatPhotoInProgress(id, idx) {
+    return {type: DEL_FEAT_PHOTO_IN_PROGRESS, payload: {id, idx}};
+}
+
 
 
 export function getFeatureAjaxConcluded() {
@@ -189,7 +196,8 @@ export {default as login} from './login.js';
 
 export {default as getFeatData}        from './get-feat-data.jsx';
 export {default as getFeatPhoto}       from './get-feat-photo.jsx';
-export {default as getFeatNumOfPhotos} from './get-feat-num-photos.jsx';
+export {default as getFeatNumPhotos}   from './get-feat-num-photos.jsx';
 
 export {default as saveFeatData}       from './save-feat-data.jsx';
+export {default as delFeatPhoto}       from './del-feat-photo.jsx';
 

@@ -24,7 +24,7 @@ import {urlForNumOfPhotos} from './feature-photo-util.js';
 
 import {cancelPendingRequests} from './action-util.js';
 
-export default function getFeatNumOfPhotos(id) {
+export default function getFeatNumPhotos(id) {
   const source = CancelToken.source();
   return (dispatch, getState) => {
 
