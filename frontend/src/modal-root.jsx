@@ -18,13 +18,15 @@ import ModalUsernameReminder         from './modal-username-reminder.jsx';
 import ModalNotification             from './modal-notification.jsx';
 import ModalNotificationNoDismiss    from './modal-notification-no_dismiss.jsx';
 import ModalQuery                    from './modal-query.jsx';
+import ModalRetryCancel              from './modal-retry-cancel.jsx';
 
 import {MODAL_LOGIN
       , MDL_SAVE_WS_2_DSK
       , MDL_INS_GJSON_2_WS
       , MDL_NOTIFICATION
       , MDL_NOTIFICATION_NO_DISMISS
-      , MDL_QUERY} from './constants/modal-types.js';
+      , MDL_QUERY
+      , MDL_RETRY_CANCEL} from './constants/modal-types.js';
 
 const MODAL_COMPONENTS = {
   MODAL_LOGIN: ModalLogin,
@@ -33,7 +35,8 @@ const MODAL_COMPONENTS = {
   MDL_USERNAME_REMINDER: ModalUsernameReminder,
   MDL_NOTIFICATION: ModalNotification,
   MDL_NOTIFICATION_NO_DISMISS: ModalNotificationNoDismiss,  
-  MDL_QUERY: ModalQuery
+  MDL_QUERY: ModalQuery,
+  MDL_RETRY_CANCEL: ModalRetryCancel
 };
 
 

@@ -36,6 +36,7 @@ export default (modals = [/*{modalType: MODAL_LOGIN, modalProps: null} */
                         }*/
                     }
                     case CLEAR_MODAL: {
+                        console.log(`modal length: ${modals.length}`);
                         if (modals.length>0) {
                             const modals2 = [...modals];
                             const modalToClose =modals2.pop();

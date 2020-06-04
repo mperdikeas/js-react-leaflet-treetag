@@ -6,6 +6,7 @@ export const MDL_NOTIFICATION      = 'MDL_NOTIFICATION';
 export const MDL_NOTIFICATION_NO_DISMISS      = 'MDL_NOTIFICATION_NO_DISMISS';
 export const MDL_WKSPACE_IS_EMPTY = 'MDL_WKSPACE_IS_EMPTY';
 export const MDL_QUERY            = 'MDL_QUERY';
+export const MDL_RETRY_CANCEL     = 'MDL_RETRY_CANCEL';
 export function isValidModalType(modalType) {
     const validModalTypes = [  MODAL_LOGIN
                                , MDL_SAVE_WS_2_DSK
@@ -14,7 +15,8 @@ export function isValidModalType(modalType) {
                                , MDL_NOTIFICATION
                                , MDL_NOTIFICATION_NO_DISMISS
                                , MDL_WKSPACE_IS_EMPTY
-                               , MDL_QUERY];
+                               , MDL_QUERY
+                               , MDL_RETRY_CANCEL];
     return (validModalTypes.indexOf(modalType)!==-1);
 }
 

@@ -12,7 +12,9 @@ import {getTreeInfoInProgress
       , clearModal
       , setTreeInfoOriginal
       , markGetFeatureInfoFailed} from './index.js';
-import {MODAL_LOGIN, MDL_NOTIFICATION_NO_DISMISS} from '../../constants/modal-types.js';
+import {MODAL_LOGIN
+      , MDL_RETRY_CANCEL
+      , MDL_NOTIFICATION_NO_DISMISS} from '../../constants/modal-types.js';
 
 import {OP_NO_LONGER_RELEVANT} from '../../constants/axios-constants.js';
 
@@ -21,8 +23,49 @@ import {cancelToken} from '../selectors.js';
 
 import {cancelPendingRequests} from './action-util.js';
 
+import {SERVER_ERROR_CODES} from './action-constants.js';
+
+
+function propsForRetryDialog(dispatch, url, id, ctx, err) {
+  function htmlForErrorMessage(url, id, err) {
+    return (
+      <>
+      <div>
+        Some server-side problem was encountered while accessing:<br/>
+        <span style={{fontFamily:'monospace'}}>{url}</span>
+      </div>
+      <div style={{marginBottom: '1em'}}>
+        If the problem persists, contact support with the below details:
+      </div>
+      <div style={{border: '1px solid black'}}>
+        action-creator: getFeatureData({id})
+      </div>
+      <div style={{borderLeft: '1px solid black', borderRight: '1px solid black', borderBottom: '1px solid black'}}>
+        context: {ctx}
+      </div>
+      <div style={{borderLeft: '1px solid black', borderRight: '1px solid black'}}>
+        time: {(new Date()).getTime()/1000}
+      </div>
+      <div style={{border: '1px solid black'
+                 , padding: '0.3em'
+                 , background: 'gainsboro'
+                 , color: 'red'
+                 , fontSize: '110%'
+                 , overflowX: 'auto'
+                 , fontFamily: 'monospace'}}>
+        {JSON.stringify(err)}
+      </div>
+      </>
+    );
+  }
+  const html = htmlForErrorMessage(url, id, err);
+  const cancelAction = ()=>dispatch(clearModal());
+  const retryAction = ()=>{dispatch(clearModal()); dispatch(getFeatureData(id));};
+  return {html, cancelAction, retryAction};
+}
+
 export default function getFeatureData(id) {
-  console.log(`abe getFeatureData(${id}`);
+  console.log(`getFeatureData(${id}`);
   const source = CancelToken.source();
   return (dispatch, getState) => {
     cancelPendingRequests(getState());
@@ -35,22 +78,11 @@ export default function getFeatureData(id) {
     ).then(res => {
       dispatch(getFeatureAjaxConcluded());
       // corr-id: SSE-1585746250
-      console.log(res.data);
       const {t, err} = res.data;
-      console.log(t);
       if (err===null) {
-        console.log('abd - obtained data, setting it');
         dispatch( getTreeInfoSuccess(t) );
       } else {
-        dispatch( displayModal(MDL_NOTIFICATION_NO_DISMISS,
-                               {html: (<div>
-  τ' αρχίδια μου κουνιούνται
-                               </div>
-                               )}));
-        /*
-        this.setState({error: {message: `server-side error: ${err.message}`
-                             , details: err.strServerTrace}});
-        */
+        dispatch( displayModal(MDL_RETRY_CANCEL, propsForRetryDialog(dispatch, url, id, 'server-side error', err)) );
       }
     }).catch( err => {
       if (err.message === OP_NO_LONGER_RELEVANT) {
@@ -60,39 +92,19 @@ export default function getFeatureData(id) {
         // Java class ValidJWSAccessTokenFilter#AbortResponse
         const {code, msg, details} = err.response.data;
         switch(code) {
-          case 'JWT-verif-failed': {
+          case SERVER_ERROR_CODES.JWT_VERIF_FAILED: {
             dispatch( displayModal(MODAL_LOGIN, {followUpFunction: ()=>{dispatch(getFeatureData(id))}}));
             break;
           }
           default: {
-            dispatch( displayModal(MDL_NOTIFICATION_NO_DISMISS,
-                                   {html: (<div>
-                                     <h1>
-                                     unexpected error code: {code}
-                                     </h1>
-                                     <p>
-                                     {msg}
-                                                    </p>
-                                                    <p>
-                                                      {details}
-                                                    </p>
-                               </div>
-                                   )}));                               
+            console.error(err.response);
+            console.error(err.response.data);
+            dispatch( displayModal(MDL_RETRY_CANCEL, propsForRetryDialog(dispatch, url, id, `unrec code: ${code}`, err.response.data)) );
           }
-        }
+        } // switch
       } else {
         console.log(err);
-        dispatch( displayModal(MDL_NOTIFICATION_NO_DISMISS,
-                               {html: (<div>
-                                 <h1>
-                                   unexpected error code -- likely a bug
-                                 </h1>
-                                 <p>
-                                   {JSON.stringify(err)}
-                                 </p>
-                               </div>
-                               )}));                               
-
+        dispatch( displayModal(MDL_RETRY_CANCEL, propsForRetryDialog(dispatch, url, id, 'unrec err shape', err.response.data)) );        
       }
     });
   }; // return (dispatch) =>
