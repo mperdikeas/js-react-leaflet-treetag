@@ -12,11 +12,13 @@ import {
 
 import LandingPageContainer from './landing-page-container.jsx';
 import MainMapContainer from './main-map-container.jsx';
+import RegionMgmnt from './region-mgmnt.jsx';
 import About            from './about.jsx';
 import LoginPage        from './components/login/login-page.jsx';
 
 import ToastsStack                             from './components/toasts/toasts-stack.jsx';
 import ModalRoot                               from './modal-root.jsx';
+
 
 
 // TODO: maybe I should implement different context wrappers for each individual context
@@ -45,7 +47,7 @@ export default function App() {
             <MainMapContainer/>
           </PrivateRoute>
           <PrivateRoute exact path='/main/regions'>
-            <MainMapContainer/>
+            <RegionMgmnt/>
           </PrivateRoute>
           <Route exact path='/about'>
             <About/>

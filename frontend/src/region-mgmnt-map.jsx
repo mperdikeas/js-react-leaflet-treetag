@@ -65,7 +65,6 @@ import {appIsDoneLoading
 
 import TreeCountStatistic from './tree-count-statistic.js';
 
-import {msgTreeDataIsDirty, displayNotificationIfTargetIsDirty} from './common.jsx';
 
 import {targetIsDirty} from './redux/selectors.js';
 
@@ -74,8 +73,7 @@ const mapStateToProps = (state) => {
     assert.isOk(state.target.treeInfo.current);
   }
   return {
-    targetId                       : state.targetId,
-    targetIsDirty: targetIsDirty(state)
+    targetId                       : state.targetId
   };
 };
 
@@ -98,7 +96,7 @@ const mergeProps = (stateProps, {dispatch}) => {
                          , appIsDoneLoading: ()=> dispatch(appIsDoneLoading())
                          , updateCoordinates                 : (latlng)   => dispatch(updateMouseCoords(latlng))
                          , unsetOrFetch : (targetId) => dispatch(unsetOrFetch(targetId))
-                         , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(stateProps.targetId)}))
+
                        });
 }
 
@@ -112,7 +110,7 @@ proj4.defs([
 const WGS84  = 'EPSG:4326';
 const HGRS87 = 'EPSG:2100';
 
-class Map extends React.Component {
+class RegionMgmntMap extends React.Component {
 
   constructor(props) {
     super(props);
@@ -123,24 +121,10 @@ class Map extends React.Component {
     globalSet(GSN.REACT_MAP, this);
   }
 
-  displayNotificationIfTargetIsDirty = displayNotificationIfTargetIsDirty.bind(this);
-  
   getMapHeight = () => {
     return this.props.geometryContext.screen.height - this.props.geometryContext.geometry.headerBarHeight
   }
 
-  getCurrentTileLayer = () => {
-    const layers = [];
-    this.map.eachLayer(function(layer) {
-      if( layer instanceof L.TileLayer )
-        layers.push(layer);
-    });
-    assert.isAtMost(layers.length, 1, `this code was written assumming that at most 1 tile layers are present, yet ${layers.length} were found`);
-    if (layers.length===1)
-      return layers[0];
-    else
-      return null;
-  }
 
   handleClick = (e) => {
     this.props.updateCoordinates(e.latlng);
@@ -154,56 +138,7 @@ class Map extends React.Component {
   }
 
 
-  installNewDrawWorkspace = (featureGroup) => {
-    if (this.drawnItems!==undefined) {
-      assert.isNotNull(this.drawnItems);
-      this.drawnItems.clearLayers();
-      this.layersControl.removeLayer(this.drawnItems);
-      this.map.removeLayer(this.drawnItems);
-      this.map.removeControl(this.drawControl);
-    }
-    
-    this.drawnItems = featureGroup;
-    this.layersControl.addOverlay(this.drawnItems, 'επιφάνεια εργασίας');      
-    this.map.addLayer(this.drawnItems);
-    this.drawControl = new L.Control.Draw({
-      draw: {
-        polyline: true,
-        circlemarker: false, // GeoJSON does not support circles
-        circle: false,       // --------------------------------
-        rectangle: true,
-        marker: true,
-        polygon: {
-          shapeOptions: {
-            color: 'purple'
-          },
-          allowIntersection: false,
-          drawError: {
-            color: 'orange',
-            timeout: 1000
-          },
-          showArea: true,
-          metric: true
-        }
-      },
-      edit: {
-        featureGroup: this.drawnItems
-      }
-    });
-    this.map.addControl(this.drawControl);
-  }
 
-  installNewQueryLayer = (featureGroup) => {
-//    let queryLayer = globalGet(GSN.LEAFLET_QUERY_LAYER, false);
-    if (this.queryLayer!==null) {
-      this.queryLayer.clearLayers();
-      this.layersControl.removeLayer(this.queryLayer);
-      this.map.removeLayer(this.queryLayer);
-    }
-    this.queryLayer = featureGroup;
-    this.layersControl.addOverlay(this.queryLayer, 'query results');
-    this.map.addLayer(this.queryLayer);
-  }  
 
   countTreesInLayer = (layer) => {
     const rv = new TreeCountStatistic();
@@ -494,5 +429,5 @@ function splitFeatureGroupIntoCircleMarkersAndTheRest(featureGroup) {
         , L.featureGroup(restLayers)];
 }
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(wrapContexts(Map));
+export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(wrapContexts(RegionMgmntMap));
 

@@ -22,7 +22,7 @@ import {changeTileProvider} from './redux/actions/index.js';
 
 
 const OVERVIEW_MAP      = 'OVERVIEW_MAP';
-const REGION_MNGMT      = 'REGION_MNGMT';
+const REGION_MGMNT      = 'REGION_MGMNT';
 
 import { withRouter } from 'react-router-dom'
 
@@ -33,7 +33,7 @@ class LandingPageContainer extends React.Component {
       case OVERVIEW_MAP:
         this.props.history.push('/main/map');
         break;
-      case REGION_MNGMT:
+      case REGION_MGMNT:
         this.props.history.push('/main/regions');
         break;
       default:
@@ -53,7 +53,7 @@ class LandingPageContainer extends React.Component {
         <Nav.Link eventKey={OVERVIEW_MAP}>Γενικά</Nav.Link>
       </Nav.Item>
       <Nav.Item>
-        <Nav.Link eventKey={REGION_MNGMT}>Διαχείριση περιοχών</Nav.Link>
+        <Nav.Link eventKey={REGION_MGMNT}>Διαχείριση περιοχών</Nav.Link>
       </Nav.Item>
       </Nav>
     );
