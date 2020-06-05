@@ -50,7 +50,6 @@ export default (state = initState(null), action) => {
     }
 
     case GET_FEAT_NUM_PHOTOS_IN_PROGRESS: {
-        console.log('abf GET_FEAT_NUM_PHOTOS_IN_PROGRESS installing new cancel token');
         return Object.assign({}
                              , state
                              , {id: action.payload.id
@@ -61,7 +60,6 @@ export default (state = initState(null), action) => {
                                 , axiosSource: action.payload.axiosSource});
     }
     case GET_FEAT_PHOTO_IN_PROGRESS: {
-        console.log('abf GET_FEAT_PHOTO_IN_PROGRESS installing new cancel token');
         const img = (state.photos.img === undefined)?undefined:null; // mighty deep
         const t = img;
         return Object.assign({}
@@ -73,7 +71,6 @@ export default (state = initState(null), action) => {
                                 , axiosSource: action.payload.axiosSource});
     }
     case GET_FEATURE_AJAX_CONCLUDED: {
-        console.log('abf GET_FEATURE_AJAX_CONCLUDED cleaning cancel token');
         return Object.assign({}
                              , state
                              , {axiosSource: null});
@@ -88,19 +85,16 @@ export default (state = initState(null), action) => {
                              , {treeInfo: {original, current}});
     }
     case GET_FEAT_NUM_PHOTOS_SUCCESS: {
-        console.log('abd targetReducer - get num of photos - 1');
         const num = action.payload;
         const idx =  (num>0)?0:null;
         const img = (idx === null)?null:undefined;
         const t   = (idx === null)?null:undefined;
         const photos = {num, idx, img, t};
-        console.log(`abd photos are: ${JSON.stringify(photos)}`);
         return Object.assign({}
                              , state
                              , {photos});
     }
     case GET_FEAT_PHOTO_SUCCESS: {
-        console.log('abd targetReducer - get photo - 1');
         const {img, t} = action.payload;
         return Object.assign({}
                              , state
@@ -125,9 +119,6 @@ export default (state = initState(null), action) => {
                                                         , {original: JSON.parse(JSON.stringify(action.payload))})});
     }        
     case SET_TREE_COORDS: {
-        console.log('setting tree coords');
-//        const currentDeepCopy = (state.treeInfo.current)==={}?{}:JSON.parse(JSON.stringify(state.treeInfo.current));
-  //      const newCurrent = Object.assign(currentDeepCopy, {coords: JSON.parse(JSON.stringify(action.payload))});
         return Object.assign({}
                              , state
                              , {treeInfo: Object.assign({}
@@ -137,8 +128,6 @@ export default (state = initState(null), action) => {
                                                                                   , {coords: action.payload})})});
     }
     case REVERT_TREE_INFO: {
-        console.log(state.treeInfo.current);
-        console.log(state.treeInfo.original);
         const current = JSON.parse(JSON.stringify(state.treeInfo.original));
         return Object.assign({}
                              , state
