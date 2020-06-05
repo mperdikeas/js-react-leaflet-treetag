@@ -48,7 +48,7 @@ import {isValidModalType} from '../../constants/modal-types.js';
 
 import {CT_UNIT} from '../../constants.js';
 
-import {cancelPendingRequests} from './action-util.js';
+import {cancelPendingRequests} from './action-util.jsx';
 
 import {INFORMATION, PHOTOS, HISTORY, ADJUST}                 from '../../constants/information-panel-panes.js';
 

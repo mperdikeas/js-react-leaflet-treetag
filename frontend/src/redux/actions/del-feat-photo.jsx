@@ -14,9 +14,9 @@ import {OP_NO_LONGER_RELEVANT} from '../../constants/axios-constants.js';
 
 import {cancelToken} from '../selectors.js';
 
-import {urlForPhotoDeletion} from './feature-photo-util.js';
+import {urlForPhotoDeletion} from './feat-url-util.js';
 
-import {cancelPendingRequests} from './action-util.js';
+import {cancelPendingRequests} from './action-util.jsx';
 
 
 export default function delFeatPhoto(id, idx) {
