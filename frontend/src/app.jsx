@@ -10,6 +10,7 @@ import {
 } from 'react-router-dom';
 
 
+import LandingPageContainer from './landing-page-container.jsx';
 import MainMapContainer from './main-map-container.jsx';
 import About            from './about.jsx';
 import LoginPage        from './components/login/login-page.jsx';
@@ -22,7 +23,7 @@ import ModalRoot                               from './modal-root.jsx';
 import wrapContexts from './context/contexts-wrapper.jsx';
 
 export default function App() {
-  const protectedMap = (
+{/*  const protectedMap = (
     <PrivateRoute path='/main'> 
       <MainMapContainer/>
     </PrivateRoute> 
@@ -31,18 +32,25 @@ export default function App() {
     <Route path='/main'> 
       <MainMapContainer/>
     </Route> 
-  );  
+  );  */}
   return (
     <ModalRoot>
       <ToastsStack>
 
         <Switch>
-          {protectedMap}
-          <Route path='/main' component={MainMapContainer}/>
-          <Route path='/about' component={About}/>
-          {/* it is very likely that the below method is fully equivalent: */}
-          {/*        <Route path='/login' component={LoginPage}/> */}
-          <Route path='/login'>
+          <PrivateRoute exact path='/main'>
+            <LandingPageContainer/>
+          </PrivateRoute>
+          <PrivateRoute exact path='/main/map'>          
+            <MainMapContainer/>
+          </PrivateRoute>
+          <PrivateRoute exact path='/main/regions'>
+            <MainMapContainer/>
+          </PrivateRoute>
+          <Route exact path='/about'>
+            <About/>
+          </Route>
+          <Route exact path='/login'>
             <LoginPage/>
           </Route>
           <Route path='/' render={()=><Redirect to={{pathname:'/main'}}/>}/>

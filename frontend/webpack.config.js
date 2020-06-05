@@ -21,12 +21,25 @@ const config = {
     mode: mode, // https://stackoverflow.com/a/51163094/274677
     devtool: 'source-map',
     devServer: {
-        contentBase: './dist',
-        historyApiFallback: true // https://stackoverflow.com/a/44810474/274677
+        contentBase: './dist'
+        /* NB. Both the following:
+         *     a) `historyApiFallback: true` (or, equivalently, `historyApiFallback: {index: '/'}`)
+         *     - AND -
+         *     b) publicPath: "/" cf. SSE-1591357301
+         *
+         *     ... are necessary. See:
+         * 
+         * See:
+         *    https://stackoverflow.com/a/39985334/274677
+         *    https://stackoverflow.com/a/50179280/274677
+         */
+        , historyApiFallback: true
+        //        , historyApiFallback: {index: '/'}
     },
     entry: './src/main.jsx',
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        publicPath: "/",
+        path: path.resolve(__dirname, 'dist'), // SSE-1591357301
         filename: 'bundle.js'
     },
     module: {
