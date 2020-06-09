@@ -14,7 +14,6 @@ import {IntegerDataFieldFactory
 
 
 import {displayModal
-      , clearModal
       , revertTreeInfo
       , toggleMaximizeInfoPanel
       , setPaneToOpenInfoPanel

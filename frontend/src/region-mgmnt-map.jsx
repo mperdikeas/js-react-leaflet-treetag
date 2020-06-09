@@ -60,7 +60,8 @@ import { connect }          from 'react-redux';
 import {appIsDoneLoading
       , updateMouseCoords
       , displayModal
-      , unsetOrFetch}  from './redux/actions/index.js';
+      , unsetOrFetch
+      , getRegions}  from './redux/actions/index.js';
 
 
 import TreeCountStatistic from './tree-count-statistic.js';
@@ -78,27 +79,16 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {dispatch};
-}
-
-/*
- * SSE-1589888176
- * idiom for [mapDispatchToProps] and [mergeProps] described in:
- *     https://github.com/reduxjs/react-redux/issues/237#issuecomment-168816713
- *
- */
-const mergeProps = (stateProps, {dispatch}) => {
-  const pleaseWaitWhileAppIsLoading = <span>please wait while fetching map data &hellip; </span>;
-  return Object.assign({},
-                       {
-                         ...stateProps
-                         , pleaseWaitWhileAppIsLoading: ()=>dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: pleaseWaitWhileAppIsLoading}))
-                         , appIsDoneLoading: ()=> dispatch(appIsDoneLoading())
-                         , updateCoordinates                 : (latlng)   => dispatch(updateMouseCoords(latlng))
-                         , unsetOrFetch : (targetId) => dispatch(unsetOrFetch(targetId))
-
-                       });
-}
+  const pleaseWaitWhileAppIsLoading    = <span>please wait while fetching map data &hellip; </span>;
+  const pleaseWaitWhileFetchingRegions = <span>please wait while regions are fetched &hellip; </span>;
+  return {
+    pleaseWaitWhileAppIsLoading: ()=>dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: pleaseWaitWhileAppIsLoading}))
+    , appIsDoneLoading: ()=> dispatch(appIsDoneLoading())
+    , updateCoordinates                 : (latlng)   => dispatch(updateMouseCoords(latlng))
+    , pleaseWaitWhileFetchingRegions: ()=>dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: pleaseWaitWhileFetchingRegions}))
+    , getRegions: ()=>dispatch(getRegions())
+  };
+};
 
 
 // https://spatialreference.org/ref/epsg/2100/
@@ -163,7 +153,6 @@ class RegionMgmntMap extends React.Component {
     this.map.doubleClickZoom.disable();
 
     this.addMeasureControl();
-
     this.addLayerGroupsExceptPromisingLayers();
     this.addLayerGroupsForPromisingLayers();
     this.addDrawControl();
@@ -178,9 +167,15 @@ class RegionMgmntMap extends React.Component {
 
     $('div.leaflet-control-container section.leaflet-control-layers-list div.leaflet-control-layers-overlays input.leaflet-control-layers-selector[type="checkbox"]').on('change', (e)=>{
     });
-    setTimeout(()=>{this.props.appIsDoneLoading()}, 1000);
+    setTimeout(()=>{this.props.appIsDoneLoading()}, 1000); // this is a load of crap; I shall have to re-implement this properly.
+    this.fetchRegions();
   }
 
+
+  fetchRegions = () => {
+    this.props.pleaseWaitWhileFetchingRegions();
+    this.props.getRegions();
+  }
   
 
   addMeasureControl = () => {
@@ -203,11 +198,11 @@ class RegionMgmntMap extends React.Component {
 //    this.layersControl.addOverlay(drawnItems, 'oρισμός περιοχών');
     this.drawControl = new L.Control.Draw({
       draw: {
-        polyline: true,
+        polyline: false,
         circlemarker: false, // GeoJSON does not support circles
         circle: false,       // --------------------------------
         rectangle: true,
-        marker: true,
+        marker: false,
         polygon: {
           shapeOptions: {
             color: 'purple'
@@ -242,6 +237,7 @@ class RegionMgmntMap extends React.Component {
           layer = e.layer;
     this.map.addLayer(layer);
     this.drawnItems.addLayer(layer);
+    console.warn(layer.toGeoJSON(7));
     if (layer instanceof L.Polygon) {
       console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
       const countResult = this.countTreesInLayer(layer);
@@ -317,5 +313,5 @@ class RegionMgmntMap extends React.Component {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(wrapContexts(RegionMgmntMap));
+export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(RegionMgmntMap));
 

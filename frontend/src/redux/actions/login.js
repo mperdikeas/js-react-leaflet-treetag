@@ -2,8 +2,6 @@ const assert = require('chai').assert;
 import {storeAccessToken} from '../../access-token-util.js';
 import {axiosPlain} from '../../axios-setup.js';
 
-import { clearModal } from './index.js';
-
 
 export default function login({installation, username, password}, updateLogin, followupActionCreator, followupFunc) {
 

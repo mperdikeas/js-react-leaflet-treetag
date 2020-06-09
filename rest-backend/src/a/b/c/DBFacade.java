@@ -33,6 +33,8 @@ public class DBFacade implements IDBFacade {
     private final Map<String, UserInfo> users;
     private final Map<Integer, TreeInfoWithId> trees;
     private final Map<Integer, Map<Integer, PhotoData>> tree2photos;
+
+    private final Map<String, List<Region>> regions;
     private final Random r;
     
     public DBFacade() {
@@ -80,6 +82,7 @@ public class DBFacade implements IDBFacade {
             }
             Assert.assertNull(tree2photos.put(i, photosForThisTree));
         } // for (int i = 0;
+        this.regions = new LinkedHashMap<>();
 
     }
 
@@ -291,5 +294,15 @@ public class DBFacade implements IDBFacade {
         } else return true;
     }
 
+
+    @Override    
+    public final List<Region> regionsForInstallation(final String installation) {
+        final List<Region> rv = this.regions.get(installation);
+        if (rv == null)
+            return new ArrayList<Region>();
+        else
+            return rv;
+    }
+    
 
 }

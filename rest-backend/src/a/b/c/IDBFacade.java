@@ -21,8 +21,9 @@ public interface IDBFacade {
     int postPhoto(int treeId, PhotoData photoData);
     boolean deletePhoto(int treeId, int photoIdx);
     List<BasicTreeInfoWithId> getTrees(String installation);
+    List<Region> regionsForInstallation(String installation);
 
-
+        
     Set<Privillege> getPrivilleges(String installation, String username);
     boolean arePrivillegesSufficient(Set<Privillege> privilleges, Class c, Method m);
 

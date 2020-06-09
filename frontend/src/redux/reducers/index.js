@@ -6,7 +6,7 @@ import targetReducer                  from './targetReducer.js';
 import modalReducer                   from './modalReducer.js';
 import maximizedInfoPanelReducer      from './maximizedInfoPanelReducer.js';
 import paneToOpenInfoPanelReducer     from './paneToOpenInfoPanelReducer.js';
-
+import regionsReducer                 from './regionsReducer.js';
 
 function rootReducer(state = {}, action) {
     const rv = {
@@ -15,7 +15,8 @@ function rootReducer(state = {}, action) {
         target               : targetReducer               (state.target, action),
         modals               : modalReducer                (state.modals, action),
         maximizedInfoPanel   : maximizedInfoPanelReducer   (state.maximizedInfoPanel, action),
-        paneToOpenInfoPanel  : paneToOpenInfoPanelReducer  (state.paneToOpenInfoPanel, action)
+        paneToOpenInfoPanel  : paneToOpenInfoPanelReducer  (state.paneToOpenInfoPanel, action),
+        regions              : regionsReducer              (state.regions, action)
     };
     return rv;
 };

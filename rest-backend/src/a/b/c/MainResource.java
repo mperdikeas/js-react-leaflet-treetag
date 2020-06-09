@@ -433,6 +433,29 @@ public class MainResource {
             return ResourceUtil.softFailureResponse(t);
         }
     }
+
+
+    @Path("/regions")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public final Response regionsForInstallation(@Context javax.ws.rs.core.Application _app
+                                                     , @Context final HttpServletRequest httpServletRequest) {
+        final String methodDescr = String.format("regions ~*~ remote address: [%s]"
+                                                 , httpServletRequest.getRemoteAddr());
+        final JaxRsApplication app = (JaxRsApplication) _app;
+        try {
+            logger.info(methodDescr);
+            final String installation = Installation.getFromServletRequest(httpServletRequest);
+            TimeUnit.MILLISECONDS.sleep(2000);
+            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(app.dbFacade.regionsForInstallation(installation)))).build();
+            
+        } catch (Throwable t) {
+            logger.error(String.format("Problem when calling %s", methodDescr)
+                         , t);
+            return ResourceUtil.softFailureResponse(t);
+        }
+    }
+
     
     private Instant getPhotoInstant(final int featureId) {
         final int days = featureId % 2000;

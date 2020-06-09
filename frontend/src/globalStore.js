@@ -22,5 +22,12 @@ export function globalGet(name, expectFound=true) {
 export const GSN = { // Global Store Name
     REACT_MAP: 'react.map' // this is the React map component, not the Leaflet map
     , TARG_ADJ_PANE: 'target.adjustment.pane'
+    , AXIOS_CANCEL_TOKENS: 'axios.cancel.tokens'
 };
 
+export function addCancelToken(type, token)  {
+    const tokens = globalGet(GSN.AXIOS_CANCEL_TOKENS, false);
+    const tokens2 = (tokens?tokens:[]);
+    tokens2.push({type, token});
+    globalSet(GSN.AXIOS_CANCEL_TOKENS, tokens2);
+}

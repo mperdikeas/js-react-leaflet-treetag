@@ -34,7 +34,9 @@ import {APP_IS_DONE_LOADING
         , GET_FEATURE_AJAX_CONCLUDED
 
         , NEW_TARGET
-        
+        , GET_REGIONS_IN_PROGRESS
+        , GET_REGIONS_CONCLUDED
+        , GET_REGIONS_SUCCESS
        } from './action-types.js';
 
 import {CancelToken} from 'axios';
@@ -61,13 +63,11 @@ export function updateMouseCoords(latlng) {
 }
 
 export function displayModal(modalType, modalProps) {
-    console.log(`bac - displaying modal ${modalType}`);
     assert.isTrue(isValidModalType(modalType), `unrecognized modal type: [${modalType}]`);
     return {type: DISPLAY_MODAL, payload: {modalType, modalProps}};
 }
 
 export function clearModal() {
-    console.log('clearModal action');
     return {type: CLEAR_MODAL, payload: null};
 }
 
@@ -90,7 +90,6 @@ export function unsetOrFetch(targetId) {
         } else {
             dispatch(newTarget(targetId));
             const pane = getState().paneToOpenInfoPanel;
-            console.log(`abe pane = ${pane}`);
             switch (pane) {
             case INFORMATION:
             case HISTORY:
@@ -108,7 +107,6 @@ export function unsetOrFetch(targetId) {
 }
 
 function newTarget(targetId) {
-    console.log('abf dispatch newtarget');
     return {type: NEW_TARGET, payload: {targetId}};
 }
 
@@ -192,6 +190,17 @@ export function revertTreeCoords() {
     return {type: REVERT_TREE_COORDS, payload: null};
 }
 
+
+export function getRegionsInProgress() {
+    return {type: GET_REGIONS_IN_PROGRESS, payload: null};
+}
+
+
+export function getRegionsSuccess(regions) {
+    return {type: GET_REGIONS_SUCCESS, payload: regions};
+}
+
+
 export {default as login} from './login.js';
 
 export {default as getFeatData}        from './get-feat-data.jsx';
@@ -200,4 +209,6 @@ export {default as getFeatNumPhotos}   from './get-feat-num-photos.jsx';
 
 export {default as saveFeatData}       from './save-feat-data.jsx';
 export {default as delFeatPhoto}       from './del-feat-photo.jsx';
+
+export {default as getRegions}       from './get-regions.jsx';
 
