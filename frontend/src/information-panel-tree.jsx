@@ -32,7 +32,7 @@ import {displayModal
 
 
 import {INFORMATION, PHOTOS, HISTORY, ADJUST} from './constants/information-panel-panes.js';
-import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS, MODAL_LOGIN} from './constants/modal-types.js';
+import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS} from './constants/modal-types.js';
 
 
 
@@ -83,8 +83,6 @@ const mergeProps = ( stateProps, {dispatch}) => {
     ...stateProps
     , getFeatData:(id) => dispatch(getFeatData(id))
     , saveFeatData: (treeInfo) => dispatch(saveFeatData(treeInfo))
-    , displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func})) // TODO: obsolete
-    , displayNotificationInsufPrivilleges: ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgInsufPriv1}))
     , displayTreeDataHasBeenUpdated: (targetId)=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataHasBeenUpdated(targetId)}))
     , displayModalSavingTreeData  : ()=>dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: msgSavingTreeData(stateProps.targetId)}))
     , toggleMaximizeInfoPanel: ()=>dispatch(toggleMaximizeInfoPanel())

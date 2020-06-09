@@ -1,4 +1,3 @@
-export const APP_IS_DONE_LOADING                     = 'APP_IS_DONE_LOADING';
 export const UPDATE_MOUSE_COORDS                     = 'UPDATE_MOUSE_COORDS';
 export const DISPLAY_MODAL                           = 'DISPLAY_MODAL';
 export const CLEAR_MODAL                             = 'CLEAR_MODAL';

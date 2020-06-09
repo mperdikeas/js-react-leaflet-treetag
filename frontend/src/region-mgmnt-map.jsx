@@ -41,6 +41,7 @@ import {layerIsEmpty, numOfLayersInLayerGroup} from './leaflet-util.js';
 // const Buffer = require('buffer').Buffer;
 // const Iconv  = require('iconv').Iconv;
 
+import { v4 as uuidv4 } from 'uuid';
 import {GSN, globalSet} from './globalStore.js';
 
 import '../node_modules/leaflet-measure/dist/leaflet-measure.en.js';
@@ -57,7 +58,7 @@ import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS} from './constants/modal-t
 
 
 import { connect }          from 'react-redux';
-import {appIsDoneLoading
+import {clearModal
       , updateMouseCoords
       , displayModal
       , unsetOrFetch
@@ -82,10 +83,10 @@ const mapDispatchToProps = (dispatch) => {
   const pleaseWaitWhileAppIsLoading    = <span>please wait while fetching map data &hellip; </span>;
   const pleaseWaitWhileFetchingRegions = <span>please wait while regions are fetched &hellip; </span>;
   return {
-    pleaseWaitWhileAppIsLoading: ()=>dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: pleaseWaitWhileAppIsLoading}))
-    , appIsDoneLoading: ()=> dispatch(appIsDoneLoading())
+    pleaseWaitWhileAppIsLoading: (uuid)=>dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: pleaseWaitWhileAppIsLoading, uuid}))
+    , clearModal: (uuid)=> dispatch(clearModal(uuid))
     , updateCoordinates                 : (latlng)   => dispatch(updateMouseCoords(latlng))
-    , pleaseWaitWhileFetchingRegions: ()=>dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: pleaseWaitWhileFetchingRegions}))
+    , pleaseWaitWhileFetchingRegions: (uuid)=>dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: pleaseWaitWhileFetchingRegions, uuid}))
     , getRegions: ()=>dispatch(getRegions())
   };
 };
@@ -140,8 +141,8 @@ class RegionMgmntMap extends React.Component {
 
 
   componentDidMount = () => {
-
-    this.props.pleaseWaitWhileAppIsLoading();
+    const uuid = uuidv4();
+    this.props.pleaseWaitWhileAppIsLoading(uuid);
 
     window.addEventListener    ('resize', this.handleResize);
     this.map = L.map('map-id', {
@@ -167,13 +168,14 @@ class RegionMgmntMap extends React.Component {
 
     $('div.leaflet-control-container section.leaflet-control-layers-list div.leaflet-control-layers-overlays input.leaflet-control-layers-selector[type="checkbox"]').on('change', (e)=>{
     });
-    setTimeout(()=>{this.props.appIsDoneLoading()}, 1000); // this is a load of crap; I shall have to re-implement this properly.
+    setTimeout(()=>{this.props.clearModal(uuid)}, 1000); // this is dog shit; I shall have to re-implement this properly.
     this.fetchRegions();
   }
 
 
   fetchRegions = () => {
-    this.props.pleaseWaitWhileFetchingRegions();
+    const uuid = uuidv4();
+    this.props.pleaseWaitWhileFetchingRegions(uuid);
     this.props.getRegions();
   }
   

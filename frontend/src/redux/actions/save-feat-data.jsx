@@ -105,8 +105,6 @@ export default function saveFeatData(treeInfo) {
           const {code, msg, details} = err.response.data;
           switch(code) {
             case 'JWT-verif-failed':
-              console.log('cad 1');
-              //dispatch(displayModalLogin(dispatch, uuidv4(), f));
               displayModalLogin(dispatch, uuidv4(), f);
               break;
             default: {

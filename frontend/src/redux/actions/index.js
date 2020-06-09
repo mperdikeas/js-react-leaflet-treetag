@@ -8,8 +8,7 @@ chai.config.showDiff = false;
 chai.config.truncateThreshold = 0; // disable truncating
 const assert = chai.assert;
 
-import {APP_IS_DONE_LOADING
-        , UPDATE_MOUSE_COORDS
+import { UPDATE_MOUSE_COORDS
         , DISPLAY_MODAL
         , CLEAR_MODAL
         , TOGGLE_MAXIMIZE_INFO_PANEL
@@ -62,10 +61,6 @@ import {CT_UNIT} from '../../constants.js';
 import {cancelPendingRequests} from './action-util.jsx';
 
 import {INFORMATION, PHOTOS, HISTORY, ADJUST}                 from '../../constants/information-panel-panes.js';
-
-export function appIsDoneLoading() {
-    return {type: APP_IS_DONE_LOADING, payload: null};
-}
 
 export function updateMouseCoords(latlng) {
     return { type: UPDATE_MOUSE_COORDS, payload: {latlng} };

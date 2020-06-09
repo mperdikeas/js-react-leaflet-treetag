@@ -12,7 +12,7 @@ import {getFeatNumPhotosInProgress
       , displayModal} from './index.js';
 
 
-import {MODAL_LOGIN, MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
+import {MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
 
 import {cancelToken} from '../selectors.js';
 
