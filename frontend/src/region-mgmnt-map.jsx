@@ -291,69 +291,33 @@ class RegionMgmntMap extends React.Component {
         }
         const intervalId = setInterval(testAvailability, 100);
       });
+    
     treesConfigurationIsNowAvailable.then( ()=> {
       const promise = treeOverlays(this.props.treesConfigurationContext.treesConfiguration);
-      promise.then(({overlays, id2marker}) => {
-        this.id2marker = id2marker;
+      promise.then(({overlays}) => {
         for (const layerName in overlays) {
           const layerGroup = overlays[layerName];
           layerGroup.addTo(this.map);
           this.clickableLayers.push(layerGroup);
-          //          this.addClickListenersToMarkersOnLayer(layerGroup);
+
+          layerGroup.eachLayer ( (marker)=>{
+            marker.options.interactive = false; // https://stackoverflow.com/a/60642381/274677
+          });
+            
           this.layersControl.addOverlay(layerGroup, layerName);
         }
+      }).catch( (v) => {
+        assert.fail('000 - not expecting this promise to fail: '+v); 
       });
     }).catch( (v) => {
-      assert.fail('not expecting this promise to fail: '+v); 
+      assert.fail('001 - not expecting this promise to fail: '+v); 
     } );
   }
 
-  getMarker = (id) => {
-    return this.id2marker[id];
-  }
-
-
-  insertGeoJSONIntoWorkspace = (geoJSON) => {
-    const options = {pointToLayer: (geoJsonPoint, latlng) => {
-      if (geoJsonPoint.properties.hasOwnProperty("targetId")) {
-        const marker =  L.circleMarker(latlng, {targetId: geoJsonPoint.properties.targetId});
-        marker.on('click', this.clickOnCircleMarker);
-        marker.options.interactive = true;
-        return marker;
-      } else {
-        return L.marker(latlng);
-      }
-    }};
-    const [circleMarkersFG, restFG] = splitFeatureGroupIntoCircleMarkersAndTheRest(L.geoJSON(geoJSON, options));
-    this.installNewDrawWorkspace(restFG);
-    if (! layerIsEmpty(circleMarkersFG))
-      this.installNewQueryLayer(circleMarkersFG);
-  }
 
 
 
-  addClickListenersToMarkers = () => {
-    this.clickableLayers.forEach( (layer) => {
-      this.addClickListenersToMarkersOnLayer(layer);
-    });
-  }
 
-  addClickListenersToMarkersOnLayer = (layer) => {
-    layer.eachLayer ( (marker)=>{
-      marker.on('click', this.clickOnCircleMarker);
-      marker.options.interactive = true; // https://stackoverflow.com/a/60642381/274677
-    }); // eachLayer
-  }
-  
-  removeClickListenersFromMarkers = () => {
-    this.clickableLayers.forEach( (markers) => {    
-      markers.eachLayer ( (marker)=>{
-        marker.off('click');
-        marker.options.interactive = false; // https://stackoverflow.com/a/60642381/274677
-      } ); // eachLayer
-    }); // forEach
-  }
-  
 
   render() {
     const style = {height: `${this.getMapHeight()}px`};
@@ -368,18 +332,6 @@ class RegionMgmntMap extends React.Component {
 
 }
 
-function splitFeatureGroupIntoCircleMarkersAndTheRest(featureGroup) {
-  const circleMarkerLayers = [];
-  const restLayers = [];
-  featureGroup.eachLayer( (layer) => {
-    if (layer instanceof L.CircleMarker)
-      circleMarkerLayers.push(layer);
-    else
-      restLayers.push(layer);
-  });
-  return [L.featureGroup(circleMarkerLayers)
-        , L.featureGroup(restLayers)];
-}
 
 export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(wrapContexts(RegionMgmntMap));
 
