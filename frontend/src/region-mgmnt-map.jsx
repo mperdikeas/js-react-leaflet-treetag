@@ -116,9 +116,6 @@ class RegionMgmntMap extends React.Component {
     super(props);
     this.layerGroup = null;
     this.clickableLayers = [];
-    this.highlightedMarker = null;
-    this.queryLayer = null;
-    globalSet(GSN.REACT_MAP, this);
   }
 
   getMapHeight = () => {
@@ -163,7 +160,6 @@ class RegionMgmntMap extends React.Component {
   }
 
   componentDidMount = () => {
-
 
     this.props.pleaseWaitWhileAppIsLoading();
 
@@ -232,6 +228,45 @@ class RegionMgmntMap extends React.Component {
     setTimeout(()=>{this.props.appIsDoneLoading()}, 1000);
   }
 
+  installNewDrawWorkspace = (featureGroup) => {
+    if (this.drawnItems!==undefined) {
+      assert.isNotNull(this.drawnItems);
+      this.drawnItems.clearLayers();
+      this.layersControl.removeLayer(this.drawnItems);
+      this.map.removeLayer(this.drawnItems);
+      this.map.removeControl(this.drawControl);
+    }
+    
+    this.drawnItems = featureGroup;
+    this.layersControl.addOverlay(this.drawnItems, 'επιφάνεια εργασίας');      
+    this.map.addLayer(this.drawnItems);
+    this.drawControl = new L.Control.Draw({
+      draw: {
+        polyline: true,
+        circlemarker: false, // GeoJSON does not support circles
+        circle: false,       // --------------------------------
+        rectangle: true,
+        marker: true,
+        polygon: {
+          shapeOptions: {
+            color: 'purple'
+          },
+          allowIntersection: false,
+          drawError: {
+            color: 'orange',
+            timeout: 1000
+          },
+          showArea: true,
+          metric: true
+        }
+      },
+      edit: {
+        featureGroup: this.drawnItems
+      }
+    });
+    this.map.addControl(this.drawControl);
+  }
+
 
   addLayerGroupsExceptPromisingLayers = () => {
     const overlays = {};
@@ -264,7 +299,7 @@ class RegionMgmntMap extends React.Component {
           const layerGroup = overlays[layerName];
           layerGroup.addTo(this.map);
           this.clickableLayers.push(layerGroup);
-          this.addClickListenersToMarkersOnLayer(layerGroup);
+          //          this.addClickListenersToMarkersOnLayer(layerGroup);
           this.layersControl.addOverlay(layerGroup, layerName);
         }
       });
@@ -277,11 +312,6 @@ class RegionMgmntMap extends React.Component {
     return this.id2marker[id];
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if ((prevProps.loginContext.username===null) && (this.props.loginContext.username!==null)) {
-//      this.addLayerGroupsForPromisingLayers();
-    }
-  }
 
   insertGeoJSONIntoWorkspace = (geoJSON) => {
     const options = {pointToLayer: (geoJsonPoint, latlng) => {
@@ -334,86 +364,8 @@ class RegionMgmntMap extends React.Component {
   }
 
 
-  clickOnCircleMarker = (e) => {
-
-    function createFuncToPulsateMarker (marker) {
-      let i = 0;
-      return ()=>{
-        const weights = [1,2,3,4,5,4,3,2,1,0,0];
-        i++;
-        marker.setStyle({weight: weights[i % weights.length]});
-      }
-    }
-
-    /*
-     * returns the target id of the currently highlighted marker or null
-     * if no highlighting marker is currently installed 
-     */
-    const clearCurrentHighlightedMarker = () => {
-      if (this.highlightedMarker) {
-        assert.isNotNull(this.highlightedMarker.interval);
-        assert.isNotNull(this.highlightedMarker.targetId);
-        const rv = this.highlightedMarker.targetId;
-        console.log('clearing interval for pulsating marker');
-        clearInterval(this.highlightedMarker.interval);
-        this.highlightedMarker.marker.removeFrom(this.map);
-        this.highlightedMarker = null;
-        return rv;
-      } else {
-        return null;
-      }
-    }
-
-    if (!this.displayNotificationIfTargetIsDirty()) {
-      const oldTargetId = clearCurrentHighlightedMarker();
-      const installNewHighlightingMarker = (coords, targetId) => {
-        const options = {radius: 20, color: 'red', weight: 5, interactive: false};
-        const marker = L.circleMarker(coords, options);
-        this.highlightedMarker = {marker, targetId};
-        this.highlightedMarker.marker.addTo(this.map);
-        this.highlightedMarker.marker.bringToBack();
 
 
-        const interval = setInterval(createFuncToPulsateMarker(marker), 50);
-        this.highlightedMarker.interval = interval;
-        this.map.setView(coords, this.map.getZoom());
-      };
-      const targetId = e.target.options.targetId;
-      const coords = e.target.getLatLng();
-
-      if (oldTargetId != targetId)
-        installNewHighlightingMarker(coords, targetId);
-      console.log('abd in map: about to toggle target');
-      this.props.unsetOrFetch(e.target.options.targetId);
-    }
-  }
-
-  adjustHighlightingMarker = (latlng) => {
-    this.highlightedMarker.marker.setLatLng(latlng);
-  }
-  
-
-
-  getInfoOfMarkersInBounds = (bounds, exceptId) => {
-    assert.isOk(bounds);
-    const rv = []
-    let encounteredExceptedMarker = false;
-    let n = 0;
-    this.clickableLayers.forEach( (markers) => {
-      markers.eachLayer ( (marker)=>{
-        if (marker instanceof L.CircleMarker && bounds.contains(marker.getLatLng())) {
-          n ++;
-          if (marker.options.targetId === exceptId)
-            encounteredExceptedMarker = true;
-          else {
-            rv.push({latlng: marker.getLatLng(), kind: marker.options.kind});
-          }
-        }
-      });
-    });
-    assert.isTrue((exceptId === undefined) || encounteredExceptedMarker);
-    return rv;
-  }
 }
 
 function splitFeatureGroupIntoCircleMarkersAndTheRest(featureGroup) {

@@ -459,7 +459,7 @@ class Map extends React.Component {
   
 
 
-  getInfoOfMarkersInBounds = (bounds, exceptId) => {
+  getInfoOfMarkersInBounds_NOT_USED = (bounds, exceptId) => {
     assert.isOk(bounds);
     const rv = []
     let encounteredExceptedMarker = false;
