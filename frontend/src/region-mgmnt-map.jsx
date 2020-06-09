@@ -123,10 +123,6 @@ class RegionMgmntMap extends React.Component {
   }
 
 
-  handleClick = (e) => {
-    this.props.updateCoordinates(e.latlng);
-    return true;
-  }
 
 
   componentWillUnmount = () => {
@@ -152,12 +148,6 @@ class RegionMgmntMap extends React.Component {
   }
   
 
-  countTreesInDrawWorkspace = () => {
-    let count = 0;
-    this.drawnItems.eachLayer( (layer) => {
-      count += this.countTreesInLayer(layer).total;
-    });
-  }
 
   componentDidMount = () => {
 
@@ -172,6 +162,28 @@ class RegionMgmntMap extends React.Component {
 
     this.map.doubleClickZoom.disable();
 
+    this.addMeasureControl();
+
+    this.addLayerGroupsExceptPromisingLayers();
+    this.addLayerGroupsForPromisingLayers();
+    this.addDrawControl();
+
+    this.map.on('draw:created', (e) => this.onDrawCreation(e));
+
+    
+    this.map.on('mousemove', (e) => {
+      this.props.updateCoordinates(e.latlng);
+    })
+
+
+    $('div.leaflet-control-container section.leaflet-control-layers-list div.leaflet-control-layers-overlays input.leaflet-control-layers-selector[type="checkbox"]').on('change', (e)=>{
+    });
+    setTimeout(()=>{this.props.appIsDoneLoading()}, 1000);
+  }
+
+  
+
+  addMeasureControl = () => {
     const options = {position: 'topleft'
                    , primaryLengthUnit: 'meters'
                    , secondaryLengthUnit: 'kilometers'
@@ -183,63 +195,12 @@ class RegionMgmntMap extends React.Component {
                    , completedColor: '#DEAE09'};
     const measureControl = new L.Control.Measure(options);
     measureControl.addTo(this.map);
-
-
-    this.addLayerGroupsExceptPromisingLayers();
-    this.addLayerGroupsForPromisingLayers();
-    this.installNewDrawWorkspace(new L.FeatureGroup());
-
-    this.map.on('draw:created', (e) => {
-      const type = e.layerType,
-            layer = e.layer;
-      this.drawnItems.addLayer(layer);
-      console.log(this.drawnItems.toGeoJSON(7));
-      if (layer instanceof L.Polygon) {
-        console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
-        const countResult = this.countTreesInLayer(layer);
-        const treesConfiguration = this.props.treesConfigurationContext.treesConfiguration;
-        const msg = 'it is inconceivable that, at this point, the TreesConfigurationContextProvider'
-                   +' should have failed to obtain the treesConfiguration object. If this abomination should come'
-                   +' to transpire then an approach similar to that used in ref:sse-1587477558 should be adopted.'
-                   +' However, given that it is highly unlikely that this should ever come to pass, I consider'
-                   +' it an overkill to adopt such an approach pre-emptively. In constrast, the approach in'
-        +' ref:sse-1587477558 was, in fact, necessary';
-        assert.exists(treesConfiguration, msg);
-        const detailBreakdown = countResult.toDetailBreakdownString(treesConfiguration);
-        layer.bindPopup(`<b>${countResult.total()}</b><br>${detailBreakdown}`).openPopup();
-      }
-    });
-
-    const eventsToTriggerCounting = ['draw:created', 'draw:edited', 'draw:saved'
-                                   , 'draw:deleted'];
-    eventsToTriggerCounting.forEach( (v) => {
-      this.map.on(v, this.countTreesInDrawWorkspace);
-      });
-
-    
-    if (true)
-      this.map.on('mousemove', (e) => {
-        this.props.updateCoordinates(e.latlng);
-      })
-    this.map.on('click', this.handleClick);
-
-    $('div.leaflet-control-container section.leaflet-control-layers-list div.leaflet-control-layers-overlays input.leaflet-control-layers-selector[type="checkbox"]').on('change', (e)=>{
-    });
-    setTimeout(()=>{this.props.appIsDoneLoading()}, 1000);
   }
 
-  installNewDrawWorkspace = (featureGroup) => {
-    if (this.drawnItems!==undefined) {
-      assert.isNotNull(this.drawnItems);
-      this.drawnItems.clearLayers();
-      this.layersControl.removeLayer(this.drawnItems);
-      this.map.removeLayer(this.drawnItems);
-      this.map.removeControl(this.drawControl);
-    }
-    
-    this.drawnItems = featureGroup;
-    this.layersControl.addOverlay(this.drawnItems, 'επιφάνεια εργασίας');      
+  addDrawControl = () => {
+    this.drawnItems = new L.FeatureGroup();
     this.map.addLayer(this.drawnItems);
+//    this.layersControl.addOverlay(drawnItems, 'oρισμός περιοχών');
     this.drawControl = new L.Control.Draw({
       draw: {
         polyline: true,
@@ -275,6 +236,29 @@ class RegionMgmntMap extends React.Component {
     BaseLayersForLayerControl.ESRI.addTo(this.map);
   }
 
+
+  onDrawCreation = (e) => {
+    const type = e.layerType,
+          layer = e.layer;
+    this.map.addLayer(layer);
+    this.drawnItems.addLayer(layer);
+    if (layer instanceof L.Polygon) {
+      console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
+      const countResult = this.countTreesInLayer(layer);
+      const treesConfiguration = this.props.treesConfigurationContext.treesConfiguration;
+      const msg = 'it is inconceivable that, at this point, the TreesConfigurationContextProvider'
+                 +' should have failed to obtain the treesConfiguration object. If this abomination should come'
+                 +' to transpire then an approach similar to that used in ref:sse-1587477558 should be adopted.'
+                 +' However, given that it is highly unlikely that this should ever come to pass, I consider'
+                 +' it an overkill to adopt such an approach pre-emptively. In constrast, the approach in'
+                 +' ref:sse-1587477558 was, in fact, necessary';
+      assert.exists(treesConfiguration, msg);
+      const detailBreakdown = countResult.toDetailBreakdownString(treesConfiguration);
+      layer.bindPopup(`<b>${countResult.total()}</b><br>${detailBreakdown}`).openPopup();
+      window.setTimeout(()=>layer.closePopup(), 5000);
+    }
+  }
+  
   addLayerGroupsForPromisingLayers = () => {
     // sse-1587477558
     const treesConfigurationIsNowAvailable = new Promise(
