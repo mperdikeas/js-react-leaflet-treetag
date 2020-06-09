@@ -18,7 +18,7 @@ import {sca_fake_return, isNotNullOrUndefined} from './util/util.js';
 
 import {fetchingNewPhotoForExistingTarget} from './redux/selectors.js';
 
-
+import { v4 as uuidv4 } from 'uuid';
 
 // REDUX
 import { connect } from 'react-redux';
@@ -43,7 +43,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
+    displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {uuid: uuidv4()
+                                                                    , followUpFunction: func}))
   };
 }
 

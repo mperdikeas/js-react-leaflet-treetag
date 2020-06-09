@@ -12,6 +12,8 @@ import {propsForRetryDialog} from './action-util.jsx';
 
 import {SERVER_ERROR_CODES} from './action-constants.js';
 
+import { v4 as uuidv4 } from 'uuid';
+
 export function handleAxiosException(err, dispatch, f, url, actionCreator) {
 
     if (err.message === OP_NO_LONGER_RELEVANT) {
@@ -22,7 +24,8 @@ export function handleAxiosException(err, dispatch, f, url, actionCreator) {
         const {code, msg, details} = err.response.data;
         switch(code) {
         case SERVER_ERROR_CODES.JWT_VERIF_FAILED: {
-            dispatch( displayModal(MODAL_LOGIN, {followUpFunction: ()=>{dispatch(f())}}) );
+            dispatch( displayModal(MODAL_LOGIN, {uuid: uuidv4()
+                                                 , followUpFunction: ()=>{dispatch(f());}}) );
             break;
         }
         default: {

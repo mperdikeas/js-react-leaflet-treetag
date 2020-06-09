@@ -21,13 +21,13 @@ import {globalGet, GSN} from './globalStore.js';
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    clearModal: ()=>dispatch(clearModal())    
-    , insertOverlay: (geoJSON) => {
+    clearModal: (uuid)=>dispatch(clearModal(uuid))
+    , insertOverlay: (geoJSON, uuid) => {
       console.log('-----------------------');
       console.log(geoJSON);
       console.log('-----------------------');
       globalGet(GSN.REACT_MAP).insertGeoJSONIntoWorkspace(JSON.parse(geoJSON));
-      dispatch(clearModal());
+      dispatch(clearModal(uuid));
     }
   };
 }
@@ -68,7 +68,7 @@ class ModalInsertGeoJSONToWorkspace extends React.Component {
     if (form.checkValidity() === true) {
       assert.isNotNull(this.state.readFromFile);
       const overlayGeoJSON = this.state.readFromFile;
-      this.props.insertOverlay(overlayGeoJSON);
+      this.props.insertOverlay(overlayGeoJSON, this.props.uuid);
     }
     this.setState({validated: true});
   }
@@ -97,7 +97,7 @@ class ModalInsertGeoJSONToWorkspace extends React.Component {
             <div style={{display: 'flex'
                        , flexDirection:'row'
                        , justifyContent: 'space-around'}}>
-              <Button variant="secondary" onClick={this.props.clearModal}>Cancel</Button>
+              <Button variant="secondary" onClick={this.props.clearModal(this.props.uuid)}>Cancel</Button>
               <Button type="submit">Load</Button>
             </div>
           </div>

@@ -33,29 +33,45 @@ export default (modals = [], action) => {
                                 }*/
     }
     case CLEAR_MODAL: {
-        console.log(`modal length: ${modals.length}`);
+        const uuid = action.payload;
+        console.log(`looking for [${uuid}] among ${modals.length} modals`);
+        let j = 0;
+        let idxs = [];
         if (modals.length>0) {
-            const modals2 = [...modals];
-            const modalToClose =modals2.pop();
-            if (modalToClose.modalProps) {
-                if (modalToClose.modalProps.followUpFunction) {
-                    /* without the setTimeout I encountered the following problem:
-                     *
-                     *     Error: You may not call store.getState() while the reducer is executing.
-                     *
-                     * I can't explain the root cause of the problem and also, it didn't occur
-                     * in the target-photo-pane.jsx at all; it only occured at the 
-                     * target-data-pane.jsx and target-metadata-pane.jsx
-                     */
+            const modals2 = [];
+            modals.forEach( (modal) => {
+                assert.isDefined(modal.modalProps.uuid);
+                assert.isNotNull(modal.modalProps.uuid);
+                if (modal.modalProps.uuid !== uuid)
+                    modals2.push(Object.assign({}, modal));
+                else {
+                    const modalToClose = modal;
+                    if (modalToClose.modalProps.followUpFunction) {
+                        /* without the setTimeout I encountered the following problem:
+                         *
+                         *     Error: You may not call store.getState() while the reducer is executing.
+                         *
+                         * I can't explain the root cause of the problem and also, it didn't occur
+                         * in the target-photo-pane.jsx at all; it only occured at the 
+                         * target-data-pane.jsx and target-metadata-pane.jsx
+                         */
 
-                    setTimeout(()=>modalToClose.modalProps.followUpFunction(), 0);
+                        /*
+                         * TODO: is this really a useful pattern?
+                         */
+
+                        setTimeout(()=>modalToClose.modalProps.followUpFunction(), 0);
+                    }
+                    j ++;
+                    if (j>1)
+                        console.warn(`Mighty weird: modal with UUID [${uuid}] encountered ${j} times so far!`);
                 }
-            }
+            });
+            if (j===0)
+                console.warn(`Mighty weird: no modal with UUID [${uuid}] was found`);
             return modals2;
-        } else {
-            console.warn(`weird? clear modal called when no modals are present`);
+        } else
             return modals;
-        }
     }
     default: {
         return modals;

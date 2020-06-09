@@ -52,7 +52,7 @@ class ModalUsernameReminder extends React.Component {
     return (
       <>
       <dialog id="dialog" ref={this.ref} style={{width: '70%'}}>
-          <UsernameReminderForm/>
+          <UsernameReminderForm uuid={this.props.uuid}/>
       </dialog>
       {this.props.children}
       </>

@@ -5,9 +5,11 @@ import {axiosAuth} from '../../axios-setup.js';
 
 import {displayModal, clearModal } from './index.js';
 import {MDL_NOTIFICATION_NO_DISMISS} from '../../constants/modal-types.js';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function checkCredentials(redirectTo, history, updateLogin) {
     console.log(`checkCredentials(${JSON.stringify(redirectTo)}`);
+    const uuid = uuidv4();
     return (dispatch) => {
         const accessToken = getAccessToken();
         if (accessToken == null) {
@@ -16,10 +18,10 @@ export default function checkCredentials(redirectTo, history, updateLogin) {
              */
         } else {
             const msgCheckCred = 'παρακαλώ περιμένετε ενόσω το σύστημα ελέγχει τα διαπιστευτήριά σας';
-            dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: msgCheckCred}));
+            dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: msgCheckCred, uuid}));
             const url = '/getUser';
             axiosAuth.get(url).then(res => {
-                dispatch(clearModal());
+                dispatch(clearModal(uuid));
                 if (res.data.err != null) {
                     assert.fail(res.data.err);
                 } else {
@@ -28,7 +30,7 @@ export default function checkCredentials(redirectTo, history, updateLogin) {
                     history.replace(redirectTo);
                 }
             }).catch( err => {
-                dispatch(clearModal());
+                dispatch(clearModal(uuid));
                 if (err.response.status != 403) {
                     // in case the JWT token has expired, the back-end code responds with 403
                     console.error(err);

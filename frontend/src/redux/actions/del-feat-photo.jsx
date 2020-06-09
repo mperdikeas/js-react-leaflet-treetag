@@ -4,6 +4,7 @@ import {getAccessToken} from '../../access-token-util.js';
 import {axiosAuth} from '../../axios-setup.js';
 import {CancelToken} from 'axios';
 
+import { v4 as uuidv4 } from 'uuid';
 
 import {displayModal
       , clearModal
@@ -38,19 +39,30 @@ export default function delFeatPhoto(id, idx) {
 
     const url = urlForPhotoDeletion(id, idx);
     const msg = (id, idx) => `deleting photo ${idx+1} of feature ${id}`;
-    dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: msg(id, idx)}));
-
+    const uuid = uuidv4();
+    console.log('cac - 1');
+    dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: msg(id, idx)
+                                                      , uuid}));
+    console.log('cac - 2');
     axiosAuth.delete(url).then(res => {
-      dispatch(clearModal());
+      console.log('cac - 3');
+      dispatch(clearModal(uuid));
+      console.log('cac - 4');
       const {t, err} = res.data;
       if (err===null) {
+        console.log('cac - 5');
         dispatch(addToast('Successful deletion', `successfully deleted photo ${idx+1} of feature ${id}`));
         dispatch(getFeatNumPhotos(id));
       } else {
+        console.log('cac - 6');
         dispatch( displayModal(MDL_RETRY_CANCEL, propsForRetryDialog(dispatch, f, url, actionCreator, 'server-side error', err)) );
+        console.log('cac - 7');
       }
     }).catch( err => {
-      dispatch(clearModal());
+      console.error(err);
+      console.log('cac - 8');
+      dispatch(clearModal(uuid));
+      console.log('cac - 9');
       assert.isFalse( (err.message != null) && (err.message === OP_NO_LONGER_RELEVANT)
         , `${actionCreator} :: URL is ${url} impossible to encounter this as I dont ever cancel photo deletion requests`);
       handleAxiosException(err, dispatch, f, url, actionCreator)

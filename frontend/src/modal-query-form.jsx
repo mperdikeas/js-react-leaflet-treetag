@@ -15,11 +15,10 @@ import {clearModal, displayModal} from './redux/actions/index.js';
 
 import {connect} from 'react-redux';
 
-
 const mapDispatchToProps = (dispatch) => {
   return {
     clearModal: ()=>dispatch(clearModal()),
-    displayUsernameReminderModal: () => dispatch(displayModal(MDL_USERNAME_REMINDER))
+    displayUsernameReminderModal: (guid) => dispatch(displayModal(MDL_USERNAME_REMINDER, {guid}))
   };
 }
 
@@ -41,19 +40,6 @@ class ModalQueryForm extends React.Component {
     this.props.doQuery();
   };
 
-  onSelect = (eventKey)=>{
-    console.log(`${eventKey} selected`);
-    switch (eventKey) {
-      case LinkEventKeys.FORGOT_USERNAME:
-        this.props.displayUsernameReminderModal();
-        break;
-      case LinkEventKeys.FORGOT_PASSWORD:
-        break;
-      default:
-        
-        assert.fail(`unrecognized eventKey: ${eventKey}`);
-    }
-  }
 
   render = ()=> {
     return (
@@ -63,7 +49,7 @@ class ModalQueryForm extends React.Component {
         <div style={{display: 'flex'
                    , flexDirection:'row'
                    , justifyContent: 'space-around'}}>
-          <Button variant="secondary" onClick={this.props.clearModal}>Cancel</Button>
+          <Button variant="secondary" onClick={this.props.clearModal(this.props.uuid)}>Cancel</Button>
           <Button type="submit">Execute query</Button>
         </div>
       </Form>

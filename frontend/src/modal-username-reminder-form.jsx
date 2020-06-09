@@ -33,7 +33,7 @@ const msgHTML = (installation, email) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    clearModal: ()=> dispatch(clearModal())
+    clearModal: (uuid)=> dispatch(clearModal(uuid))
     , addToastForSuccessfulUsernameReminderSent: (installation, email)=> {
       dispatch(addToast('username reminder', msg(installation, email)));
     }
@@ -76,7 +76,7 @@ class UsernameReminderForm extends React.Component {
         if (res.data.t.problem===null) {
           this.setState({serverAPIFailureResponse: null, waitForServer: false});
           this.props.addToastForSuccessfulUsernameReminderSent(installation, email);
-          this.props.clearModal();
+          this.props.clearModal(this.props.uuid);
           this.props.displayModalForSuccessfulUsernameReminderSent(installation, email);
         } else {
           console.log('sendUsernameReminder call was unsuccessful');

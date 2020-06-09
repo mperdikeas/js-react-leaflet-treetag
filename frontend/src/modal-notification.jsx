@@ -13,7 +13,7 @@ import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    clearModal: ()=> dispatch(clearModal())
+    clearModal: (uuid)=> dispatch(clearModal(uuid))
   };
 }
 
@@ -22,6 +22,8 @@ class ModalNotification extends React.Component {
   constructor(props) {
     super(props);
     this.ref = React.createRef();
+    assert.isDefined(this.props.uuid);
+    assert.isNotNull(this.props.uuid);
   }
 
   componentDidMount = () => {
@@ -35,7 +37,7 @@ class ModalNotification extends React.Component {
       <dialog style={{width: '17em'}}ref={this.ref}>
         <div>{this.props.html}</div>
         <div style={{display:'flex', justifyContent: 'center'}}>
-          <Button style={{marginTop: '1em'}} variant='primary' onClick={this.props.clearModal}>OK</Button>
+          <Button style={{marginTop: '1em'}} variant='primary' onClick={()=>this.props.clearModal(this.props.uuid)}>OK</Button>
         </div>
       </dialog>
       {this.props.children}

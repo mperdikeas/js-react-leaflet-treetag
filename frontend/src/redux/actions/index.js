@@ -1,4 +1,13 @@
-const assert = require('chai').assert;
+//import chai from '../../util/chai-util.js';
+//chai.Assertion.includeStack = true; // https://stackoverflow.com/a/13396945/274677
+
+const chai = require('chai');
+chai.Assertion.includeStack = true; // https://stackoverflow.com/a/13396945/274677
+chai.config.includeStack = true;
+chai.config.showDiff = false;
+chai.config.truncateThreshold = 0; // disable truncating
+const assert = chai.assert;
+
 import {APP_IS_DONE_LOADING
         , UPDATE_MOUSE_COORDS
         , DISPLAY_MODAL
@@ -64,11 +73,17 @@ export function updateMouseCoords(latlng) {
 
 export function displayModal(modalType, modalProps) {
     assert.isTrue(isValidModalType(modalType), `unrecognized modal type: [${modalType}]`);
+    const {uuid} = modalProps;
+//    if (uuid==null) throw 42;
+    assert.isNotNull(uuid, 'displayModal 1');
+    assert.isDefined(uuid, 'displayModal 2');
     return {type: DISPLAY_MODAL, payload: {modalType, modalProps}};
 }
 
-export function clearModal() {
-    return {type: CLEAR_MODAL, payload: null};
+export function clearModal(uuid) {
+    assert.isDefined(uuid);
+    assert.isNotNull(uuid);
+    return {type: CLEAR_MODAL, payload: uuid};
 }
 
 export function toggleMaximizeInfoPanel() {

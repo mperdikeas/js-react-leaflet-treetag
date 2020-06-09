@@ -97,7 +97,7 @@ class ModalQuery extends React.Component {
 
 
         reactMap.installNewQueryLayer(L.layerGroup(trees));
-        this.props.clearModal();
+        this.props.clearModal(this.props.modalProps.uuid);
         this.props.toastQuerySaved(totalTrees, treesSelected);
       }
     } // else <if (layerIsEmpty(drawnItems))>
@@ -110,7 +110,7 @@ class ModalQuery extends React.Component {
     return (
       <>
       <dialog style={this.props.style} id='dialog' ref={this.ref}>
-          <ModalQueryForm doQuery={this.doQuery}/>
+          <ModalQueryForm doQuery={this.doQuery} uuid = {this.props.uuid}/>
       </dialog>
       {this.props.children}
       </>

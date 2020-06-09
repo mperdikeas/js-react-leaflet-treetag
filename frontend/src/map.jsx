@@ -27,6 +27,8 @@ import proj4 from 'proj4';
 
 import keycode from 'keycode';
 
+import { v4 as uuidv4 } from 'uuid';
+
 require('../node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css');
 require('../node_modules/leaflet.markercluster/dist/leaflet.markercluster.js');
 
@@ -57,10 +59,10 @@ import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS} from './constants/modal-t
 
 
 import { connect }          from 'react-redux';
-import {appIsDoneLoading
-      , updateMouseCoords
+import {updateMouseCoords
       , displayModal
-      , unsetOrFetch}  from './redux/actions/index.js';
+      , unsetOrFetch
+      , clearModal}  from './redux/actions/index.js';
 
 
 import TreeCountStatistic from './tree-count-statistic.js';
@@ -94,8 +96,8 @@ const mergeProps = (stateProps, {dispatch}) => {
   return Object.assign({},
                        {
                          ...stateProps
-                         , pleaseWaitWhileAppIsLoading: ()=>dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: pleaseWaitWhileAppIsLoading}))
-                         , appIsDoneLoading: ()=> dispatch(appIsDoneLoading())
+                         , pleaseWaitWhileAppIsLoading: (uuid)=>dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: pleaseWaitWhileAppIsLoading, uuid}))
+                         , clearModal: (uuid)=> dispatch(clearModal(uuid))
                          , updateCoordinates                 : (latlng)   => dispatch(updateMouseCoords(latlng))
                          , unsetOrFetch : (targetId) => dispatch(unsetOrFetch(targetId))
                          , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(stateProps.targetId)}))
@@ -228,9 +230,9 @@ class Map extends React.Component {
   }
 
   componentDidMount = () => {
+    const uuid = uuidv4();
 
-
-    this.props.pleaseWaitWhileAppIsLoading();
+    this.props.pleaseWaitWhileAppIsLoading(uuid);
 
     window.addEventListener    ('resize', this.handleResize);
     this.map = L.map('map-id', {
@@ -294,7 +296,7 @@ class Map extends React.Component {
 
     $('div.leaflet-control-container section.leaflet-control-layers-list div.leaflet-control-layers-overlays input.leaflet-control-layers-selector[type="checkbox"]').on('change', (e)=>{
     });
-    setTimeout(()=>{this.props.appIsDoneLoading()}, 1000);
+    setTimeout(()=>{this.props.clearModal(uuid)}, 1000);
   }
 
 
@@ -459,7 +461,7 @@ class Map extends React.Component {
   
 
 
-  getInfoOfMarkersInBounds_NOT_USED = (bounds, exceptId) => {
+  getInfoOfMarkersInBounds = (bounds, exceptId) => {
     assert.isOk(bounds);
     const rv = []
     let encounteredExceptedMarker = false;
