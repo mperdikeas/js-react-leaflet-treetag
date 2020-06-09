@@ -22,6 +22,7 @@ import {isInsufficientPrivilleges} from '../../util-privilleges.js';
 import {GSN, globalGet} from '../../globalStore.js';
 
 import {isNotNullOrUndefined} from '../../util/util.js';
+import {propsForRetryDialog} from './action-util.jsx';
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -34,7 +35,7 @@ const displayTreeDataHasBeenUpdated = (dispatch, id)=>{
   dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataHasBeenUpdated(id), uuid:uuidv4()}));
 }
 
-const displayModalLogin = (dispatch, uuid, func)  => dispatch(displayModal(MODAL_LOGIN, {uuid, followUpFunction: func}));
+const displayModalLogin = (dispatch, uuid, func)  => dispatch(displayModal(MODAL_LOGIN, {uuid, followupFunc: ()=>dispatch(func())}));
 
 const displayNotificationInsufPrivilleges = (dispatch, uuid)=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgInsufPriv1, uuid}));
 
@@ -104,7 +105,9 @@ export default function saveFeatData(treeInfo) {
           const {code, msg, details} = err.response.data;
           switch(code) {
             case 'JWT-verif-failed':
-              dispatch(displayModalLogin(dispatch, uuidv4(), f));
+              console.log('cad 1');
+              //dispatch(displayModalLogin(dispatch, uuidv4(), f));
+              displayModalLogin(dispatch, uuidv4(), f);
               break;
             default: {
               console.error(err);

@@ -11,7 +11,14 @@ require('./ots/leaflet.shpfile.js');
 
 const React = require('react');
 var      cx = require('classnames');
-const assert = require('chai').assert;
+//const assert = require('chai').assert;
+const chai = require('chai');
+chai.Assertion.includeStack = true; // https://stackoverflow.com/a/13396945/274677
+chai.config.includeStack = true;
+chai.config.showDiff = false;
+chai.config.truncateThreshold = 0; // disable truncating
+const assert = chai.assert;
+
 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -100,7 +107,7 @@ const mergeProps = (stateProps, {dispatch}) => {
                          , clearModal: (uuid)=> dispatch(clearModal(uuid))
                          , updateCoordinates                 : (latlng)   => dispatch(updateMouseCoords(latlng))
                          , unsetOrFetch : (targetId) => dispatch(unsetOrFetch(targetId))
-                         , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(stateProps.targetId)}))
+                         , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(stateProps.targetId), uuid: uuidv4()}))
                        });
 }
 
@@ -450,7 +457,6 @@ class Map extends React.Component {
 
       if (oldTargetId != targetId)
         installNewHighlightingMarker(coords, targetId);
-      console.log('abd in map: about to toggle target');
       this.props.unsetOrFetch(e.target.options.targetId);
     }
   }

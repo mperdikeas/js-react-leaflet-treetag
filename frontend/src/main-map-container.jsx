@@ -1,8 +1,6 @@
 const React = require('react');
 var      cx = require('classnames');
 
-const assert = require('chai').assert;
-
 import Map                                     from './map.jsx';
 import TreeInformationPanel                    from './information-panel-tree.jsx';
 import PointCoordinates                        from './point-coordinates.jsx';

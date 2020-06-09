@@ -77,6 +77,7 @@ export function displayModal(modalType, modalProps) {
 //    if (uuid==null) throw 42;
     assert.isNotNull(uuid, 'displayModal 1');
     assert.isDefined(uuid, 'displayModal 2');
+    console.log('cad 2');
     return {type: DISPLAY_MODAL, payload: {modalType, modalProps}};
 }
 

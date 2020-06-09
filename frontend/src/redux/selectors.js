@@ -16,7 +16,7 @@ export function treeInfoNotFetchedYetOrIsBeingUpdated(state) {
 /*    if (state.targetId===null) {
         return false;
         } else {*/
-    return (state.treeInfo.original===null)
+    return (state.treeInfo.original===null);
 
     /*
         if (state.treeInfo.original===null) {
@@ -40,14 +40,10 @@ export function targetInitialAjaxReadInProgress(state) {
     case INFORMATION:
     case HISTORY:
     case ADJUST:
-        console.log('abd - sel1');
         const v = (state.target.id != null) && ((state.target.treeInfo === null) || (state.target.treeInfo.original === null));
-        console.log(`abd - sel1 ${v}`);
         return v;
     case PHOTOS:
-        console.log('abd - sel2');
         const v2 = (state.target.id != null) && ((state.target.photos == null) || (state.target.photos.img === undefined));
-        console.log(`abd - sel2 ${v2}`);
         return v2;
     default:
         assert.fail(`SNAFU 2 in targetAjaxReadInProgress ~ unhandled case: [${state.paneToOpenInfoPanel}]`);
