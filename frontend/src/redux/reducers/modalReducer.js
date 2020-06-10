@@ -25,7 +25,8 @@ export default (modals = [], action) => {
                     modals2.push(Object.assign({}, modal));
                 else {
                     const modalToClose = modal;
-                    if (modalToClose.modalProps.followUpFunction) {
+                    if (modalToClose.modalProps.followUpFunc) {
+                        throw 'I believe this to be DEAD code - remove it in a few days!';
                         /* without the setTimeout I encountered the following problem:
                          *
                          *     Error: You may not call store.getState() while the reducer is executing.
@@ -39,15 +40,19 @@ export default (modals = [], action) => {
                          * TODO: is this really a useful pattern?
                          */
 
-                        setTimeout(()=>modalToClose.modalProps.followUpFunction(), 0);
+                        setTimeout(()=>modalToClose.modalProps.followUpFunc(), 0);
                     }
                     j ++;
-                    if (j>1)
+                    if (j>1) {
                         console.warn(`Mighty weird: modal with UUID [${uuid}] encountered ${j} times so far!`);
+                        throw 42;
+                    }
                 }
             });
-            if (j===0)
+            if (j===0) {
                 console.warn(`Mighty weird: no modal with UUID [${uuid}] was found`);
+                throw 42;
+            }
             return modals2;
         } else
             return modals;

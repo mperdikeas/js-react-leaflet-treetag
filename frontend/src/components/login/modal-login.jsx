@@ -47,8 +47,10 @@ class ModalLogin extends React.Component {
     return (
       <>
       <dialog style={this.props.style} id='dialog' ref={this.ref}>
-        <LoginForm followupActionCreator={()=>clearModal(this.props.uuid)}
-                   followupFunc={this.props.followupFunc}
+        <LoginForm followUpFunc={ ()=>{
+            clearModal(this.props.uuid);
+            this.props.followUpFunc();
+          }}
         />
       </dialog>
       {this.props.children}

@@ -91,7 +91,6 @@ class UsernameReminderForm extends React.Component {
   }
 
   handleSubmit = (event) => {
-    console.log('modal-login-form::handleSubmit');
     event.preventDefault();
     event.stopPropagation();
     const installation = this.installationRef.current.value;

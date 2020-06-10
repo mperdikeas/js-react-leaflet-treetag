@@ -13,8 +13,7 @@ import {IntegerDataFieldFactory
       , TextAreaDataFieldFactory} from './data-field-controls.jsx';
 
 
-import {displayModal
-      , revertTreeInfo
+import {revertTreeInfo
       , toggleMaximizeInfoPanel
       , setPaneToOpenInfoPanel
       , setTreeInfoCurrent

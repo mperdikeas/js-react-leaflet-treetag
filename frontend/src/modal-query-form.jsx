@@ -11,14 +11,13 @@ import {axiosAuth} from './axios-setup.js';
 const LinkEventKeys = {FORGOT_USERNAME: 'forgot-username'
                      , FORGOT_PASSWORD: 'forgot-password'};
 
-import {clearModal, displayModal} from './redux/actions/index.js';
+import {clearModal} from './redux/actions/index.js';
 
 import {connect} from 'react-redux';
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    clearModal: ()=>dispatch(clearModal()),
-    displayUsernameReminderModal: (guid) => dispatch(displayModal(MDL_USERNAME_REMINDER, {guid}))
+    clearModal: ()=>dispatch(clearModal())
   };
 }
 

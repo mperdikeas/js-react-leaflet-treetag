@@ -65,7 +65,7 @@ class LoginPage extends React.Component {
         </a>
         <div style={{marginTop: '5em'}}>You need to login in order to access this application</div>
         <div style={{marginTop: '3em', width: '25em'}}> 
-          <LoginForm followupFunc={()=>{history.replace(referrer);}}/>
+          <LoginForm followUpFunc={()=>{history.replace(referrer);}}/>
         </div>
       </div>
     );

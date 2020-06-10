@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.Date;
 import java.util.Collections;
 import java.util.Arrays;
+import java.util.Random;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 import java.io.File;
@@ -81,6 +83,8 @@ import a.b.c.constants.Installation;
 @Path("/main")
 public class LoginResource {
 
+    final Random random;
+    
     final static Logger logger = Logger.getLogger(LoginResource.class);
 
     private static AtomicInteger numberOfInstances = new AtomicInteger();
@@ -99,8 +103,8 @@ public class LoginResource {
 
         logger.info(String.format("instance hashcode: [%s]"
                                   , System.identityHashCode(this)));
+        this.random = new Random();
     }
-
 
     @Path("/login")
     @POST
@@ -125,9 +129,18 @@ public class LoginResource {
                                       , httpServletRequest.getRemoteAddr()));
             LoginResult loginResult;
             final JaxRsApplication app = (JaxRsApplication) _app;
-            if (app.dbFacade.checkCredentials(installation, username, password))
-                loginResult = new LoginResult(null, createAccessToken(installation, username));
-            else
+            if (random.nextInt(4)==0)
+                throw new Exception("shit happened in Java");
+            if (app.dbFacade.checkCredentials(installation, username, password)) {
+                if (random.nextInt(4)==0) {
+                    loginResult = new LoginResult(null, createAccessToken(installation, username));
+                    logger.info(String.format("successful login(%s, %s, ..)"
+                                              , installation
+                                              , username
+                                              , password));
+                } else
+                    loginResult = new LoginResult("login-fail", null);
+            } else
                 loginResult = new LoginResult("login-fail", null);
             
             return Response.ok(GsonHelper.toJson(ValueOrInternalServerExceptionData.ok(loginResult))).build();
