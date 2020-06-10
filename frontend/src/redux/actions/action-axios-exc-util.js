@@ -1,5 +1,6 @@
 const assert = require('chai').assert;
 
+import { v4 as uuidv4 } from 'uuid';
 
 import {displayModal} from './index.js';
 import {MODAL_LOGIN, MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
@@ -12,11 +13,20 @@ import {propsForRetryDialog} from './action-util.jsx';
 
 import {SERVER_ERROR_CODES} from './action-constants.js';
 
-import { v4 as uuidv4 } from 'uuid';
+
+
+import {isInsufficientPrivilleges} from '../../util-privilleges.js';
+
+const displayNotificationInsufPrivilleges = (dispatch, uuid)=>{
+    const msgInsufPrivl = 'the logged-in user has insufficient privilleges for this operation'; 
+    dispatch(displayModal(MDL_NOTIFICATION, {html: msgInsufPrivl, uuid}));
+};
 
 export function handleAxiosException(err, dispatch, f, url, actionCreator) {
-
-    if (err.message === OP_NO_LONGER_RELEVANT) {
+    if (isInsufficientPrivilleges(err)) {
+        console.warn(`${actionCreator} at url: [${url}] ~*~ insuf priv detected`);
+        displayNotificationInsufPrivilleges(dispatch, uuidv4());
+    } else if (err.message === OP_NO_LONGER_RELEVANT) {
         console.log(`${actionCreator} operation at ${url} is no longer relevant and got cancelled`);
     } else if (err.response && err.response.data) {
         // SSE-1585746388: the shape of err.response.data is (code, msg, details)

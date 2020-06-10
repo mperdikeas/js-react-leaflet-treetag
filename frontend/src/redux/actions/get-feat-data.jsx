@@ -38,10 +38,12 @@ export default function getFeatureData(id) {
       dispatch(getFeatureAjaxConcluded());
       // corr-id: SSE-1585746250
       const {t, err} = res.data;
-      if (err===null) {
-        dispatch( getTreeInfoSuccess(t) );
-      } else {
+      if (err != null) {
+        console.error(`${actionCreator} :: error at URL [${url}]`);
+        console.error(res.data.err);
         dispatch( displayModal(MDL_RETRY_CANCEL, propsForRetryDialog(dispatch, f, url, actionCreator, 'server-side error', err)) );
+      } else {
+        dispatch( getTreeInfoSuccess(t) );
       }
     }).catch(
       err => handleAxiosException(err, dispatch, f, url, actionCreator)
