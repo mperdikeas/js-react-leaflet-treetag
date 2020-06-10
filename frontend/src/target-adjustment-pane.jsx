@@ -41,9 +41,6 @@ const mapDispatchToProps = (dispatch) => {
   const msgTreeDataHasBeenUpdated = targetId => `τα νέα δεδομένα για το δένδρο #${targetId} αποθηκεύτηκαν`;
   return {
     saveFeatData: (treeInfo) => dispatch(saveFeatData(treeInfo))
-    , displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
-    , displayNotificationInsufPrivilleges: ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgInsufPriv1}))
-    , displayTreeDataHasBeenUpdated: (targetId)=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataHasBeenUpdated(targetId)})) // TODO: what to do with this ?
     , setTreeCoords: ({lat, lng}) => dispatch(setTreeCoords({longitude: lng, latitude: lat}))
     , revertTreeCoords: ()=>dispatch(revertTreeCoords())
   };

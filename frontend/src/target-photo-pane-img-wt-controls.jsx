@@ -22,9 +22,7 @@ import {fetchingNewPhotoForExistingTarget} from './redux/selectors.js';
 // REDUX
 import { connect } from 'react-redux';
 
-import {MODAL_LOGIN} from './constants/modal-types.js';
-import {displayModal
-      , delFeatPhoto
+import {delFeatPhoto
       , getFeatPhoto} from './redux/actions/index.js';
 
 import {LOGGING_IN
@@ -50,8 +48,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    displayModalLogin: (func)  => dispatch(displayModal(MODAL_LOGIN, {followUpFunction: func}))
-    , prevImage: (id, idx) => {
+    prevImage: (id, idx) => {
       assert.isTrue(idx>0
                   , `target-photo-pane-img-wt-controls.jsx :: mapDispatchToProps, prevImage ~ idx value of [${idx}] is not GT 0`);
       dispatch(getFeatPhoto(id, idx-1));
@@ -188,50 +185,6 @@ class TargetPhotoPaneImgWithControls extends React.Component {
       </div>
     );
   }
-
-  deletePhoto_UNUSED = () => {
-    const url = urlForPhotoDeletion(this.props.targetId, this.state.idx);
-    axiosAuth.delete(url, {cancelToken: this.source.token}).then(res => {
-      const {t, err} = res.data; 
-      if (err===null) {
-        this.fetchNumOfPhotos();
-      } else {
-        this.setState({ serverCallInProgress: null
-                      , error: {message: `server-side error while deleting photo #{photoIndx} on tree #{this.props.targetId}: ${err.message}`
-                              , details: err.strServerTrace}});
-      }
-    }).catch( err => {
-      console.log(JSON.stringify(err));
-      console.log(err);
-      console.log(err.message);
-      console.log(Object.keys(err));
-      if (err.message === OP_NO_LONGER_RELEVANT) {
-        console.log('deletePhoto operation is no longer relevant and got cancelled');
-      } else if (err.response && err.response.data) {
-        // SSE-1585746388: the shape of err.response.data is (code, msg, details)
-        // Java class ValidJWSAccessTokenFilter#AbortResponse
-        const {code, msg, details} = err.response.data;
-        switch(code) {
-          case 'JWT-verif-failed':
-            this.props.displayModalLogin( ()=>{this.deletePhoto();} );
-            this.setState({serverCallInProgress: LOGGING_IN
-                         , error: {message: `JWT verif. failed. Server message is: [${msg}]`
-                                 , details: details}});
-            break;
-          default:
-            this.setState({serverCallInProgress: null
-                         , error: {message: `unexpected error code: ${code}`
-                                 , details: msg}});
-        }
-      } else {
-        this.setState({serverCallInProgress: null
-                     , error: {message: 'unexpected error - likely a bug'
-                             , details: JSON.stringify(err)}});
-      }
-    }) // catch
-  } // deletePhoto    
-
-  } // class
 
 
 

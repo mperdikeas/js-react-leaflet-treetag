@@ -10,8 +10,7 @@ import {displayModal
       , clearModal
       , getFeatNumPhotos
       , addToast} from './index.js';
-import {MODAL_LOGIN
-      , MDL_RETRY_CANCEL
+import {MDL_RETRY_CANCEL
       , MDL_NOTIFICATION_NO_DISMISS} from '../../constants/modal-types.js';
 
 import {OP_NO_LONGER_RELEVANT} from '../../constants/axios-constants.js';
@@ -26,7 +25,6 @@ import {handleAxiosException} from './action-axios-exc-util.js';
 
 export default function delFeatPhoto(id, idx) {
   const actionCreator = `delFeatPhoto(${id}, ${idx})`;
-  console.log(actionCreator);
   assert.isTrue(idx>=0,`${actionCreator} idx value of [${idx}] is not GTE 0`);
   const f = ()=>delFeatPhoto(id, idx);
 
@@ -38,31 +36,24 @@ export default function delFeatPhoto(id, idx) {
     cancelPendingRequests(getState());
 
     const url = urlForPhotoDeletion(id, idx);
-    const msg = (id, idx) => `deleting photo ${idx+1} of feature ${id}`;
+    const html = `deleting photo ${idx+1} of feature ${id}`;
     const uuid = uuidv4();
-    console.log('cac - 1');
-    dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: msg(id, idx)
-                                                      , uuid}));
-    console.log('cac - 2');
+
+    dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html, uuid}));
+
     axiosAuth.delete(url).then(res => {
-      console.log('cac - 3');
       dispatch(clearModal(uuid));
-      console.log('cac - 4');
+
       const {t, err} = res.data;
-      if (err===null) {
-        console.log('cac - 5');
+      if (err != null) {
+        dispatch( displayModal(MDL_RETRY_CANCEL, propsForRetryDialog(dispatch, f, url, actionCreator, 'server-side error', err)) );
+      } else {
         dispatch(addToast('Successful deletion', `successfully deleted photo ${idx+1} of feature ${id}`));
         dispatch(getFeatNumPhotos(id));
-      } else {
-        console.log('cac - 6');
-        dispatch( displayModal(MDL_RETRY_CANCEL, propsForRetryDialog(dispatch, f, url, actionCreator, 'server-side error', err)) );
-        console.log('cac - 7');
       }
     }).catch( err => {
-      console.error(err);
-      console.log('cac - 8');
       dispatch(clearModal(uuid));
-      console.log('cac - 9');
+      // TODO: add option in handleAxiosException to tolerate OP_NO_LONGER_RELEVANT or not
       assert.isFalse( (err.message != null) && (err.message === OP_NO_LONGER_RELEVANT)
         , `${actionCreator} :: URL is ${url} impossible to encounter this as I dont ever cancel photo deletion requests`);
       handleAxiosException(err, dispatch, f, url, actionCreator)

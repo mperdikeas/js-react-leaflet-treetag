@@ -10,8 +10,7 @@ import {markGetFeatureInfoInProgress
       , clearModal
       , setTreeInfoOriginal
       , markGetFeatureInfoFailed} from './index.js';
-import {MODAL_LOGIN
-      , MDL_NOTIFICATION
+import {MDL_NOTIFICATION
       , MDL_NOTIFICATION_NO_DISMISS
       , MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
 
