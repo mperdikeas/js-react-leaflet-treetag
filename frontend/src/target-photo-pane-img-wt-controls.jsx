@@ -185,9 +185,7 @@ class TargetPhotoPaneImgWithControls extends React.Component {
       </div>
     );
   }
-
-
-
+} // class
   
 
 

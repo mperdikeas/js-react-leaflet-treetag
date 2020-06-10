@@ -4,8 +4,6 @@ const React = require('react');
 
 import {DISPLAY_MODAL, CLEAR_MODAL} from '../actions/action-types.js';
 
-import {MDL_NOTIFICATION_NO_DISMISS
-        , MODAL_LOGIN} from '../../constants/modal-types.js';
 
 export default (modals = [], action) => {
     switch (action.type) {

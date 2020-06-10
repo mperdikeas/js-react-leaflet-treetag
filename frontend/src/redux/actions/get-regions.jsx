@@ -9,8 +9,7 @@ import {getRegionsInProgress
       , getRegionsSuccess
       , displayModal
       , } from './index.js';
-import {MODAL_LOGIN
-      , MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
+import {MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
 import {addCancelToken} from '../../globalStore';
 import {CANCEL_TOKEN_TYPES} from '../../constants/axios-constants.js';
 

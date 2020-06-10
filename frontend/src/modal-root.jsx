@@ -20,7 +20,7 @@ import ModalNotificationNoDismiss    from './modal-notification-no_dismiss.jsx';
 import ModalQuery                    from './modal-query.jsx';
 import ModalRetryCancel              from './modal-retry-cancel.jsx';
 
-import {MODAL_LOGIN
+import {MDL_LOGIN
       , MDL_SAVE_WS_2_DSK
       , MDL_INS_GJSON_2_WS
       , MDL_NOTIFICATION
@@ -29,7 +29,7 @@ import {MODAL_LOGIN
       , MDL_RETRY_CANCEL} from './constants/modal-types.js';
 
 const MODAL_COMPONENTS = {
-  MODAL_LOGIN: ModalLogin,
+  MDL_LOGIN: ModalLogin,
   MDL_SAVE_WS_2_DSK: ModalSaveWorkspaceToDisk,
   MDL_INS_GJSON_2_WS: ModalInsertGeoJSONToWorkspace,
   MDL_USERNAME_REMINDER: ModalUsernameReminder,

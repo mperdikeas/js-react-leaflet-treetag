@@ -3,7 +3,7 @@ const assert = require('chai').assert;
 import { v4 as uuidv4 } from 'uuid';
 
 import {displayModal} from './index.js';
-import {MODAL_LOGIN, MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
+import {MDL_LOGIN, MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
 
 import {OP_NO_LONGER_RELEVANT} from '../../constants/axios-constants.js';
 
@@ -34,7 +34,7 @@ export function handleAxiosException(err, dispatch, f, url, actionCreator) {
         const {code, msg, details} = err.response.data;
         switch(code) {
         case SERVER_ERROR_CODES.JWT_VERIF_FAILED: {
-            dispatch( displayModal(MODAL_LOGIN, {uuid: uuidv4()
+            dispatch( displayModal(MDL_LOGIN, {uuid: uuidv4()
                                                  , followUpFunction: ()=>{dispatch(f());}}) );
             break;
         }

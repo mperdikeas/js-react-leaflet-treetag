@@ -23,12 +23,6 @@ import { v4 as uuidv4 } from 'uuid';
 // REDUX
 import { connect } from 'react-redux';
 
-import {displayModal} from './redux/actions/index.js';
-
-import {LOGGING_IN, GETTING_NUM_OF_PHOTOS, GETTING_PHOTO, DELETING_PHOTO} from './constants/target-photo-pane-server-call-types.js';
-
-
-import {OP_NO_LONGER_RELEVANT} from './constants/axios-constants.js';
 
 import TargetPhotoPaneImgWithControls from './target-photo-pane-img-wt-controls.jsx';
   
@@ -51,35 +45,8 @@ class TargetPhotoPane extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = this.getInitialState();
-    this.source = CancelToken.source();
   }
 
-  getInitialState = () => {
-    return {
-      serverCallInProgress: GETTING_NUM_OF_PHOTOS
-      , numOfPhotos     : null
-      , currentPhotoIndx: null
-      , photoBase64     : null
-      , photoBase64Instant     : null                
-      , error           : null};    
-    /*
-     *    error objects will have the following shape:
-     *    {message, details}
-     */
-  }
-
-  prevImage = () => {
-    this.setState({serverCallInProgress: GETTING_PHOTO
-                 , currentPhotoIndx: this.state.currentPhotoIndx-1
-                 , photoBase64: null});
-  }
-  
-  nextImage = () => {
-    this.setState({serverCallInProgress: GETTING_PHOTO
-                 , currentPhotoIndx: this.state.currentPhotoIndx+1
-                 , photoBase64: null});
-  }    
 
   render() {
     assert.isTrue(isNotNullOrUndefined(this.props.photos), 'target-photo-pane.jsx::render 0');
