@@ -25,13 +25,13 @@ import {handleAxiosException} from './action-axios-exc-util.js';
 export default function getFeatNumPhotos(id) {
   const actionCreator = `getFeatNumPhotos(${id}`;
   console.log(actionCreator);
-  const f = ()=>getFeatNumPhotos(id);
+
 
   const source = CancelToken.source();
   return (dispatch, getState) => {
 
     cancelPendingRequests(getState());
-
+    const f = ()=>dispatch(getFeatNumPhotos(id));
     dispatch (getFeatNumPhotosInProgress(id, source));
     const url = urlForNumOfPhotos(id);
     console.log(`${actionCreator} :: URL is: ${url}`);

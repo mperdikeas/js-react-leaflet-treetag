@@ -44,11 +44,13 @@ const displayModalSavingTreeData = (dispatch, id, uuid)=>{
 export default function saveFeatData(treeInfo) {
   const actionCreator = `saveFeatData(${treeInfo.id}, ...)`;
   console.log(actionCreator);
-  const f = ()=>saveFeatData(treeInfo);
+
   assert.isOk(treeInfo);
   const {id} = treeInfo;
   assert.isTrue(isNotNullOrUndefined(id));
   return (dispatch) => {
+    const f = ()=>dispatch(saveFeatData(treeInfo));
+
     const url = `/feature/${id}/data`;
     console.log(`saveFeatData, axios URL is: ${url}`);
     const uuid = uuidv4();
@@ -61,7 +63,6 @@ export default function saveFeatData(treeInfo) {
                if (err != null) {
                  console.error(`${actionCreator} :: error at URL [${url}]`);
                  console.error(res.data.err);
-                 dispatch( markSaveFeatureInfoFailed() );
                  dispatch( displayModal(MDL_RETRY_CANCEL, propsForRetryDialog(dispatch, f, url, actionCreator, 'server-side error', err)) );
                } else {
                  const markerInMainMap = targetId2Marker(id);

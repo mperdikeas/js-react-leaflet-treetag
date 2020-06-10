@@ -23,12 +23,12 @@ import {handleAxiosException} from './action-axios-exc-util.js';
 export default function getFeatureData(id) {
   const actionCreator = `getFeatureData(${id})`;
   console.log(actionCreator);
-  const f = ()=>getFeatureData(id);
+
 
   const source = CancelToken.source();
   return (dispatch, getState) => {
     cancelPendingRequests(getState());
-
+    const f = ()=>dispatch(getFeatureData(id));
     dispatch (getTreeInfoInProgress(id, source));
     const url = urlForFeatData(id);
     console.log(`${actionCreator} :: URL is: ${url}`);

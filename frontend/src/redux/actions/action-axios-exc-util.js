@@ -35,7 +35,7 @@ export function handleAxiosException(err, dispatch, f, url, actionCreator) {
         switch(code) {
         case SERVER_ERROR_CODES.JWT_VERIF_FAILED: {
             dispatch( displayModal(MDL_LOGIN, {uuid: uuidv4()
-                                                 , followUpFunc: ()=>{dispatch(f());}}) );
+                                               , followUpFunc: f}));
             break;
         }
         default: {

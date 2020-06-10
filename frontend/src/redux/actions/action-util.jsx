@@ -54,6 +54,6 @@ export function propsForRetryDialog(dispatch, f, url, actionCreator, ctx, err) {
   const html = htmlForServerErrorMessage(url, actionCreator, ctx, err);
   const uuid = uuidv4();
   const cancelAction = ()=>dispatch(clearModal(uuid));
-  const retryAction = ()=>{dispatch(clearModal(uuid)); dispatch(f());};
+  const retryAction = ()=>{dispatch(clearModal(uuid)); f()};
   return {html, uuid, cancelAction, retryAction};
 }

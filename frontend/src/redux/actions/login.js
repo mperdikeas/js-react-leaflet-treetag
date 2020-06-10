@@ -12,7 +12,6 @@ import {displayModal} from './index.js';
 
 
 export default function login({installation, username, password}, updateLogin, followUpFunc) {
-    const f = ()=>login({installation, username, password}, updateLogin, followUpFunc);
     assert.isNotNull(followUpFunc);
     assert.isDefined(followUpFunc);
     assert.isTrue(typeof(followUpFunc)===typeof(()=>{}));
@@ -20,6 +19,7 @@ export default function login({installation, username, password}, updateLogin, f
     console.log('login:: body of followUpFunc is:');
     console.log(followUpFunc);
     return (dispatch) => {
+        const f = ()=>dispatch(login({installation, username, password}, updateLogin, followUpFunc));
         const actionCreator = `login({${installation}, ${username}, ${password}}, ...`;
         console.debug(actionCreator);
         const url = '/login';
@@ -38,6 +38,8 @@ export default function login({installation, username, password}, updateLogin, f
                         throw 'shit happened in JS';
                     storeAccessToken(res.data.t.accessToken);
                     updateLogin(username);
+                    console.log(`about to execute followUpFunc in login:`);
+                    console.log(followUpFunc);
                     followUpFunc();
                 } else {
                     console.error(`${actionCreator} was unsuccessful; failure reason was given as [${res.data.t.loginFailureReason}]`);

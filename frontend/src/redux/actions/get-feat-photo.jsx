@@ -19,18 +19,19 @@ import {urlForPhoto} from './feat-url-util.js';
 import {cancelPendingRequests} from './action-util.jsx';
 
 import {handleAxiosException} from './action-axios-exc-util.js';
+import {propsForRetryDialog} from './action-util.jsx';
 
 export default function getFeatPhoto(id, idx) {
   const actionCreator = `getFeatPhoto(${id}, ${idx})`;
   console.log(actionCreator);
   assert.isTrue(idx>=0,`${actionCreator} idx value of [${idx}] is not GTE 0`);
-  const f = ()=>getFeatPhoto(id, idx);
+
 
   const source = CancelToken.source();
   return (dispatch, getState) => {
 
     cancelPendingRequests(getState());
-
+    const f = ()=>dispatch(getFeatPhoto(id, idx));
     dispatch (getFeatPhotoInProgress(id, idx, source));
     const url = urlForPhoto(id, idx);
     console.log(`${actionCreator} :: URL is: ${url}`);

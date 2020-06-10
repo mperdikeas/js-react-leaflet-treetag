@@ -13,6 +13,13 @@ import {clearModal} from '../../redux/actions/index.js';
 import LoginForm     from './login-form.jsx';
 
 
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    clearModal: (uuid) => dispatch(clearModal(uuid))
+  };
+}
+
 class ModalLogin extends React.Component {
 
   constructor(props) {
@@ -48,7 +55,7 @@ class ModalLogin extends React.Component {
       <>
       <dialog style={this.props.style} id='dialog' ref={this.ref}>
         <LoginForm followUpFunc={ ()=>{
-            clearModal(this.props.uuid);
+            this.props.clearModal(this.props.uuid);
             this.props.followUpFunc();
           }}
         />
@@ -59,7 +66,7 @@ class ModalLogin extends React.Component {
   }
 }
 
+export default connect(null, mapDispatchToProps)(ModalLogin);
 
-export default ModalLogin;
 
 

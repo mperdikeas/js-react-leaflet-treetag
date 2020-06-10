@@ -281,7 +281,10 @@ public class MainResource {
                                 , treeInfoJSON);
             */
             final boolean valueUpdated = app.dbFacade.setTreeInfo(featureId, treeInfo);
-            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(valueUpdated))).build();
+            if (random.nextInt(5)==0)
+                return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.err("msg", "some stack trace"))).build();
+            else
+                return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(valueUpdated))).build();
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling setFeatureData(%d) from remote address [%s]"
                                        , featureId
@@ -319,7 +322,10 @@ public class MainResource {
                                 , treeInfoJSON);
             */
             final int key = app.dbFacade.createTree(treeInfo);
-            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(key))).build();
+            if (random.nextInt(5)==0)
+                return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.err("msg", "some stack trace"))).build();
+            else
+                return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(key))).build();
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling createNewFeature from remote address [%s]"
                                        , httpServletRequest.getRemoteAddr())
@@ -343,6 +349,9 @@ public class MainResource {
                                       , featureId
                                       , httpServletRequest.getRemoteAddr()));
             TimeUnit.MILLISECONDS.sleep(2000);
+            if (random.nextInt(5)==0)
+                return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.err("msg", "some stack trace"))).build();
+            else
             return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(app.dbFacade.getNumOfPhotos(featureId)))).build();
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling getFeaturePhotosNum(%d) from remote address [%s]"
@@ -370,7 +379,10 @@ public class MainResource {
                                       , httpServletRequest.getRemoteAddr()));
             TimeUnit.MILLISECONDS.sleep(2000);
             final PhotoData photoData = app.dbFacade.getPhoto(featureId, photoIndx);
-            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(photoData))).build();
+            if (random.nextInt(5)==0)
+                return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.err("msg", "some stack trace"))).build();
+            else
+                return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(photoData))).build();
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling getFeaturePhoto(%d, %d) from remote address [%s]"
                                        , featureId
@@ -397,6 +409,9 @@ public class MainResource {
                                       , httpServletRequest.getRemoteAddr()));
             final PhotoData photoData = Globals.gson.fromJson(featureData, PhotoData.class);
             final int photoIndx = app.dbFacade.postPhoto(featureId, photoData);
+            if (random.nextInt(5)==0)
+                return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.err("msg", "some stack trace"))).build();
+            else
             return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(photoIndx))).build();
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling postFeaturePhoto(%d) from remote address [%s]"
@@ -422,7 +437,10 @@ public class MainResource {
                                       , photoIndx
                                       , httpServletRequest.getRemoteAddr()));
             TimeUnit.MILLISECONDS.sleep(2000);
-            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(app.dbFacade.deletePhoto(featureId, photoIndx)))).build();
+            if (random.nextInt(5)==0)
+                return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.err("msg", "some stack trace"))).build();
+            else
+                return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(app.dbFacade.deletePhoto(featureId, photoIndx)))).build();
             
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling deleteFeaturePhoto(%d, %d) from remote address [%s]"

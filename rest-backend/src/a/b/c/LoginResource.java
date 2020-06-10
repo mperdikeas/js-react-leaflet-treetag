@@ -132,7 +132,7 @@ public class LoginResource {
             if (random.nextInt(4)==0)
                 throw new Exception("shit happened in Java");
             if (app.dbFacade.checkCredentials(installation, username, password)) {
-                if (random.nextInt(4)==0) {
+                if (random.nextInt(5)!=0) {
                     loginResult = new LoginResult(null, createAccessToken(installation, username));
                     logger.info(String.format("successful login(%s, %s, ..)"
                                               , installation
@@ -252,7 +252,7 @@ public class LoginResource {
     }
 
     private static Date createExpirationDate() {
-        final int VALIDITY_FOR_JWT_AUTHORIZATION_SECS = 15; //30*60;
+        final int VALIDITY_FOR_JWT_AUTHORIZATION_SECS = 30; //30*60;
         final LocalDateTime x = LocalDateTime.now().plusSeconds(VALIDITY_FOR_JWT_AUTHORIZATION_SECS);
         final Date rv = Date.from( x.atZone( ZoneId.systemDefault()).toInstant() );
         return rv;

@@ -23,16 +23,18 @@ import {cancelPendingRequests} from './action-util.jsx';
 
 import {handleAxiosException} from './action-axios-exc-util.js';
 
+import {propsForRetryDialog} from './action-util.jsx';
+
 export default function delFeatPhoto(id, idx) {
   const actionCreator = `delFeatPhoto(${id}, ${idx})`;
   assert.isTrue(idx>=0,`${actionCreator} idx value of [${idx}] is not GTE 0`);
-  const f = ()=>delFeatPhoto(id, idx);
+
 
   /* don't generate a source as we won't ever cancel this
   * const source = CancelToken.source();
   */
   return (dispatch, getState) => {
-
+    const f = ()=>dispatch(delFeatPhoto(id, idx));
     cancelPendingRequests(getState());
 
     const url = urlForPhotoDeletion(id, idx);
