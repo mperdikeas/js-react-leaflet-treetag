@@ -81,12 +81,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   const pleaseWaitWhileAppIsLoading    = <span>please wait while fetching map data &hellip; </span>;
-  const pleaseWaitWhileFetchingRegions = <span>please wait while regions are fetched &hellip; </span>;
   return {
     pleaseWaitWhileAppIsLoading: (uuid)=>dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: pleaseWaitWhileAppIsLoading, uuid}))
     , clearModal: (uuid)=> dispatch(clearModal(uuid))
     , updateCoordinates                 : (latlng)   => dispatch(updateMouseCoords(latlng))
-    , pleaseWaitWhileFetchingRegions: (uuid)=>dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: pleaseWaitWhileFetchingRegions, uuid}))
     , getRegions: ()=>dispatch(getRegions())
   };
 };
@@ -169,15 +167,9 @@ class RegionMgmntMap extends React.Component {
     $('div.leaflet-control-container section.leaflet-control-layers-list div.leaflet-control-layers-overlays input.leaflet-control-layers-selector[type="checkbox"]').on('change', (e)=>{
     });
     setTimeout(()=>{this.props.clearModal(uuid)}, 1000); // this is dog shit; I shall have to re-implement this properly.
-    this.fetchRegions();
-  }
-
-
-  fetchRegions = () => {
-    const uuid = uuidv4();
-    this.props.pleaseWaitWhileFetchingRegions(uuid);
     this.props.getRegions();
   }
+
   
 
   addMeasureControl = () => {

@@ -1,6 +1,8 @@
 const assert = require('chai').assert;
 const theStore = {};
 
+
+
 export function globalSet(name, value) {
     assert.isDefined(name, 'name is undefined in globalSet');
     assert.isNotNull(name, 'name is null in globalSet');
@@ -25,9 +27,3 @@ export const GSN = { // Global Store Name
     , AXIOS_CANCEL_TOKENS: 'axios.cancel.tokens'
 };
 
-export function addCancelToken(type, token)  {
-    const tokens = globalGet(GSN.AXIOS_CANCEL_TOKENS, false);
-    const tokens2 = (tokens?tokens:[]);
-    tokens2.push({type, token});
-    globalSet(GSN.AXIOS_CANCEL_TOKENS, tokens2);
-}

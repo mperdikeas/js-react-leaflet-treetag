@@ -4,14 +4,18 @@ import {getAccessToken} from '../../access-token-util.js';
 import {axiosAuth} from '../../axios-setup.js';
 import {CancelToken} from 'axios';
 
+import { v4 as uuidv4 } from 'uuid';
+
 
 import {getRegionsInProgress
       , getRegionsSuccess
       , displayModal
+      , clearModal
       , } from './index.js';
-import {MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
-import {addCancelToken} from '../../globalStore';
-import {CANCEL_TOKEN_TYPES} from '../../constants/axios-constants.js';
+import {MDL_RETRY_CANCEL, MDL_NOTIFICATION_NO_DISMISS} from '../../constants/modal-types.js';
+import {CANCEL_TOKEN_TYPES
+      , cancelIncompatibleRequests
+      , addCancelToken} from '../../util/axios-util.js';
 
 import {cancelToken} from '../selectors.js';
 
@@ -23,21 +27,28 @@ import {handleAxiosException} from './action-axios-exc-util.js';
 
 export default function getRegions() {
   const actionCreator = `getRegions`;
-  console.log(actionCreator);
+  const TOKEN_TYPE = CANCEL_TOKEN_TYPES.GET_REGIONS;
 
-  const f = ()=>getRegions();
 
+  cancelIncompatibleRequests(TOKEN_TYPE);
   const source = CancelToken.source();
-  addCancelToken(CANCEL_TOKEN_TYPES.GET_REGIONS, source.token);
+  addCancelToken(TOKEN_TYPE, source.token);
   return (dispatch, getState) => {
+    const f = ()=>dispatch(getRegions());
 
-//    cancelPendingRequests(getState());
 
+    
+    const uuid = uuidv4();
+    const pleaseWaitWhileFetchingRegions = <span>please wait while regions are fetched &hellip; </span>;
+    dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: pleaseWaitWhileFetchingRegions, uuid}))
+
+    
+    
     dispatch (getRegionsInProgress());
     const url = '/regions';
-    console.log(`${actionCreator} :: URL is: ${url}`);
 
     axiosAuth.get(url, {cancelToken: source.token}).then(res => {
+      dispatch(clearModal(uuid))
       // corr-id: SSE-1585746250
       const {t, err} = res.data; 
       if (err===null) {
@@ -51,12 +62,13 @@ export default function getRegions() {
       } else {
         throw 43;
         dispatch( displayModal(MDL_RETRY_CANCEL, propsForRetryDialog(dispatch, f, url, actionCreator, 'server-side error', err)) );
-      }}).catch(
-        err => handleAxiosException(err, dispatch, f, url, actionCreator)
-      );
+      }}).catch(err => {
+        dispatch(clearModal());
+        handleAxiosException(err, dispatch, f, url, actionCreator);
+      }); // catch
   };
 }
-  
+
 
 
 

@@ -83,6 +83,10 @@ public class DBFacade implements IDBFacade {
             Assert.assertNull(tree2photos.put(i, photosForThisTree));
         } // for (int i = 0;
         this.regions = new LinkedHashMap<>();
+        final List<Region> regionsA1 = new ArrayList<>();
+        regionsA1.add(new Region("a", "wkt-1"));
+        
+        Assert.assertNull(this.regions.put("a1", regionsA1));
 
     }
 

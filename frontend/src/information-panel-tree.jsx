@@ -42,7 +42,6 @@ import {LOGGING_IN
       , LOADING_TREE_DATA // todo: not used any more - clear junk
       , SAVING_TREE_DATA} from './constants/information-panel-tree-server-call-types.js';
 
-//import {OP_NO_LONGER_RELEVANT} from './constants/axios-constants.js';
 import {msgTreeDataIsDirty, displayNotificationIfTargetIsDirty} from './common.jsx';
 import {possiblyInsufPrivPanicInAnyCase, isInsufficientPrivilleges} from './util-privilleges.js';
 

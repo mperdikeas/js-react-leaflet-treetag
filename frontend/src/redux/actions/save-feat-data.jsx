@@ -14,8 +14,6 @@ import {MDL_NOTIFICATION
       , MDL_NOTIFICATION_NO_DISMISS
       , MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
 
-import {OP_NO_LONGER_RELEVANT} from '../../constants/axios-constants.js';
-
 import {isInsufficientPrivilleges} from '../../util-privilleges.js';
 
 import {GSN, globalGet} from '../../globalStore.js';

@@ -4,7 +4,7 @@ var      cx = require('classnames');
 const assert = require('chai').assert;
 
 import RegionMgmntMap                          from './region-mgmnt-map.jsx';
-import TreeInformationPanel                    from './information-panel-tree.jsx';
+import RegionList                              from './region-list.jsx';
 import PointCoordinates                        from './point-coordinates.jsx';
 import UserControl                             from './user-control.jsx';
 
@@ -53,7 +53,9 @@ class RegionMgmnt extends React.Component {
 
           </div>
           <div className={cx({'col-4':true})} style={{background: 'red'}}>
-            foo
+
+            <RegionList/>
+            
           </div>
         </div>
       </div>

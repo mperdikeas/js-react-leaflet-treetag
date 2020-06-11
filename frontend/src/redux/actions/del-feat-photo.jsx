@@ -13,7 +13,7 @@ import {displayModal
 import {MDL_RETRY_CANCEL
       , MDL_NOTIFICATION_NO_DISMISS} from '../../constants/modal-types.js';
 
-import {OP_NO_LONGER_RELEVANT} from '../../constants/axios-constants.js';
+import {OP_NO_LONGER_RELEVANT} from '../../util/axios-util.js';
 
 import {cancelToken} from '../selectors.js';
 

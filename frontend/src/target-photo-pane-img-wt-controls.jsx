@@ -31,7 +31,7 @@ import {LOGGING_IN
       , DELETING_PHOTO} from './constants/target-photo-pane-server-call-types.js';
 
 
-import {OP_NO_LONGER_RELEVANT} from './constants/axios-constants.js';
+import {OP_NO_LONGER_RELEVANT} from './util/axios-util.js';
   
 const mapStateToProps = (state) => {
   const {num, idx, img: photoBase64, t} = state.target.photos;
