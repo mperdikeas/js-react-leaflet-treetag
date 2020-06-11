@@ -85,6 +85,14 @@ public class DBFacade implements IDBFacade {
         this.regions = new LinkedHashMap<>();
         final List<Region> regionsA1 = new ArrayList<>();
         regionsA1.add(new Region("a", "wkt-1"));
+        regionsA1.add(new Region("b", "wkt-1"));
+        regionsA1.add(new Region("c", "wkt-1"));
+        regionsA1.add(new Region("d", "wkt-1"));
+        regionsA1.add(new Region("e", "wkt-1"));
+        regionsA1.add(new Region("f", "wkt-1"));
+        regionsA1.add(new Region("g", "wkt-1"));
+        regionsA1.add(new Region("h", "wkt-1"));
+        regionsA1.add(new Region("i", "wkt-1"));
         
         Assert.assertNull(this.regions.put("a1", regionsA1));
 

@@ -13,9 +13,12 @@ import {OverlayTrigger, Tooltip, ToggleButtonGroup, ToggleButton} from 'react-bo
 // REDUX
 import { connect }          from 'react-redux';
 
+
+
 const mapStateToProps = (state) => {
+  console.log(state);
   return {
-    regions: state.regions.regions
+    regions: state.regions.val
     , state: state.regions.state
   };
 };
@@ -27,24 +30,7 @@ class RegionList extends React.Component {
     super(props);
     this.outerDivRef = React.createRef();
     this.agGridRef    = React.createRef();
-    this.state = {
-      fitOption: 'fit',
-      width: 100,
-      columnDefs: [{
-        headerName: "Make", field: "make", sortable: true, filter: true, resizable: true
-      }, {
-        headerName: "Model", field: "model", sortable: true, filter: true, resizable: true
-      }, {
-        headerName: "Price", field: "price", sortable: true, filter: true, resizable: true
-      }],
-      rowData: [{
-        make: "Toyota", model: "Celica", price: 35000
-      }, {
-        make: "Ford", model: "Mondeo", price: 32000
-      }, {
-        make: "Porsche", model: "Boxter", price: 72000
-      }]
-    }
+    this.state = {fitOption: 'fit', width: 100};
   }
 
   componentDidMount() {
@@ -125,6 +111,8 @@ class RegionList extends React.Component {
 
 
   render() {
+    const columnDefs = [{headerName: "Name", field: "name", sortable: true, filter: true, resizable: true}
+                     , {headerName: "WKT", field: "wkt", sortable: true, filter: true, resizable: true}];
     switch (this.props.state) {
       case 'fetching':
         return <div>fetching regions &hellip;</div>;
@@ -141,8 +129,8 @@ class RegionList extends React.Component {
             <div className='ag-theme-alpine' style={{ width: '{this.state.width}px', height: '600px'}}>
               <AgGridReact ref={this.agGridRef}
                            onGridReady={this.onGridReady}
-                           columnDefs={this.state.columnDefs}
-                           rowData={this.state.rowData}>
+                           columnDefs={columnDefs}
+                           rowData={this.props.regions}>
               </AgGridReact>
             </div>
           </div>

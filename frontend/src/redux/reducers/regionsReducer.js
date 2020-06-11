@@ -6,13 +6,13 @@ const assert = require('chai').assert;
 
 
 
-export default (state = {regions: [], state: 'steady'}, action) => {
+export default (state = {val: [], state: 'steady'}, action) => {
     switch (action.type) {
     case GET_REGIONS_IN_PROGRESS: {
         return Object.assign({}, state, {state: 'fetching'});
     }
     case GET_REGIONS_SUCCESS: {
-        return {regions: action.payload, state: 'steady'};
+        return {val: action.payload, state: 'steady'};
     }
     default:
         return state;
