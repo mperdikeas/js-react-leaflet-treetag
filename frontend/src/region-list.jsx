@@ -7,6 +7,8 @@ import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
+import {OverlayTrigger, Tooltip, ToggleButtonGroup, ToggleButton} from 'react-bootstrap';
+
 
 // REDUX
 import { connect }          from 'react-redux';
@@ -26,6 +28,8 @@ class RegionList extends React.Component {
     this.outerDivRef = React.createRef();
     this.agGridRef    = React.createRef();
     this.state = {
+      fitOption: 'fit',
+      width: 100,
       columnDefs: [{
         headerName: "Make", field: "make", sortable: true, filter: true, resizable: true
       }, {
@@ -46,6 +50,7 @@ class RegionList extends React.Component {
   componentDidMount() {
     this.updateDimensions();
     window.addEventListener('resize', this.updateDimensions);
+    this.applyFit();
   }
   
   componentWillUnmount() {
@@ -59,14 +64,53 @@ class RegionList extends React.Component {
   }
 
   sizeToFit = ()=> {
+    console.log(`sizeColumnsToFit`);
     this.gridApi.sizeColumnsToFit();
   }
 
+  handleChange = (v) => {
+    console.log(v);
+    this.setState({fitOption: v});
+  }
+
+  componentDidUpdate = (prevProps, prevState) => {
+    if ((prevState.fitOption != this.state.fitOption) || (prevState.width != this.state.width)) {
+      this.applyFit();
+    }
+  }
+
+  applyFit = () => {
+    const _applyFit = () => {
+      switch (this.state.fitOption) {
+        case 'fit':
+          this.sizeToFit();
+          break;
+        case 'auto':
+          this.autoSizeAll(false);
+          break;
+        default:
+          throw `unrecognized fit option: [${this.state.fitOption}]`;
+      }
+    };
+    
+    if ((this.gridApi != null) && (this.columnApi != null))
+      _applyFit();
+    else {
+      const intervalId = window.setInterval(()=> {
+        console.log('x');
+        if ((this.gridApi != null) && (this.columnApi != null)) {
+          _applyFit();
+          window.clearInterval(intervalId)
+        }
+      }, 50);
+    }
+  }
+
+
+
   autoSizeAll = (skipHeader) => {
+    console.log(`autoSizeAll`);
     var allColumnIds = [];
-    console.log(this.agGridRef.current.api);
-    console.log('------------------------');
-    console.log(this.agGridRef.current.columnApi);
     this.columnApi.getAllColumns().forEach((column) => {
       allColumnIds.push(column.colId);
     });
@@ -88,10 +132,12 @@ class RegionList extends React.Component {
         return (
           <div ref={this.outerDivRef}>
             <div>{this.props.regions.length} regions were fetched</div>
-            <div style={{display: 'flex', flexDirection: 'row'}}>
-              <button style={{fontSize: '85%'}}onClick={this.sizeToFit}>Size to Fit</button>
-              <button style={{fontSize: '85%'}}onClick={()=>this.autoSizeAll(false)}>Auto-Size</button>
-            </div>
+
+            <ToggleButtonGroup type="radio" name='options' defaultValue={this.state.fitOption} onChange={this.handleChange}>
+              <ToggleButton value={'fit'}><i className='fas fa-text-width fa-xs'></i></ToggleButton>
+              <ToggleButton value={'auto'}><i className='fas fa-ruler-horizontal fa-xs'></i></ToggleButton>
+            </ToggleButtonGroup>
+
             <div className='ag-theme-alpine' style={{ width: '{this.state.width}px', height: '600px'}}>
               <AgGridReact ref={this.agGridRef}
                            onGridReady={this.onGridReady}
