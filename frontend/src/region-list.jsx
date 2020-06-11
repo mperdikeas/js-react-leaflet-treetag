@@ -14,11 +14,19 @@ import {OverlayTrigger, Tooltip, ToggleButtonGroup, ToggleButton} from 'react-bo
 import { connect }          from 'react-redux';
 
 
+function enhance(regions) {
+  let rv = [];
+  for (let i = 0 ; i < regions.length ; i++) {
+    console.log(regions[i]);
+    rv.push(Object.assign({}, regions[i], {enabled: true}));
+  }
+  return rv
+}
 
 const mapStateToProps = (state) => {
   console.log(state);
   return {
-    regions: state.regions.val
+    regions: enhance(state.regions.val)
     , state: state.regions.state
   };
 };
@@ -111,8 +119,26 @@ class RegionList extends React.Component {
 
 
   render() {
-    const columnDefs = [{headerName: "Name", field: "name", sortable: true, filter: true, resizable: true}
-                     , {headerName: "WKT", field: "wkt", sortable: true, filter: true, resizable: true}];
+    const columnDefs = [
+      {headerName: "Enabled"
+     , field: "enabled"
+     , sortable: true
+     , filter: true
+     , resizable: true
+     , type: 'boolean'
+        /*
+     , cellRenderer: (params) => { 
+       const input = document.createElement('input');
+       input.type='checkbox';
+       input.checked=params.value;
+       input.addEventListener('click', function (event) {
+         params.value=!params.value;
+         params.node.data.enabled = params.value;
+       });
+       return input;
+     }*/}
+      , {headerName: "Name", field: "name", sortable: true, filter: true, resizable: true}
+      , {headerName: "WKT", field: "wkt", sortable: true, filter: true, resizable: true}];
     switch (this.props.state) {
       case 'fetching':
         return <div>fetching regions &hellip;</div>;
