@@ -10,8 +10,6 @@ import { connect }          from 'react-redux';
 import L from 'leaflet';
 import {Athens} from './tree-markers.js';
 
-import {possiblyInsufPrivPanicInAnyCase, isInsufficientPrivilleges} from './util-privilleges.js';
-
 import {MDL_NOTIFICATION} from './constants/modal-types.js';
 import {setTreeCoords, revertTreeCoords, saveFeatData} from './redux/actions/index.js';
 

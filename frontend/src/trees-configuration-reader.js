@@ -4,7 +4,6 @@ const assert = require('chai').assert;
 import {sca_fake_return} from './util/util.js';
 
 import {axiosAuth} from './axios-setup.js';
-import {possiblyInsufPrivPanicInAnyCase} from './util-privilleges.js';
 
 export default function getTreesConfiguration() {
     const url = '/getConfiguration';

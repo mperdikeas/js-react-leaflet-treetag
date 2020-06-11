@@ -234,7 +234,7 @@ public class MainResource {
                                       , httpServletRequest.getRemoteAddr()));
             TimeUnit.MILLISECONDS.sleep(2000);
             final TreeInfoWithId treeInfo = app.dbFacade.getTreeInfo(featureId);
-            if (random.nextInt(5)==0)
+            if (false && (random.nextInt(5)==0))
                 return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.err("msg", "some stack trace"))).build();
             else
                 return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(treeInfo))).build();
@@ -281,7 +281,7 @@ public class MainResource {
                                 , treeInfoJSON);
             */
             final boolean valueUpdated = app.dbFacade.setTreeInfo(featureId, treeInfo);
-            if (random.nextInt(5)==0)
+            if (false && (random.nextInt(5)==0))
                 return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.err("msg", "some stack trace"))).build();
             else
                 return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(valueUpdated))).build();
@@ -322,7 +322,7 @@ public class MainResource {
                                 , treeInfoJSON);
             */
             final int key = app.dbFacade.createTree(treeInfo);
-            if (random.nextInt(5)==0)
+            if (false && (random.nextInt(5)==0))
                 return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.err("msg", "some stack trace"))).build();
             else
                 return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(key))).build();
@@ -349,7 +349,7 @@ public class MainResource {
                                       , featureId
                                       , httpServletRequest.getRemoteAddr()));
             TimeUnit.MILLISECONDS.sleep(2000);
-            if (random.nextInt(5)==0)
+            if (false && (random.nextInt(5)==0))
                 return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.err("msg", "some stack trace"))).build();
             else
             return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(app.dbFacade.getNumOfPhotos(featureId)))).build();
@@ -379,7 +379,7 @@ public class MainResource {
                                       , httpServletRequest.getRemoteAddr()));
             TimeUnit.MILLISECONDS.sleep(2000);
             final PhotoData photoData = app.dbFacade.getPhoto(featureId, photoIndx);
-            if (random.nextInt(5)==0)
+            if (false && (random.nextInt(5)==0))
                 return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.err("msg", "some stack trace"))).build();
             else
                 return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(photoData))).build();
@@ -409,7 +409,7 @@ public class MainResource {
                                       , httpServletRequest.getRemoteAddr()));
             final PhotoData photoData = Globals.gson.fromJson(featureData, PhotoData.class);
             final int photoIndx = app.dbFacade.postPhoto(featureId, photoData);
-            if (random.nextInt(5)==0)
+            if (false && (random.nextInt(5)==0))
                 return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.err("msg", "some stack trace"))).build();
             else
             return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(photoIndx))).build();
@@ -437,7 +437,7 @@ public class MainResource {
                                       , photoIndx
                                       , httpServletRequest.getRemoteAddr()));
             TimeUnit.MILLISECONDS.sleep(2000);
-            if (random.nextInt(5)==0)
+            if (false && (random.nextInt(5)==0))
                 return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.err("msg", "some stack trace"))).build();
             else
                 return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(app.dbFacade.deletePhoto(featureId, photoIndx)))).build();

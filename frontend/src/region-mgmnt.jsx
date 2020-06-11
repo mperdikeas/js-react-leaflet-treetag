@@ -52,7 +52,7 @@ class RegionMgmnt extends React.Component {
             <RegionMgmntMap/>
 
           </div>
-          <div className={cx({'col-4':true})} style={{background: 'red'}}>
+          <div className={cx({'col-4':true})}>
 
             <RegionList/>
             

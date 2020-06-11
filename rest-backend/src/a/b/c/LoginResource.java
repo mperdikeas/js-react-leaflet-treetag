@@ -129,10 +129,10 @@ public class LoginResource {
                                       , httpServletRequest.getRemoteAddr()));
             LoginResult loginResult;
             final JaxRsApplication app = (JaxRsApplication) _app;
-            if (random.nextInt(4)==0)
+            if (false && (random.nextInt(4)==0))
                 throw new Exception("shit happened in Java");
             if (app.dbFacade.checkCredentials(installation, username, password)) {
-                if (random.nextInt(5)!=0) {
+                if (true || (random.nextInt(5)!=0)) {
                     loginResult = new LoginResult(null, createAccessToken(installation, username));
                     logger.info(String.format("successful login(%s, %s, ..)"
                                               , installation

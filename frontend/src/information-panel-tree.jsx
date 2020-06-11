@@ -43,7 +43,6 @@ import {LOGGING_IN
       , SAVING_TREE_DATA} from './constants/information-panel-tree-server-call-types.js';
 
 import {msgTreeDataIsDirty, displayNotificationIfTargetIsDirty} from './common.jsx';
-import {possiblyInsufPrivPanicInAnyCase, isInsufficientPrivilleges} from './util-privilleges.js';
 
 import {GSN, globalGet} from './globalStore.js';
 import {areEqualShallow, sca_fake_return} from './util/util.js';
