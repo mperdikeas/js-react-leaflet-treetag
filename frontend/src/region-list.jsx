@@ -14,19 +14,18 @@ import {OverlayTrigger, Tooltip, ToggleButtonGroup, ToggleButton} from 'react-bo
 import { connect }          from 'react-redux';
 
 
-function enhance(regions) {
+function trueArray(regions) {
   let rv = [];
-  for (let i = 0 ; i < regions.length ; i++) {
-    console.log(regions[i]);
-    rv.push(Object.assign({}, regions[i], {enabled: true}));
-  }
-  return rv
+  for (let i = 0 ; i < regions.length ; i++)
+    rv.push(true);
+  console.log(`trueArray returning ${rv}`);
+  return rv;
 }
 
 const mapStateToProps = (state) => {
   console.log(state);
   return {
-    regions: enhance(state.regions.val)
+    regions: state.regions.val
     , state: state.regions.state
   };
 };
@@ -38,7 +37,21 @@ class RegionList extends React.Component {
     super(props);
     this.outerDivRef = React.createRef();
     this.agGridRef    = React.createRef();
+    console.log(`cxc 3: regions are: ${this.props.regions}`);
     this.state = {fitOption: 'fit', width: 100};
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState){
+    console.log('cxc 1');
+    if(nextProps.regions!==prevState.regions) {
+      console.log('cxc 2', prevState);
+      const rv =  Object.assign({}
+                              , prevState
+                              , {enableds: trueArray(nextProps.regions)});
+      console.log(`cxc 4`, rv);
+      return rv;
+    }
+    else return null;
   }
 
   componentDidMount() {
@@ -49,6 +62,15 @@ class RegionList extends React.Component {
   
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateDimensions);
+  }
+
+  fusedRowData() {
+    let rv = [];
+    for (let i = 0 ; i < this.props.regions.length ; i++) {
+      console.log(`cxc 5 ${this.state.enableds[i]}`);
+      rv.push(Object.assign({}, this.props.regions[i], {enabled: this.state.enableds[i]}));
+    }
+    return rv
   }
 
   updateDimensions = () => {
@@ -117,26 +139,39 @@ class RegionList extends React.Component {
     this.columnApi = params.columnApi;
   }
 
+  toggleRegion = (idx) => {
+    console.log(`toggling boolean value for index ${idx}`);
+    const enableds = [...this.state.enableds];
+    console.log(enableds);
+    enableds[idx] = !enableds[idx];
+    this.setState({enableds});
+  }
 
   render() {
     const columnDefs = [
       {headerName: "Enabled"
+     , editable: true
      , field: "enabled"
      , sortable: true
      , filter: true
      , resizable: true
      , type: 'boolean'
-        /*
-     , cellRenderer: (params) => { 
+     , cellRenderer: (params) => { /* https://stackoverflow.com/a/55154415/274677 */
        const input = document.createElement('input');
        input.type='checkbox';
+       console.log(`cxc 5 - params.value = ${params.value}`);
        input.checked=params.value;
-       input.addEventListener('click', function (event) {
+       input.addEventListener('click', (event) => {
+         console.log(params);
+         console.log(event);
+         /*
          params.value=!params.value;
          params.node.data.enabled = params.value;
+         */
+         //this.toggleRegion(params.rowIndex)
        });
        return input;
-     }*/}
+     }}
       , {headerName: "Name", field: "name", sortable: true, filter: true, resizable: true}
       , {headerName: "WKT", field: "wkt", sortable: true, filter: true, resizable: true}];
     switch (this.props.state) {
@@ -156,7 +191,7 @@ class RegionList extends React.Component {
               <AgGridReact ref={this.agGridRef}
                            onGridReady={this.onGridReady}
                            columnDefs={columnDefs}
-                           rowData={this.props.regions}>
+                           rowData={this.fusedRowData()}>
               </AgGridReact>
             </div>
           </div>
