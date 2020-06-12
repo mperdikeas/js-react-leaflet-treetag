@@ -7,25 +7,58 @@ import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
-import {OverlayTrigger, Tooltip, ToggleButtonGroup, ToggleButton} from 'react-bootstrap';
+
+
+import 'antd/dist/antd.css';
+
+import { TreeSelect } from 'antd';
 
 
 // REDUX
 import { connect }          from 'react-redux';
 
-
-function trueArray(regions) {
-  let rv = [];
-  for (let i = 0 ; i < regions.length ; i++)
-    rv.push(true);
-  console.log(`trueArray returning ${rv}`);
-  return rv;
-}
+const treeData = [
+  {
+    title: 'Node1',
+    value: '0-0',
+    key: '0-0',
+    children: [
+      {
+        title: 'Child Node1',
+        value: '0-0-0',
+        key: '0-0-0',
+      },
+    ],
+  },
+  {
+    title: 'Node2',
+    value: '0-1',
+    key: '0-1',
+    children: [
+      {
+        title: 'Child Node3',
+        value: '0-1-0',
+        key: '0-1-0',
+      },
+      {
+        title: 'Child Node4',
+        value: '0-1-1',
+        key: '0-1-1',
+      },
+      {
+        title: 'Child Node5',
+        value: '0-1-2',
+        key: '0-1-2',
+      },
+    ],
+  },
+];
 
 const mapStateToProps = (state) => {
   console.log(state);
   return {
-    regions: state.regions.val
+    regions2: state.regions.val
+    , regions: treeData
     , state: state.regions.state
   };
 };
@@ -36,12 +69,14 @@ class RegionList extends React.Component {
   constructor(props) {
     super(props);
     this.outerDivRef = React.createRef();
-    this.agGridRef    = React.createRef();
     console.log(`cxc 3: regions are: ${this.props.regions}`);
-    this.state = {fitOption: 'fit', width: 100};
+    this.state = {
+      selected: ['1-1', '1-3']
+    };
   }
 
-  static getDerivedStateFromProps(nextProps, prevState){
+  
+  static getDerivedStateFromPropsUNUSED(nextProps, prevState){
     console.log('cxc 1');
     if(nextProps.regions!==prevState.regions) {
       console.log('cxc 2', prevState);
@@ -57,20 +92,10 @@ class RegionList extends React.Component {
   componentDidMount() {
     this.updateDimensions();
     window.addEventListener('resize', this.updateDimensions);
-    this.applyFit();
   }
   
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateDimensions);
-  }
-
-  fusedRowData() {
-    let rv = [];
-    for (let i = 0 ; i < this.props.regions.length ; i++) {
-      console.log(`cxc 5 ${this.state.enableds[i]}`);
-      rv.push(Object.assign({}, this.props.regions[i], {enabled: this.state.enableds[i]}));
-    }
-    return rv
   }
 
   updateDimensions = () => {
@@ -79,120 +104,36 @@ class RegionList extends React.Component {
     this.setState({width});
   }
 
-  sizeToFit = ()=> {
-    console.log(`sizeColumnsToFit`);
-    this.gridApi.sizeColumnsToFit();
-  }
 
-  handleChange = (v) => {
+  onChange = (v) => {
     console.log(v);
-    this.setState({fitOption: v});
-  }
-
-  componentDidUpdate = (prevProps, prevState) => {
-    if ((prevState.fitOption != this.state.fitOption) || (prevState.width != this.state.width)) {
-      this.applyFit();
-    }
-  }
-
-  applyFit = () => {
-    const _applyFit = () => {
-      switch (this.state.fitOption) {
-        case 'fit':
-          this.sizeToFit();
-          break;
-        case 'auto':
-          this.autoSizeAll(false);
-          break;
-        default:
-          throw `unrecognized fit option: [${this.state.fitOption}]`;
-      }
-    };
-    
-    if ((this.gridApi != null) && (this.columnApi != null))
-      _applyFit();
-    else {
-      const intervalId = window.setInterval(()=> {
-        console.log('x');
-        if ((this.gridApi != null) && (this.columnApi != null)) {
-          _applyFit();
-          window.clearInterval(intervalId)
-        }
-      }, 50);
-    }
+    this.setState({selected: v});
   }
 
 
-
-  autoSizeAll = (skipHeader) => {
-    console.log(`autoSizeAll`);
-    var allColumnIds = [];
-    this.columnApi.getAllColumns().forEach((column) => {
-      allColumnIds.push(column.colId);
-    });
-    this.columnApi.autoSizeColumns(allColumnIds, skipHeader);
-  }
-
-
-  onGridReady = (params) => {
-    this.gridApi   = params.api;
-    this.columnApi = params.columnApi;
-  }
-
-  toggleRegion = (idx) => {
-    console.log(`toggling boolean value for index ${idx}`);
-    const enableds = [...this.state.enableds];
-    console.log(enableds);
-    enableds[idx] = !enableds[idx];
-    this.setState({enableds});
-  }
 
   render() {
-    const columnDefs = [
-      {headerName: "Enabled"
-     , editable: true
-     , field: "enabled"
-     , sortable: true
-     , filter: true
-     , resizable: true
-     , type: 'boolean'
-     , cellRenderer: (params) => { /* https://stackoverflow.com/a/55154415/274677 */
-       const input = document.createElement('input');
-       input.type='checkbox';
-       console.log(`cxc 5 - params.value = ${params.value}`);
-       input.checked=params.value;
-       input.addEventListener('click', (event) => {
-         console.log(params);
-         console.log(event);
-         /*
-         params.value=!params.value;
-         params.node.data.enabled = params.value;
-         */
-         //this.toggleRegion(params.rowIndex)
-       });
-       return input;
-     }}
-      , {headerName: "Name", field: "name", sortable: true, filter: true, resizable: true}
-      , {headerName: "WKT", field: "wkt", sortable: true, filter: true, resizable: true}];
     switch (this.props.state) {
       case 'fetching':
         return <div>fetching regions &hellip;</div>;
       case 'steady':
+        const tProps = {
+          treeData,
+          value: this.state.selected,
+          onChange: this.onChange,
+          treeCheckable: true,
+          showCheckedStrategy: TreeSelect.SHOW_PARENT,
+          placeholder: 'Please select',
+          style: {
+            width: '100%',
+          },
+        };
         return (
           <div ref={this.outerDivRef}>
             <div>{this.props.regions.length} regions were fetched</div>
-
-            <ToggleButtonGroup type="radio" name='options' defaultValue={this.state.fitOption} onChange={this.handleChange}>
-              <ToggleButton value={'fit'}><i className='fas fa-text-width fa-xs'></i></ToggleButton>
-              <ToggleButton value={'auto'}><i className='fas fa-ruler-horizontal fa-xs'></i></ToggleButton>
-            </ToggleButtonGroup>
-
-            <div className='ag-theme-alpine' style={{ width: '{this.state.width}px', height: '600px'}}>
-              <AgGridReact ref={this.agGridRef}
-                           onGridReady={this.onGridReady}
-                           columnDefs={columnDefs}
-                           rowData={this.fusedRowData()}>
-              </AgGridReact>
+            {/*            <div style={{ width: '{this.state.width}px', height: '600px'}}> */}
+              <div style={{ width: '{this.state.width}px', height: '650px'}}>
+                <TreeSelect {...tProps} />;
             </div>
           </div>
         );
@@ -203,3 +144,4 @@ class RegionList extends React.Component {
 }
 
 export default connect(mapStateToProps)(RegionList);
+
