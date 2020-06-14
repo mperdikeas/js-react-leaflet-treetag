@@ -34,7 +34,7 @@ public class DBFacade implements IDBFacade {
     private final Map<Integer, TreeInfoWithId> trees;
     private final Map<Integer, Map<Integer, PhotoData>> tree2photos;
 
-    private final Map<String, List<Region>> regions;
+    private final Map<String, Map<String, List<Region>>> inst2partitions;
     private final Random r;
     
     public DBFacade() {
@@ -82,20 +82,28 @@ public class DBFacade implements IDBFacade {
             }
             Assert.assertNull(tree2photos.put(i, photosForThisTree));
         } // for (int i = 0;
-        this.regions = new LinkedHashMap<>();
-        final List<Region> regionsA1 = new ArrayList<>();
-        regionsA1.add(new Region("a", "wkt-1"));
-        regionsA1.add(new Region("b", "wkt-1"));
-        regionsA1.add(new Region("c", "wkt-1"));
-        regionsA1.add(new Region("d", "wkt-1"));
-        regionsA1.add(new Region("e", "wkt-1"));
-        regionsA1.add(new Region("f", "wkt-1"));
-        regionsA1.add(new Region("g", "wkt-1"));
-        regionsA1.add(new Region("h", "wkt-1"));
-        regionsA1.add(new Region("i", "wkt-1"));
-        
-        Assert.assertNull(this.regions.put("a1", regionsA1));
+        this.inst2partitions = new LinkedHashMap<>();
+        final Map<String, List<Region>> partitionsA1 = new LinkedHashMap<>(); // partitions for installation 'a1'
+        final List<Region> regionsA1_1 = new ArrayList<>(); // regions for the 1st partition of installation 'a1'
+        regionsA1_1.add(new Region("a", "wkt-1"));
+        regionsA1_1.add(new Region("b", "wkt-1"));
+        regionsA1_1.add(new Region("c", "wkt-1"));
+        regionsA1_1.add(new Region("d", "wkt-1"));
+        regionsA1_1.add(new Region("e", "wkt-1"));
+        regionsA1_1.add(new Region("f", "wkt-1"));
+        regionsA1_1.add(new Region("g", "wkt-1"));
+        regionsA1_1.add(new Region("h", "wkt-1"));
+        regionsA1_1.add(new Region("i", "wkt-1"));
 
+        final List<Region> regionsA1_2 = new ArrayList<>(); // regions for the 2nd partition of installation 'a1'
+        regionsA1_2.add(new Region("aa", "wkt-1"));
+        regionsA1_2.add(new Region("bb", "wkt-1"));
+        regionsA1_2.add(new Region("cc", "wkt-1"));
+
+        Assert.assertNull(partitionsA1.put("δ. διαμερίσματα", regionsA1_1));
+        Assert.assertNull(partitionsA1.put("χωρικοί τομείς" , regionsA1_2));
+        
+        Assert.assertNull(this.inst2partitions.put("a1", partitionsA1));
     }
 
     private static List<PhotoData> allPhotos() {
@@ -308,10 +316,10 @@ public class DBFacade implements IDBFacade {
 
 
     @Override    
-    public final List<Region> regionsForInstallation(final String installation) {
-        final List<Region> rv = this.regions.get(installation);
+    public final Map<String, List<Region>> partitionsForInstallation(final String installation) {
+        final Map<String, List<Region>> rv = this.inst2partitions.get(installation);
         if (rv == null)
-            return new ArrayList<Region>();
+            return new LinkedHashMap<>();
         else
             return rv;
     }

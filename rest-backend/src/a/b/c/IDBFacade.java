@@ -2,6 +2,7 @@ package a.b.c;
 
 import java.util.List;
 import java.util.Set;
+import java.util.Map;
 
 import java.lang.reflect.Method;
 
@@ -21,7 +22,7 @@ public interface IDBFacade {
     int postPhoto(int treeId, PhotoData photoData);
     boolean deletePhoto(int treeId, int photoIdx);
     List<BasicTreeInfoWithId> getTrees(String installation);
-    List<Region> regionsForInstallation(String installation);
+    Map<String, List<Region>> partitionsForInstallation(String installation);
 
         
     Set<Privillege> getPrivilleges(String installation, String username);

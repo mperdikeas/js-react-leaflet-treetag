@@ -45,7 +45,7 @@ export default function getRegions() {
     
     
     dispatch (getRegionsInProgress());
-    const url = '/regions';
+    const url = '/partitions';
 
     axiosAuth.get(url, {cancelToken: source.token}).then(res => {
       dispatch(clearModal(uuid))

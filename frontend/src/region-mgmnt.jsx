@@ -35,7 +35,6 @@ class RegionMgmnt extends React.Component {
     const headerBarHeight = this.props.geometryContext.geometry.headerBarHeight;
     return (
       <div className='container-fluid' key='main-gui-component' style={{paddingRight: 0, paddingLeft: 0}}>
-{/*
         <div className='row no-gutters justify-content-start align-items-center'
              style={{height: `${headerBarHeight}px`}}>
           <div className='col-5'>
@@ -44,21 +43,13 @@ class RegionMgmnt extends React.Component {
           <div className='col-7'>
             <UserControl/>
           </div>
-          
         </div>
-*/}
         <div className='row no-gutters'>
-          {/*
           <div className={cx({'col-8': true, 'padding-0': true})}>
-
             <RegionMgmntMap/>
-
           </div>
-          */}
-          <div className={cx({'col-12':true})}>
-
+          <div className={cx({'col-4':true})}>
             <RegionList/>
-            
           </div>
         </div>
       </div>

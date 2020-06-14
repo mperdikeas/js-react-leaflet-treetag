@@ -453,10 +453,10 @@ public class MainResource {
     }
 
 
-    @Path("/regions")
+    @Path("/partitions")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public final Response regionsForInstallation(@Context javax.ws.rs.core.Application _app
+    public final Response partitionsForInstallation(@Context javax.ws.rs.core.Application _app
                                                      , @Context final HttpServletRequest httpServletRequest) {
         final String methodDescr = String.format("regions ~*~ remote address: [%s]"
                                                  , httpServletRequest.getRemoteAddr());
@@ -465,7 +465,7 @@ public class MainResource {
             logger.info(methodDescr);
             final String installation = Installation.getFromServletRequest(httpServletRequest);
             TimeUnit.MILLISECONDS.sleep(2000);
-            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(app.dbFacade.regionsForInstallation(installation)))).build();
+            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(app.dbFacade.partitionsForInstallation(installation)))).build();
             
         } catch (Throwable t) {
             logger.error(String.format("Problem when calling %s", methodDescr)
