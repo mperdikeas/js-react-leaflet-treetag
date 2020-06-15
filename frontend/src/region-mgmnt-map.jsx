@@ -198,8 +198,9 @@ class RegionMgmntMap extends React.Component {
         });
       });
       layer.on('click', function () {
-        layer.openPopup('mitsos'); // todo: this isn't working
+        console.log('clicked on some layer');
       });
+      layer.bindPopup('<h1>'+feature.properties.name+'</h1><p>name: '+feature.properties.popupContent+'</p>');
     };
 
     const options = {style, onEachFeature};
