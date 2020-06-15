@@ -25,10 +25,6 @@ import { UPDATE_MOUSE_COORDS
         
         , GET_TREE_INFO_SUCCESS
         , GET_FEAT_NUM_PHOTOS_SUCCESS
-        
-
-        
-
 
         , SET_TREE_INFO_ORIGINAL
         , SET_TREE_INFO_CURRENT
@@ -37,8 +33,6 @@ import { UPDATE_MOUSE_COORDS
         , SET_TREE_COORDS
         , REVERT_TREE_COORDS
 
-
-
         , GET_FEATURE_AJAX_CONCLUDED
 
         , NEW_TARGET
@@ -46,6 +40,7 @@ import { UPDATE_MOUSE_COORDS
         , GET_REGIONS_CONCLUDED
         , GET_REGIONS_SUCCESS
         , UPDATE_SELECTED_REGIONS
+        , SET_RGE_MODE
        } from './action-types.js';
 
 import {CancelToken} from 'axios';
@@ -63,6 +58,8 @@ import {cancelPendingRequests} from './action-util.jsx';
 
 import {INFORMATION, PHOTOS, HISTORY, ADJUST}                 from '../../constants/information-panel-panes.js';
 
+import {ensureRGEModeIsValid} from '../reducers/editingRegionsReducer.js';
+
 export function updateMouseCoords(latlng) {
     return { type: UPDATE_MOUSE_COORDS, payload: {latlng} };
 }
@@ -70,7 +67,6 @@ export function updateMouseCoords(latlng) {
 export function displayModal(modalType, modalProps) {
     assert.isTrue(isValidModalType(modalType), `unrecognized modal type: [${modalType}]`);
     const {uuid} = modalProps;
-//    if (uuid==null) throw 42;
     assert.isNotNull(uuid, 'displayModal 1');
     assert.isDefined(uuid, 'displayModal 2');
     return {type: DISPLAY_MODAL, payload: {modalType, modalProps}};
@@ -227,3 +223,7 @@ export {default as delFeatPhoto}       from './del-feat-photo.jsx';
 
 export {default as getRegions}       from './get-regions.jsx';
 
+export function setRGEMode(mode) {
+    ensureRGEModeIsValid(mode);
+    return {type: SET_RGE_MODE, payload: mode};
+}

@@ -82,12 +82,8 @@ import {regionListDiff} from './region-mgmnt-map-util.js';
 require('./region-mgmnt-map.css');
 
 const mapStateToProps = (state) => {
-  if ((state.target.treeInfo != null) && (state.target.treeInfo.original != null)) {
-    assert.isOk(state.target.treeInfo.current);
-  }
   return {
-    targetId          : state.targetId
-    , selectedRegions : selectedRegions(state)
+    selectedRegions : selectedRegions(state)
   };
 };
 

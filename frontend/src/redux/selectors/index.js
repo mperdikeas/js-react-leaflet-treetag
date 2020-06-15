@@ -10,7 +10,7 @@ function arr2str(vs) {
 
 export function selectedRegions(state) {
 
-    const {val, selected} = state.regions;
+    const {val, selected} = state.regions.existing;
     assert.isOk(val);
     assert.isOk(selected);
 
@@ -81,7 +81,7 @@ export function antdTreeControlData(state) {
     const rv = [];
 
     let i = 0;
-    for (let [key, value] of Object.entries(state.regions.val)) {
+    for (let [key, value] of Object.entries(state.regions.existing.val)) {
         const key2 = arr2str([i]);
         rv.push({title: key
                  , value: key2
