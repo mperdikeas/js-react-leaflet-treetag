@@ -7,7 +7,7 @@ export function selectedRegions(state) {
     const {val, selected} = state.regions;
     assert.isOk(val);
     assert.isOk(selected);
-    return getRegions(val, selected);
-
-
+    const rv =  getRegions(val, selected);
+    console.log('selected regions are: ', rv);
+    return rv;
 }

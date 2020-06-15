@@ -147,17 +147,16 @@ class RegionMgmntMap extends React.Component {
   
 
   componentDidUpdate = (prevProps, prevState) => {
-    console.log('ccc', this.props.selectedRegions);
     const {regionsAdded, regionsRemoved} = regionListDiff(prevProps.selectedRegions, this.props.selectedRegions);
     regionsAdded.forEach( (regionAdded) => {
       const {name, wkt} = regionAdded;
+      console.log(`region '${name}' with WKT: '${wkt}' is to be added`);
       this.addRegionToMap(name, wkt);
-      console.log(`ccc added region ${name} with WKT ${wkt} to the map`);
     });
 
     regionsRemoved.forEach( (regionRemoved) => {
       const {name, wkt} = regionRemoved;
-      console.log(`ccc remove region ${name} with WKT ${wkt} from the map`);
+      console.log(`ccc remove region ${name} with WKT ${wkt} is to be removed from the map`);
     });    
   }
 
