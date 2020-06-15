@@ -177,11 +177,33 @@ class RegionMgmntMap extends React.Component {
     const geoJson =  { type: 'Feature', properties, geometry};
 
     const style = {
-      "color": "#ff7800",
-      "weight": 5,
-      "opacity": 0.25
+      color: "#ff7800",
+      weight: 3,
+      opacity: 0.40,
+      fillOpacity: 0.40
     };
-    const layer = L.geoJSON(geoJson, {style});
+    const onEachFeature = (feature, layer) => {
+      layer.on('mouseover', function () {
+        this.setStyle({
+          weight: 7
+          , opacity: 1
+          , fillOpacity: 0.60
+        });
+      });
+      layer.on('mouseout', function () {
+        this.setStyle({
+          weight: 3
+          , opacity: 0.40
+          , fillOpacity: 0.40
+        });
+      });
+      layer.on('click', function () {
+        layer.openPopup('mitsos'); // todo: this isn't working
+      });
+    };
+
+    const options = {style, onEachFeature};
+    const layer = L.geoJSON(geoJson, options);
     layer.bindTooltip(
       name,
       {
@@ -190,9 +212,9 @@ class RegionMgmntMap extends React.Component {
         className: 'region-mgmnt-region'
       }
     );
-    layer.on('mouseover', (ev) => {
-      ev.layer.openPopup();
-    });
+
+
+    
     layer.addTo(this.map);
     this.regions.set(key, layer);
   }
