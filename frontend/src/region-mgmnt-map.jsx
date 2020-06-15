@@ -64,6 +64,8 @@ import {clearModal
       , unsetOrFetch
       , getRegions}  from './redux/actions/index.js';
 
+import {selectedRegions} from './redux/selectors/index.js';
+
 
 import TreeCountStatistic from './tree-count-statistic.js';
 
@@ -75,7 +77,8 @@ const mapStateToProps = (state) => {
     assert.isOk(state.target.treeInfo.current);
   }
   return {
-    targetId                       : state.targetId
+    targetId          : state.targetId
+    , selectedRegions : selectedRegions(state)
   };
 };
 
@@ -137,6 +140,10 @@ class RegionMgmntMap extends React.Component {
   }
   
 
+  componentDidUpdate = () => {
+
+
+  }
 
   componentDidMount = () => {
     const uuid = uuidv4();

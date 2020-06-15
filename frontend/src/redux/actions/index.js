@@ -45,6 +45,7 @@ import { UPDATE_MOUSE_COORDS
         , GET_REGIONS_IN_PROGRESS
         , GET_REGIONS_CONCLUDED
         , GET_REGIONS_SUCCESS
+        , UPDATE_SELECTED_REGIONS
        } from './action-types.js';
 
 import {CancelToken} from 'axios';
@@ -208,6 +209,10 @@ export function getRegionsInProgress() {
 
 export function getRegionsSuccess(regions) {
     return {type: GET_REGIONS_SUCCESS, payload: regions};
+}
+
+export function updateSelectedRegions(selectedRegions) {
+    return {type: UPDATE_SELECTED_REGIONS, payload: selectedRegions};
 }
 
 

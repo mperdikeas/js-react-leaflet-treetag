@@ -33,3 +33,4 @@ export const NEW_TARGET                              = 'NEW_TARGET';
 
 export const GET_REGIONS_IN_PROGRESS                 = 'GET_REGIONS_IN_PROGRESS';
 export const GET_REGIONS_SUCCESS                     = 'GET_REGIONS_SUCCESS';
+export const UPDATE_SELECTED_REGIONS                 = 'UPDATE_SELECTED_REGIONS ';

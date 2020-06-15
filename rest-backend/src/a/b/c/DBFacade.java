@@ -314,7 +314,7 @@ public class DBFacade implements IDBFacade {
         } else return true;
     }
 
-
+    // sse-1592215091
     @Override    
     public final Map<String, List<Region>> partitionsForInstallation(final String installation) {
         final Map<String, List<Region>> rv = this.inst2partitions.get(installation);

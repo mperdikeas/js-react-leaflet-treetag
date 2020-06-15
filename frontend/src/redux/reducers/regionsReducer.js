@@ -1,4 +1,6 @@
-import {GET_REGIONS_IN_PROGRESS, GET_REGIONS_SUCCESS}  from '../actions/action-types.js';
+import {GET_REGIONS_IN_PROGRESS
+        , GET_REGIONS_SUCCESS
+        , UPDATE_SELECTED_REGIONS}  from '../actions/action-types.js';
 
 
 
@@ -24,7 +26,10 @@ export default (state = {val: {}, selected: [], state: 'steady'}, action) => {
         return Object.assign({}, state, {state: 'fetching'});
     }
     case GET_REGIONS_SUCCESS: {
-          return {val: action.payload, state: 'steady'};
+        return Object.assign({}, state, {val: action.payload, state: 'steady'});
+    }
+    case UPDATE_SELECTED_REGIONS: {
+        return Object.assign({}, state, {selected: action.payload});
     }
     default:
         return state;
