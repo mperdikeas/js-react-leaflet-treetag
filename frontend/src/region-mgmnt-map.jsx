@@ -11,7 +11,9 @@ require('./ots/leaflet.shpfile.js');
 
 const React = require('react');
 var      cx = require('classnames');
-const assert = require('chai').assert;
+
+import chai from './util/chai-util';
+const assert = chai.assert;
 
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -114,6 +116,7 @@ class RegionMgmntMap extends React.Component {
     this.layerGroup = null;
     this.clickableLayers = [];
     this.wkt = new Wkt.Wkt();
+    this.regions = new Map();
   }
 
   getMapHeight = () => {
@@ -148,23 +151,41 @@ class RegionMgmntMap extends React.Component {
 
   componentDidUpdate = (prevProps, prevState) => {
     const {regionsAdded, regionsRemoved} = regionListDiff(prevProps.selectedRegions, this.props.selectedRegions);
+    console.log(`adding: ${JSON.stringify(regionsAdded)} - removing: ${JSON.stringify(regionsRemoved)}`);
     regionsAdded.forEach( (regionAdded) => {
-      const {name, wkt} = regionAdded;
-      console.log(`region '${name}' with WKT: '${wkt}' is to be added`);
-      this.addRegionToMap(name, wkt);
+      const {key, name, wkt} = regionAdded;
+      this.addRegionToMap(key, name, wkt);
     });
 
     regionsRemoved.forEach( (regionRemoved) => {
-      const {name, wkt} = regionRemoved;
-      console.log(`ccc remove region ${name} with WKT ${wkt} is to be removed from the map`);
+      const {key, name, wkt} = regionRemoved;
+      this.removeRegionFromMap(key, name, wkt);
     });    
   }
 
-  addRegionToMap(name, wkt) {
-    console.log(`ccc - attempting to read ${wkt}`);
+  addRegionToMap(key, name, wkt) {
+    assert.isOk(name);
+    assert.isOk(wkt);
+    assert.isOk(key);
+    if (false)
+    console.log(`region with key: '${key}', name: '${name}' and WKT: '${wkt}' is to be added`);
     this.wkt.read(wkt);
     const geoJson = this.wkt.toJson();
-    L.geoJSON(geoJson).addTo(this.map);
+    const layer = L.geoJSON(geoJson);
+    layer.addTo(this.map);
+    this.regions.set(key, layer);
+  }
+
+  removeRegionFromMap(key, name, wkt) {
+    // TODO: is there a way to make use of the name and wtc values?
+    assert.isOk(name);
+    assert.isOk(wkt);
+    assert.isOk(key);
+    if (false)
+    console.log(`region with key: '${key}', name: '${name}' and WKT: '${wkt}' is to be removed`);
+    assert.isTrue(this.regions.has(key));
+    this.regions.get(key).removeFrom(this.map);
+    this.regions.delete(key);
   }
 
   componentDidMount = () => {
