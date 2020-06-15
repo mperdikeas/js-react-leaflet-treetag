@@ -26,7 +26,7 @@ function transform(v) {
       const v = vs[i];
       const key = `${_i}-${i}`;
       rv.push({title: v.name
-             , value: key
+//             , value: key
              , key: key});
     }
     return rv;
@@ -39,7 +39,7 @@ function transform(v) {
     console.log(`${key}: ${value}`);
     const key2 = `${i}`;
     rv.push({title: key
-           , value: key2
+//           , value: key2
            , key: key2
            , children: regions(i, value)});
     i++;
@@ -61,7 +61,7 @@ class RegionList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selected: ['1-1', '1-3']
+      selected: []
     };
   }
 
