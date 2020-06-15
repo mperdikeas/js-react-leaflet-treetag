@@ -79,6 +79,8 @@ import {targetIsDirty} from './redux/selectors.js';
 
 import {regionListDiff} from './region-mgmnt-map-util.js';
 
+require('./region-mgmnt-map.css');
+
 const mapStateToProps = (state) => {
   if ((state.target.treeInfo != null) && (state.target.treeInfo.original != null)) {
     assert.isOk(state.target.treeInfo.current);
@@ -168,10 +170,29 @@ class RegionMgmntMap extends React.Component {
     assert.isOk(wkt);
     assert.isOk(key);
     if (false)
-    console.log(`region with key: '${key}', name: '${name}' and WKT: '${wkt}' is to be added`);
+      console.log(`region with key: '${key}', name: '${name}' and WKT: '${wkt}' is to be added`);
     this.wkt.read(wkt);
-    const geoJson = this.wkt.toJson();
-    const layer = L.geoJSON(geoJson);
+    const geometry = this.wkt.toJson();
+    const properties =  {name, popupContent:name};
+    const geoJson =  { type: 'Feature', properties, geometry};
+
+    const style = {
+      "color": "#ff7800",
+      "weight": 5,
+      "opacity": 0.25
+    };
+    const layer = L.geoJSON(geoJson, {style});
+    layer.bindTooltip(
+      name,
+      {
+        permanent:false,
+        direction:'center',
+        className: 'region-mgmnt-region'
+      }
+    );
+    layer.on('mouseover', (ev) => {
+      ev.layer.openPopup();
+    });
     layer.addTo(this.map);
     this.regions.set(key, layer);
   }
@@ -182,7 +203,7 @@ class RegionMgmntMap extends React.Component {
     assert.isOk(wkt);
     assert.isOk(key);
     if (false)
-    console.log(`region with key: '${key}', name: '${name}' and WKT: '${wkt}' is to be removed`);
+      console.log(`region with key: '${key}', name: '${name}' and WKT: '${wkt}' is to be removed`);
     assert.isTrue(this.regions.has(key));
     this.regions.get(key).removeFrom(this.map);
     this.regions.delete(key);
