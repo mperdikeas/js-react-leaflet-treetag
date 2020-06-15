@@ -16,51 +16,15 @@ import { TreeSelect } from 'antd';
 import { connect }          from 'react-redux';
 
 import {updateSelectedRegions} from './redux/actions/index.js';
-
-
-import {arr2str} from './region-list-util.jsx';
+import {antdTreeControlData}   from './redux/selectors/index.js';
 
 
 
-/*
- * cf. sse-1592215091
- * Map<String, List<Region>>
- * with Region being: <name: String, wkt: String>
- *
- *
- */
-function transform(v) {
-
-  function regions(i0, vs) {
-    const rv = [];
-    for (let i = 0; i < vs.length; i++) {
-      const v = vs[i];
-      const key = arr2str([i0, i]);
-      rv.push({title: v.name
-             , value: key
-             , key: key});
-    }
-    return rv;
-  }
-
-  const rv = [];
-
-  let i = 0;
-  for (let [key, value] of Object.entries(v)) {
-    const key2 = arr2str([i]);
-    rv.push({title: key
-           , value: key2
-           , key: key2
-           , children: regions(i, value)});
-    i++;
-  }
-  return rv;
-}
 
 const mapStateToProps = (state) => {
   console.log(state.regions.val);
   return {
-    regions: transform(state.regions.val)
+    antdTreeControlData: antdTreeControlData(state)
     , selected: state.regions.selected
     , state: state.regions.state
   };
@@ -91,7 +55,7 @@ class RegionList extends React.Component {
         return <div>fetching regions &hellip;</div>;
       case 'steady':
         const tProps = {
-          treeData: this.props.regions,
+          treeData: this.props.antdTreeControlData,
           value: this.props.selected,
           onChange: this.onChange,
           treeCheckable: true,
@@ -104,7 +68,6 @@ class RegionList extends React.Component {
         };
         return (
           <>
-            <div>{this.props.regions.length} regions were fetched</div>
             <TreeSelect {...tProps} />;
           </>
         );
