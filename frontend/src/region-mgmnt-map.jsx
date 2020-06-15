@@ -140,9 +140,9 @@ class RegionMgmntMap extends React.Component {
   }
   
 
-  componentDidUpdate = () => {
-
-
+  componentDidUpdate = (prevProps, prevState) => {
+    console.log(`ccc selectedRegions is: ${JSON.stringify(this.props.selectedRegions)}`);
+    console.log('ccc', this.props.selectedRegions);
   }
 
   componentDidMount = () => {

@@ -31,11 +31,11 @@ import {arr2str} from './region-list-util.jsx';
  */
 function transform(v) {
 
-  function regions(_i, vs) {
-    const rv = []
+  function regions(i0, vs) {
+    const rv = [];
     for (let i = 0; i < vs.length; i++) {
       const v = vs[i];
-      const key = `arr2str([_i, i]); // ${_i}-${i}`;
+      const key = arr2str([i0, i]);
       rv.push({title: v.name
              , value: key
              , key: key});
@@ -47,7 +47,6 @@ function transform(v) {
 
   let i = 0;
   for (let [key, value] of Object.entries(v)) {
-    console.log(`${key}: ${value}`);
     const key2 = arr2str([i]);
     rv.push({title: key
            , value: key2
