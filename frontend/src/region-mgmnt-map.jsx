@@ -27,6 +27,8 @@ import proj4 from 'proj4';
 
 import keycode from 'keycode';
 
+import Wkt from 'wicket';
+
 require('../node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css');
 require('../node_modules/leaflet.markercluster/dist/leaflet.markercluster.js');
 
@@ -72,6 +74,9 @@ import TreeCountStatistic from './tree-count-statistic.js';
 
 import {targetIsDirty} from './redux/selectors.js';
 
+
+import {regionListDiff} from './region-mgmnt-map-util.js';
+
 const mapStateToProps = (state) => {
   if ((state.target.treeInfo != null) && (state.target.treeInfo.original != null)) {
     assert.isOk(state.target.treeInfo.current);
@@ -108,6 +113,7 @@ class RegionMgmntMap extends React.Component {
     super(props);
     this.layerGroup = null;
     this.clickableLayers = [];
+    this.wkt = new Wkt.Wkt();
   }
 
   getMapHeight = () => {
@@ -141,8 +147,25 @@ class RegionMgmntMap extends React.Component {
   
 
   componentDidUpdate = (prevProps, prevState) => {
-    console.log(`ccc selectedRegions is: ${JSON.stringify(this.props.selectedRegions)}`);
     console.log('ccc', this.props.selectedRegions);
+    const {regionsAdded, regionsRemoved} = regionListDiff(prevProps.selectedRegions, this.props.selectedRegions);
+    regionsAdded.forEach( (regionAdded) => {
+      const {name, wkt} = regionAdded;
+      this.addRegionToMap(name, wkt);
+      console.log(`ccc added region ${name} with WKT ${wkt} to the map`);
+    });
+
+    regionsRemoved.forEach( (regionRemoved) => {
+      const {name, wkt} = regionRemoved;
+      console.log(`ccc remove region ${name} with WKT ${wkt} from the map`);
+    });    
+  }
+
+  addRegionToMap(name, wkt) {
+    console.log(`ccc - attempting to read ${wkt}`);
+    this.wkt.read(wkt);
+    const geoJson = this.wkt.toJson();
+    L.geoJSON(geoJson).addTo(this.map);
   }
 
   componentDidMount = () => {
