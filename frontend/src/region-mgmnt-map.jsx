@@ -173,49 +173,7 @@ class RegionMgmntMap extends React.Component {
       console.log(`region with key: '${key}', name: '${name}' and WKT: '${wkt}' is to be added`);
     this.wkt.read(wkt);
     const geometry = this.wkt.toJson();
-    const properties =  {name, popupContent:name};
-    const geoJson =  { type: 'Feature', properties, geometry};
-
-    const style = {
-      color: "#ff7800",
-      weight: 3,
-      opacity: 0.40,
-      fillOpacity: 0.40
-    };
-    const onEachFeature = (feature, layer) => {
-      layer.on('mouseover', function () {
-        this.setStyle({
-          weight: 7
-          , opacity: 1
-          , fillOpacity: 0.60
-        });
-      });
-      layer.on('mouseout', function () {
-        this.setStyle({
-          weight: 3
-          , opacity: 0.40
-          , fillOpacity: 0.40
-        });
-      });
-      layer.on('click', function () {
-        console.log('clicked on some layer');
-      });
-      layer.bindPopup('<h1>'+feature.properties.name+'</h1><p>name: '+feature.properties.popupContent+'</p>');
-    };
-
-    const options = {style, onEachFeature};
-    const layer = L.geoJSON(geoJson, options);
-    layer.bindTooltip(
-      name,
-      {
-        permanent:false,
-        direction:'center',
-        className: 'region-mgmnt-region'
-      }
-    );
-
-
-    
+    const layer = gsonLayerFromGeometry(name, geometry);
     layer.addTo(this.map);
     this.regions.set(key, layer);
   }
@@ -395,10 +353,55 @@ class RegionMgmntMap extends React.Component {
     );
   }
 
-
-
-
 }
+
+function gsonLayerFromGeometry(name, geometry) {
+  const properties =  {name, popupContent:name};
+  const geoJson =  { type: 'Feature', properties, geometry};
+
+  const style = {
+    color: "#ff7800",
+    weight: 3,
+    opacity: 0.40,
+    fillOpacity: 0.40
+  };
+  const onEachFeature = (feature, layer) => {
+    layer.on('mouseover', function () {
+      this.setStyle({
+        weight: 7
+        , opacity: 1
+        , fillOpacity: 0.60
+      });
+    });
+    layer.on('mouseout', function () {
+      this.setStyle({
+        weight: 3
+        , opacity: 0.40
+        , fillOpacity: 0.40
+      });
+    });
+    layer.on('click', function () {
+      console.log('clicked on some layer');
+    });
+    const popupOptions = {
+      closeButton: true // TODO: I believe this is not working
+      , autoClose: true // TODO: I believe this is not working
+      , closeOnEscapeKey: true
+    };
+    layer.bindPopup(`<h4>${feature.properties.name}</h4><p>${feature.properties.popupContent}</p>`, popupOptions);
+  };
+
+  const options = {style, onEachFeature};
+  const layer = L.geoJSON(geoJson, options);
+  layer.bindTooltip(
+    name,
+    {
+      permanent:false,
+      direction:'center',
+      className: 'region-mgmnt-region'
+    });
+  return layer;
+  }
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(RegionMgmntMap));
