@@ -11,14 +11,14 @@ import 'antd/dist/antd.css';
 
 import { TreeSelect } from 'antd';
 
-
+import {Form, Col, Row, Button, Nav, ButtonGroup} from 'react-bootstrap';
 // REDUX
 import { connect }          from 'react-redux';
 
 import {updateSelectedRegions} from './redux/actions/index.js';
 import {antdTreeControlData}   from './redux/selectors/index.js';
 
-
+import wrapContexts            from './context/contexts-wrapper.jsx';
 
 
 const mapStateToProps = (state) => {
@@ -63,13 +63,27 @@ class RegionList extends React.Component {
           placeholder: 'Please select',
           style: {
             width: '100%',
-            height: '800px'
+            height: `${this.props.geometryContext.screen.height*0.3}px`
           }
         };
         return (
-          <>
+          <div style={{height: '100%'
+                     , display: 'flex'
+                     , flexDirection: 'column'
+                     , justifyContent: 'space-between'}}>
             <TreeSelect {...tProps} />;
-          </>
+          <ButtonGroup style={{marginTop: '1em'
+                             , display: 'flex'
+                             , flexDirection: 'row'
+                             , justifyContent: 'space-around'}}className="mb-2">
+            <Button disabled={! this.props.defineNewRegion} style={{flexGrow: 0}} variant="primary" onClick={this.revert}>
+              New region
+            </Button>
+            <Button disabled={! this.props.modifyRegion} style={{flexGrow: 0}} variant="primary" type="submit">
+              Modify region
+            </Button>
+          </ButtonGroup>
+          </div>
         );
       default:
         throw `region-list.jsx :: unrecognized state: [${this.props.state}]`;
@@ -77,4 +91,4 @@ class RegionList extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RegionList);
+export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(RegionList));
