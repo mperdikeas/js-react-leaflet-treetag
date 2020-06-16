@@ -16,6 +16,11 @@ import chai from './util/chai-util';
 const assert = chai.assert;
 
 import L from 'leaflet';
+
+import {stringify} from 'wellknown'; // TODO: at some point I will need to do everything in either wellknown or Wicket; currently I am using both (which is a sorry state of affairs)
+
+assert.isOk(stringify);
+
 import 'leaflet/dist/leaflet.css';
 
 
@@ -296,25 +301,28 @@ class RegionMgmntMap extends React.Component {
     assert.strictEqual(this.props.rgeMode, RGE_MODE.CREATING, `region-mgmnt-map.jsx::onDrawCreation mode was ${this.props.rgeMode}`);
     const type = e.layerType,
           layer = e.layer;
-    this.map.addLayer(layer);
+//    this.map.addLayer(layer); // TODO: I used to have that but I don't think it's needed
     this.drawnItems.addLayer(layer);
     console.warn(layer.toGeoJSON(7));
-    console.log('polygon added');
-    if (layer instanceof L.Polygon) {
-      console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
-      const countResult = this.countTreesInLayer(layer);
-      const treesConfiguration = this.props.treesConfigurationContext.treesConfiguration;
-      const msg = 'it is inconceivable that, at this point, the TreesConfigurationContextProvider'
-                 +' should have failed to obtain the treesConfiguration object. If this abomination should come'
-                 +' to transpire then an approach similar to that used in ref:sse-1587477558 should be adopted.'
-                 +' However, given that it is highly unlikely that this should ever come to pass, I consider'
-                 +' it an overkill to adopt such an approach pre-emptively. In constrast, the approach in'
-                 +' ref:sse-1587477558 was, in fact, necessary';
-      assert.exists(treesConfiguration, msg);
-      const detailBreakdown = countResult.toDetailBreakdownString(treesConfiguration);
-      layer.bindPopup(`<b>${countResult.total()}</b><br>${detailBreakdown}`).openPopup();
-      window.setTimeout(()=>layer.closePopup(), 5000);
-    }
+
+    const wkt = stringify(layer.toGeoJSON(12));
+    console.log(`xxx wkt is ${wkt}`);
+
+    assert.isTrue(layer instanceof L.Polygon, `region-mgmnt-map.jsx::onDrawCreation layer is not a polygon`);
+
+    console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
+    const countResult = this.countTreesInLayer(layer);
+    const treesConfiguration = this.props.treesConfigurationContext.treesConfiguration;
+    const msg = 'it is inconceivable that, at this point, the TreesConfigurationContextProvider'
+               +' should have failed to obtain the treesConfiguration object. If this abomination should come'
+               +' to transpire then an approach similar to that used in ref:sse-1587477558 should be adopted.'
+               +' However, given that it is highly unlikely that this should ever come to pass, I consider'
+               +' it an overkill to adopt such an approach pre-emptively. In constrast, the approach in'
+               +' ref:sse-1587477558 was, in fact, necessary';
+    assert.exists(treesConfiguration, msg);
+    const detailBreakdown = countResult.toDetailBreakdownString(treesConfiguration);
+    layer.bindPopup(`<b>${countResult.total()}</b><br>${detailBreakdown}`).openPopup();
+    window.setTimeout(()=>layer.closePopup(), 5000);
   }
   
   addLayerGroupsForPromisingLayers = () => {

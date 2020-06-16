@@ -83,6 +83,10 @@ export function displayModalNewRegionDefinition(uuid) {
     return displayModal(MDL_NEW_REGION_DEFINITION, {uuid});
 }
 
+export function displayModalEnterPartitionName(partitions) {
+    return displayModal(MDL_ENTER_PARTITION_NAME, {uuid:  uuidv4(), partitions});
+}
+
 export function clearModal(uuid) {
     assert.isDefined(uuid);
     assert.isNotNull(uuid);

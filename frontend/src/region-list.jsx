@@ -19,7 +19,7 @@ import { connect }          from 'react-redux';
 import {updateSelectedRegions
       , displayModalNotification, setRGEMode
       , displayModalNewRegionDefinition} from './redux/actions/index.js';
-import {antdTreeControlData, rgeMode}   from './redux/selectors/index.js';
+import {antdTreeControlData, rgeMode, partitions}   from './redux/selectors/index.js';
 import {RGE_MODE}   from './redux/constants/region-editing-mode.js';
 
 import wrapContexts            from './context/contexts-wrapper.jsx';
@@ -35,6 +35,7 @@ const mapStateToProps = (state) => {
     , state: state.regions.existing.state
     , rgeMode: rgeMode(state)
     , buttonsEnabled: rgeMode(state)!=RGE_MODE.UNENGAGED
+    , partitions: partitions(state)
   };
 };
 
@@ -42,7 +43,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     updateSelectedRegions: (selectedRegions)=>dispatch(updateSelectedRegions(selectedRegions))
     , displayNotification  : (html)=>dispatch(displayModalNotification({html}))
-    , displayNewRegionDefinition  : (uuid)=>dispatch(displayModalNewRegionDefinition(uuid))
+    , displayNewRegionDefinition  : (uuid, partitions)=>dispatch(displayModalNewRegionDefinition(uuid, partitions))
     , setRGEMode: (mode)=>dispatch(setRGEMode(mode))
   };
 };
@@ -84,7 +85,7 @@ class RegionList extends React.Component {
 
   saveRegion = () => {
     console.log('save region');
-    this.props.displayNewRegionDefinition(uuidv4());
+    this.props.displayNewRegionDefinition(uuidv4(), this.props.partitions);
   }
 
   render = () => {

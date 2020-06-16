@@ -10,6 +10,7 @@ export const MDL_WKSPACE_IS_EMPTY = 'MDL_WKSPACE_IS_EMPTY';
 export const MDL_QUERY            = 'MDL_QUERY';
 export const MDL_RETRY_CANCEL     = 'MDL_RETRY_CANCEL';
 export const MDL_NEW_REGION_DEFINITION = 'MDL_NEW_REGION_DEFINITION';
+export const MDL_ENTER_PARTITION_NAME = 'MDL_ENTER_PARTITION_NAME';
 export function isValidModalType(modalType) {
     const validModalTypes = [    MDL_LOGIN
                                  , MDL_SAVE_WS_2_DSK
