@@ -19,6 +19,7 @@ import ModalNotification             from './modal-notification.jsx';
 import ModalNotificationNoDismiss    from './modal-notification-no_dismiss.jsx';
 import ModalQuery                    from './modal-query.jsx';
 import ModalRetryCancel              from './modal-retry-cancel.jsx';
+import ModalNewRegionDefinition      from './modal-new-region-definition.jsx';
 
 import {MDL_LOGIN
       , MDL_SAVE_WS_2_DSK
@@ -36,7 +37,8 @@ const MODAL_COMPONENTS = {
   MDL_NOTIFICATION: ModalNotification,
   MDL_NOTIFICATION_NO_DISMISS: ModalNotificationNoDismiss,  
   MDL_QUERY: ModalQuery,
-  MDL_RETRY_CANCEL: ModalRetryCancel
+  MDL_RETRY_CANCEL: ModalRetryCancel,
+  MDL_NEW_REGION_DEFINITION: ModalNewRegionDefinition
 };
 
 

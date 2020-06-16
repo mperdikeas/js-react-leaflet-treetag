@@ -10,11 +10,15 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import 'antd/dist/antd.css';
 import { TreeSelect, Radio, Button } from 'antd';
 
+import { v4 as uuidv4 } from 'uuid';
+
 //import {Form, Col, Row, Button, Nav, ButtonGroup} from 'react-bootstrap';
 // REDUX
 import { connect }          from 'react-redux';
 
-import {updateSelectedRegions, displayModalNotification, setRGEMode} from './redux/actions/index.js';
+import {updateSelectedRegions
+      , displayModalNotification, setRGEMode
+      , displayModalNewRegionDefinition} from './redux/actions/index.js';
 import {antdTreeControlData, rgeMode}   from './redux/selectors/index.js';
 import {RGE_MODE}   from './redux/constants/region-editing-mode.js';
 
@@ -38,6 +42,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     updateSelectedRegions: (selectedRegions)=>dispatch(updateSelectedRegions(selectedRegions))
     , displayNotification  : (html)=>dispatch(displayModalNotification({html}))
+    , displayNewRegionDefinition  : (uuid)=>dispatch(displayModalNewRegionDefinition(uuid))
     , setRGEMode: (mode)=>dispatch(setRGEMode(mode))
   };
 };
@@ -79,6 +84,7 @@ class RegionList extends React.Component {
 
   saveRegion = () => {
     console.log('save region');
+    this.props.displayNewRegionDefinition(uuidv4());
   }
 
   render = () => {

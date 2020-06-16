@@ -57,7 +57,8 @@ import {INFORMATION, PHOTOS, HISTORY, ADJUST}                 from '../../consta
 
 import {ensureRGEModeIsValid} from '../constants/region-editing-mode.js';
 
-import {MDL_NOTIFICATION} from '../../constants/modal-types.js';
+import {MDL_NOTIFICATION
+        , MDL_NEW_REGION_DEFINITION} from '../../constants/modal-types.js';
 
 
 export function updateMouseCoords(latlng) {
@@ -76,6 +77,10 @@ export function displayModal(modalType, modalProps) {
 
 export function displayModalNotification(modalProps) {
     return displayModal(MDL_NOTIFICATION, Object.assign({}, modalProps, {uuid:  uuidv4()}));
+}
+
+export function displayModalNewRegionDefinition(uuid) {
+    return displayModal(MDL_NEW_REGION_DEFINITION, {uuid});
 }
 
 export function clearModal(uuid) {
