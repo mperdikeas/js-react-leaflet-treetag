@@ -8,21 +8,19 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 import 'antd/dist/antd.css';
-import { v4 as uuidv4 } from 'uuid';
-import { TreeSelect } from 'antd';
+import { TreeSelect, Radio, Button } from 'antd';
 
 //import {Form, Col, Row, Button, Nav, ButtonGroup} from 'react-bootstrap';
 // REDUX
 import { connect }          from 'react-redux';
 
-import {updateSelectedRegions, displayModal, setRGEMode} from './redux/actions/index.js';
+import {updateSelectedRegions, displayModalNotification, setRGEMode} from './redux/actions/index.js';
 import {antdTreeControlData, rgeMode}   from './redux/selectors/index.js';
 import {RGE_MODE}   from './redux/constants/region-editing-mode.js';
 
 import wrapContexts            from './context/contexts-wrapper.jsx';
 
 import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS} from './constants/modal-types.js';
-import { Radio } from 'antd';
 
 
 const mapStateToProps = (state) => {
@@ -39,7 +37,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     updateSelectedRegions: (selectedRegions)=>dispatch(updateSelectedRegions(selectedRegions))
-    , displayNotification  : (html)=>dispatch(displayModal(MDL_NOTIFICATION, {html, uuid: uuidv4()}))
+    , displayNotification  : (html)=>dispatch(displayModalNotification({html}))
     , setRGEMode: (mode)=>dispatch(setRGEMode(mode))
   };
 };
@@ -50,11 +48,6 @@ class RegionList extends React.Component {
 
   constructor(props) {
     super(props);
-  }
-
-  onChange = (v) => {
-    console.log(v);
-    this.props.updateSelectedRegions(v);
   }
 
   startCreating = ()=>{
@@ -68,7 +61,7 @@ class RegionList extends React.Component {
   }
 
   onChange = (value)=> {
-    console.log(JSON.stringify(value));
+    console.log(`XXX onChange(${JSON.stringify(value)})`);
     switch (value) {
       case RGE_MODE.CREATING:
         this.startCreating()
@@ -77,14 +70,33 @@ class RegionList extends React.Component {
         this.startModifying();
         break;
       case RGE_MODE.UNENGAGED:
+        this.props.setRGEMode(RGE_MODE.UNENGAGED);
         break;
       default:
         assert.fail(`region-list.jsx::onChange unhandled value: [${value}]`);
     }
   }
-    
 
-  render() {
+  saveRegion = () => {
+    console.log('save region');
+  }
+
+  render = () => {
+    const modeControls = (()=>{
+      switch (this.props.rgeMode) {
+        case RGE_MODE.UNENGAGED:
+          return null;
+        case RGE_MODE.MODIFYING:
+          return null;
+        case RGE_MODE.CREATING:
+          return (<>
+            <Button type='primary'
+                    onClick={this.saveRegion}
+            >save region</Button>
+            </>
+          );
+      }
+    })();
     switch (this.props.state) {
       case 'fetching':
         return <div>fetching regions &hellip;</div>;
@@ -92,7 +104,7 @@ class RegionList extends React.Component {
         const tProps = {
           treeData: this.props.antdTreeControlData,
           value: this.props.selected,
-          onChange: this.onChange,
+          onChange: this.props.updateSelectedRegions,
           treeCheckable: true,
           showCheckedStrategy: TreeSelect.SHOW_PARENT,
           placeholder: 'Please select',
@@ -108,9 +120,9 @@ class RegionList extends React.Component {
                      , justifyContent: 'space-between'}}>
             <TreeSelect {...tProps} />;
 
+          {modeControls}
 
-
-          <Radio.Group style={{marginTop: '1em'
+          <Radio.Group style={{marginBottom: '1em'
                              , display: 'flex'
                              , flexDirection: 'row'
                              , justifyContent: 'space-around'}}

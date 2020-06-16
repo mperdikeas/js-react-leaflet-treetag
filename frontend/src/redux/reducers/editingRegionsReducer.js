@@ -11,6 +11,7 @@ export default (state = {mode: RGE_MODE.UNENGAGED}, action) => {
     case SET_RGE_MODE:
         const mode = action.payload;
         ensureRGEModeIsValid(mode);
+        console.log(`XXX editing reducer setting mode to ${mode}`);
         return {mode};
     default:
         return state;

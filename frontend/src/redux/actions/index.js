@@ -1,12 +1,9 @@
 //import chai from '../../util/chai-util.js';
 //chai.Assertion.includeStack = true; // https://stackoverflow.com/a/13396945/274677
 
-const chai = require('chai');
-chai.Assertion.includeStack = true; // https://stackoverflow.com/a/13396945/274677
-chai.config.includeStack = true;
-chai.config.showDiff = false;
-chai.config.truncateThreshold = 0; // disable truncating
+import chai from '../../util/chai-util.js';
 const assert = chai.assert;
+import { v4 as uuidv4 } from 'uuid';
 
 import { UPDATE_MOUSE_COORDS
         , DISPLAY_MODAL
@@ -60,6 +57,9 @@ import {INFORMATION, PHOTOS, HISTORY, ADJUST}                 from '../../consta
 
 import {ensureRGEModeIsValid} from '../constants/region-editing-mode.js';
 
+import {MDL_NOTIFICATION} from '../../constants/modal-types.js';
+
+
 export function updateMouseCoords(latlng) {
     return { type: UPDATE_MOUSE_COORDS, payload: {latlng} };
 }
@@ -70,6 +70,12 @@ export function displayModal(modalType, modalProps) {
     assert.isNotNull(uuid, 'displayModal 1');
     assert.isDefined(uuid, 'displayModal 2');
     return {type: DISPLAY_MODAL, payload: {modalType, modalProps}};
+}
+
+
+
+export function displayModalNotification(modalProps) {
+    return displayModal(MDL_NOTIFICATION, Object.assign({}, modalProps, {uuid:  uuidv4()}));
 }
 
 export function clearModal(uuid) {
@@ -224,6 +230,7 @@ export {default as delFeatPhoto}       from './del-feat-photo.jsx';
 export {default as getRegions}       from './get-regions.jsx';
 
 export function setRGEMode(mode) {
+    console.log(`XXX setting rge mode to ${mode}`);
     ensureRGEModeIsValid(mode);
     return {type: SET_RGE_MODE, payload: mode};
 }

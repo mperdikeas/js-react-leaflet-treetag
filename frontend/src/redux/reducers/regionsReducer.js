@@ -12,7 +12,7 @@ import editingRegionsReducer  from './editingRegionsReducer.js';
 export default (state = {}, action) => {
     return {
         existing: existingRegionsReducer(state.existing, action)
-       , editing: editingRegionsReducer(state.editor, action)
+       , editing: editingRegionsReducer(state.editing, action)
     };
 }
 

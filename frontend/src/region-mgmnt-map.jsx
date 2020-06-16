@@ -82,9 +82,10 @@ import {regionListDiff} from './region-mgmnt-map-util.js';
 require('./region-mgmnt-map.css');
 
 const mapStateToProps = (state) => {
+  console.log(`XXX inside mapStateToProps, rgeMode is ${rgeMode(state)}`);
   return {
     selectedRegions : selectedRegions(state)
-    , mode: rgeMode(state)
+    , rgeMode: rgeMode(state)
   };
 };
 
@@ -149,10 +150,12 @@ class RegionMgmntMap extends React.Component {
   
 
   componentDidUpdate = (prevProps, prevState) => {
-    if ((prevProps.mode !== RGE_MODE.CREATING) && (this.props.mode === RGE_MODE.CREATING))
+    if ((prevProps.rgeMode !== RGE_MODE.CREATING) && (this.props.rgeMode === RGE_MODE.CREATING))
       this.addDrawControl();
-    else if ((prevProps.mode !== RGE_MODE.CREATING) && (this.props.mode === RGE_MODE.CREATING))
+    else if ((prevProps.rgeMode === RGE_MODE.CREATING) && (this.props.rgeMode !== RGE_MODE.CREATING)) {
+      console.log(`XXX about to remove draw control, mode is: ${this.props.rgeMode}`);
       this.removeDrawControl();
+    }
     const {regionsAdded, regionsRemoved} = regionListDiff(prevProps.selectedRegions, this.props.selectedRegions);
     regionsAdded.forEach( (regionAdded) => {
       const {key, name, wkt} = regionAdded;
@@ -206,7 +209,6 @@ class RegionMgmntMap extends React.Component {
     this.addMeasureControl();
     this.addLayerGroupsExceptPromisingLayers();
     this.addLayerGroupsForPromisingLayers();
-//    this.addDrawControl();
 
     this.map.on('draw:created', (e) => this.onDrawCreation(e));
 
@@ -239,6 +241,8 @@ class RegionMgmntMap extends React.Component {
   }
 
   addDrawControl = () => {
+    assert.isFalse(this.hasOwnProperty('drawnItems'));
+    assert.isFalse(this.hasOwnProperty('drawControl'));
     this.drawnItems = new L.FeatureGroup();
     this.map.addLayer(this.drawnItems);
 //    this.layersControl.addOverlay(drawnItems, 'oρισμός περιοχών');
@@ -269,6 +273,16 @@ class RegionMgmntMap extends React.Component {
     this.map.addControl(this.drawControl);
   }
 
+  removeDrawControl = () => {
+    console.log('XXX removing daw control');
+    assert.isOk(this.drawControl);
+    assert.isOk(this.drawnItems);
+    this.map.removeControl(this.drawControl);
+    this.map.removeLayer(this.drawnItems);
+    delete this.drawControl;
+    delete this.drawnItems;
+  }
+
 
   addLayerGroupsExceptPromisingLayers = () => {
     const overlays = {};
@@ -279,11 +293,13 @@ class RegionMgmntMap extends React.Component {
 
 
   onDrawCreation = (e) => {
+    assert.strictEqual(this.props.rgeMode, RGE_MODE.CREATING, `region-mgmnt-map.jsx::onDrawCreation mode was ${this.props.rgeMode}`);
     const type = e.layerType,
           layer = e.layer;
     this.map.addLayer(layer);
     this.drawnItems.addLayer(layer);
     console.warn(layer.toGeoJSON(7));
+    console.log('polygon added');
     if (layer instanceof L.Polygon) {
       console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
       const countResult = this.countTreesInLayer(layer);
