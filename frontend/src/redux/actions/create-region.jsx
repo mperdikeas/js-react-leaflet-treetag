@@ -23,12 +23,12 @@ import {propsForRetryDialog} from './action-util.jsx';
 import {handleAxiosException} from './action-axios-exc-util.js';
 
 
-function displayModalCreatingNewRegion (dispatch, region, partition, uuid)=>{
+function displayModalCreatingNewRegion (dispatch, region, partition, uuid) {
   const html = `saving region ${region} under partition ${partition}`;
   dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html, uuid}));
-};
+}
 
-function notifyRegionHasBeenCreated (dispatch, region, partition)=>{
+function notifyRegionHasBeenCreated (dispatch, region, partition) {
   const msg = `region '${region}' has been successfully created under ${partition}`;
   dispatch(addToast('region created', msg));
 }

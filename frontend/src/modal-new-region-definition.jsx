@@ -1,6 +1,8 @@
 const React = require('react');
 
-const assert = require('chai').assert;
+import chai from './util/chai-util';
+const assert = chai.assert;
+
 
 import {connect} from 'react-redux';
 import { Form, Button } from 'react-bootstrap';
@@ -8,6 +10,13 @@ import { Form, Button } from 'react-bootstrap';
 import wrapContexts from './context/contexts-wrapper.jsx';
 
 import ReactComment from './react-comment.jsx';
+
+import {partitions
+      , wktRegionUnderConstruction
+      , partition2regions} from './redux/selectors/index.js';
+
+
+import {createRegion} from './redux/actions/index.js';
 
 import PropTypes from 'prop-types';
 
@@ -17,6 +26,8 @@ import { v4 as uuidv4 } from 'uuid';
 const mapStateToProps = (state) => {
   return {
     partitions: partitions(state)
+    , partition2regions: partition2regions(state)
+    , wkt: wktRegionUnderConstruction(state)
   };
 };
 
@@ -35,13 +46,16 @@ class ModalNewRegionDefinition extends React.Component {
 
   static propTypes = {
     uuid: PropTypes.string.isRequired,
-    partitions: PropTypes.arrayOf(PropTypes.string).isRequired // this also works with Redux properties ain't that great?
+    partitions: PropTypes.arrayOf(PropTypes.string).isRequired,
+    partition2regions: PropTypes.object.isRequired,
+    wkt: PropTypes.string.isRequired
   };
 
 
   constructor(props) {
     super(props);
-    this.state = {region: '', partition: ''}
+    assert.isAtLeast(props.partitions.length, 1, `TODO: handle the initialization case where no partitions are defined (${props.partitions.length}`);
+    this.state = {region: '', partition: props.partitions[0], regionExistsInPartition: false}
     this.ref = React.createRef();
   }
 
@@ -61,19 +75,28 @@ class ModalNewRegionDefinition extends React.Component {
     } else {
       console.log('we have all the info we need, create the region and close the dialog');
 
-      this.props.createRegion(region, 'todo - replace with actual WKT', partition, ['todo - add ids of dialogs to clear']);
+      this.props.createRegion(this.state.region, this.props.wkt, this.state.partition, ['todo - add ids of dialogs to clear']);
 
     }
   }
 
+  regionExistsInPartition = (region, partition) => {
+    return this.props.partition2regions[partition].includes(region);
+  }
+
   onChangeRegion = (e) => {
-    this.setState({region: e.target.value});
+    const region = e.target.value;
+    console.log(this.props.partition2regions);
+    console.log(JSON.stringify(this.props.partition2regions));
+    console.log(this.state.partition);
+    const regionExistsInPartition = this.regionExistsInPartition(region, this.state.partition);
+    this.setState({region, regionExistsInPartition});
   }
 
   onChangePartition = (e) => {
     const partition = e.target.value;
-    console.log(partition);
-    this.setState({partition});
+    const regionExistsInPartition = this.regionExistsInPartition(this.state.region, partition);
+    this.setState({partition, regionExistsInPartition});
   }
 
   render() {
@@ -93,9 +116,12 @@ class ModalNewRegionDefinition extends React.Component {
                           placeholder="Region name"
                           value={this.state.region}
                           onChange={this.onChangeRegion}/>
-            <Form.Text className="text-muted">
-              Use a short, descriprive name
-            </Form.Text>
+            {
+              this.state.regionExistsInPartition?(
+            <Form.Text className="text-warning">
+              region already exists in partition
+            </Form.Text>):null
+            }
           </Form.Group>
 
 

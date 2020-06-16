@@ -36,3 +36,5 @@ export const GET_REGIONS_SUCCESS                     = 'GET_REGIONS_SUCCESS';
 export const UPDATE_SELECTED_REGIONS                 = 'UPDATE_SELECTED_REGIONS ';
 
 export const SET_RGE_MODE                            = 'SET_RGE_MODE';
+
+export const SET_WKT_REGION_UNDER_CONSTRUCTION = 'SET_WKT_REGION_UNDER_CONSTRUCTION';

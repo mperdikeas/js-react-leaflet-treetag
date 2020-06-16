@@ -71,7 +71,10 @@ import {clearModal
       , updateMouseCoords
       , displayModal
       , unsetOrFetch
-      , getRegions}  from './redux/actions/index.js';
+      , getRegions
+      , setWktRegionUnderConstruction}  from './redux/actions/index.js';
+
+
 
 import {selectedRegions} from './redux/selectors/index.js';
 
@@ -101,6 +104,7 @@ const mapDispatchToProps = (dispatch) => {
     , clearModal: (uuid)=> dispatch(clearModal(uuid))
     , updateCoordinates                 : (latlng)   => dispatch(updateMouseCoords(latlng))
     , getRegions: ()=>dispatch(getRegions())
+    , setWktRegionUnderConstruction: (wkt) => dispatch(setWktRegionUnderConstruction(wkt))
   };
 };
 
@@ -305,21 +309,15 @@ class RegionMgmntMap extends React.Component {
     this.drawnItems.addLayer(layer);
     console.warn(layer.toGeoJSON(7));
 
-    const wkt = stringify(layer.toGeoJSON(12));
-    console.log(`xxx wkt is ${wkt}`);
+
+    this.props.setWktRegionUnderConstruction(stringify(layer.toGeoJSON(12)));
 
     assert.isTrue(layer instanceof L.Polygon, `region-mgmnt-map.jsx::onDrawCreation layer is not a polygon`);
 
     console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
     const countResult = this.countTreesInLayer(layer);
     const treesConfiguration = this.props.treesConfigurationContext.treesConfiguration;
-    const msg = 'it is inconceivable that, at this point, the TreesConfigurationContextProvider'
-               +' should have failed to obtain the treesConfiguration object. If this abomination should come'
-               +' to transpire then an approach similar to that used in ref:sse-1587477558 should be adopted.'
-               +' However, given that it is highly unlikely that this should ever come to pass, I consider'
-               +' it an overkill to adopt such an approach pre-emptively. In constrast, the approach in'
-               +' ref:sse-1587477558 was, in fact, necessary';
-    assert.exists(treesConfiguration, msg);
+    assert.exists(treesConfiguration, ABOMINATION_MSG);
     const detailBreakdown = countResult.toDetailBreakdownString(treesConfiguration);
     layer.bindPopup(`<b>${countResult.total()}</b><br>${detailBreakdown}`).openPopup();
     window.setTimeout(()=>layer.closePopup(), 5000);
@@ -430,3 +428,9 @@ function gsonLayerFromGeometry(name, geometry) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(RegionMgmntMap));
 
+      const ABOMINATION_MSG = 'it is inconceivable that, at this point, the TreesConfigurationContextProvider'
+                             +' should have failed to obtain the treesConfiguration object. If this abomination should come'
+                             +' to transpire then an approach similar to that used in ref:sse-1587477558 should be adopted.'
+                             +' However, given that it is highly unlikely that this should ever come to pass, I consider'
+                             +' it an overkill to adopt such an approach pre-emptively. In constrast, the approach in'
+                             +' ref:sse-1587477558 was, in fact, necessary';

@@ -13,31 +13,27 @@ import { UPDATE_MOUSE_COORDS
         , SET_PANE_TO_OPEN_INFO_PANEL
         , ADD_TOAST
         , DISMISS_TOAST
-
         , GET_TREE_INFO_IN_PROGRESS
         , GET_FEAT_NUM_PHOTOS_IN_PROGRESS
         , GET_FEAT_PHOTO_IN_PROGRESS
         , DEL_FEAT_PHOTO_IN_PROGRESS
         , GET_FEAT_PHOTO_SUCCESS
-        
         , GET_TREE_INFO_SUCCESS
         , GET_FEAT_NUM_PHOTOS_SUCCESS
-
         , SET_TREE_INFO_ORIGINAL
         , SET_TREE_INFO_CURRENT
         , REVERT_TREE_INFO
         , SET_TREE_COORDS_ORIGINAL
         , SET_TREE_COORDS
         , REVERT_TREE_COORDS
-
         , GET_FEATURE_AJAX_CONCLUDED
-
         , NEW_TARGET
         , GET_REGIONS_IN_PROGRESS
         , GET_REGIONS_CONCLUDED
         , GET_REGIONS_SUCCESS
         , UPDATE_SELECTED_REGIONS
         , SET_RGE_MODE
+        , SET_WKT_REGION_UNDER_CONSTRUCTION
        } from './action-types.js';
 
 import {CancelToken} from 'axios';
@@ -243,3 +239,9 @@ export function setRGEMode(mode) {
     ensureRGEModeIsValid(mode);
     return {type: SET_RGE_MODE, payload: mode};
 }
+
+export function setWktRegionUnderConstruction(wkt) {
+    return {type: SET_WKT_REGION_UNDER_CONSTRUCTION, payload: wkt};
+}
+
+export {default as createRegion} from './create-region.jsx';

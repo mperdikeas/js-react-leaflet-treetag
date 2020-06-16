@@ -92,11 +92,23 @@ export function antdTreeControlData(state) {
     return rv;
 }
 
-
 export function rgeMode(state) { // region editing mode
     return state.regions.editing.mode;
 }
 
 export function partitions(state) {
     return Object.keys(state.regions.existing.val);
+}
+
+export function partition2regions(state) {
+    const {val} = state.regions.existing;
+    const rv = {};
+    for (const [key, value] of Object.entries(val)) {
+        rv[key] = value.map( (x)=>x.name );
+    }
+    return rv;
+}
+
+export function wktRegionUnderConstruction(state) {
+    return state.regions.editing.regionUnderCreation.wkt;
 }
