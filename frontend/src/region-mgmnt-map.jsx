@@ -59,7 +59,7 @@ import {ATHENS, DEFAULT_ZOOM} from './constants/map-constants.js';
 
 import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS} from './constants/modal-types.js';
 
-
+import {RGE_MODE} from './redux/constants/region-editing-mode.js'
 
 import { connect }          from 'react-redux';
 import {clearModal
@@ -74,7 +74,7 @@ import {selectedRegions} from './redux/selectors/index.js';
 import TreeCountStatistic from './tree-count-statistic.js';
 
 
-import {targetIsDirty} from './redux/selectors.js';
+import {rgeMode} from './redux/selectors/index.js';
 
 
 import {regionListDiff} from './region-mgmnt-map-util.js';
@@ -84,6 +84,7 @@ require('./region-mgmnt-map.css');
 const mapStateToProps = (state) => {
   return {
     selectedRegions : selectedRegions(state)
+    , mode: rgeMode(state)
   };
 };
 
@@ -148,8 +149,11 @@ class RegionMgmntMap extends React.Component {
   
 
   componentDidUpdate = (prevProps, prevState) => {
+    if ((prevProps.mode !== RGE_MODE.CREATING) && (this.props.mode === RGE_MODE.CREATING))
+      this.addDrawControl();
+    else if ((prevProps.mode !== RGE_MODE.CREATING) && (this.props.mode === RGE_MODE.CREATING))
+      this.removeDrawControl();
     const {regionsAdded, regionsRemoved} = regionListDiff(prevProps.selectedRegions, this.props.selectedRegions);
-    console.log(`adding: ${JSON.stringify(regionsAdded)} - removing: ${JSON.stringify(regionsRemoved)}`);
     regionsAdded.forEach( (regionAdded) => {
       const {key, name, wkt} = regionAdded;
       this.addRegionToMap(key, name, wkt);
@@ -202,7 +206,7 @@ class RegionMgmntMap extends React.Component {
     this.addMeasureControl();
     this.addLayerGroupsExceptPromisingLayers();
     this.addLayerGroupsForPromisingLayers();
-    this.addDrawControl();
+//    this.addDrawControl();
 
     this.map.on('draw:created', (e) => this.onDrawCreation(e));
 

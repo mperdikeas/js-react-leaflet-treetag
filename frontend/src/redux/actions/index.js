@@ -58,7 +58,7 @@ import {cancelPendingRequests} from './action-util.jsx';
 
 import {INFORMATION, PHOTOS, HISTORY, ADJUST}                 from '../../constants/information-panel-panes.js';
 
-import {ensureRGEModeIsValid} from '../reducers/editingRegionsReducer.js';
+import {ensureRGEModeIsValid} from '../constants/region-editing-mode.js';
 
 export function updateMouseCoords(latlng) {
     return { type: UPDATE_MOUSE_COORDS, payload: {latlng} };

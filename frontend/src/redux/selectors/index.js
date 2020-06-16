@@ -93,3 +93,6 @@ export function antdTreeControlData(state) {
 }
 
 
+export function rgeMode(state) { // region editing mode
+    return state.regions.editing.mode;
+}

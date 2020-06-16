@@ -11,28 +11,28 @@ import 'antd/dist/antd.css';
 import { v4 as uuidv4 } from 'uuid';
 import { TreeSelect } from 'antd';
 
-import {Form, Col, Row, Button, Nav, ButtonGroup} from 'react-bootstrap';
+//import {Form, Col, Row, Button, Nav, ButtonGroup} from 'react-bootstrap';
 // REDUX
 import { connect }          from 'react-redux';
 
 import {updateSelectedRegions, displayModal, setRGEMode} from './redux/actions/index.js';
-import {antdTreeControlData}   from './redux/selectors/index.js';
+import {antdTreeControlData, rgeMode}   from './redux/selectors/index.js';
+import {RGE_MODE}   from './redux/constants/region-editing-mode.js';
 
 import wrapContexts            from './context/contexts-wrapper.jsx';
 
 import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS} from './constants/modal-types.js';
-
-import {RGE_MODE} from './redux/reducers/editingRegionsReducer.js';
+import { Radio } from 'antd';
 
 
 const mapStateToProps = (state) => {
-  console.log(state.regions.val);
+  console.log(`rgeMode = ${rgeMode(state)}`);
   return {
     antdTreeControlData: antdTreeControlData(state)
     , selected: state.regions.existing.selected
     , state: state.regions.existing.state
-    , rgeEditingMode: state.regions.editing.mode
-    , buttonsEnabled: state.regions.editing.mode!=RGE_MODE.UNENGAGED
+    , rgeMode: rgeMode(state)
+    , buttonsEnabled: rgeMode(state)!=RGE_MODE.UNENGAGED
   };
 };
 
@@ -66,6 +66,22 @@ class RegionList extends React.Component {
     this.props.displayNotification('click on a region to begin editing');
     this.props.setRGEMode(RGE_MODE.MODIFYING);
   }
+
+  onChange = (value)=> {
+    console.log(JSON.stringify(value));
+    switch (value) {
+      case RGE_MODE.CREATING:
+        this.startCreating()
+        break;
+      case RGE_MODE.MODIFYING:
+        this.startModifying();
+        break;
+      case RGE_MODE.UNENGAGED:
+        break;
+      default:
+        assert.fail(`region-list.jsx::onChange unhandled value: [${value}]`);
+    }
+  }
     
 
   render() {
@@ -91,6 +107,20 @@ class RegionList extends React.Component {
                      , flexDirection: 'column'
                      , justifyContent: 'space-between'}}>
             <TreeSelect {...tProps} />;
+
+
+
+          <Radio.Group style={{marginTop: '1em'
+                             , display: 'flex'
+                             , flexDirection: 'row'
+                             , justifyContent: 'space-around'}}
+                       onChange={(e)=>this.onChange(e.target.value)} valueR={this.props.rgeMode}>
+            <Radio.Button value={RGE_MODE.UNENGAGED}>View</Radio.Button>
+            <Radio.Button value={RGE_MODE.CREATING}>Create</Radio.Button>
+            <Radio.Button value={RGE_MODE.MODIFYING}>Modify</Radio.Button>
+          </Radio.Group>
+
+          {/*
           <ButtonGroup style={{marginTop: '1em'
                              , display: 'flex'
                              , flexDirection: 'row'
@@ -102,6 +132,7 @@ class RegionList extends React.Component {
               Modify region
             </Button>
           </ButtonGroup>
+          */}
           </div>
         );
       default:
