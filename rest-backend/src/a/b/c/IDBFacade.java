@@ -22,11 +22,13 @@ public interface IDBFacade {
     int postPhoto(int treeId, PhotoData photoData);
     boolean deletePhoto(int treeId, int photoIdx);
     List<BasicTreeInfoWithId> getTrees(String installation);
-    Map<String, List<Region>> partitionsForInstallation(String installation);
+    Map<String, Map<String, Region>> partitionsForInstallation(String installation);
 
         
     Set<Privillege> getPrivilleges(String installation, String username);
     boolean arePrivillegesSufficient(Set<Privillege> privilleges, Class c, Method m);
+
+    String putRegion(String installation, String partition, String region, String wkt);
 
 
 

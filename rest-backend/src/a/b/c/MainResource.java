@@ -40,6 +40,7 @@ import com.google.gson.reflect.TypeToken;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 import javax.ws.rs.HeaderParam;
@@ -473,6 +474,35 @@ public class MainResource {
             return ResourceUtil.softFailureResponse(t);
         }
     }
+
+    @Path("/partitions/elem/{partition}/regions/elem/{region}")
+    @PUT /* todo: think whether I should be consistent in the use of either PUT or POST */
+    @Produces(MediaType.APPLICATION_JSON)
+    public final Response putRegion(@Context javax.ws.rs.core.Application _app
+                                    , @Context final HttpServletRequest httpServletRequest
+                                    , @PathParam("partition") final String partition
+                                    , @PathParam("region") final String region
+                                    , final String wkt
+                                    ) {
+        final String methodDescr = String.format("putRegion(%s, %s, ...) ~*~ remote address: [%s]"
+                                                 , partition
+                                                 , region
+                                                 , httpServletRequest.getRemoteAddr());
+        final JaxRsApplication app = (JaxRsApplication) _app;
+        try {
+            logger.info(methodDescr);
+            final String installation = Installation.getFromServletRequest(httpServletRequest);
+            TimeUnit.MILLISECONDS.sleep(2000);
+            return Response.ok(Globals.gson.toJson(ValueOrInternalServerExceptionData.ok(app.dbFacade.putRegion(installation, partition, region, wkt)))).build();
+            
+        } catch (Throwable t) {
+            logger.error(String.format("Problem when calling %s", methodDescr)
+                         , t);
+            return ResourceUtil.softFailureResponse(t);
+        }
+    }
+    
+    
 
     
     private Instant getPhotoInstant(final int featureId) {

@@ -2,15 +2,15 @@ import {GET_REGIONS_IN_PROGRESS
         , GET_REGIONS_SUCCESS
         , UPDATE_SELECTED_REGIONS}  from '../actions/action-types.js';
 
-
-
+import chai from '../../util/chai-util.js';
 const assert = require('chai').assert;
+
 
 /*
 
 val
  |
- +------όνομα διαμοίρασης 1: Array of
+ +------όνομα διαμοίρασης 1: List of:
  |                              |
  |                              +---- name
  |                              +---- wkt
@@ -19,6 +19,28 @@ val
 
 */
 
+// TODO: get rid of this conversion attrocity
+
+// converts a Map: regionName => {name, wkt} to a List of {name, wkt}
+function convertMapToList(regionNames2region) {
+    const rv = [];
+    for (const [key, value] of Object.entries(regionNames2region)) {
+        console.log(`yyy ${key}-${JSON.stringify(value)}`);
+        const {name, wkt} = value;
+        console.log(`yyy ${name}~~~~${wkt}`);
+        assert.strictEqual(key, name);
+        rv.push({name, wkt});
+    }
+    return rv;
+}
+
+function convert(v) {
+    const rv = {};
+    for (const [key, value] of Object.entries(v)) {
+        rv[key] = convertMapToList(value);
+    }
+    return rv;
+}
 
 export default (state = {val: {}, selected: [], state: 'steady'}, action) => {
     switch (action.type) {
@@ -26,7 +48,7 @@ export default (state = {val: {}, selected: [], state: 'steady'}, action) => {
         return Object.assign({}, state, {state: 'fetching'});
     }
     case GET_REGIONS_SUCCESS: {
-        return Object.assign({}, state, {val: action.payload, state: 'steady'});
+        return Object.assign({}, state, {val: convert(action.payload), state: 'steady'});
     }
     case UPDATE_SELECTED_REGIONS: {
         return Object.assign({}, state, {selected: action.payload});

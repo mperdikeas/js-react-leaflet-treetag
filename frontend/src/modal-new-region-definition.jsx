@@ -75,7 +75,7 @@ class ModalNewRegionDefinition extends React.Component {
     } else {
       console.log('we have all the info we need, create the region and close the dialog');
 
-      this.props.createRegion(this.state.region, this.props.wkt, this.state.partition, ['todo - add ids of dialogs to clear']);
+      this.props.createRegion(this.state.region, this.props.wkt, this.state.partition, [this.props.uuid]);
 
     }
   }

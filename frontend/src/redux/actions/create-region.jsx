@@ -24,7 +24,7 @@ import {handleAxiosException} from './action-axios-exc-util.js';
 
 
 function displayModalCreatingNewRegion (dispatch, region, partition, uuid) {
-  const html = `saving region ${region} under partition ${partition}`;
+  const html = `saving region ${region} under partition ${partition} ...`;
   dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html, uuid}));
 }
 
@@ -40,12 +40,12 @@ export default function createRegion(region, wkt, partition, idOfDialogsToClear)
   return (dispatch) => {
     const f = ()=>dispatch(createRegion(region, wkt, partition, idOfDialogsToClear));
 
-    const url = `/this-is-dog-shit`;
+    const url = `/partitions/elem/${partition}/regions/elem/${region}`;
     console.log(`${actionCreator} - axios URL is: ${url}`);
     const uuid = uuidv4();
     displayModalCreatingNewRegion(dispatch, region, partition, uuid);
 
-    axiosAuth.post(url, wkt)
+    axiosAuth.put(url, wkt)
              .then(res => {
                dispatch(clearModal(uuid));
                const {t, err} = res.data;
@@ -54,6 +54,7 @@ export default function createRegion(region, wkt, partition, idOfDialogsToClear)
                  console.error(res.data.err);
                  dispatch( displayModal(MDL_RETRY_CANCEL, propsForRetryDialog(dispatch, f, url, actionCreator, 'server-side error', err)) );
                } else {
+                 idOfDialogsToClear.forEach( (uuid)=>{dispatch(clearModal(uuid))} );
                  notifyRegionHasBeenCreated(dispatch, region, partition);
                  dispatch(getRegions());
                }

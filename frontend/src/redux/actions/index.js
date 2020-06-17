@@ -84,8 +84,8 @@ export function displayModalEnterPartitionName(partitions) {
 }
 
 export function clearModal(uuid) {
-    assert.isDefined(uuid);
-    assert.isNotNull(uuid);
+    assert.isDefined(uuid, `/redux/actions/index.js :: clearModal(${uuid})`);
+    assert.isNotNull(uuid, `/redux/actions/index.js :: clearModal(${uuid})`);
     return {type: CLEAR_MODAL, payload: uuid};
 }
 

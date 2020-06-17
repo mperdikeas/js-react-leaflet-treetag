@@ -56,14 +56,12 @@ export default function getRegions() {
           console.log(t);
           dispatch(getRegionsSuccess(t));
         } else {
-          throw 42;
           dispatch( displayModal(MDL_RETRY_CANCEL, propsForRetryDialog(dispatch, f, url, actionCreator, 'this is likely a bug - regions should never be null', err)) );
         }
       } else {
-        throw 43;
         dispatch( displayModal(MDL_RETRY_CANCEL, propsForRetryDialog(dispatch, f, url, actionCreator, 'server-side error', err)) );
       }}).catch(err => {
-        dispatch(clearModal());
+        dispatch(clearModal(uuid));
         handleAxiosException(err, dispatch, f, url, actionCreator);
       }); // catch
   };

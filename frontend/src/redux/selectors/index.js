@@ -1,5 +1,4 @@
 import chai from '../../util/chai-util.js';
-
 const assert = require('chai').assert;
 
 function arr2str(vs) {
@@ -96,6 +95,7 @@ export function rgeMode(state) { // region editing mode
     return state.regions.editing.mode;
 }
 
+// returns an array of partition names
 export function partitions(state) {
     return Object.keys(state.regions.existing.val);
 }
