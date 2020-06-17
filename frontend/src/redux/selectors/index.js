@@ -110,5 +110,5 @@ export function partition2regions(state) {
 }
 
 export function wktRegionUnderConstruction(state) {
-    return state.regions.editing.regionUnderCreation.wkt;
+    return state.regions.editing.regionUnderCreation?.wkt ?? null;
 }

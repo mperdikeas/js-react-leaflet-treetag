@@ -72,11 +72,13 @@ import {clearModal
       , displayModal
       , unsetOrFetch
       , getRegions
-      , setWktRegionUnderConstruction}  from './redux/actions/index.js';
+      , setWktRegionUnderConstruction
+      , displayModalNotification}  from './redux/actions/index.js';
 
 
 
-import {selectedRegions} from './redux/selectors/index.js';
+import {selectedRegions
+      , wktRegionUnderConstruction} from './redux/selectors/index.js';
 
 
 import TreeCountStatistic from './tree-count-statistic.js';
@@ -94,13 +96,16 @@ const mapStateToProps = (state) => {
   return {
     selectedRegions : selectedRegions(state)
     , rgeMode: rgeMode(state)
+    , regionUnderConstruction: wktRegionUnderConstruction(state)
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   const pleaseWaitWhileAppIsLoading    = <span>please wait while fetching map data &hellip; </span>;
+  const aRegionHasAlredyBeenDefined = <span>a region has already been defined! you can't define more than one</span>;
   return {
     pleaseWaitWhileAppIsLoading: (uuid)=>dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: pleaseWaitWhileAppIsLoading, uuid}))
+    , aRegionHasAlredyBeenDefined: ()=>dispatch(displayModalNotification({html: aRegionHasAlredyBeenDefined}))
     , clearModal: (uuid)=> dispatch(clearModal(uuid))
     , updateCoordinates                 : (latlng)   => dispatch(updateMouseCoords(latlng))
     , getRegions: ()=>dispatch(getRegions())
@@ -301,26 +306,31 @@ class RegionMgmntMap extends React.Component {
   }
 
 
+
   onDrawCreation = (e) => {
     assert.strictEqual(this.props.rgeMode, RGE_MODE.CREATING, `region-mgmnt-map.jsx::onDrawCreation mode was ${this.props.rgeMode}`);
-    const type = e.layerType,
-          layer = e.layer;
-//    this.map.addLayer(layer); // TODO: I used to have that but I don't think it's needed
-    this.drawnItems.addLayer(layer);
-    console.warn(layer.toGeoJSON(7));
+    if (this.props.regionUnderConstruction !== null) {
+      this.props.aRegionHasAlredyBeenDefined();
+    } else {
+      const type = e.layerType,
+            layer = e.layer;
+      //    this.map.addLayer(layer); // TODO: I used to have that but I don't think it's needed
+      this.drawnItems.addLayer(layer);
+      console.warn(layer.toGeoJSON(7));
 
 
-    this.props.setWktRegionUnderConstruction(stringify(layer.toGeoJSON(12)));
+      this.props.setWktRegionUnderConstruction(stringify(layer.toGeoJSON(12)));
 
-    assert.isTrue(layer instanceof L.Polygon, `region-mgmnt-map.jsx::onDrawCreation layer is not a polygon`);
+      assert.isTrue(layer instanceof L.Polygon, `region-mgmnt-map.jsx::onDrawCreation layer is not a polygon`);
 
-    console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
-    const countResult = this.countTreesInLayer(layer);
-    const treesConfiguration = this.props.treesConfigurationContext.treesConfiguration;
-    assert.exists(treesConfiguration, ABOMINATION_MSG);
-    const detailBreakdown = countResult.toDetailBreakdownString(treesConfiguration);
-    layer.bindPopup(`<b>${countResult.total()}</b><br>${detailBreakdown}`).openPopup();
-    window.setTimeout(()=>layer.closePopup(), 5000);
+      console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
+      const countResult = this.countTreesInLayer(layer);
+      const treesConfiguration = this.props.treesConfigurationContext.treesConfiguration;
+      assert.exists(treesConfiguration, ABOMINATION_MSG);
+      const detailBreakdown = countResult.toDetailBreakdownString(treesConfiguration);
+      layer.bindPopup(`<b>${countResult.total()}</b><br>${detailBreakdown}`).openPopup();
+      window.setTimeout(()=>layer.closePopup(), 5000);
+    }
   }
   
   addLayerGroupsForPromisingLayers = () => {
