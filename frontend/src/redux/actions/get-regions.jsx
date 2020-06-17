@@ -11,6 +11,7 @@ import {getRegionsInProgress
       , getRegionsSuccess
       , displayModal
       , clearModal
+      , addToast
       , } from './index.js';
 import {MDL_RETRY_CANCEL, MDL_NOTIFICATION_NO_DISMISS} from '../../constants/modal-types.js';
 import {CANCEL_TOKEN_TYPES
@@ -25,7 +26,7 @@ import {cancelPendingRequests} from './action-util.jsx';
 
 import {handleAxiosException} from './action-axios-exc-util.js';
 
-export default function getRegions() {
+export default function getRegions(toastOnSuccess=false) {
   const actionCreator = `getRegions`;
   const TOKEN_TYPE = CANCEL_TOKEN_TYPES.GET_REGIONS;
 
@@ -55,6 +56,7 @@ export default function getRegions() {
         if (t!=null) {
           console.log(t);
           dispatch(getRegionsSuccess(t));
+          toastOnSuccess && dispatch(addToast('regions retrieved', 'an updated set of partitions and regions has been retrieved'));
         } else {
           dispatch( displayModal(MDL_RETRY_CANCEL, propsForRetryDialog(dispatch, f, url, actionCreator, 'this is likely a bug - regions should never be null', err)) );
         }

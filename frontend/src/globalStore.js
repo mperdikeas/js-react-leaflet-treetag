@@ -22,7 +22,8 @@ export function globalGet(name, expectFound=true) {
 
 
 export const GSN = { // Global Store Name
-    REACT_MAP: 'react.map' // this is the React map component, not the Leaflet map
+    REACT_MAP: 'react.map'                         // this is the React map component, not the Leaflet map
+    , REACT_RGM_MAP: 'react.region.management.map' // -----------------
     , TARG_ADJ_PANE: 'target.adjustment.pane'
     , AXIOS_CANCEL_TOKENS: 'axios.cancel.tokens'
 };

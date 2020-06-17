@@ -56,7 +56,7 @@ export default function createRegion(region, wkt, partition, idOfDialogsToClear)
                } else {
                  idOfDialogsToClear.forEach( (uuid)=>{dispatch(clearModal(uuid))} );
                  notifyRegionHasBeenCreated(dispatch, region, partition);
-                 dispatch(getRegions());
+                 dispatch(getRegions(true));
                }
              }).catch( err => {
                dispatch(clearModal(uuid));
