@@ -6,7 +6,8 @@ import { v4 as uuidv4 } from 'uuid';
 import {displayModal
       , clearModal
       , getRegions
-      , addToast} from './index.js';
+      , addToast
+      , setWktRegionUnderConstruction} from './index.js';
 import {MDL_NOTIFICATION
       , MDL_NOTIFICATION_NO_DISMISS
       , MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
@@ -57,6 +58,8 @@ export default function createRegion(region, wkt, partition, idOfDialogsToClear)
                  idOfDialogsToClear.forEach( (uuid)=>{dispatch(clearModal(uuid))} );
                  notifyRegionHasBeenCreated(dispatch, region, partition);
                  dispatch(getRegions(true));
+                 globalGet(GSN.REACT_RGM_MAP).clearDrawnRegions();
+                 dispatch(setWktRegionUnderConstruction(null));
                }
              }).catch( err => {
                dispatch(clearModal(uuid));

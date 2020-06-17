@@ -131,6 +131,7 @@ class RegionMgmntMap extends React.Component {
     this.clickableLayers = [];
     this.wkt = new Wkt.Wkt();
     this.regions = new Map();
+    globalSet(GSN.REACT_RGM_MAP, this);
   }
 
   getMapHeight = () => {
@@ -160,6 +161,11 @@ class RegionMgmntMap extends React.Component {
       });
     });
     return rv;
+  }
+
+  clearDrawnRegions = () => {
+    assert.isOk(this.drawnItems);
+    this.drawnItems.clearLayers();
   }
   
 
