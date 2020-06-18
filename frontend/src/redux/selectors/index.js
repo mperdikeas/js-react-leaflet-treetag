@@ -32,12 +32,10 @@ export function selectedRegions(state) {
         const arr = str2arr(strKey);
         assert.isTrue((arr.length===1) || (arr.length===2)
                       , `selectors/index.js :: arr ${arr} had length ${arr.length}`);
-        console.log(`fetching region with key ${strKey}`);
         switch (arr.length) {
         case 1:
             var key = Object.keys(val)[arr[0]]; //fetched the key at index arr[0]
             rv = rv.concat(embellish(arr[0], val[key]));  // fetching all the polygons in that partition
-            console.log('rv is now: ', rv);
             break;
         case 2:
             var _key = Object.keys(val)[arr[0]]; //fetched the key at index arr[0]

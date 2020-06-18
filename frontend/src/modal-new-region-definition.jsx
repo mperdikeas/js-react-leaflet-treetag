@@ -16,11 +16,13 @@ import {partitions
       , partition2regions} from './redux/selectors/index.js';
 
 
-import {createRegion} from './redux/actions/index.js';
+import {createRegion, clearModal} from './redux/actions/index.js';
 
 import PropTypes from 'prop-types';
 
 import { v4 as uuidv4 } from 'uuid';
+
+import { Radio } from 'antd';
 
 
 const mapStateToProps = (state) => {
@@ -35,14 +37,13 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     createRegion: (region, wkt, partition, idOfDialogsToClear) => dispatch(createRegion(region, wkt, partition, idOfDialogsToClear))
+    , cancel: (uuid) => dispatch(clearModal(uuid))
   };
 };
 
 
 
 class ModalNewRegionDefinition extends React.Component {
-
-  static DEFINE_NEW_PARTITION = 'define a new partition...';
 
   static propTypes = {
     uuid: PropTypes.string.isRequired,
@@ -55,8 +56,18 @@ class ModalNewRegionDefinition extends React.Component {
   constructor(props) {
     super(props);
     assert.isAtLeast(props.partitions.length, 1, `TODO: handle the initialization case where no partitions are defined (${props.partitions.length}`);
-    this.state = {region: '', partition: props.partitions[0], regionExistsInPartition: false}
+    this.state = {
+      region: ''
+      , partition: props.partitions[0]
+      , regionExistsInPartition: false
+      , useExistingOrCreateNewPartition: 1
+      , partitionExists: false
+    };
     this.ref = React.createRef();
+  }
+
+  createButtonDisabled = ()=>{
+    return (this.state.regionExistsInPartition || this.state.partitionExists || (this.state.region==='') || (this.state.partition===''));
   }
 
   componentDidMount = () => {
@@ -64,24 +75,26 @@ class ModalNewRegionDefinition extends React.Component {
     domElem.showModal();
   }
 
+  onCancel = () => {
+    this.props.cancel(this.props.uuid);
+  }
+
   createRegion = (e) => {
     e.preventDefault();
     e.stopPropagation();
     console.log('form:: region created');
     console.log(JSON.stringify(this.state));
-    if (partition===ModalNewRegionDefinition.NEW_PARTITION) {
-      console.log('spawn dialog to define new partition name and create region');
-
-    } else {
-      console.log('we have all the info we need, create the region and close the dialog');
-
-      this.props.createRegion(this.state.region, this.props.wkt, this.state.partition, [this.props.uuid]);
-
-    }
+    // TODO: think about possible race condition if someone else creates a region by the same name at the same time
+    this.props.createRegion(this.state.region, this.props.wkt, this.state.partition, [this.props.uuid]);
   }
 
   regionExistsInPartition = (region, partition) => {
-    return this.props.partition2regions[partition].includes(region);
+    const regionsInPartition = this.props.partition2regions[partition];
+    return (regionsInPartition===undefined) || (regionsInPartition.includes(region));
+  }
+
+  partitionExists = (partition) => {
+    return Object.keys(this.props.partition2regions).includes(partition);
   }
 
   onChangeRegion = (e) => {
@@ -95,13 +108,23 @@ class ModalNewRegionDefinition extends React.Component {
 
   onChangePartition = (e) => {
     const partition = e.target.value;
-    const regionExistsInPartition = this.regionExistsInPartition(this.state.region, partition);
-    this.setState({partition, regionExistsInPartition});
+    const partitionExists = this.partitionExists(partition);
+    this.setState({partition, partitionExists});
+  }
+
+  useExistingOrCreateNewPartition = (v) => {
+    this.setState({useExistingOrCreateNewPartition: v});
   }
 
   render() {
+
+    const radioStyle = {
+      display: 'block',
+      height: '30px',
+      lineHeight: '30px',
+    };
+    
     const options = this.props.partitions.map( (x) => <option key={x}>{x}</option> );
-    options.push(<option key={uuidv4()}>{ModalNewRegionDefinition.DEFINE_NEW_PARTITION}</option>);
     const {width: scrWidth, height: scrHeight} = this.props.geometryContext.screen;
     return (
       <>
@@ -122,22 +145,59 @@ class ModalNewRegionDefinition extends React.Component {
               region already exists in partition
             </Form.Text>):null
             }
+            {
+              this.state.region===''?(
+            <Form.Text className="text-warning">
+              cannot be empty
+            </Form.Text>):null
+            }
           </Form.Group>
 
 
+          <Radio.Group onChange={(e)=>this.useExistingOrCreateNewPartition(e.target.value)} value={this.state.useExistingOrCreateNewPartition}>
+            <Radio style={radioStyle} value={1}>
+              Use an existing partition
+            </Radio>
+            <Radio style={radioStyle} value={2}>
+              Define a new partition
+            </Radio>
+          </Radio.Group>
 
+
+          {(this.state.useExistingOrCreateNewPartition===1)?(
           <Form.Group controlId="partition">
             <Form.Label>Select partition to fall under</Form.Label>
             <Form.Control as="select" value={this.state.partition} onChange={this.onChangePartition}>
               {options}
             </Form.Control>
           </Form.Group>
-
+          ):(
+            <Form.Group controlId='partitionName'>
+            <Form.Label>Region name</Form.Label>
+            <Form.Control type='text'
+            placeholder='Partition name'
+            value={this.state.partition}
+            onChange={this.onChangePartition}/>
+            {
+              this.state.partitionExists?(
+                <Form.Text className='text-warning'>
+                  partition name already exists
+                </Form.Text>):null
+            }
+              {
+                this.state.partition===''?(
+                  <Form.Text className="text-warning">
+                    cannot be empty
+                  </Form.Text>):null
+              }
+            </Form.Group>
+          )}
+      
           <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-around'}}>
-            <Button variant="warning">
+            <Button variant="warning" onClick={this.onCancel}>
               Cancel
             </Button>        
-            <Button variant="primary" type="submit">
+            <Button disabled={this.createButtonDisabled()} variant="primary" type="submit">
               Submit
             </Button>
           </div>

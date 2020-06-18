@@ -475,6 +475,12 @@ public class MainResource {
         }
     }
 
+    /*
+     * TODO: due to an unlikely but possible race conditions, someone else may have already
+     *       used up the same partition / region name
+     *       the code should handle it gracefully.
+     *
+     */
     @Path("/partitions/elem/{partition}/regions/elem/{region}")
     @PUT /* todo: think whether I should be consistent in the use of either PUT or POST */
     @Produces(MediaType.APPLICATION_JSON)

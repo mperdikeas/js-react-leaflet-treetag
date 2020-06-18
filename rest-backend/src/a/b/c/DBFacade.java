@@ -329,7 +329,7 @@ public class DBFacade implements IDBFacade {
     }
 
     @Override
-    public final String putRegion(final String installation
+    public final PutRegionResult putRegion(final String installation
                                   , final String partition
                                   , final String region
                                   , final String wkt) {
@@ -340,8 +340,13 @@ public class DBFacade implements IDBFacade {
                                   , wkt));
         final Map<String, Map<String, Region>> partition2regions = inst2partitions.get(installation);
         Assert.assertNotNull(partition2regions);
-        final Map<String, Region> name2region = partition2regions.get(partition);
-        Assert.assertNotNull(name2region);
+        boolean partitionAlreadyExisted = false;
+        Map<String, Region> name2region = partition2regions.get(partition);
+        if (name2region==null) {
+            name2region = new LinkedHashMap<>();
+            partitionAlreadyExisted = true;
+        }
+
 
         final Region prevRegion = name2region.put(region, new Region(region, wkt));
         Assert.assertNotNull(partition2regions.put(partition, name2region));
@@ -351,7 +356,7 @@ public class DBFacade implements IDBFacade {
             prevWKT = null;
         else
             prevWKT = prevRegion.wkt;
-        return prevWKT;
+        return new PutRegionResult(partitionAlreadyExisted, prevWKT);
     }
     
 

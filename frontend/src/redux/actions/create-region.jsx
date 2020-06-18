@@ -50,6 +50,7 @@ export default function createRegion(region, wkt, partition, idOfDialogsToClear)
              .then(res => {
                dispatch(clearModal(uuid));
                const {t, err} = res.data;
+               console.log(t); // todo: examine for possible race conditions
                if (err != null) {
                  console.error(`${actionCreator} :: error at URL [${url}]`);
                  console.error(res.data.err);

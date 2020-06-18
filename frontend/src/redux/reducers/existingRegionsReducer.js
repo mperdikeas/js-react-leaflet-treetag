@@ -25,9 +25,7 @@ val
 function convertMapToList(regionNames2region) {
     const rv = [];
     for (const [key, value] of Object.entries(regionNames2region)) {
-        console.log(`yyy ${key}-${JSON.stringify(value)}`);
         const {name, wkt} = value;
-        console.log(`yyy ${name}~~~~${wkt}`);
         assert.strictEqual(key, name);
         rv.push({name, wkt});
     }

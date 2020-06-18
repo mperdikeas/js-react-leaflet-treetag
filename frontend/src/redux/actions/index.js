@@ -77,8 +77,8 @@ export function displayModalNotification(modalProps) {
     return displayModal(MDL_NOTIFICATION, Object.assign({}, modalProps, {uuid:  uuidv4()}));
 }
 
-export function displayModalNewRegionDefinition(uuid) {
-    return displayModal(MDL_NEW_REGION_DEFINITION, {uuid});
+export function displayModalNewRegionDefinition() {
+    return displayModal(MDL_NEW_REGION_DEFINITION, {uuid: uuidv4()});
 }
 
 export function displayModalEnterPartitionName(partitions) {

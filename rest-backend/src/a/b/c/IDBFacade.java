@@ -28,7 +28,7 @@ public interface IDBFacade {
     Set<Privillege> getPrivilleges(String installation, String username);
     boolean arePrivillegesSufficient(Set<Privillege> privilleges, Class c, Method m);
 
-    String putRegion(String installation, String partition, String region, String wkt);
+    PutRegionResult putRegion(String installation, String partition, String region, String wkt);
 
 
 
