@@ -90,7 +90,7 @@ class ModalNewRegionDefinition extends React.Component {
 
   regionExistsInPartition = (region, partition) => {
     const regionsInPartition = this.props.partition2regions[partition];
-    return (regionsInPartition===undefined) || (regionsInPartition.includes(region));
+    return (regionsInPartition!==undefined) && (regionsInPartition.includes(region));
   }
 
   partitionExists = (partition) => {
