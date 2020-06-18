@@ -86,7 +86,9 @@ import {clearModal
       , setWktRegionUnderConstruction
       , displayModalNotification
       , rgmgmntDeleteStart
-      , rgmgmntDeleteEnd}  from './redux/actions/index.js';
+      , rgmgmntDeleteEnd
+      , rgmgmntModifyStart
+      , rgmgmntModifyEnd}  from './redux/actions/index.js';
 
 import {selectedRegions
       , wktRegionUnderConstructionExists
@@ -120,6 +122,8 @@ const mapDispatchToProps = (dispatch) => {
     , setWktRegionUnderConstruction: (wkt) => dispatch(setWktRegionUnderConstruction(wkt))
     , rgmgmntDeleteStart: ()=>dispatch(rgmgmntDeleteStart())
     , rgmgmntDeleteEnd: ()=>dispatch(rgmgmntDeleteEnd())
+    , rgmgmntModifyStart: ()=>dispatch(rgmgmntModifyStart())
+    , rgmgmntModifyEnd: ()=>dispatch(rgmgmntModifyEnd())    
   };
 };
 
@@ -242,6 +246,10 @@ class RegionMgmntMap extends React.Component {
 
     this.map.on(L.Draw.Event.CREATED     , (e) => this.onDrawCreation(e));
     this.map.on(L.Draw.Event.EDITED      , (e) => this.onDrawEdited(e));
+    this.map.on(L.Draw.Event.EDITSTART   , (e) => this.onDrawEditStart(e));
+    this.map.on(L.Draw.Event.EDITSTOP    , (e) => this.onDrawEditEnd(e));
+
+
     this.map.on(L.Draw.Event.DELETED     , (e) => this.onDrawDeleted(e));    
     this.map.on(L.Draw.Event.DELETESTART , (e) => this.onDrawDeleteStart(e));
     this.map.on(L.Draw.Event.DELETESTOP  , (e) => this.onDrawDeleteEnd(e));
@@ -258,6 +266,15 @@ class RegionMgmntMap extends React.Component {
     this.props.getRegions();
   }
 
+  onDrawEditStart = (e) => {
+    this.props.rgmgmntModifyStart();
+  }
+
+  onDrawEditEnd = (e) => {
+    this.props.rgmgmntModifyEnd();
+  }
+  
+
   onDrawDeleteStart = (e) => {
     assert.strictEqual(this.props.rgeMode, RGE_MODE.CREATING, `region-mgmnt-map.jsx::onDrawDeleteStart mode was ${this.props.rgeMode}`);
     assert.isTrue(this.props.wktRegionUnderConstructionExists);
@@ -267,15 +284,12 @@ class RegionMgmntMap extends React.Component {
   onDrawDeleted = (e) => {
     assert.strictEqual(this.props.rgeMode, RGE_MODE.CREATING, `region-mgmnt-map.jsx::onDrawDeleteEnd mode was ${this.props.rgeMode}`);
     assert.isTrue(this.props.wktRegionUnderConstructionExists);
-    console.log(e);
     this.clearDrawnRegions();
     this.props.setWktRegionUnderConstruction(null);
   }
 
   onDrawDeleteEnd = (e) => {
-    console.log('33333333333333333333');
     assert.strictEqual(this.props.rgeMode, RGE_MODE.CREATING, `region-mgmnt-map.jsx::onDrawDeleteEnd mode was ${this.props.rgeMode}`);
-    console.log(e);
     this.props.rgmgmntDeleteEnd();
   }
 
@@ -365,10 +379,12 @@ class RegionMgmntMap extends React.Component {
 
     console.log(e);
     const layers = e.layers;
-    console.log(`type of layers is: ${layers.constructor.name}`);
+    console.log(layers);
     const layers2 = layers.getLayers();
-    assert.strictEqual(layers2.length, 1);
-    this.createOrSetNewRegionAndPopup(layers2[0]);
+    const len = layers2.length;
+    assert.isAtMost(len, 1);
+    if (len>0)
+      this.createOrSetNewRegionAndPopup(layers2[0]);
   }
 
   createOrSetNewRegionAndPopup = (layer) => {

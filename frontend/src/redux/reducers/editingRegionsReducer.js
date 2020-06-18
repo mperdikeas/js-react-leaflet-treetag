@@ -5,6 +5,8 @@ import {SET_RGE_MODE
         , SET_WKT_REGION_UNDER_CONSTRUCTION
         , REG_MGMNT_DELETE_START
         , REG_MGMNT_DELETE_END
+        , REG_MGMNT_MODIFY_START
+        , REG_MGMNT_MODIFY_END
        }  from '../actions/action-types.js';
 
 import {sca_fake_return} from '../../util/util.js';
@@ -12,7 +14,10 @@ import {sca_fake_return} from '../../util/util.js';
 import {RGE_MODE, ensureRGEModeIsValid} from '../constants/region-editing-mode.js';
 
 
-export default (state = {mode: RGE_MODE.UNENGAGED, regionUnderCreation: null, duringDeletion: false}, action) => {
+export default (state = {mode: RGE_MODE.UNENGAGED
+                         , regionUnderCreation: null
+                         , duringDeletion: false
+                         , duringModification: false}, action) => {
     switch (action.type) {
     case SET_RGE_MODE:
         const mode = action.payload;
@@ -36,6 +41,10 @@ export default (state = {mode: RGE_MODE.UNENGAGED, regionUnderCreation: null, du
         return Object.assign({}, state, {duringDeletion: true});
     case REG_MGMNT_DELETE_END:
         return Object.assign({}, state, {duringDeletion: false});
+    case REG_MGMNT_MODIFY_START:
+        return Object.assign({}, state, {duringModification: true});
+    case REG_MGMNT_MODIFY_END:
+        return Object.assign({}, state, {duringModification: false});
     default:
         return state;
     }

@@ -36,6 +36,8 @@ import { UPDATE_MOUSE_COORDS
          , SET_WKT_REGION_UNDER_CONSTRUCTION
          , REG_MGMNT_DELETE_START
          , REG_MGMNT_DELETE_END
+         , REG_MGMNT_MODIFY_START
+         , REG_MGMNT_MODIFY_END         
        } from './action-types.js';
 
 import {CancelToken} from 'axios';
@@ -254,4 +256,12 @@ export function rgmgmntDeleteStart() {
 
 export function rgmgmntDeleteEnd() {
     return {type: REG_MGMNT_DELETE_END, payload: null};
+}
+
+export function rgmgmntModifyStart() {
+    return {type: REG_MGMNT_MODIFY_START, payload: null};
+}
+
+export function rgmgmntModifyEnd() {
+    return {type: REG_MGMNT_MODIFY_END, payload: null};
 }

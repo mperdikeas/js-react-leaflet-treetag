@@ -117,7 +117,11 @@ export function rgmgmntDuringDeletion(state) {
     return state.regions.editing.duringDeletion;
 }
 
+export function rgmgmntDuringModification(state) {
+    return state.regions.editing.duringModification;
+}
+
 export function rgmgmntSaveEnabled(state) {
-    return (wktRegionUnderConstructionExists(state) && (!rgmgmntDuringDeletion(state)));
+    return (wktRegionUnderConstructionExists(state) && (!rgmgmntDuringDeletion(state)) && (!rgmgmntDuringModification(state)));
 }
 
