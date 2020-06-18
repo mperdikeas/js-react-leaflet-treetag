@@ -49,8 +49,6 @@ export function selectedRegions(state) {
         }
     });
 
-    
-    console.log('selected regions are: ', rv);
     return rv;
 }
 
@@ -112,3 +110,13 @@ export function partition2regions(state) {
 export function wktRegionUnderConstruction(state) {
     return state.regions.editing.regionUnderCreation?.wkt ?? null;
 }
+
+export function wktRegionUnderConstructionExists(state) {
+    return (wktRegionUnderConstruction(state) !== null);
+}
+
+export function rgmgmntSaveEnabled(state) {
+    console.log(`state.regions.editing.duringDeletion = ${state.regions.editing.duringDeletion}`);
+    return (wktRegionUnderConstructionExists(state) && (!state.regions.editing.duringDeletion));
+}
+

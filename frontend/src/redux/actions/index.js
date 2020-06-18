@@ -33,7 +33,9 @@ import { UPDATE_MOUSE_COORDS
         , GET_REGIONS_SUCCESS
         , UPDATE_SELECTED_REGIONS
         , SET_RGE_MODE
-        , SET_WKT_REGION_UNDER_CONSTRUCTION
+         , SET_WKT_REGION_UNDER_CONSTRUCTION
+         , REG_MGMNT_DELETE_START
+         , REG_MGMNT_DELETE_END
        } from './action-types.js';
 
 import {CancelToken} from 'axios';
@@ -245,3 +247,11 @@ export function setWktRegionUnderConstruction(wkt) {
 }
 
 export {default as createRegion} from './create-region.jsx';
+
+export function rgmgmntDeleteStart() {
+    return {type: REG_MGMNT_DELETE_START, payload: null};
+}
+
+export function rgmgmntDeleteEnd() {
+    return {type: REG_MGMNT_DELETE_END, payload: null};
+}

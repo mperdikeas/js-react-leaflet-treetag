@@ -19,7 +19,10 @@ import { connect }          from 'react-redux';
 import {updateSelectedRegions
       , displayModalNotification, setRGEMode
       , displayModalNewRegionDefinition} from './redux/actions/index.js';
-import {antdTreeControlData, rgeMode, partitions}   from './redux/selectors/index.js';
+import {antdTreeControlData
+      , rgeMode
+      , partitions
+      , rgmgmntSaveEnabled}   from './redux/selectors/index.js';
 import {RGE_MODE}   from './redux/constants/region-editing-mode.js';
 
 import wrapContexts            from './context/contexts-wrapper.jsx';
@@ -28,7 +31,6 @@ import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS} from './constants/modal-t
 
 
 const mapStateToProps = (state) => {
-  console.log(`rgeMode = ${rgeMode(state)}`);
   return {
     antdTreeControlData: antdTreeControlData(state)
     , selected: state.regions.existing.selected
@@ -36,6 +38,7 @@ const mapStateToProps = (state) => {
     , rgeMode: rgeMode(state)
     , buttonsEnabled: rgeMode(state)!=RGE_MODE.UNENGAGED
     , partitions: partitions(state)
+    , rgmgmntSaveEnabled: rgmgmntSaveEnabled(state)
   };
 };
 
@@ -96,11 +99,12 @@ class RegionList extends React.Component {
         case RGE_MODE.MODIFYING:
           return null;
         case RGE_MODE.CREATING:
-          return (<>
-            <Button type='primary'
-                    onClick={this.saveRegion}
+          return (<div style={{display: 'flex', justifyContent: 'center'}}>
+            <Button style={{width: '13em'}} type='primary'
+            onClick={this.saveRegion}
+            disabled={!this.props.rgmgmntSaveEnabled}
             >save region</Button>
-            </>
+            </div>
           );
       }
     })();

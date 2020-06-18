@@ -73,12 +73,18 @@ import {clearModal
       , unsetOrFetch
       , getRegions
       , setWktRegionUnderConstruction
-      , displayModalNotification}  from './redux/actions/index.js';
+      , displayModalNotification
+      , rgmgmntDeleteStart
+      , rgmgmntDeleteEnd}  from './redux/actions/index.js';
+
+
+
 
 
 
 import {selectedRegions
-      , wktRegionUnderConstruction} from './redux/selectors/index.js';
+      , wktRegionUnderConstructionExists
+} from './redux/selectors/index.js';
 
 
 import TreeCountStatistic from './tree-count-statistic.js';
@@ -92,11 +98,10 @@ import {regionListDiff} from './region-mgmnt-map-util.js';
 require('./region-mgmnt-map.css');
 
 const mapStateToProps = (state) => {
-  console.log(`XXX inside mapStateToProps, rgeMode is ${rgeMode(state)}`);
   return {
     selectedRegions : selectedRegions(state)
     , rgeMode: rgeMode(state)
-    , regionUnderConstruction: wktRegionUnderConstruction(state)
+    , wktRegionUnderConstructionExists: wktRegionUnderConstructionExists(state)
   };
 };
 
@@ -110,6 +115,8 @@ const mapDispatchToProps = (dispatch) => {
     , updateCoordinates                 : (latlng)   => dispatch(updateMouseCoords(latlng))
     , getRegions: ()=>dispatch(getRegions())
     , setWktRegionUnderConstruction: (wkt) => dispatch(setWktRegionUnderConstruction(wkt))
+    , rgmgmntDeleteStart: ()=>dispatch(rgmgmntDeleteStart())
+    , rgmgmntDeleteEnd: ()=>dispatch(rgmgmntDeleteEnd())
   };
 };
 
@@ -230,7 +237,10 @@ class RegionMgmntMap extends React.Component {
     this.addLayerGroupsExceptPromisingLayers();
     this.addLayerGroupsForPromisingLayers();
 
-    this.map.on('draw:created', (e) => this.onDrawCreation(e));
+    this.map.on(L.Draw.Event.CREATED     , (e) => this.onDrawCreation(e));
+    this.map.on(L.Draw.Event.DELETED     , (e) => this.onDrawDeleted(e));    
+    this.map.on(L.Draw.Event.DELETESTART , (e) => this.onDrawDeleteStart(e));
+    this.map.on(L.Draw.Event.DELETESTOP  , (e) => this.onDrawDeleteEnd(e));
 
     
     this.map.on('mousemove', (e) => {
@@ -244,7 +254,28 @@ class RegionMgmntMap extends React.Component {
     this.props.getRegions();
   }
 
-  
+
+  onDrawDeleteStart = (e) => {
+    assert.strictEqual(this.props.rgeMode, RGE_MODE.CREATING, `region-mgmnt-map.jsx::onDrawDeleteStart mode was ${this.props.rgeMode}`);
+    assert.isTrue(this.props.wktRegionUnderConstructionExists);
+    this.props.rgmgmntDeleteStart();
+  }
+
+  onDrawDeleted = (e) => {
+    assert.strictEqual(this.props.rgeMode, RGE_MODE.CREATING, `region-mgmnt-map.jsx::onDrawDeleteEnd mode was ${this.props.rgeMode}`);
+    assert.isTrue(this.props.wktRegionUnderConstructionExists);
+    console.log(e);
+    this.clearDrawnRegions();
+    this.props.setWktRegionUnderConstruction(null);
+  }
+
+  onDrawDeleteEnd = (e) => {
+    console.log('33333333333333333333');
+    assert.strictEqual(this.props.rgeMode, RGE_MODE.CREATING, `region-mgmnt-map.jsx::onDrawDeleteEnd mode was ${this.props.rgeMode}`);
+    console.log(e);
+    this.props.rgmgmntDeleteEnd();
+  }
+
 
   addMeasureControl = () => {
     const options = {position: 'topleft'
@@ -315,7 +346,7 @@ class RegionMgmntMap extends React.Component {
 
   onDrawCreation = (e) => {
     assert.strictEqual(this.props.rgeMode, RGE_MODE.CREATING, `region-mgmnt-map.jsx::onDrawCreation mode was ${this.props.rgeMode}`);
-    if (this.props.regionUnderConstruction !== null) {
+    if (this.props.wktRegionUnderConstructionExists) {
       this.props.aRegionHasAlredyBeenDefined();
     } else {
       const type = e.layerType,
