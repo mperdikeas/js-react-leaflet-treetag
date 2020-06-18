@@ -1,3 +1,14 @@
+/* TODO:
+ *
+ * Check how to customize the polygon editor
+ *
+ * https://www.wrld3d.com/wrld.js/latest/docs/examples/polygon-editor/
+ *
+ */
+
+
+
+
 require('./ots/leaflet-heat.js');
 
 require('@ansur/leaflet-pulse-icon/dist/L.Icon.Pulse.css');

@@ -115,8 +115,11 @@ export function wktRegionUnderConstructionExists(state) {
     return (wktRegionUnderConstruction(state) !== null);
 }
 
+export function rgmgmntDuringDeletion(state) {
+    return state.regions.editing.duringDeletion;
+}
+
 export function rgmgmntSaveEnabled(state) {
-    console.log(`state.regions.editing.duringDeletion = ${state.regions.editing.duringDeletion}`);
-    return (wktRegionUnderConstructionExists(state) && (!state.regions.editing.duringDeletion));
+    return (wktRegionUnderConstructionExists(state) && (!rgmgmntDuringDeletion(state)));
 }
 
