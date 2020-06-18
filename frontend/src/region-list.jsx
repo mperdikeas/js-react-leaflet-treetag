@@ -161,20 +161,6 @@ class RegionList extends React.Component {
             <Radio.Button checked={this.props.rgeMode===RGE_MODE.CREATING} disabled={this.props.createDisabled} value={RGE_MODE.CREATING}>Create</Radio.Button>
             <Radio.Button checked={this.props.rgeMode===RGE_MODE.MODIFYING} disabled={this.props.modifyDisabled} value={RGE_MODE.MODIFYING}>Modify</Radio.Button>
           </Radio.Group>
-
-          {/*
-          <ButtonGroup style={{marginTop: '1em'
-                             , display: 'flex'
-                             , flexDirection: 'row'
-                             , justifyContent: 'space-around'}}className="mb-2">
-            <Button disabled={this.props.buttonsEnabled} style={{flexGrow: 0}} variant="primary" onClick={this.startCreating}>
-              New region
-            </Button>
-            <Button disabled={this.props.buttonsEnabled} style={{flexGrow: 0}} variant="primary" onClick={this.startModifying}>
-              Modify region
-            </Button>
-          </ButtonGroup>
-          */}
           </div>
         );
       default:

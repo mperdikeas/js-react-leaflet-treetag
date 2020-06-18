@@ -1,4 +1,8 @@
-const assert = require('chai').assert;
+import chai from './util/chai-util';
+const assert = chai.assert;
+
+import {sca_fake_return} from './util/util.js';
+
 import L from 'leaflet';
 
 import inside from 'point-in-polygon';
@@ -52,6 +56,33 @@ export function addPopup(marker, popup) {
         // in Chrome 80, the handler wouldn't fire with the mouseleave event
         ev.target.closePopup();
     });
+}
+
+
+export function getShapeType(layer) {
+
+    if (layer instanceof L.Circle) {
+        return 'circle';
+    }
+
+    if (layer instanceof L.Marker) {
+        return 'marker';
+    }
+
+    if (layer instanceof L.Rectangle) {
+        return 'rectangle';
+    }
+
+    if ((layer instanceof L.Polygon) && ! (layer instanceof L.Rectangle)) {
+        return 'polygon';
+    }
+
+    if ((layer instanceof L.Polyline) && ! (layer instanceof L.Polygon)) {
+        return 'polyline';
+    }
+
+    assert.fail(`unrecognized layer type: ${layer.constructor.name}`);
+    return sca_fake_return();
 }
 
 

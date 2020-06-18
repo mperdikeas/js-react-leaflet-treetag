@@ -41,9 +41,12 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
+const USE_EXISTING = 1;
+const DEFINE_NEW = 2;
 
 
 class ModalNewRegionDefinition extends React.Component {
+
 
   static propTypes = {
     uuid: PropTypes.string.isRequired,
@@ -60,14 +63,22 @@ class ModalNewRegionDefinition extends React.Component {
       region: ''
       , partition: props.partitions[0]
       , regionExistsInPartition: false
-      , useExistingOrCreateNewPartition: 1
+      , useExistingOrCreateNewPartition: USE_EXISTING
       , partitionExists: false
     };
     this.ref = React.createRef();
   }
 
   createButtonDisabled = ()=>{
-    return (this.state.regionExistsInPartition || this.state.partitionExists || (this.state.region==='') || (this.state.partition===''));
+    const regionNotOK = this.state.regionExistsInPartition || (this.state.region==='');
+    const partitionNotOk = (()=>{
+      switch (this.state.useExistingOrCreateNewPartition) {
+        case USE_EXISTING:
+          return false;
+        case DEFINE_NEW:
+          return (this.state.partitionExists || (this.state.partition===''));
+      }})();
+    return regionNotOK || partitionNotOk;
   }
 
   componentDidMount = () => {
@@ -155,16 +166,16 @@ class ModalNewRegionDefinition extends React.Component {
 
 
           <Radio.Group onChange={(e)=>this.useExistingOrCreateNewPartition(e.target.value)} value={this.state.useExistingOrCreateNewPartition}>
-            <Radio style={radioStyle} value={1}>
+            <Radio style={radioStyle} value={USE_EXISTING}>
               Use an existing partition
             </Radio>
-            <Radio style={radioStyle} value={2}>
+            <Radio style={radioStyle} value={DEFINE_NEW}>
               Define a new partition
             </Radio>
           </Radio.Group>
 
 
-          {(this.state.useExistingOrCreateNewPartition===1)?(
+          {(this.state.useExistingOrCreateNewPartition===USE_EXISTING)?(
           <Form.Group controlId="partition">
             <Form.Label>Select partition to fall under</Form.Label>
             <Form.Control as="select" value={this.state.partition} onChange={this.onChangePartition}>

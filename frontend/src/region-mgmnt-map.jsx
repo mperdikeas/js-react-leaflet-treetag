@@ -88,23 +88,15 @@ import {clearModal
       , rgmgmntDeleteStart
       , rgmgmntDeleteEnd}  from './redux/actions/index.js';
 
-
-
-
-
-
 import {selectedRegions
       , wktRegionUnderConstructionExists
 } from './redux/selectors/index.js';
 
-
 import TreeCountStatistic from './tree-count-statistic.js';
-
-
 import {rgeMode} from './redux/selectors/index.js';
-
-
 import {regionListDiff} from './region-mgmnt-map-util.js';
+
+import {getShapeType} from './leaflet-util.js';
 
 require('./region-mgmnt-map.css');
 
@@ -249,6 +241,7 @@ class RegionMgmntMap extends React.Component {
     this.addLayerGroupsForPromisingLayers();
 
     this.map.on(L.Draw.Event.CREATED     , (e) => this.onDrawCreation(e));
+    this.map.on(L.Draw.Event.EDITED      , (e) => this.onDrawEdited(e));
     this.map.on(L.Draw.Event.DELETED     , (e) => this.onDrawDeleted(e));    
     this.map.on(L.Draw.Event.DELETESTART , (e) => this.onDrawDeleteStart(e));
     this.map.on(L.Draw.Event.DELETESTOP  , (e) => this.onDrawDeleteEnd(e));
@@ -264,7 +257,6 @@ class RegionMgmntMap extends React.Component {
     setTimeout(()=>{this.props.clearModal(uuid)}, 1000); // this is dog shit; I shall have to re-implement this properly.
     this.props.getRegions();
   }
-
 
   onDrawDeleteStart = (e) => {
     assert.strictEqual(this.props.rgeMode, RGE_MODE.CREATING, `region-mgmnt-map.jsx::onDrawDeleteStart mode was ${this.props.rgeMode}`);
@@ -364,21 +356,35 @@ class RegionMgmntMap extends React.Component {
             layer = e.layer;
       //    this.map.addLayer(layer); // TODO: I used to have that but I don't think it's needed
       this.drawnItems.addLayer(layer);
-      console.warn(layer.toGeoJSON(7));
-
-
-      this.props.setWktRegionUnderConstruction(stringify(layer.toGeoJSON(12)));
-
-      assert.isTrue(layer instanceof L.Polygon, `region-mgmnt-map.jsx::onDrawCreation layer is not a polygon`);
-
-      console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
-      const countResult = this.countTreesInLayer(layer);
-      const treesConfiguration = this.props.treesConfigurationContext.treesConfiguration;
-      assert.exists(treesConfiguration, ABOMINATION_MSG);
-      const detailBreakdown = countResult.toDetailBreakdownString(treesConfiguration);
-      layer.bindPopup(`<b>${countResult.total()}</b><br>${detailBreakdown}`).openPopup();
-      window.setTimeout(()=>layer.closePopup(), 5000);
+      this.createOrSetNewRegionAndPopup(layer);
     }
+  }
+
+  onDrawEdited = (e) => {
+    assert.strictEqual(this.props.rgeMode, RGE_MODE.CREATING, `region-mgmnt-map.jsx::onDrawCreation mode was ${this.props.rgeMode}`);
+
+    console.log(e);
+    const layers = e.layers;
+    console.log(`type of layers is: ${layers.constructor.name}`);
+    const layers2 = layers.getLayers();
+    assert.strictEqual(layers2.length, 1);
+    this.createOrSetNewRegionAndPopup(layers2[0]);
+  }
+
+  createOrSetNewRegionAndPopup = (layer) => {
+    this.props.setWktRegionUnderConstruction(stringify(layer.toGeoJSON(12)));
+
+    assert.isTrue(layer instanceof L.Polygon, `region-mgmnt-map.jsx::onDrawCreation layer is not a polygon`);
+
+    console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
+    const countResult = this.countTreesInLayer(layer);
+    const treesConfiguration = this.props.treesConfigurationContext.treesConfiguration;
+    assert.exists(treesConfiguration, ABOMINATION_MSG);
+    const detailBreakdown = countResult.toDetailBreakdownString(treesConfiguration);
+    layer.unbindPopup();
+    layer.bindPopup(`<b>${countResult.total()}</b><br>${detailBreakdown}`).openPopup();
+    window.setTimeout(()=>layer.closePopup(), 5000);
+
   }
   
   addLayerGroupsForPromisingLayers = () => {
