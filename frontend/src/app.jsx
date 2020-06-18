@@ -13,6 +13,7 @@ import {
 import LandingPageContainer from './landing-page-container.jsx';
 import MainMapContainer from './main-map-container.jsx';
 import RegionMgmnt from './region-mgmnt.jsx';
+import RegionOverlaps from './region-overlaps.jsx';
 import About            from './about.jsx';
 import LoginPage        from './components/login/login-page.jsx';
 
@@ -46,9 +47,12 @@ export default function App() {
           <PrivateRoute exact path='/main/map'>          
             <MainMapContainer/>
           </PrivateRoute>
-          <PrivateRoute exact path='/main/regions'>
+          <PrivateRoute exact path='/main/regions/definition'>
             <RegionMgmnt/>
           </PrivateRoute>
+          <PrivateRoute exact path='/main/regions/overlaps'>
+            <RegionOverlaps/>
+          </PrivateRoute>          
           <Route exact path='/about'>
             <About/>
           </Route>

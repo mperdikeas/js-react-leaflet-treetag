@@ -23,6 +23,7 @@ import {changeTileProvider} from './redux/actions/index.js';
 
 const OVERVIEW_MAP      = 'OVERVIEW_MAP';
 const REGION_MGMNT      = 'REGION_MGMNT';
+const REGION_OVERLAPS   = 'REGION_OVERLAPS';
 
 import { withRouter } from 'react-router-dom'
 
@@ -34,8 +35,10 @@ class LandingPageContainer extends React.Component {
         this.props.history.push('/main/map');
         break;
       case REGION_MGMNT:
-        this.props.history.push('/main/regions');
+        this.props.history.push('/main/regions/definition');
         break;
+      case REGION_OVERLAPS:
+        this.props.history.push('/main/regions/overlaps');
       default:
         throw `unhandled key: ${selectedKey}`;
     }
@@ -55,6 +58,9 @@ class LandingPageContainer extends React.Component {
       <Nav.Item>
         <Nav.Link eventKey={REGION_MGMNT}>Διαχείριση περιοχών</Nav.Link>
       </Nav.Item>
+      <Nav.Item>
+        <Nav.Link eventKey={REGION_OVERLAPS}>Διαχείριση επικαλύψεων</Nav.Link>
+      </Nav.Item>      
       </Nav>
     );
 
