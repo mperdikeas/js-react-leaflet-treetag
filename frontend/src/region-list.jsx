@@ -23,7 +23,8 @@ import {antdTreeControlData
       , rgeMode
       , partitions
       , rgmgmntSaveEnabled
-      , rgmgmntDuringDeletion}   from './redux/selectors/index.js';
+      , rgmgmntDuringDeletion
+      , wktRegionUnderConstructionExists}   from './redux/selectors/index.js';
 import {RGE_MODE}   from './redux/constants/region-editing-mode.js';
 
 import wrapContexts            from './context/contexts-wrapper.jsx';
@@ -55,6 +56,7 @@ const mapStateToProps = (state) => {
     , viewDisabled: viewDisabled(state)
     , createDisabled: createDisabled(state)
     , modifyDisabled: modifyDisabled(state)
+    , wktRegionUnderConstructionExists: wktRegionUnderConstructionExists(state)
   };
 };
 
@@ -88,16 +90,22 @@ class RegionList extends React.Component {
   }
 
   onChange = (value)=> {
-    console.log(`XXX onChange(${JSON.stringify(value)})`);
+    const regionUnderCreation = 'a region is being created; to proceed, either save the region or delete it';
     switch (value) {
       case RGE_MODE.CREATING:
         this.startCreating()
         break;
       case RGE_MODE.MODIFYING:
-        this.startModifying();
+        if (this.props.wktRegionUnderConstructionExists)
+          this.props.displayNotification(regionUnderCreation);
+        else
+          this.startModifying();
         break;
       case RGE_MODE.UNENGAGED:
-        this.props.setRGEMode(RGE_MODE.UNENGAGED);
+        if (this.props.wktRegionUnderConstructionExists)
+          this.props.displayNotification(regionUnderCreation);
+        else
+          this.props.setRGEMode(RGE_MODE.UNENGAGED);
         break;
       default:
         assert.fail(`region-list.jsx::onChange unhandled value: [${value}]`);
@@ -157,9 +165,9 @@ class RegionList extends React.Component {
                              , justifyContent: 'space-around'}}
                        buttonStyle='solid'
                        onChange={(e)=>this.onChange(e.target.value)} value={this.props.rgeMode}>
-            <Radio.Button checked={this.props.rgeMode===RGE_MODE.UNENGAGED} disabled={this.props.viewDisabled} value={RGE_MODE.UNENGAGED}>View</Radio.Button>
-            <Radio.Button checked={this.props.rgeMode===RGE_MODE.CREATING} disabled={this.props.createDisabled} value={RGE_MODE.CREATING}>Create</Radio.Button>
-            <Radio.Button checked={this.props.rgeMode===RGE_MODE.MODIFYING} disabled={this.props.modifyDisabled} value={RGE_MODE.MODIFYING}>Modify</Radio.Button>
+            <Radio.Button checked={this.props.rgeMode===RGE_MODE.UNENGAGED} disabled={this.props.viewDisabled || (this.props.rgeMode===RGE_MODE.UNENGAGED)} value={RGE_MODE.UNENGAGED}>View</Radio.Button>
+            <Radio.Button checked={this.props.rgeMode===RGE_MODE.CREATING} disabled={this.props.createDisabled || (this.props.rgeMode===RGE_MODE.CREATING)} value={RGE_MODE.CREATING}>Create</Radio.Button>
+            <Radio.Button checked={this.props.rgeMode===RGE_MODE.MODIFYING} disabled={this.props.modifyDisabled || (this.props.rgeMode===RGE_MODE.MODIFYING)} value={RGE_MODE.MODIFYING}>Modify</Radio.Button>
           </Radio.Group>
           </div>
         );
