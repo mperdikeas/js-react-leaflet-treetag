@@ -19,7 +19,7 @@ import { connect }          from 'react-redux';
 import {updateSelectedRegions
       , displayModalNotification, setRGEMode
       , displayModalNewRegionDefinition} from './redux/actions/index.js';
-import {antdTreeControlData
+import {existingRegionsAsAntdTreeControlData
       , rgeMode
       , partitions
       , rgmgmntSaveEnabled
@@ -46,7 +46,7 @@ function modifyDisabled(state) {
 
 const mapStateToProps = (state) => {
   return {
-    antdTreeControlData: antdTreeControlData(state)
+    existingRegionsAsAntdTreeControlData: existingRegionsAsAntdTreeControlData(state)
     , selected: state.regions.existing.selected
     , state: state.regions.existing.state
     , rgeMode: rgeMode(state)
@@ -139,7 +139,7 @@ class RegionList extends React.Component {
         return <div>fetching regions &hellip;</div>;
       case 'steady':
         const tProps = {
-          treeData: this.props.antdTreeControlData,
+          treeData: this.props.existingRegionsAsAntdTreeControlData,
           value: this.props.selected,
           onChange: this.props.updateSelectedRegions,
           treeCheckable: true,

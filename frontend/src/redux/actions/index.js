@@ -37,7 +37,13 @@ import { UPDATE_MOUSE_COORDS
          , REG_MGMNT_DELETE_START
          , REG_MGMNT_DELETE_END
          , REG_MGMNT_MODIFY_START
-         , REG_MGMNT_MODIFY_END         
+         , REG_MGMNT_MODIFY_END
+
+         , OVERLAPS_GET_REGIONS_SUCCESS
+         , OVERLAPS_SET_REGION
+         , OVERLAPS_SET_PARTITIONS
+         , OVERLAPS_GET_OVERLAPS_IN_PROGRESS
+         , OVERLAPS_GET_OVERLAPS_SUCCESS
        } from './action-types.js';
 
 import {CancelToken} from 'axios';
@@ -265,3 +271,13 @@ export function rgmgmntModifyStart() {
 export function rgmgmntModifyEnd() {
     return {type: REG_MGMNT_MODIFY_END, payload: null};
 }
+
+
+
+
+export function overlapsGetRegionsSuccess(regions)     {return {type: OVERLAPS_GET_REGIONS_SUCCESS, payload: regions};}
+export function overlapsSetRegion        (region)      {return {type: OVERLAPS_SET_REGION, payload: region};}
+export function overlapsSetPartitions    (partitions)  {return {type: OVERLAPS_SET_PARTITIONS, payload: partitions};}
+export function overlapsGetOverlapsInProgress   ()     {return {type: OVERLAPS_GET_OVERLAPS_IN_PROGRESS, payload: null};}
+export function overlapsGetOverlapsSuccess(overlaps)   {return {type: OVERLAPS_GET_OVERLAPS_IN_PROGRESS, payload: overlaps};}
+

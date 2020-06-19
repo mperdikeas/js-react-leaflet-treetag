@@ -6,13 +6,15 @@ import {GET_REGIONS_IN_PROGRESS
 
 const assert = require('chai').assert;
 
-import existingRegionsReducer from './existingRegionsReducer.js';
-import editingRegionsReducer  from './editingRegionsReducer.js';
+import existingRegionsReducer    from './existingRegionsReducer.js';
+import editingRegionsReducer     from './editingRegionsReducer.js';
+import overlappingRegionsReducer from './overlappingRegionsReducer.js';
 
 export default (state = {}, action) => {
     return {
         existing: existingRegionsReducer(state.existing, action)
-       , editing: editingRegionsReducer(state.editing, action)
+        , editing: editingRegionsReducer(state.editing, action)
+        , overlaps: overlappingRegionsReducer(state.overlaps, action)
     };
 }
 
