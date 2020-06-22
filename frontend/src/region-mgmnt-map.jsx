@@ -409,6 +409,7 @@ class RegionMgmntMap extends React.Component {
   }
   
   addLayerGroupsForPromisingLayers = () => {
+    console.log('cad - 4');
     // sse-1587477558
     const treesConfigurationIsNowAvailable = new Promise(
       (resolution, rejection) => {

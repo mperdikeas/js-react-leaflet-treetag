@@ -58,24 +58,13 @@ class RegionOverlaps extends React.Component {
 
   constructor(props) {
     super(props);
-    console.log('cac 1 - ', this.props.history);
   }
 
   componentDidMount() {
     if (this.props.isRegionsBeingFetched)
       this.props.getRegions();
   }
-/*
-  navigate = (selectedKey) => {
-    switch (selectedKey) {
-      case LANDING_PAGE:
-        this.props.history.push('/main');
-        break;
-      default:
-        throw `unhandled key: ${selectedKey}`;
-    }
-  }
-*/
+
   propsForRegionSelectionTree() {
     return  {
       value: this.props.selectedRegion,
@@ -100,14 +89,7 @@ class RegionOverlaps extends React.Component {
 
           <div className = 'col-8'>
             <NavLinkToLanding/>
-            {/*
-            <Nav variant='pills' justify={true} className='flex-row' onSelect={this.navigate} >
-              <Nav.Item>
-                <Nav.Link eventKey={LANDING_PAGE}>Αρχική</Nav.Link>
-              </Nav.Item>
-            </Nav>
-            */}
-          </div>
+            </div>
           <div className='col-4'>
             <UserControl/>
           </div>
@@ -130,8 +112,8 @@ class RegionOverlaps extends React.Component {
         </div>      
       </div>
     );
-            }
   }
+}
 
-  export default withRouter(connect(mapStateToProps, mapDispatchToProps)(wrapContexts(RegionOverlaps)));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(wrapContexts(RegionOverlaps)));
 

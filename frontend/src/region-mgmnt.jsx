@@ -56,15 +56,6 @@ class RegionMgmnt extends React.Component {
             <PointCoordinates/>
           </div>
           <div className='col-4'>
-
-            {/*
-            <Nav variant='pills' justify={true} className='flex-row' onSelect={this.onSelect} >
-              <Nav.Item>
-                <Nav.Link eventKey={LANDING_PAGE}>Αρχική</Nav.Link>
-              </Nav.Item>
-            </Nav>
-
-              */}
             <NavLinkToLanding/>
           </div>
           <div className='col-4'>

@@ -30,7 +30,7 @@ export default function getRegions(toastOnSuccess=false) {
   const actionCreator = `getRegions`;
   const TOKEN_TYPE = CANCEL_TOKEN_TYPES.GET_REGIONS;
 
-
+  console.log('cad getregions');
   cancelIncompatibleRequests(TOKEN_TYPE);
   const source = CancelToken.source();
   addCancelToken(TOKEN_TYPE, source.token);
