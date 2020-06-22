@@ -1,4 +1,6 @@
-const assert = require('chai').assert;
+import chai from '../../util/chai-util.js';
+const assert = chai.assert;
+
 
 import toastReducer                   from './toastReducer.js';
 import mouseCoordsReducer             from './mouseCoordsReducer.js';
@@ -9,7 +11,7 @@ import paneToOpenInfoPanelReducer     from './paneToOpenInfoPanelReducer.js';
 import regionsReducer                 from './regionsReducer.js';
 
 function rootReducer(state = {}, action) {
-    const rv = {
+    return {
         toasts               : toastReducer                (state.toasts, action),
         latlng               : mouseCoordsReducer          (state.latlng, action),
         target               : targetReducer               (state.target, action),
@@ -18,7 +20,6 @@ function rootReducer(state = {}, action) {
         paneToOpenInfoPanel  : paneToOpenInfoPanelReducer  (state.paneToOpenInfoPanel, action),
         regions              : regionsReducer              (state.regions, action)
     };
-    return rv;
 };
 
 

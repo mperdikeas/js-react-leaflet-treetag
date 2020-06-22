@@ -1,7 +1,9 @@
 const React = require('react');
 var      cx = require('classnames');
 
-const assert = require('chai').assert;
+
+import chai from './util/chai-util.js';
+const assert = chai.assert;
 
 import {Nav} from 'react-bootstrap';
 import { TreeSelect, Radio, Button } from 'antd';
@@ -20,7 +22,8 @@ import { connect }          from 'react-redux';
 
 import { withRouter } from 'react-router-dom'
 
-import {overlapExistingRegionsAsTreeData
+import {isRegionsBeingFetched
+      , overlapExistingRegionsAsTreeData
       , rgeMode
       , partitions
       , rgmgmntSaveEnabled
@@ -30,7 +33,8 @@ import {overlapExistingRegionsAsTreeData
 
 const mapStateToProps = (state) => {
   return {
-    overlapExistingRegionsAsTreeData: overlapExistingRegionsAsTreeData(state)
+    isRegionsBeingFetched: isRegionsBeingFetched(state)
+    , overlapExistingRegionsAsTreeData: overlapExistingRegionsAsTreeData(state)
     , selectedRegion: state.regions.overlaps.regions
   };
 };
@@ -78,6 +82,7 @@ class RegionOverlaps extends React.Component {
         height: `${this.props.geometryContext.screen.height*0.3}px`
       }
     }
+  }
 
   render() {
     const headerBarHeight = this.props.geometryContext.geometry.headerBarHeight;
@@ -99,8 +104,10 @@ class RegionOverlaps extends React.Component {
       </div>
       </div>
       <div className='row no-gutters'>
-        <div className={cx({'col-6': true, 'padding-0': true})}> 
-            <TreeSelect {...propsForRegionSelectionTree()} />;
+        <div className={cx({'col-6': true, 'padding-0': true})}>
+          {this.props.isRegionsBeingFetched?
+          <span>fetching regions...</span>:
+            <TreeSelect {...propsForRegionSelectionTree()} />}
         </div>
         <div className={cx({'col-6': true, 'padding-0': true})}>
           select partitions

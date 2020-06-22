@@ -2,9 +2,9 @@ import {GET_REGIONS_IN_PROGRESS
         , GET_REGIONS_SUCCESS
         , UPDATE_SELECTED_REGIONS}  from '../actions/action-types.js';
 
+import chai from '../../util/chai-util.js';
+const assert = chai.assert;
 
-
-const assert = require('chai').assert;
 
 import existingRegionsReducer    from './existingRegionsReducer.js';
 import editingRegionsReducer     from './editingRegionsReducer.js';

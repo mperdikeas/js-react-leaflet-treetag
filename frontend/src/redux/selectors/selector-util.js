@@ -8,6 +8,12 @@
 
 // cf. sse-1592587834
 
+export function arr2str(vs) {
+    const rv =  vs.map( x=>x.toString()).join('-');
+    return rv;
+}
+
+
 export function reduxRegionsToAntdData(val) {
 
     function regions(i0, vs) {
@@ -33,4 +39,5 @@ export function reduxRegionsToAntdData(val) {
                  , children: regions(i, value)});
         i++;
     }
+    return rv;
 }

@@ -1,12 +1,8 @@
 import chai from '../../util/chai-util.js';
 const assert = require('chai').assert;
 
-import {reduxRegionsToAntdData} from './selector-util.js';
+import {arr2str, reduxRegionsToAntdData} from './selector-util.js';
 
-function arr2str(vs) {
-    const rv =  vs.map( x=>x.toString()).join('-');
-    return rv;
-}
 
 
 export function selectedRegions(state) {
@@ -54,11 +50,22 @@ export function selectedRegions(state) {
 
 
 export function existingRegionsAsAntdTreeControlData(state) {
-    return reduxRegionsToAntdData(state.regions.existing.val);
+    console.log(state.regions.existing.val);
+    const rv = reduxRegionsToAntdData(state.regions.existing.val);
+    console.log(rv);
+    return rv;
 }
 
 export function overlapExistingRegionsAsTreeData (state) {
-    return  reduxRegionsToAntdData(state.regions.overlaps.regions);
+    if (isRegionsBeingFetched(state))
+        return undefined;
+    else
+        return  reduxRegionsToAntdData(state.regions.overlaps.regions);
+}
+
+// sse-1592816552
+export function isRegionsBeingFetched(state) {
+    return (state.regions.overlaps.regions===undefined);
 }
 
 export function rgeMode(state) { // region editing mode

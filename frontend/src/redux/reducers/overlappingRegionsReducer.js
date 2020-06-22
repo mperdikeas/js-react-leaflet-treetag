@@ -9,12 +9,14 @@ import {OVERLAPS_GET_REGIONS_SUCCESS,
 
 import {sca_fake_return} from '../../util/util.js';
 
-import {convert} from 'reducer-util.js';
+import {convert} from './reducer-util.js';
 
 
 /* undefined means it's being fetched, null or empty array (if applicable) means it was fetched and is empty
  * if something is never fetched (e.g. it is selected by the user) then it never takes the value undefined
  * and only the value 'null' is applicable in that case.
+ * 
+ * cf. sse-1592816552
  *
  */
 export default (state = {  regions: undefined

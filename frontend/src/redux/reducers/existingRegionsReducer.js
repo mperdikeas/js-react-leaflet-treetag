@@ -3,10 +3,9 @@ import {GET_REGIONS_IN_PROGRESS
         , UPDATE_SELECTED_REGIONS}  from '../actions/action-types.js';
 
 import chai from '../../util/chai-util.js';
-const assert = require('chai').assert;
+const assert = chai.assert;
 
-
-import {convert} from 'reducer-util.js';
+import {convert} from './reducer-util.js';
 
 export default (state = {val: {}, selected: [], state: 'steady'}, action) => {
     switch (action.type) {

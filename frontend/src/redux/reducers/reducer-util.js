@@ -1,3 +1,7 @@
+import chai from '../../util/chai-util.js';
+const assert = chai.assert;
+
+
 /*
 
 This is the format returned from the server:
