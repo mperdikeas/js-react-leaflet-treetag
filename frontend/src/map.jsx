@@ -125,6 +125,7 @@ class Map extends React.Component {
 
   constructor(props) {
     super(props);
+    console.log('caf - map.jsx constructor');
     this.layerGroup = null;
     this.clickableLayers = [];
     this.highlightedMarker = null;
@@ -160,6 +161,7 @@ class Map extends React.Component {
   componentWillUnmount = () => {
     window.removeEventListener ('resize', this.handleResize);
     this.map.off('click');
+    this.map.remove();
   }
 
 
@@ -237,6 +239,7 @@ class Map extends React.Component {
   }
 
   componentDidMount = () => {
+    console.log('caf - map.jsx :: componentDidMount');
     const uuid = uuidv4();
 
     this.props.pleaseWaitWhileAppIsLoading(uuid);
@@ -315,7 +318,7 @@ class Map extends React.Component {
   }
 
   addLayerGroupsForPromisingLayers = () => {
-    console.log('cad - 3');
+    console.log('caf - map.jsx addLayerGroupsForPromisingLayers');
     // sse-1587477558
     const treesConfigurationIsNowAvailable = new Promise(
       (resolution, rejection) => {
