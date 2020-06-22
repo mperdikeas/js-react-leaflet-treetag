@@ -15,6 +15,7 @@ import wrapContexts                            from './context/contexts-wrapper.
 import { connect }          from 'react-redux';
 import {changeTileProvider} from './redux/actions/index.js';
 
+import NavLinkToLanding from './navlink-to-landing.jsx';
 
 const mapStateToProps = (state) => {
   return {
@@ -53,10 +54,13 @@ class MainMapContainer extends React.Component {
 
         <div className='row no-gutters justify-content-start align-items-center'
              style={{height: `${headerBarHeight}px`}}>
-          <div className='col-5'>
+          <div className='col-4'>
             <PointCoordinates/>
           </div>
-          <div className='col-7'>
+          <div className='col-4'>
+            <NavLinkToLanding/>
+          </div>
+          <div className='col-4'>
             <UserControl/>
           </div>
         </div>

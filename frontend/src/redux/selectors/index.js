@@ -59,6 +59,7 @@ export function existingRegionsAsAntdTreeControlData(state) {
 }
 
 
+// TODO: rename that to isRegionsUninitializedOrRefreshed
 // sse-1592816552
 export function isRegionsBeingFetched(state) {
     return (state.regions.existing===undefined);

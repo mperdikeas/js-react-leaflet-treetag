@@ -90,7 +90,8 @@ import {clearModal
       , rgmgmntModifyStart
       , rgmgmntModifyEnd}  from './redux/actions/index.js';
 
-import {selectedRegions
+import {isRegionsBeingFetched
+      , selectedRegions
       , wktRegionUnderConstructionExists
 } from './redux/selectors/index.js';
 
@@ -104,7 +105,8 @@ require('./region-mgmnt-map.css');
 
 const mapStateToProps = (state) => {
   return {
-    selectedRegions : selectedRegions(state)
+    isRegionsBeingFetched: isRegionsBeingFetched(state)
+    , selectedRegions : selectedRegions(state)
     , rgeMode: rgeMode(state)
     , wktRegionUnderConstructionExists: wktRegionUnderConstructionExists(state)
   };
@@ -264,7 +266,9 @@ class RegionMgmntMap extends React.Component {
     $('div.leaflet-control-container section.leaflet-control-layers-list div.leaflet-control-layers-overlays input.leaflet-control-layers-selector[type="checkbox"]').on('change', (e)=>{
     });
     setTimeout(()=>{this.props.clearModal(uuid)}, 1000); // this is dog shit; I shall have to re-implement this properly.
-    this.props.getRegions();
+
+    if (this.props.isRegionsBeingFetched)
+      this.props.getRegions();
   }
 
   onDrawEditStart = (e) => {

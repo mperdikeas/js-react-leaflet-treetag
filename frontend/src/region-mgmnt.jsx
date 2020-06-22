@@ -1,7 +1,11 @@
 const React = require('react');
 var      cx = require('classnames');
 
-const assert = require('chai').assert;
+import chai from './util/chai-util.js';
+const assert = chai.assert;
+
+
+import {Nav} from 'react-bootstrap';
 
 import RegionMgmntMap                          from './region-mgmnt-map.jsx';
 import RegionList                              from './region-list.jsx';
@@ -9,6 +13,8 @@ import PointCoordinates                        from './point-coordinates.jsx';
 import UserControl                             from './user-control.jsx';
 
 import wrapContexts                            from './context/contexts-wrapper.jsx';
+
+import NavLinkToLanding from './navlink-to-landing.jsx';
 
 // REDUX
 import { connect }          from 'react-redux';
@@ -29,6 +35,15 @@ class RegionMgmnt extends React.Component {
     super(props);
   }
 
+  navigate = (selectedKey) => {
+    switch (selectedKey) {
+      case LANDING_PAGE:
+        this.props.history.push('/main');
+        break;
+      default:
+        throw `unhandled key: ${selectedKey}`;
+    }
+  }
 
 
   render() {
@@ -37,10 +52,22 @@ class RegionMgmnt extends React.Component {
       <div className='container-fluid' key='main-gui-component' style={{paddingRight: 0, paddingLeft: 0}}>
         <div className='row no-gutters justify-content-start align-items-center'
              style={{height: `${headerBarHeight}px`}}>
-          <div className='col-5'>
+          <div className='col-4'>
             <PointCoordinates/>
           </div>
-          <div className='col-7'>
+          <div className='col-4'>
+
+            {/*
+            <Nav variant='pills' justify={true} className='flex-row' onSelect={this.onSelect} >
+              <Nav.Item>
+                <Nav.Link eventKey={LANDING_PAGE}>Αρχική</Nav.Link>
+              </Nav.Item>
+            </Nav>
+
+              */}
+            <NavLinkToLanding/>
+          </div>
+          <div className='col-4'>
             <UserControl/>
           </div>
         </div>

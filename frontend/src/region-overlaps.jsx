@@ -15,6 +15,7 @@ import UserControl                             from './user-control.jsx';
 
 import wrapContexts                            from './context/contexts-wrapper.jsx';
 
+import {LANDING_PAGE} from './constants/navig-constants.js';
 
 
 // REDUX
@@ -32,6 +33,8 @@ import {isRegionsBeingFetched
 
 import {getRegions} from './redux/actions/index.js';
 
+import NavLinkToLanding from './navlink-to-landing.jsx';
+
 
 const mapStateToProps = (state) => {
   return {
@@ -46,7 +49,6 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const LANDING_PAGE = 'LANDING_PAGE';
 
 import ExistingRegionsSelectManyToEditing from './existing-regions-select-many-to-editing.jsx';
 
@@ -56,14 +58,15 @@ class RegionOverlaps extends React.Component {
 
   constructor(props) {
     super(props);
+    console.log('cac 1 - ', this.props.history);
   }
 
   componentDidMount() {
-
-    this.props.getRegions();
+    if (this.props.isRegionsBeingFetched)
+      this.props.getRegions();
   }
-
-  onSelect = (selectedKey) => {
+/*
+  navigate = (selectedKey) => {
     switch (selectedKey) {
       case LANDING_PAGE:
         this.props.history.push('/main');
@@ -72,7 +75,7 @@ class RegionOverlaps extends React.Component {
         throw `unhandled key: ${selectedKey}`;
     }
   }
-
+*/
   propsForRegionSelectionTree() {
     return  {
       value: this.props.selectedRegion,
@@ -96,11 +99,14 @@ class RegionOverlaps extends React.Component {
 
 
           <div className = 'col-8'>
-            <Nav variant='pills' justify={true} className='flex-row' onSelect={this.onSelect} >
+            <NavLinkToLanding/>
+            {/*
+            <Nav variant='pills' justify={true} className='flex-row' onSelect={this.navigate} >
               <Nav.Item>
                 <Nav.Link eventKey={LANDING_PAGE}>Αρχική</Nav.Link>
               </Nav.Item>
             </Nav>
+            */}
           </div>
           <div className='col-4'>
             <UserControl/>
