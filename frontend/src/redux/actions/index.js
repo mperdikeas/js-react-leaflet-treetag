@@ -44,6 +44,8 @@ import { UPDATE_MOUSE_COORDS
          , OVERLAPS_SET_PARTITIONS
          , OVERLAPS_GET_OVERLAPS_IN_PROGRESS
          , OVERLAPS_GET_OVERLAPS_SUCCESS
+
+         , OVERLAPS_UPDATE_SELECTED_REGION
        } from './action-types.js';
 
 import {CancelToken} from 'axios';
@@ -230,6 +232,10 @@ export function getRegionsSuccess(regions) {
 
 export function updateSelectedRegions(selectedRegions) {
     return {type: UPDATE_SELECTED_REGIONS, payload: selectedRegions};
+}
+
+export function overlapsUpdateSelectedRegion(selectedRegion) {
+   return {type: OVERLAPS_UPDATE_SELECTED_REGION, payload: selectedRegion};
 }
 
 

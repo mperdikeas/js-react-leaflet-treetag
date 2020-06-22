@@ -30,6 +30,8 @@ import {isRegionsBeingFetched
       , rgmgmntDuringDeletion
       , wktRegionUnderConstructionExists}   from './redux/selectors/index.js';
 
+import {getRegions} from './redux/actions/index.js';
+
 
 const mapStateToProps = (state) => {
   return {
@@ -40,10 +42,13 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    getRegions: ()=>dispatch(getRegions())
   };
 };
 
 const LANDING_PAGE = 'LANDING_PAGE';
+
+import ExistingRegionsSelectManyToEditing from './existing-regions-select-many-to-editing.jsx';
 
 
 class RegionOverlaps extends React.Component {
@@ -55,7 +60,7 @@ class RegionOverlaps extends React.Component {
 
   componentDidMount() {
 
-
+    this.props.getRegions();
   }
 
   onSelect = (selectedKey) => {
@@ -86,40 +91,41 @@ class RegionOverlaps extends React.Component {
     const headerBarHeight = this.props.geometryContext.geometry.headerBarHeight;
     return (
       <div className='container-fluid' key='main-gui-component' style={{paddingRight: 0, paddingLeft: 0}}>
-      <div className='row no-gutters justify-content-start align-items-center'
-      style={{height: `${headerBarHeight}px`}}>
+        <div className='row no-gutters justify-content-start align-items-center'
+             style={{height: `${headerBarHeight}px`}}>
 
 
-      <div className = 'col-8'>
-        <Nav variant='pills' justify={true} className='flex-row' onSelect={this.onSelect} >
-          <Nav.Item>
-            <Nav.Link eventKey={LANDING_PAGE}>Αρχική</Nav.Link>
-          </Nav.Item>
-        </Nav>
-      </div>
-      <div className='col-4'>
-        <UserControl/>
-      </div>
-      </div>
-      <div className='row no-gutters'>
-        <div className={cx({'col-6': true, 'padding-0': true})}>
-          {this.props.isRegionsBeingFetched?
-          <span>fetching regions...</span>:
-            <TreeSelect {...propsForRegionSelectionTree()} />}
+          <div className = 'col-8'>
+            <Nav variant='pills' justify={true} className='flex-row' onSelect={this.onSelect} >
+              <Nav.Item>
+                <Nav.Link eventKey={LANDING_PAGE}>Αρχική</Nav.Link>
+              </Nav.Item>
+            </Nav>
+          </div>
+          <div className='col-4'>
+            <UserControl/>
+          </div>
         </div>
-        <div className={cx({'col-6': true, 'padding-0': true})}>
-          select partitions
-        </div>        
-      </div>
-      <div className='row no-gutters'>
-        <div className={cx({'col-12': true, 'padding-0': true})}>
-          search results
+        <div className='row no-gutters'>
+          <div className={cx({'col-6': true, 'padding-0': true})}>
+            {this.props.isRegionsBeingFetched?
+             <span>fetching regions...</span>:
+             <ExistingRegionsSelectManyToEditing/>
+            }
+          </div>
+          <div className={cx({'col-6': true, 'padding-0': true})}>
+            select partitions
+          </div>        
         </div>
-      </div>      
+        <div className='row no-gutters'>
+          <div className={cx({'col-12': true, 'padding-0': true})}>
+            search results
+          </div>
+        </div>      
       </div>
     );
+            }
   }
-}
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(wrapContexts(RegionOverlaps)));
+  export default withRouter(connect(mapStateToProps, mapDispatchToProps)(wrapContexts(RegionOverlaps)));
 

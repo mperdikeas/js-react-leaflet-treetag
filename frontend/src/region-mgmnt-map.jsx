@@ -198,6 +198,7 @@ class RegionMgmntMap extends React.Component {
 
     regionsRemoved.forEach( (regionRemoved) => {
       const {key, name, wkt} = regionRemoved;
+      console.log(`removing region ${name} from map`);
       this.removeRegionFromMap(key, name, wkt);
     });    
   }

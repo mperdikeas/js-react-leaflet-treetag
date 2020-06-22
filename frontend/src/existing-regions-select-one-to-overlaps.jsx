@@ -10,7 +10,7 @@ import { TreeSelect } from 'antd';
 import { connect }          from 'react-redux';
 
 import wrapContexts            from './context/contexts-wrapper.jsx';
-import {updateSelectedRegions} from './redux/actions/index.js';
+import {overlapsUpdateSelectedRegion} from './redux/actions/index.js';
 import {existingRegionsAsAntdTreeControlData}   from './redux/selectors/index.js';
 
 
@@ -25,11 +25,11 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    updateSelectedRegions: (selectedRegions)=>dispatch(updateSelectedRegions(selectedRegions))
+    overlapsUpdateSelectedRegion: (selectedRegion) => dispatch(overlapsUpdateSelectedRegion(selectedRegion))
   };
 };
 
-class ExistingRegionsSelectManyToEditing extends React.Component {
+class ExistingRegionsSelectOneToOverlaps extends React.Component {
 
   constructor(props) {
     super(props);
@@ -40,7 +40,7 @@ class ExistingRegionsSelectManyToEditing extends React.Component {
     const tProps = {
       treeData: this.props.existingRegionsAsAntdTreeControlData,
       value: this.props.selected,
-      onChange: this.props.updateSelectedRegions,
+      onChange: this.props.overlapsUpdateSelectedRegion,
       treeCheckable: true,
       showCheckedStrategy: TreeSelect.SHOW_PARENT,
       placeholder: 'Please select',
@@ -57,4 +57,4 @@ class ExistingRegionsSelectManyToEditing extends React.Component {
 
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(ExistingRegionsSelectManyToEditing));
+export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(ExistingRegionsSelectOneToOverlaps));
