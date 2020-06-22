@@ -39,6 +39,7 @@ class LandingPageContainer extends React.Component {
         break;
       case REGION_OVERLAPS:
         this.props.history.push('/main/regions/overlaps');
+        break;
       default:
         throw `unhandled key: ${selectedKey}`;
     }
