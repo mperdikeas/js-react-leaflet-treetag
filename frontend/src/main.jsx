@@ -9,6 +9,8 @@ import App      from './app.jsx';
 import 'reset-css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import 'antd/dist/antd.css';
+
 // https://stackoverflow.com/a/53580347/274677
 import '@fortawesome/fontawesome-free/js/fontawesome';
 import '@fortawesome/fontawesome-free/js/solid';
@@ -18,6 +20,7 @@ import '@fortawesome/fontawesome-free/js/brands';
 import { BrowserRouter } from 'react-router-dom';
 
 import './css/style.css';
+
 
 import LoginContextProvider              from './context/login-context.jsx'
 import TreeConfigurationContextProvider  from './context/trees-configuration-context.jsx'

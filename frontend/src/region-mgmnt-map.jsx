@@ -23,7 +23,7 @@ require('./ots/leaflet.shpfile.js');
 const React = require('react');
 var      cx = require('classnames');
 
-import chai from './util/chai-util';
+import chai from './util/chai-util.js';
 const assert = chai.assert;
 
 import L from 'leaflet';

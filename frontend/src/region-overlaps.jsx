@@ -23,7 +23,7 @@ import { connect }          from 'react-redux';
 import { withRouter } from 'react-router-dom'
 
 import {isRegionsBeingFetched
-      , overlapExistingRegionsAsTreeData
+      , existingRegionsAsAntdTreeControlData
       , rgeMode
       , partitions
       , rgmgmntSaveEnabled
@@ -34,7 +34,6 @@ import {isRegionsBeingFetched
 const mapStateToProps = (state) => {
   return {
     isRegionsBeingFetched: isRegionsBeingFetched(state)
-    , overlapExistingRegionsAsTreeData: overlapExistingRegionsAsTreeData(state)
     , selectedRegion: state.regions.overlaps.regions
   };
 };
@@ -71,7 +70,6 @@ class RegionOverlaps extends React.Component {
 
   propsForRegionSelectionTree() {
     return  {
-      treeData: this.props.overlapExistingRegionsAsTreeData,
       value: this.props.selectedRegion,
       onChange: this.props.updateSelectedRegions,
       treeCheckable: true,

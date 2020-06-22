@@ -1,8 +1,7 @@
 import chai from '../../util/chai-util.js';
 const assert = chai.assert;
 
-import {OVERLAPS_GET_REGIONS_SUCCESS,
-        OVERLAPS_SET_REGION,
+import {OVERLAPS_SET_REGION,
         OVERLAPS_SET_PARTITIONS,
         OVERLAPS_GET_OVERLAPS_IN_PROGRESS,
         OVERLAPS_GET_OVERLAPS_SUCCESS}  from '../actions/action-types.js';
@@ -19,13 +18,10 @@ import {convert} from './reducer-util.js';
  * cf. sse-1592816552
  *
  */
-export default (state = {  regions: undefined
-                           , selected: undefined
+export default (state = {selected: undefined
                            , partitions: undefined
                            , overlaps: undefined}, action) => {
                                switch (action.type) {
-                               case OVERLAPS_GET_REGIONS_SUCCESS:
-                                   return Object.assign({}, state, {regions: action.payload});
                                case OVERLAPS_SET_REGION:
                                    return Object.assign({}, state, {selected: action.payload});
                                case OVERLAPS_SET_PARTITIONS:

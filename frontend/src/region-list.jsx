@@ -1,7 +1,10 @@
 const React = require('react');
 var      cx = require('classnames');
 const     $ = require('jquery');
-const assert = require('chai').assert;
+
+import chai from './util/chai-util.js';
+const assert = chai.assert;
+
 
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
@@ -16,20 +19,21 @@ import { v4 as uuidv4 } from 'uuid';
 // REDUX
 import { connect }          from 'react-redux';
 
-import {updateSelectedRegions
-      , displayModalNotification, setRGEMode
+import {displayModalNotification, setRGEMode
       , displayModalNewRegionDefinition} from './redux/actions/index.js';
-import {existingRegionsAsAntdTreeControlData
-      , rgeMode
+import {rgeMode
       , partitions
       , rgmgmntSaveEnabled
       , rgmgmntDuringDeletion
+      , isRegionsBeingFetched
       , wktRegionUnderConstructionExists}   from './redux/selectors/index.js';
 import {RGE_MODE}   from './redux/constants/region-editing-mode.js';
 
 import wrapContexts            from './context/contexts-wrapper.jsx';
 
 import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS} from './constants/modal-types.js';
+
+import ExistingRegionsSelectManyToEditing from './existing-regions-select-many-to-editing.jsx';
 
 
 function viewDisabled(state) {
@@ -46,9 +50,7 @@ function modifyDisabled(state) {
 
 const mapStateToProps = (state) => {
   return {
-    existingRegionsAsAntdTreeControlData: existingRegionsAsAntdTreeControlData(state)
-    , selected: state.regions.existing.selected
-    , state: state.regions.existing.state
+    isRegionsBeingFetched: isRegionsBeingFetched(state)
     , rgeMode: rgeMode(state)
     , buttonsEnabled: rgeMode(state)!=RGE_MODE.UNENGAGED
     , partitions: partitions(state)
@@ -64,8 +66,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    updateSelectedRegions: (selectedRegions)=>dispatch(updateSelectedRegions(selectedRegions))
-    , displayNotification  : (html)=>dispatch(displayModalNotification({html}))
+      displayNotification  : (html)=>dispatch(displayModalNotification({html}))
     , displayNewRegionDefinition  : (uuid, partitions)=>dispatch(displayModalNewRegionDefinition(uuid, partitions))
     , setRGEMode: (mode)=>dispatch(setRGEMode(mode))
   };
@@ -127,54 +128,39 @@ class RegionList extends React.Component {
         case RGE_MODE.CREATING:
           return (<div style={{display: 'flex', justifyContent: 'center'}}>
             <Button style={{width: '13em'}} type='primary'
-            onClick={this.saveRegion}
-            disabled={!this.props.rgmgmntSaveEnabled}
+                    onClick={this.saveRegion}
+                    disabled={!this.props.rgmgmntSaveEnabled}
             >save region</Button>
-            </div>
+          </div>
           );
       }
     })();
-    switch (this.props.state) {
-      case 'fetching':
-        return <div>fetching regions &hellip;</div>;
-      case 'steady':
-        const tProps = {
-          treeData: this.props.existingRegionsAsAntdTreeControlData,
-          value: this.props.selected,
-          onChange: this.props.updateSelectedRegions,
-          treeCheckable: true,
-          showCheckedStrategy: TreeSelect.SHOW_PARENT,
-          placeholder: 'Please select',
-          style: {
-            width: '100%',
-            height: `${this.props.geometryContext.screen.height*0.3}px`
-          }
-        };
-        return (
-          <div style={{height: '100%'
-                     , display: 'flex'
-                     , flexDirection: 'column'
-                     , justifyContent: 'space-between'}}>
-            <TreeSelect {...tProps} />;
+    if (this.props.isRegionsBeingFetched) {
+      return <div>fetching regions &hellip;</div>;
+    } else {
+      return (
+        <div style={{height: '100%'
+                   , display: 'flex'
+                   , flexDirection: 'column'
+                   , justifyContent: 'space-between'}}>
+        <ExistingRegionsSelectManyToEditing/>
 
-          {modeControls}
+        {modeControls}
 
-          <Radio.Group style={{marginBottom: '1em'
-                             , display: 'flex'
-                             , flexDirection: 'row'
-                             , justifyContent: 'space-around'}}
-                       buttonStyle='solid'
-                       onChange={(e)=>this.onChange(e.target.value)} value={this.props.rgeMode}>
-            <Radio.Button checked={this.props.rgeMode===RGE_MODE.UNENGAGED} disabled={this.props.viewDisabled || (this.props.rgeMode===RGE_MODE.UNENGAGED)} value={RGE_MODE.UNENGAGED}>View</Radio.Button>
-            <Radio.Button checked={this.props.rgeMode===RGE_MODE.CREATING} disabled={this.props.createDisabled || (this.props.rgeMode===RGE_MODE.CREATING)} value={RGE_MODE.CREATING}>Create</Radio.Button>
-            <Radio.Button checked={this.props.rgeMode===RGE_MODE.MODIFYING} disabled={this.props.modifyDisabled || (this.props.rgeMode===RGE_MODE.MODIFYING)} value={RGE_MODE.MODIFYING}>Modify</Radio.Button>
-          </Radio.Group>
-          </div>
-        );
-      default:
-        throw `region-list.jsx :: unrecognized state: [${this.props.state}]`;
+        <Radio.Group style={{marginBottom: '1em'
+                           , display: 'flex'
+                           , flexDirection: 'row'
+                           , justifyContent: 'space-around'}}
+                     buttonStyle='solid'
+                     onChange={(e)=>this.onChange(e.target.value)} value={this.props.rgeMode}>
+          <Radio.Button checked={this.props.rgeMode===RGE_MODE.UNENGAGED} disabled={this.props.viewDisabled || (this.props.rgeMode===RGE_MODE.UNENGAGED)} value={RGE_MODE.UNENGAGED}>View</Radio.Button>
+          <Radio.Button checked={this.props.rgeMode===RGE_MODE.CREATING} disabled={this.props.createDisabled || (this.props.rgeMode===RGE_MODE.CREATING)} value={RGE_MODE.CREATING}>Create</Radio.Button>
+          <Radio.Button checked={this.props.rgeMode===RGE_MODE.MODIFYING} disabled={this.props.modifyDisabled || (this.props.rgeMode===RGE_MODE.MODIFYING)} value={RGE_MODE.MODIFYING}>Modify</Radio.Button>
+        </Radio.Group>
+        </div>
+      );
     }
-  }
+  } // render
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(RegionList));

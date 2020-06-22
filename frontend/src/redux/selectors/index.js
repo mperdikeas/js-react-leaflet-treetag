@@ -6,9 +6,12 @@ import {arr2str, reduxRegionsToAntdData} from './selector-util.js';
 
 
 export function selectedRegions(state) {
+    if (isRegionsBeingFetched(state))
+        return [];
 
-    const {val, selected} = state.regions.existing;
-    assert.isOk(val);
+    const existingRegions = state.regions.existing;
+    const selected = state.regions.editing.selected;
+    assert.isOk(existingRegions);
     assert.isOk(selected);
 
     function str2arr(s) {
@@ -32,12 +35,12 @@ export function selectedRegions(state) {
                       , `selectors/index.js :: arr ${arr} had length ${arr.length}`);
         switch (arr.length) {
         case 1:
-            var key = Object.keys(val)[arr[0]]; //fetched the key at index arr[0]
-            rv = rv.concat(embellish(arr[0], val[key]));  // fetching all the polygons in that partition
+            var key = Object.keys(existingRegions)[arr[0]]; //fetched the key at index arr[0]
+            rv = rv.concat(embellish(arr[0], existingRegions[key]));  // fetching all the polygons in that partition
             break;
         case 2:
-            var _key = Object.keys(val)[arr[0]]; //fetched the key at index arr[0]
-            const partition = val[_key];
+            var _key = Object.keys(existingRegions)[arr[0]]; //fetched the key at index arr[0]
+            const partition = existingRegions[_key];
             rv.push( Object.assign({}, partition[arr[1]], {key: strKey}) );
             break;
         default:
@@ -50,22 +53,15 @@ export function selectedRegions(state) {
 
 
 export function existingRegionsAsAntdTreeControlData(state) {
-    console.log(state.regions.existing.val);
-    const rv = reduxRegionsToAntdData(state.regions.existing.val);
-    console.log(rv);
+    assert.isDefined(state.regions.existing);
+    const rv = reduxRegionsToAntdData(state.regions.existing);
     return rv;
 }
 
-export function overlapExistingRegionsAsTreeData (state) {
-    if (isRegionsBeingFetched(state))
-        return undefined;
-    else
-        return  reduxRegionsToAntdData(state.regions.overlaps.regions);
-}
 
 // sse-1592816552
 export function isRegionsBeingFetched(state) {
-    return (state.regions.overlaps.regions===undefined);
+    return (state.regions.existing===undefined);
 }
 
 export function rgeMode(state) { // region editing mode
@@ -74,13 +70,15 @@ export function rgeMode(state) { // region editing mode
 
 // returns an array of partition names
 export function partitions(state) {
-    return Object.keys(state.regions.existing.val);
+    if (isRegionsBeingFetched(state))
+        return undefined;
+    else
+        return Object.keys(state.regions.existing);
 }
 
 export function partition2regions(state) {
-    const {val} = state.regions.existing;
     const rv = {};
-    for (const [key, value] of Object.entries(val)) {
+    for (const [key, value] of Object.entries(state.regions.existing)) {
         rv[key] = value.map( (x)=>x.name );
     }
     return rv;
