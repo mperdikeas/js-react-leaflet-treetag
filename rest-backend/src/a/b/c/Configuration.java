@@ -5,15 +5,15 @@ import java.util.LinkedHashMap;
 public class Configuration {
 
 
-    public LinkedHashMap<Integer, TreeConfiguration> treesConfiguration;
+    public LinkedHashMap<Integer, TreeConfiguration> species;
     public HealthStatuses healthStatuses;
     public LinkedHashMap<Integer, String> activities;
 
 
-    public Configuration(final LinkedHashMap<Integer, TreeConfiguration> treesConfiguration
+    public Configuration(final LinkedHashMap<Integer, TreeConfiguration> species
                          , final HealthStatuses healthStatuses
                          , final LinkedHashMap<Integer, String> activities) {
-        this.treesConfiguration = treesConfiguration;
+        this.species = species;
         this.healthStatuses = healthStatuses;
         this.activities = activities;
     }

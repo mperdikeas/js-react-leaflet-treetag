@@ -88,7 +88,8 @@ import {clearModal
       , rgmgmntDeleteStart
       , rgmgmntDeleteEnd
       , rgmgmntModifyStart
-      , rgmgmntModifyEnd}  from './redux/actions/index.js';
+      , rgmgmntModifyEnd
+      , getConfigurationAndTreesAndThen}  from './redux/actions/index.js';
 
 import {isRegionsBeingFetched
       , selectedRegions
@@ -105,7 +106,9 @@ require('./region-mgmnt-map.css');
 
 const mapStateToProps = (state) => {
   return {
-    isRegionsBeingFetched: isRegionsBeingFetched(state)
+    treesConfiguration: state.configuration?.species??undefined
+    , trees: state.trees
+    , isRegionsBeingFetched: isRegionsBeingFetched(state)
     , selectedRegions : selectedRegions(state)
     , rgeMode: rgeMode(state)
     , wktRegionUnderConstructionExists: wktRegionUnderConstructionExists(state)
@@ -125,9 +128,29 @@ const mapDispatchToProps = (dispatch) => {
     , rgmgmntDeleteStart: ()=>dispatch(rgmgmntDeleteStart())
     , rgmgmntDeleteEnd: ()=>dispatch(rgmgmntDeleteEnd())
     , rgmgmntModifyStart: ()=>dispatch(rgmgmntModifyStart())
-    , rgmgmntModifyEnd: ()=>dispatch(rgmgmntModifyEnd())    
+    , rgmgmntModifyEnd: ()=>dispatch(rgmgmntModifyEnd())
+    , addTrees: (self)=>dispatch(getConfigurationAndTreesAndThen(()=>addTrees(self)))
   };
 };
+
+const addTrees = (self) => {
+  console.log(`cag - entering function addTrees`);
+  const {overlays/*, id2marker*/} = treeOverlays(self.props.treesConfiguration, self.props.trees);
+  console.log(`cag - obtained overlays and id2marker; proceeding to add markers`);
+//  self.id2marker = id2marker;
+  for (const layerName in overlays) {
+    const layerGroup = overlays[layerName];
+    layerGroup.addTo(self.map);
+    self.clickableLayers.push(layerGroup);
+    layerGroup.eachLayer ( (marker)=>{
+      marker.options.interactive = false; // https://stackoverflow.com/a/60642381/274677
+    });
+
+  //  self.addClickListenersToMarkersOnLayer(layerGroup);
+    self.layersControl.addOverlay(layerGroup, layerName);
+  }      
+}
+
 
 
 // https://spatialreference.org/ref/epsg/2100/
@@ -246,7 +269,7 @@ class RegionMgmntMap extends React.Component {
 
     this.addMeasureControl();
     this.addLayerGroupsExceptPromisingLayers();
-    this.addLayerGroupsForPromisingLayers();
+    this.props.addTrees(this);
 
     this.map.on(L.Draw.Event.CREATED     , (e) => this.onDrawCreation(e));
     this.map.on(L.Draw.Event.EDITED      , (e) => this.onDrawEdited(e));
@@ -409,23 +432,7 @@ class RegionMgmntMap extends React.Component {
 
   }
   
-  addLayerGroupsForPromisingLayers = () => {
-    // sse-1587477558
-    const treesConfigurationIsNowAvailable = new Promise(
-      (resolution, rejection) => {
-        const testAvailability = () => {
-          if (this.props.treesConfigurationContext.treesConfiguration!=null) {
-            console.log('treeConfiguration is now available');
-            clearInterval(intervalId);
-            resolution();
-          } else {
-          console.log('treeConfiguration is not yet available');
-            ; // wait some more (it typically takes 5 ms to populate the treesConfiguration structure)
-          }
-        }
-        const intervalId = setInterval(testAvailability, 100);
-      });
-    
+  addTreesNOT_USED = () => {
     treesConfigurationIsNowAvailable.then( ()=> {
       const promise = treeOverlays(this.props.treesConfigurationContext.treesConfiguration);
       promise.then(({overlays}) => {

@@ -13,7 +13,7 @@ import { v4 as uuidv4 } from 'uuid';
 import {displayModal
       , clearModal
       , addToast
-    ,   updateTreesConfiguration}
+    ,   updateConfiguration}
 from './index.js';
 import {MDL_RETRY_CANCEL, MDL_NOTIFICATION_NO_DISMISS} from '../../constants/modal-types.js';
 import {CANCEL_TOKEN_TYPES
@@ -50,7 +50,7 @@ export default function getTreesConfiguration() {
       if (err===null) {
         if (t!=null) {
           console.log(t);
-          dispatch(updateTreesConfiguration(t));
+          dispatch(updateConfiguration(t));
           dispatch(addToast('trees configuration retrieved', 'retrieved updated trees configuration'));
         } else {
           dispatch( displayModal(MDL_RETRY_CANCEL, propsForRetryDialog(dispatch, f, url, actionCreator, 'this is likely a bug - regions tree configuratios should never be null', err)) );

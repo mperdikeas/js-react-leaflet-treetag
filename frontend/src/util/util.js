@@ -92,10 +92,21 @@ function areEqualShallow(a, b) {
     return true;
 }
 
+// TODO: use chai exists instead
 function isNotNullOrUndefined(v) {
     return (v!==undefined) && (v!==null);
 }
 
+
+function tnu(x) { // Text representation for Null or Undefined
+    if (x===null)
+        return 'null';
+    else if (x===undefined)
+        return 'undefined';
+    else {
+        return 'cetera';
+    }
+}
 
 exports.theAnswer         = theAnswer;
 exports.allStrictEqual    = allStrictEqual;
@@ -107,3 +118,4 @@ exports.uniqValues        = uniqValues;
 exports.randomItem        = randomItem;
 exports.areEqualShallow   = areEqualShallow;
 exports.isNotNullOrUndefined = isNotNullOrUndefined;
+exports.tnu               = tnu;

@@ -17,7 +17,7 @@ import {DefaultIcon, TreeIcon}       from './icons.js';
 import {CustomCircleMarker}          from './custom-markers.js';
 import rainbow                       from './rainbow.js';
 import {sca_fake_return
-        , uniqValues}                from './util/util.js';
+        , uniqValues, tnu}           from './util/util.js';
 import {axiosAuth} from './axios-setup.js';
 import {possiblyInsufPrivPanicInAnyCase} from './util-privilleges.js';
 
@@ -47,67 +47,12 @@ function from_kind2layer_to_layer2kinds(configuration) {
     return rv;
 }
 
-const treeOverlays = (treeConfiguration)=> {
-    console.log(treeConfiguration);
-    const id2marker = {};
-    const overlays = {};
-    const overlayNames = extractLayerNames(treeConfiguration);
-    console.log(overlayNames);
-    const layer2kinds = from_kind2layer_to_layer2kinds(treeConfiguration);
-    return getTrees(10000).then( (data)=> {
-        overlayNames.forEach( (overlayName) => {
-            const layerGroup = L.layerGroup(data.filter(({kind})=>{
-                const kindsInThisLayer = layer2kinds[overlayName];
-                assert.isTrue(Array.isArray(kindsInThisLayer));
-                const rv = kindsInThisLayer.includes(kind);
-                return rv;
-            }).map( ({id, kind, coords})=> {
-                assert.isNotNull(id);
 
-/*
-                const useCanvasRenderer = true;
-
-
-
-                const baseOptions = {targetId: id, kind, color};
-
-                const useCanvasRenderer = true;
-                const styleOptions = (()=>{
-                    if (useCanvasRenderer)
-                        return Object.assign({}, defaultMarkerStyle, {renderer: myRenderer});
-                    else
-                        return Object.assign({}, defaultMarkerStyle);
-                })();
-
-                const effectiveOptions = Object.assign({}, baseOptions, styleOptions);
-
-                const marker = new L.circleMarker([coords.latitude, coords.longitude]
-                                                  , effectiveOptions);
-
-*/
-                const marker = new L.circleMarker([coords.latitude, coords.longitude]
-                                                  , {radius: 8
-                                                     , color: treeConfiguration[kind].color
-                                                     , renderer: myRenderer
-                                                     , targetId: id
-                                                     , kind});
-                addPopup(marker, treeConfiguration[kind].name.singular);
-                
-                id2marker[id] = marker;
-                return marker;
-
-            })); // const layerGroup = L.layerGroup(...
-            overlays[overlayName] = layerGroup;
-        }); // overlayNames.forEach
-        return {overlays, id2marker};
-    });
-};
-
-const treeOverlays2 = (treeConfiguration, data)=> {
+const treeOverlays = (treeConfiguration, data)=> {
     console.log(treeConfiguration);
     console.log(data);
-    assert.isOk(treeConfiguration);
-    assert.isOk(data);
+    assert.exists(treeConfiguration, `tree configuration is null or undefined (${tnu(treeConfiguration)})`);
+    assert.exists(data, `tree data is null or undefined (${tnu(data)})`);
     const id2marker = {};
     const overlays = {};
     const overlayNames = extractLayerNames(treeConfiguration);
@@ -161,28 +106,6 @@ const ota_Callicrates = (()=>{
 })();
 
 
-function getTrees(N) {
-    const url = '/getTrees';
-    return axiosAuth.get(url
-                    ).then(res => {
-                        if (res.data.err != null) {
-                            console.log('getTrees API call error');
-                            assert.fail(res.data.err);
-                            return sca_fake_return();
-                        } else {
-                            console.log('getTrees API call success');
-                            assert.isTrue(Array.isArray(res.data.t));
-                            if (res.data.t.length < N) // TODO: I shouldn't have that on production
-                                return res.data.t;
-                            else
-                                return res.data.t.slice(0, N);
-                        }
-                    }).catch( err => {
-                        possiblyInsufPrivPanicInAnyCase(err);
-                    });
-}
-
-
 function generateRandomCoordinatesInAthens(N) {
     const rv = [];
     const spanDegrees = 0.05;
@@ -195,4 +118,4 @@ function generateRandomCoordinatesInAthens(N) {
 }
 
 
-export {ota_Callicrates, treeOverlays, treeOverlays2}
+export {ota_Callicrates, treeOverlays}

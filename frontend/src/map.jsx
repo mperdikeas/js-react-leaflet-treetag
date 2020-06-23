@@ -55,7 +55,7 @@ import '../node_modules/leaflet-measure/dist/leaflet-measure.css';
 
 import {axiosAuth} from './axios-setup.js';
 
-import {ota_Callicrates, treeOverlays, treeOverlays2} from './tree-markers.js';
+import {ota_Callicrates, treeOverlays} from './tree-markers.js';
 
 import {ATHENS, DEFAULT_ZOOM} from './constants/map-constants.js';
 
@@ -82,10 +82,10 @@ const mapStateToProps = (state) => {
     assert.isOk(state.target.treeInfo.current);
   }
   return {
-    treesConfiguration: state.treesConfiguration?.treesConfiguration??undefined,
-    trees: state.trees,
-    targetId                       : state.targetId, // TODO: i bet this is broken and has to be replaced with state.target.id
-    targetIsDirty: targetIsDirty(state)
+    treesConfiguration: state.configuration?.species??undefined
+    , trees: state.trees
+    , targetId: state.targetId // TODO: i bet this is broken and has to be replaced with state.target.id
+    , targetIsDirty: targetIsDirty(state)
   };
 };
 
@@ -117,7 +117,7 @@ const mergeProps = (stateProps, {dispatch}) => {
 
 const addTrees = (self) => {
   console.log(`cag - entering function addTrees`);
-  const {overlays, id2marker} = treeOverlays2(self.props.treesConfiguration, self.props.trees);
+  const {overlays, id2marker} = treeOverlays(self.props.treesConfiguration, self.props.trees);
   console.log(`cag - obtained overlays and id2marker; proceeding to add markers`);
   self.id2marker = id2marker;
   for (const layerName in overlays) {
@@ -336,55 +336,6 @@ class Map extends React.Component {
   }
 
 
-  addTrees_NOT_USED = () => {
-    getConfigurationAndTreesAndThen(()=>{
-      const {overlays, id2marker} = treeOverlays2(this.props.treesConfiguration, this.props.trees);
-      this.id2marker = id2marker;
-      for (const layerName in overlays) {
-        const layerGroup = overlays[layerName];
-        console.log(`cag - adding layer group ${layerGroup} to map`);
-        layerGroup.addTo(this.map);
-        this.clickableLayers.push(layerGroup);
-        this.addClickListenersToMarkersOnLayer(layerGroup);
-        this.layersControl.addOverlay(layerGroup, layerName);
-      }      
-    });
-  }
-
-
-  addTrees_SAFE = () => {
-    console.log('caf - map.jsx addTrees');
-    // sse-1587477558
-    const treesConfigurationIsNowAvailable = new Promise(
-      (resolution, rejection) => {
-        const testAvailability = () => {
-          if (this.props.treesConfigurationContext.treesConfiguration!=null) {
-            console.log('treeConfiguration is now available');
-            clearInterval(intervalId);
-            resolution();
-          } else {
-          console.log('treeConfiguration is not yet available');
-            ; // wait some more (it typically takes 5 ms to populate the treesConfiguration structure)
-          }
-        }
-        const intervalId = setInterval(testAvailability, 100);
-      });
-    treesConfigurationIsNowAvailable.then( ()=> {
-      const promise = treeOverlays(this.props.treesConfigurationContext.treesConfiguration);
-      promise.then(({overlays, id2marker}) => {
-        this.id2marker = id2marker;
-        for (const layerName in overlays) {
-          const layerGroup = overlays[layerName];
-          layerGroup.addTo(this.map);
-          this.clickableLayers.push(layerGroup);
-          this.addClickListenersToMarkersOnLayer(layerGroup);
-          this.layersControl.addOverlay(layerGroup, layerName);
-        }
-      });
-    }).catch( (v) => {
-      assert.fail('not expecting this promise to fail: '+v); 
-    } );
-  }
 
   getMarker = (id) => {
     return this.id2marker[id];

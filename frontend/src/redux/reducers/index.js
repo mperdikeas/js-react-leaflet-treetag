@@ -2,7 +2,7 @@ import chai from '../../util/chai-util.js';
 const assert = chai.assert;
 
 
-import treesConfigurationReducer      from './trees-configuration-reducer.js';
+import configurationReducer           from './configuration-reducer.js';
 import treesReducer                   from './trees-reducer.js';
 import toastReducer                   from './toastReducer.js';
 import mouseCoordsReducer             from './mouseCoordsReducer.js';
@@ -14,7 +14,7 @@ import regionsReducer                 from './regionsReducer.js';
 
 function rootReducer(state = {}, action) {
     return {
-        treesConfiguration   : treesConfigurationReducer   (state.treesConfiguration, action),
+        configuration        : configurationReducer        (state.configuration, action),
         trees                : treesReducer                (state.trees, action),
         toasts               : toastReducer                (state.toasts, action),
         latlng               : mouseCoordsReducer          (state.latlng, action),
