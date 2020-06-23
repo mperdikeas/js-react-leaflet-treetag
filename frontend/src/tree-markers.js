@@ -6,7 +6,9 @@ require('./ots/leaflet.shpfile.js');
 
 import proj4 from 'proj4';
 
-const assert = require('chai').assert;
+import chai from './util/chai-util.js';
+const assert = chai.assert;
+
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -101,6 +103,42 @@ const treeOverlays = (treeConfiguration)=> {
     });
 };
 
+const treeOverlays2 = (treeConfiguration, data)=> {
+    console.log(treeConfiguration);
+    console.log(data);
+    assert.isOk(treeConfiguration);
+    assert.isOk(data);
+    const id2marker = {};
+    const overlays = {};
+    const overlayNames = extractLayerNames(treeConfiguration);
+    console.log(overlayNames);
+    const layer2kinds = from_kind2layer_to_layer2kinds(treeConfiguration);
+
+    overlayNames.forEach( (overlayName) => {
+        const layerGroup = L.layerGroup(data.filter(({kind})=>{
+            const kindsInThisLayer = layer2kinds[overlayName];
+            assert.isTrue(Array.isArray(kindsInThisLayer));
+            const rv = kindsInThisLayer.includes(kind);
+            return rv;
+        }).map( ({id, kind, coords})=> {
+            assert.isNotNull(id);
+            const marker = new L.circleMarker([coords.latitude, coords.longitude]
+                                              , {radius: 8
+                                                 , color: treeConfiguration[kind].color
+                                                 , renderer: myRenderer
+                                                 , targetId: id
+                                                 , kind});
+            addPopup(marker, treeConfiguration[kind].name.singular);
+            
+            id2marker[id] = marker;
+            return marker;
+
+        })); // const layerGroup = L.layerGroup(...
+        overlays[overlayName] = layerGroup;
+    }); // overlayNames.forEach
+    return {overlays, id2marker};
+};
+
 
 
 const ota_Callicrates = (()=>{
@@ -157,4 +195,4 @@ function generateRandomCoordinatesInAthens(N) {
 }
 
 
-export {ota_Callicrates, treeOverlays}
+export {ota_Callicrates, treeOverlays, treeOverlays2}

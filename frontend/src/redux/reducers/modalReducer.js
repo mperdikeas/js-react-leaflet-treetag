@@ -9,7 +9,9 @@ export default (modals = [], action) => {
     switch (action.type) {
     case DISPLAY_MODAL: {
         const newModal = {modalType: action.payload.modalType, modalProps: action.payload.modalProps};
-        return [...modals, newModal];
+        const rv = [...modals, newModal];
+        console.log(`cag - display modal - a total of ${rv.length} modals are now displayed`);
+        return rv;
     }
     case CLEAR_MODAL: {
         const uuid = action.payload;
@@ -25,30 +27,6 @@ export default (modals = [], action) => {
                     modals2.push(Object.assign({}, modal));
                 else {
                     const modalToClose = modal;
-                    /* this is likely erroneous and against convention - reducers should be
-                     * free of side-effects
-                     *
-                     *
-                     */
-                    if (false) {
-                        if (modalToClose.modalProps.followUpFunc) {
-                            throw 'I believe this to be DEAD code - remove it in a few days!';
-                            /* without the setTimeout I encountered the following problem:
-                             *
-                             *     Error: You may not call store.getState() while the reducer is executing.
-                             *
-                             * I can't explain the root cause of the problem and also, it didn't occur
-                             * in the target-photo-pane.jsx at all; it only occured at the 
-                             * target-data-pane.jsx and target-metadata-pane.jsx
-                             */
-
-                            /*
-                             * TODO: is this really a useful pattern?
-                             */
-
-                            setTimeout(()=>modalToClose.modalProps.followUpFunc(), 0);
-                        }
-                    }
                     j ++;
                     if (j>1) {
                         console.warn(`Mighty weird: modal with UUID [${uuid}] encountered ${j} times so far!`);
@@ -60,9 +38,12 @@ export default (modals = [], action) => {
                 console.warn(`Mighty weird: no modal with UUID [${uuid}] was found`);
                 throw 42;
             }
+            console.log(`cag - clear modals - ${modals2.length} modals now remain`);
             return modals2;
-        } else
+        } else {
+            console.warn(`Mighty weird: a CLEAR_MODAL action was dispatched while no modals were displayed`);
             return modals;
+        }
     }
     default: {
         return modals;

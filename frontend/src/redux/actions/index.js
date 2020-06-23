@@ -46,6 +46,9 @@ import { UPDATE_MOUSE_COORDS
          , OVERLAPS_GET_OVERLAPS_SUCCESS
 
          , OVERLAPS_UPDATE_SELECTED_REGION
+
+         , UPDATE_TREES_CONFIGURATION
+         , UPDATE_TREES
        } from './action-types.js';
 
 import {CancelToken} from 'axios';
@@ -287,3 +290,23 @@ export function overlapsSetPartitions    (partitions)  {return {type: OVERLAPS_S
 export function overlapsGetOverlapsInProgress   ()     {return {type: OVERLAPS_GET_OVERLAPS_IN_PROGRESS, payload: null};}
 export function overlapsGetOverlapsSuccess(overlaps)   {return {type: OVERLAPS_GET_OVERLAPS_IN_PROGRESS, payload: overlaps};}
 
+export function updateTreesConfiguration(treesConfiguration) {return {type: UPDATE_TREES_CONFIGURATION, payload: treesConfiguration};}
+export function updateTrees(trees)                           {return {type: UPDATE_TREES, payload: trees};}
+
+import getTrees from './get-trees.jsx';
+export {default as getTrees} from './get-trees.jsx';
+import getTreesConfiguration from './get-trees-configuration.jsx';
+export {default as getTreesConfiguration} from './get-trees-configuration.jsx';
+
+
+// cf. SSE-1592901297
+export function getConfigurationAndTreesAndThen(f) {
+    return (dispatch) => {
+        Promise.all([dispatch(getTrees(1000))
+                     , dispatch(getTreesConfiguration())])
+            .then(()=>{
+                console.log('cag both promises fullfilled, calling function');
+                f();
+            });
+    };
+}

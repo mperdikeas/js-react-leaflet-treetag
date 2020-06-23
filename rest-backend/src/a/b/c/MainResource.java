@@ -181,6 +181,7 @@ public class MainResource {
     public Response getConfiguration(@Context final HttpServletRequest httpServletRequest) {
         String methodInfo = null;
         try {
+            TimeUnit.MILLISECONDS.sleep(3000);
             final String installation = Installation.getFromServletRequest(httpServletRequest);
             methodInfo = String.format("getConfiguration() ~*~ installation: [%s], remote address: [%s]"
                                                     , installation
@@ -208,6 +209,7 @@ public class MainResource {
         final JaxRsApplication app = (JaxRsApplication) _app;
         String methodInfo = null;
         try {
+            TimeUnit.MILLISECONDS.sleep(6000);
             final String installation = Installation.getFromServletRequest(httpServletRequest);
             methodInfo = String.format("getTrees() ~*~ installation: [%s], remote address: [%s]"
                                                     , installation

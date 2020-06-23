@@ -50,7 +50,7 @@ class ModalNotificationNoDismiss extends React.Component {
   render() {
     return (
       <>
-      <dialog ref={this.ref}>
+      <dialog style={this.props.style} ref={this.ref}>
         <div>{this.props.html}</div>
       </dialog>
       {this.props.children}

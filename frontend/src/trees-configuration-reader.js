@@ -1,4 +1,6 @@
-const assert = require('chai').assert;
+import chai from './util/chai-util.js';
+const assert = chai.assert;
+
 
 
 import {sca_fake_return} from './util/util.js';

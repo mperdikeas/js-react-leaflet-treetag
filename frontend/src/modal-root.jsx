@@ -59,11 +59,11 @@ const ModalRoot = ({geometryContext, modals, children}) => {
   } else {
     const X = 0;
     const Y = 0.3*geometryContext.screen.height;
-    const step = 20;
+    const step = 30;
     const specificModals = modals.map( (modal, idx) => {
       const {modalType, modalProps} = modal;
       const SpecificModal = MODAL_COMPONENTS[modalType]
-      return <SpecificModal style={{top: Y+idx*step, left: X+idx*step}} key={idx} {...modalProps}/>
+      return <SpecificModal style={{position: 'absolute', top: Y+idx*step, left: X+idx*step}} key={idx} {...modalProps}/>
     } );
 
     return (

@@ -34,7 +34,7 @@ class ModalNotification extends React.Component {
   render() {
     return (
       <>
-      <dialog style={{width: '17em'}}ref={this.ref}>
+      <dialog style={{...this.props.style, width: '17em'}}ref={this.ref}>
         <div>{this.props.html}</div>
         <div style={{display:'flex', justifyContent: 'center'}}>
           <Button style={{marginTop: '1em'}} variant='primary' onClick={()=>this.props.clearModal(this.props.uuid)}>OK</Button>

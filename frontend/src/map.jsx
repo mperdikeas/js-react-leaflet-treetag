@@ -11,13 +11,11 @@ require('./ots/leaflet.shpfile.js');
 
 const React = require('react');
 var      cx = require('classnames');
-//const assert = require('chai').assert;
-const chai = require('chai');
-chai.Assertion.includeStack = true; // https://stackoverflow.com/a/13396945/274677
-chai.config.includeStack = true;
-chai.config.showDiff = false;
-chai.config.truncateThreshold = 0; // disable truncating
+
+import chai from './util/chai-util.js';
 const assert = chai.assert;
+
+
 
 
 import L from 'leaflet';
@@ -57,7 +55,7 @@ import '../node_modules/leaflet-measure/dist/leaflet-measure.css';
 
 import {axiosAuth} from './axios-setup.js';
 
-import {ota_Callicrates, treeOverlays} from './tree-markers.js';
+import {ota_Callicrates, treeOverlays, treeOverlays2} from './tree-markers.js';
 
 import {ATHENS, DEFAULT_ZOOM} from './constants/map-constants.js';
 
@@ -69,7 +67,8 @@ import { connect }          from 'react-redux';
 import {updateMouseCoords
       , displayModal
       , unsetOrFetch
-      , clearModal}  from './redux/actions/index.js';
+      , clearModal
+      , getConfigurationAndTreesAndThen}  from './redux/actions/index.js';
 
 
 import TreeCountStatistic from './tree-count-statistic.js';
@@ -83,7 +82,9 @@ const mapStateToProps = (state) => {
     assert.isOk(state.target.treeInfo.current);
   }
   return {
-    targetId                       : state.targetId,
+    treesConfiguration: state.treesConfiguration?.treesConfiguration??undefined,
+    trees: state.trees,
+    targetId                       : state.targetId, // TODO: i bet this is broken and has to be replaced with state.target.id
     targetIsDirty: targetIsDirty(state)
   };
 };
@@ -108,7 +109,24 @@ const mergeProps = (stateProps, {dispatch}) => {
                          , updateCoordinates                 : (latlng)   => dispatch(updateMouseCoords(latlng))
                          , unsetOrFetch : (targetId) => dispatch(unsetOrFetch(targetId))
                          , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(stateProps.targetId), uuid: uuidv4()}))
+                         , addTrees: (self)=>dispatch(getConfigurationAndTreesAndThen(()=>addTrees(self)))
                        });
+}
+
+
+
+const addTrees = (self) => {
+  console.log(`cag - entering function addTrees`);
+  const {overlays, id2marker} = treeOverlays2(self.props.treesConfiguration, self.props.trees);
+  console.log(`cag - obtained overlays and id2marker; proceeding to add markers`);
+  self.id2marker = id2marker;
+  for (const layerName in overlays) {
+    const layerGroup = overlays[layerName];
+    layerGroup.addTo(self.map);
+    self.clickableLayers.push(layerGroup);
+    self.addClickListenersToMarkersOnLayer(layerGroup);
+    self.layersControl.addOverlay(layerGroup, layerName);
+  }      
 }
 
 
@@ -267,7 +285,7 @@ class Map extends React.Component {
 
 
     this.addLayerGroupsExceptPromisingLayers();
-    this.addLayerGroupsForPromisingLayers();
+    this.props.addTrees(this);
     this.installNewDrawWorkspace(new L.FeatureGroup());
 
     this.map.on('draw:created', (e) => {
@@ -317,8 +335,25 @@ class Map extends React.Component {
     BaseLayersForLayerControl.ESRI.addTo(this.map);
   }
 
-  addLayerGroupsForPromisingLayers = () => {
-    console.log('caf - map.jsx addLayerGroupsForPromisingLayers');
+
+  addTrees_NOT_USED = () => {
+    getConfigurationAndTreesAndThen(()=>{
+      const {overlays, id2marker} = treeOverlays2(this.props.treesConfiguration, this.props.trees);
+      this.id2marker = id2marker;
+      for (const layerName in overlays) {
+        const layerGroup = overlays[layerName];
+        console.log(`cag - adding layer group ${layerGroup} to map`);
+        layerGroup.addTo(this.map);
+        this.clickableLayers.push(layerGroup);
+        this.addClickListenersToMarkersOnLayer(layerGroup);
+        this.layersControl.addOverlay(layerGroup, layerName);
+      }      
+    });
+  }
+
+
+  addTrees_SAFE = () => {
+    console.log('caf - map.jsx addTrees');
     // sse-1587477558
     const treesConfigurationIsNowAvailable = new Promise(
       (resolution, rejection) => {
@@ -357,7 +392,7 @@ class Map extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if ((prevProps.loginContext.username===null) && (this.props.loginContext.username!==null)) {
-//      this.addLayerGroupsForPromisingLayers();
+//      this.addTrees();
     }
   }
 
