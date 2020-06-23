@@ -1,7 +1,9 @@
 const React = require('react');
 var      cx = require('classnames');
 
-const assert = require('chai').assert;
+import chai from './util/chai-util.js';
+const assert = chai.assert;
+
 
 import { connect }          from 'react-redux';
 
@@ -20,7 +22,7 @@ import TargetPhotoPane      from './target-photo-pane.jsx';
 import TargetMetadataPane   from './target-metadata-pane.jsx';
 import TargetAdjustmentPane from './target-adjustment-pane.jsx';
 
-import {displayModal
+import {displayModalNotification
       , toggleMaximizeInfoPanel
       , setPaneToOpenInfoPanel
       , setTreeInfoCurrent
@@ -81,8 +83,7 @@ const mergeProps = ( stateProps, {dispatch}) => {
     ...stateProps
     , getFeatData:(id) => dispatch(getFeatData(id))
     , saveFeatData: (treeInfo) => dispatch(saveFeatData(treeInfo))
-    , displayTreeDataHasBeenUpdated: (targetId)=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataHasBeenUpdated(targetId)}))
-    , displayModalSavingTreeData  : ()=>dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: msgSavingTreeData(stateProps.targetId)}))
+    , displayTreeDataHasBeenUpdated: (targetId)=>dispatch(displayModalNotification({html: msgTreeDataHasBeenUpdated(targetId)}))
     , toggleMaximizeInfoPanel: ()=>dispatch(toggleMaximizeInfoPanel())
     , setPaneToOpenInfoPanelAndPossiblyFetchPhoto: (pane) => {
       dispatch(setPaneToOpenInfoPanel(pane))
@@ -96,7 +97,7 @@ const mergeProps = ( stateProps, {dispatch}) => {
         dispatch(getFeatData(stateProps.targetId));
       }
     }    
-    , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(stateProps.targetId)}))
+    , displayNotificationTargetIsDirty  : ()=>dispatch(displayModalNotification({html: msgTreeDataIsDirty(stateProps.targetId)}))
     , setTreeInfoCurrent: (treeInfo) => dispatch(setTreeInfoCurrent (treeInfo))
   };
 }

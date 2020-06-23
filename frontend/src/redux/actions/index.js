@@ -71,6 +71,8 @@ import {ensureRGEModeIsValid} from '../constants/region-editing-mode.js';
 import {MDL_NOTIFICATION
         , MDL_NEW_REGION_DEFINITION} from '../../constants/modal-types.js';
 
+import {tnu} from '../../util/util.js';
+
 
 export function updateMouseCoords(latlng) {
     return { type: UPDATE_MOUSE_COORDS, payload: {latlng} };
@@ -79,8 +81,7 @@ export function updateMouseCoords(latlng) {
 export function displayModal(modalType, modalProps) {
     assert.isTrue(isValidModalType(modalType), `unrecognized modal type: [${modalType}]`);
     const {uuid} = modalProps;
-    assert.isNotNull(uuid, 'displayModal 1');
-    assert.isDefined(uuid, 'displayModal 2');
+    assert.exists(uuid, `actions/index.js displayModal weird: ${tnu(uuid)}`);
     return {type: DISPLAY_MODAL, payload: {modalType, modalProps}};
 }
 

@@ -87,7 +87,6 @@ const mapStateToProps = (state) => {
     treesConfiguration: state.configuration?.species??undefined
     , trees: state.trees
     , treesOrConfShouldBeFetched: ( (state.configuration?.species??undefined) === undefined) || (state.trees === undefined)
-    , targetId: state.targetId // TODO: i bet this is broken and has to be replaced with state.target.id
     , targetIsDirty: targetIsDirty(state)
   };
 };
