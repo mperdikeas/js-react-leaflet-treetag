@@ -1,6 +1,8 @@
 const React = require('react');
 
-const assert = require('chai').assert;
+import chai from './util/chai-util.js';
+const assert = chai.assert;
+
 
 import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
 
@@ -54,8 +56,8 @@ export function SelectDataFieldFactory (onChange) {
 
   return (props) => {
     const {codeToName} = props;
-    const options = Array.from(codeToName.keys()).map(function(key, index) {
-      const name = codeToName.get(key);
+    const options = Object.keys(codeToName).map(function(key, index) {
+      const name = codeToName[key];
       assert.exists(name);
       return <option key={index} value={key}>{name}</option>;
     });

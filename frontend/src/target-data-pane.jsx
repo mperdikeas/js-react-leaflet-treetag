@@ -1,7 +1,9 @@
 const React = require('react');
 var      cx = require('classnames');
 
-const assert = require('chai').assert;
+import chai from './util/chai-util.js';
+const assert = chai.assert;
+
 import {Form, Col, Row, Button, Nav, ButtonGroup} from 'react-bootstrap';
 
 // REDUX
@@ -25,7 +27,8 @@ import {targetIsDirty} from './redux/selectors.js';
 
 const mapStateToProps = (state) => {
   return {
-    targetIsDirty: targetIsDirty(state)
+    healthStatuses: state.configuration.healthStatuses
+    , targetIsDirty: targetIsDirty(state)
     , targetId: state.target.id
     , treeInfo: state.target.treeInfo.current
   };
@@ -113,7 +116,7 @@ class TargetDataPane extends React.Component {
            disease,
            comments} = this.props.treeInfo; //treeData;
     console.log('~~~~~~~~~~~~~~~~~~~~~~~~~~~');
-    console.log(this.props.treesConfigurationContext.healthStatuses);
+    console.log(this.props.healthStatuses);
     console.log('============================');
     return (
       <>
@@ -122,7 +125,7 @@ class TargetDataPane extends React.Component {
       </div>
       <Form noValidate onSubmit={this.handleSubmit}>
         <this.IntegerDataField  name='yearPlanted'  label='έτος φύτευσης' value={yearPlanted} />
-        <this.SelectDataField   name='healthStatus' label='Υγεία'         value={healthStatus} codeToName={this.props.treesConfigurationContext.healthStatuses}/>
+        <this.SelectDataField   name='healthStatus' label='Υγεία'         value={healthStatus} codeToName={this.props.healthStatuses}/>
         <this.IntegerDataField  name='heightCm'            label='Ύψος (cm)'              value={heightCm} />
         <this.IntegerDataField  name='crownHeightCm'       label='Έναρξη κόμης (cm)'      value={crownHeightCm} />
         <this.IntegerDataField  name='circumferenceCm'     label='Περιφέρεια (cm)'        value={circumferenceCm} />
