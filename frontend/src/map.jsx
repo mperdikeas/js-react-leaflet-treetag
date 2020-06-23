@@ -58,6 +58,7 @@ import {axiosAuth} from './axios-setup.js';
 import {ota_Callicrates, treeOverlays} from './tree-markers.js';
 
 import {ATHENS, DEFAULT_ZOOM} from './constants/map-constants.js';
+import {ABOMINATION_CNFG_NOT_AVAILABLE} from './constants/msg-constants.js';
 
 import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS} from './constants/modal-types.js';
 
@@ -81,9 +82,11 @@ const mapStateToProps = (state) => {
   if ((state.target.treeInfo != null) && (state.target.treeInfo.original != null)) {
     assert.isOk(state.target.treeInfo.current);
   }
+
   return {
     treesConfiguration: state.configuration?.species??undefined
     , trees: state.trees
+    , treesOrConfShouldBeFetched: ( (state.configuration?.species??undefined) === undefined) || (state.trees === undefined)
     , targetId: state.targetId // TODO: i bet this is broken and has to be replaced with state.target.id
     , targetIsDirty: targetIsDirty(state)
   };
@@ -109,8 +112,8 @@ const mergeProps = (stateProps, {dispatch}) => {
                          , updateCoordinates                 : (latlng)   => dispatch(updateMouseCoords(latlng))
                          , unsetOrFetch : (targetId) => dispatch(unsetOrFetch(targetId))
                          , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(stateProps.targetId), uuid: uuidv4()}))
-                         , addTrees: (self)=>dispatch(getConfigurationAndTreesAndThen(()=>addTrees(self)))
-                       });
+                         , addTrees: (self)=> dispatch(getConfigurationAndTreesAndThen(()=>addTrees(self)))
+                         });
 }
 
 
@@ -285,7 +288,11 @@ class Map extends React.Component {
 
 
     this.addLayerGroupsExceptPromisingLayers();
-    this.props.addTrees(this);
+    if (this.props.treesOrConfShouldBeFetched)
+      this.props.addTrees(this);
+    else
+      addTrees(this);
+    
     this.installNewDrawWorkspace(new L.FeatureGroup());
 
     this.map.on('draw:created', (e) => {
@@ -296,15 +303,8 @@ class Map extends React.Component {
       if (layer instanceof L.Polygon) {
         console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
         const countResult = this.countTreesInLayer(layer);
-        const treesConfiguration = this.props.treesConfigurationContext.treesConfiguration;
-        const msg = 'it is inconceivable that, at this point, the TreesConfigurationContextProvider'
-                   +' should have failed to obtain the treesConfiguration object. If this abomination should come'
-                   +' to transpire then an approach similar to that used in ref:sse-1587477558 should be adopted.'
-                   +' However, given that it is highly unlikely that this should ever come to pass, I consider'
-                   +' it an overkill to adopt such an approach pre-emptively. In constrast, the approach in'
-        +' ref:sse-1587477558 was, in fact, necessary';
-        assert.exists(treesConfiguration, msg);
-        const detailBreakdown = countResult.toDetailBreakdownString(treesConfiguration);
+        assert.exists(this.props.treesConfiguration, ABOMINATION_CNFG_NOT_AVAILABLE);
+        const detailBreakdown = countResult.toDetailBreakdownString(this.props.treesConfiguration);
         layer.bindPopup(`<b>${countResult.total()}</b><br>${detailBreakdown}`).openPopup();
       }
     });

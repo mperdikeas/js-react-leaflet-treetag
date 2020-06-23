@@ -72,6 +72,7 @@ import {axiosAuth} from './axios-setup.js';
 import {ota_Callicrates, treeOverlays} from './tree-markers.js';
 
 import {ATHENS, DEFAULT_ZOOM} from './constants/map-constants.js';
+import {ABOMINATION_CNFG_NOT_AVAILABLE} from './constants/msg-constants.js';
 
 import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS} from './constants/modal-types.js';
 
@@ -108,6 +109,7 @@ const mapStateToProps = (state) => {
   return {
     treesConfiguration: state.configuration?.species??undefined
     , trees: state.trees
+    , treesOrConfShouldBeFetched: ( (state.configuration?.species??undefined) === undefined) || (state.trees === undefined)
     , isRegionsBeingFetched: isRegionsBeingFetched(state)
     , selectedRegions : selectedRegions(state)
     , rgeMode: rgeMode(state)
@@ -131,7 +133,7 @@ const mapDispatchToProps = (dispatch) => {
     , rgmgmntModifyEnd: ()=>dispatch(rgmgmntModifyEnd())
     , addTrees: (self)=>dispatch(getConfigurationAndTreesAndThen(()=>addTrees(self)))
   };
-};
+}
 
 const addTrees = (self) => {
   console.log(`cag - entering function addTrees`);
@@ -269,7 +271,10 @@ class RegionMgmntMap extends React.Component {
 
     this.addMeasureControl();
     this.addLayerGroupsExceptPromisingLayers();
-    this.props.addTrees(this);
+    if (this.props.treesOrConfShouldBeFetched)
+      this.props.addTrees(this);
+    else
+      addTrees(this);
 
     this.map.on(L.Draw.Event.CREATED     , (e) => this.onDrawCreation(e));
     this.map.on(L.Draw.Event.EDITED      , (e) => this.onDrawEdited(e));
@@ -423,38 +428,14 @@ class RegionMgmntMap extends React.Component {
 
     console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
     const countResult = this.countTreesInLayer(layer);
-    const treesConfiguration = this.props.treesConfigurationContext.treesConfiguration;
-    assert.exists(treesConfiguration, ABOMINATION_MSG);
-    const detailBreakdown = countResult.toDetailBreakdownString(treesConfiguration);
+    assert.exists(this.props.treesConfiguration, ABOMINATION_CNFG_NOT_AVAILABLE);
+    const detailBreakdown = countResult.toDetailBreakdownString(this.props.treesConfiguration);
     layer.unbindPopup();
     layer.bindPopup(`<b>${countResult.total()}</b><br>${detailBreakdown}`).openPopup();
     window.setTimeout(()=>layer.closePopup(), 5000);
 
   }
   
-  addTreesNOT_USED = () => {
-    treesConfigurationIsNowAvailable.then( ()=> {
-      const promise = treeOverlays(this.props.treesConfigurationContext.treesConfiguration);
-      promise.then(({overlays}) => {
-        for (const layerName in overlays) {
-          const layerGroup = overlays[layerName];
-          layerGroup.addTo(this.map);
-          this.clickableLayers.push(layerGroup);
-
-          layerGroup.eachLayer ( (marker)=>{
-            marker.options.interactive = false; // https://stackoverflow.com/a/60642381/274677
-          });
-            
-          this.layersControl.addOverlay(layerGroup, layerName);
-        }
-      }).catch( (v) => {
-        assert.fail('000 - not expecting this promise to fail: '+v); 
-      });
-    }).catch( (v) => {
-      assert.fail('001 - not expecting this promise to fail: '+v); 
-    } );
-  }
-
 
 
 

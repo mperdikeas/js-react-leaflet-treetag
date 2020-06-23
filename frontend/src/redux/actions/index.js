@@ -301,6 +301,7 @@ export {default as getTreesConfiguration} from './get-trees-configuration.jsx';
 
 // cf. SSE-1592901297
 export function getConfigurationAndTreesAndThen(f) {
+    console.log('refetching trees and configuration');
     return (dispatch) => {
         Promise.all([dispatch(getTrees(1000))
                      , dispatch(getTreesConfiguration())])
