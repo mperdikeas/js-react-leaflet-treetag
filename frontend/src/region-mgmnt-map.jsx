@@ -118,7 +118,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-  const pleaseWaitWhileAppIsLoading    = <span>please wait while fetching map data &hellip; </span>;
+  const pleaseWaitWhileAppIsLoading    = <span>please wait while drawing map data &hellip; </span>;
   const aRegionHasAlredyBeenDefined = <span>a region has already been defined! you can't define more than one</span>;
   return {
     pleaseWaitWhileAppIsLoading: (uuid)=>dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: pleaseWaitWhileAppIsLoading, uuid}))

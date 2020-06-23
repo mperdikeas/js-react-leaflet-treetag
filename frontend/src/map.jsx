@@ -103,7 +103,7 @@ const mapDispatchToProps = (dispatch) => {
  *
  */
 const mergeProps = (stateProps, {dispatch}) => {
-  const pleaseWaitWhileAppIsLoading = <span>please wait while fetching map data &hellip; </span>;
+  const pleaseWaitWhileAppIsLoading = <span>please wait while drawing map data &hellip; </span>;
   return Object.assign({},
                        {
                          ...stateProps
@@ -259,6 +259,17 @@ class Map extends React.Component {
     });
   }
 
+
+  attachStatsPopupOnLayer  = (layer) => {
+    if (layer instanceof L.Polygon) {
+      console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
+      const countResult = this.countTreesInLayer(layer);
+      assert.exists(this.props.treesConfiguration, ABOMINATION_CNFG_NOT_AVAILABLE);
+      const detailBreakdown = countResult.toDetailBreakdownString(this.props.treesConfiguration);
+      layer.bindPopup(`<b>${countResult.total()}</b><br>${detailBreakdown}`).openPopup();
+    }
+  }
+  
   componentDidMount = () => {
     console.log('caf - map.jsx :: componentDidMount');
     const uuid = uuidv4();
@@ -300,32 +311,35 @@ class Map extends React.Component {
             layer = e.layer;
       this.drawnItems.addLayer(layer);
       console.log(this.drawnItems.toGeoJSON(7));
-      if (layer instanceof L.Polygon) {
-        console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
-        const countResult = this.countTreesInLayer(layer);
-        assert.exists(this.props.treesConfiguration, ABOMINATION_CNFG_NOT_AVAILABLE);
-        const detailBreakdown = countResult.toDetailBreakdownString(this.props.treesConfiguration);
-        layer.bindPopup(`<b>${countResult.total()}</b><br>${detailBreakdown}`).openPopup();
-      }
+      attachStatsPopupOnLayer(layer);
     });
 
-    const eventsToTriggerCounting = ['draw:created', 'draw:edited', 'draw:saved'
-                                   , 'draw:deleted'];
+
+    const eventsToTriggerPopupRefresh = ['draw:edited', 'draw:saved'
+                                       , 'draw:deleted'];
+    
+    eventsToTriggerPopupRefresh.forEach( (v) => {
+      this.map.on(v, (e)=>{
+        const layer = e.layer;
+        this.attachStatsPopupOnLayer(layer);
+      });
+    });
+    
+    const eventsToTriggerCounting = ['draw:created', ...eventsToTriggerPopupRefresh];
     eventsToTriggerCounting.forEach( (v) => {
       this.map.on(v, this.countTreesInDrawWorkspace);
-      });
+    });
 
     
-    if (true)
-      this.map.on('mousemove', (e) => {
-        this.props.updateCoordinates(e.latlng);
-      })
+
+    this.map.on('mousemove', (e) => this.props.updateCoordinates(e.latlng));
+
     this.map.on('click', this.handleClick);
 
     $('div.leaflet-control-container section.leaflet-control-layers-list div.leaflet-control-layers-overlays input.leaflet-control-layers-selector[type="checkbox"]').on('change', (e)=>{
     });
-    setTimeout(()=>{this.props.clearModal(uuid)}, 1000);
-  }
+    setTimeout(()=>{this.props.clearModal(uuid)}, 1000); // I don't have a way to recognize when Leaflet is done painting all markers
+}
 
 
   addLayerGroupsExceptPromisingLayers = () => {
