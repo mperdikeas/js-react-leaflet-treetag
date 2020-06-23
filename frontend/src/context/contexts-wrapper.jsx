@@ -2,7 +2,6 @@ const React = require('react');
 
 import {GeometryContext}              from './geometry-context.jsx';
 import {LoginContext}                 from './login-context.jsx';
-import {TreesConfigurationContext}    from './trees-configuration-context.jsx';
 
 export const wrapGeometryContext = (Component) => (
   props => (
@@ -22,15 +21,6 @@ export function wrapLoginContext(Component) {
   );
 }
 
-export const wrapTreesConfigurationContext = (Component) => (
-  props => (
-    <TreesConfigurationContext.Consumer>
-      {context => <Component treesConfigurationContext={context} {...props} />}
-    </TreesConfigurationContext.Consumer>
-  )
-);
-
-
 export default function wrapContexts(Component) {
-  return wrapLoginContext(wrapTreesConfigurationContext(wrapGeometryContext(Component)));
+  return wrapLoginContext(wrapGeometryContext(Component));
 }

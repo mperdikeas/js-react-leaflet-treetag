@@ -23,7 +23,6 @@ import './css/style.css';
 
 
 import LoginContextProvider              from './context/login-context.jsx'
-import TreeConfigurationContextProvider  from './context/trees-configuration-context.jsx'
 import GeometryContextProvider           from './context/geometry-context.jsx'
 
 import { Provider }             from "react-redux";
@@ -45,13 +44,11 @@ function doRender() {
   ReactDOM.render(
     <Provider store={store}>
       <LoginContextProvider>
-        <TreeConfigurationContextProvider>
-          <GeometryContextProvider>
-            <BrowserRouter>
-              <App/>
-            </BrowserRouter>
-          </GeometryContextProvider>
-        </TreeConfigurationContextProvider>
+        <GeometryContextProvider>
+          <BrowserRouter>
+            <App/>
+          </BrowserRouter>
+        </GeometryContextProvider>
       </LoginContextProvider>
     </Provider>
     , $('#app')[0]);
