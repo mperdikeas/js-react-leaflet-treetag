@@ -108,6 +108,11 @@ function tnu(x) { // Text representation for Null or Undefined
     }
 }
 
+// reports the elements in [bs] that do not appear in [as]
+function deepDiff(as, bs) {
+    return bs.filter(x => !as.some(item => JSON.stringify(item)===JSON.stringify(x)));
+}
+
 exports.theAnswer         = theAnswer;
 exports.allStrictEqual    = allStrictEqual;
 exports.exactlyOne        = exactlyOne;
@@ -119,3 +124,4 @@ exports.randomItem        = randomItem;
 exports.areEqualShallow   = areEqualShallow;
 exports.isNotNullOrUndefined = isNotNullOrUndefined;
 exports.tnu               = tnu;
+exports.deepDiff          = deepDiff;

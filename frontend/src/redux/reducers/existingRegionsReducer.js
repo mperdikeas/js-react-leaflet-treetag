@@ -4,7 +4,6 @@ import {GET_REGIONS_IN_PROGRESS
 import chai from '../../util/chai-util.js';
 const assert = chai.assert;
 
-import {convert} from './reducer-util.js';
 
 export default (state = undefined, action) => {
     switch (action.type) {
@@ -12,7 +11,7 @@ export default (state = undefined, action) => {
         return undefined;
     }
     case GET_REGIONS_SUCCESS: {
-        return convert(action.payload);
+        return action.payload;
     }
     default:
         return state;

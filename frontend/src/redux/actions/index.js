@@ -235,6 +235,7 @@ export function getRegionsSuccess(regions) {
 }
 
 export function updateSelectedRegions(selectedRegions) {
+    console.log('updateSelectedRegions, regions are: ', selectedRegions);
     return {type: UPDATE_SELECTED_REGIONS, payload: selectedRegions};
 }
 

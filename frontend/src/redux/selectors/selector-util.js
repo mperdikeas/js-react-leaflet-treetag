@@ -18,12 +18,13 @@ export function reduxRegionsToAntdData(val) {
 
     function regions(i0, vs) {
         const rv = [];
-        for (let i = 0; i < vs.length; i++) {
-            const v = vs[i];
-            const key = arr2str([i0, i]);
-            rv.push({title: v.name
-                     , value: key
-                     , key: key});
+        let i = 0;
+        for (let [key, value] of Object.entries(vs)) {
+            const key2 = arr2str([i0, i]);
+            rv.push({title: key
+                     , value: key2
+                     , key: key2});
+            i++;
         }
         return rv;
     }

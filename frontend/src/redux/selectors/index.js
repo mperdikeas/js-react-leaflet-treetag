@@ -21,6 +21,15 @@ export function selectedRegions(state) {
 
     function embellish(i, polygonsInPartition) {
         const rv = [];
+        let j = 0;
+        for (const [key, value] of Object.entries(polygonsInPartition)) {
+            const x = Object.assign({}, {name: key, wkt: value.wkt}, {key: arr2str([i, j])});
+            console.log('zzz', x);
+            console.log(`zzz pushing object: ${JSON.stringify(x)}`);
+            rv.push(x);
+            j++;
+        }
+        if (false)
         for (let j = 0; j < polygonsInPartition.length ; j++) {
             rv.push(Object.assign({}, polygonsInPartition[j], {key: arr2str([i, j])}));
         }
@@ -34,15 +43,24 @@ export function selectedRegions(state) {
         assert.isTrue((arr.length===1) || (arr.length===2)
                       , `selectors/index.js :: arr ${arr} had length ${arr.length}`);
         switch (arr.length) {
-        case 1:
-            var key = Object.keys(existingRegions)[arr[0]]; //fetched the key at index arr[0]
+        case 1: {
+            const key = Object.keys(existingRegions)[arr[0]]; //fetched the key at index arr[0]
+            console.log(`case 1 partition name is ${key}`);
             rv = rv.concat(embellish(arr[0], existingRegions[key]));  // fetching all the polygons in that partition
             break;
-        case 2:
-            var _key = Object.keys(existingRegions)[arr[0]]; //fetched the key at index arr[0]
-            const partition = existingRegions[_key];
-            rv.push( Object.assign({}, partition[arr[1]], {key: strKey}) );
+        }
+        case 2: {
+            const key = Object.keys(existingRegions)[arr[0]]; //fetched the key at index arr[0]
+            console.log(`case 2 partition name is ${key}`);
+            const partition = existingRegions[key];
+            const key2 = Object.keys(partition)[arr[1]]; // fetch the key at index arr[1]
+            const wkt = partition[key2].wkt;
+            const x = {name: key2, wkt, key: strKey} ;
+            console.log('zzz ', x);
+            console.log(`zzz pushing object: ${JSON.stringify(x)}`);
+            rv.push( x );
             break;
+        }
         default:
             assert.fail('selectors/index.js :: impossible');
         }
@@ -80,7 +98,7 @@ export function partitions(state) {
 export function partition2regions(state) {
     const rv = {};
     for (const [key, value] of Object.entries(state.regions.existing)) {
-        rv[key] = value.map( (x)=>x.name );
+        rv[key] = Object.keys(value); // value.map( (x)=>x.name );
     }
     return rv;
 }

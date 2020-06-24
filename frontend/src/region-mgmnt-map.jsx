@@ -212,6 +212,7 @@ class RegionMgmntMap extends React.Component {
   
 
   componentDidUpdate = (prevProps, prevState) => {
+    console.log('component did upate');
     if ((prevProps.rgeMode !== RGE_MODE.CREATING) && (this.props.rgeMode === RGE_MODE.CREATING))
       this.addDrawControl();
     else if ((prevProps.rgeMode === RGE_MODE.CREATING) && (this.props.rgeMode !== RGE_MODE.CREATING)) {
@@ -219,6 +220,8 @@ class RegionMgmntMap extends React.Component {
       this.removeDrawControl();
     }
     const {regionsAdded, regionsRemoved} = regionListDiff(prevProps.selectedRegions, this.props.selectedRegions);
+    console.log('regions added are: ', regionsAdded);
+    console.log('regions removed are: ', regionsRemoved);
     regionsAdded.forEach( (regionAdded) => {
       const {key, name, wkt} = regionAdded;
       this.addRegionToMap(key, name, wkt);
@@ -235,7 +238,7 @@ class RegionMgmntMap extends React.Component {
     assert.isOk(name);
     assert.isOk(wkt);
     assert.isOk(key);
-    if (false)
+    if (true)
       console.log(`region with key: '${key}', name: '${name}' and WKT: '${wkt}' is to be added`);
     this.wkt.read(wkt);
     const geometry = this.wkt.toJson();
