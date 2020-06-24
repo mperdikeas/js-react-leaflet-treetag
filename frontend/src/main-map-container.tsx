@@ -1,4 +1,4 @@
-const React = require('react');
+import React from 'react';
 var      cx = require('classnames');
 
 import Map                                     from './map.jsx';
@@ -13,14 +13,20 @@ import wrapContexts                            from './context/contexts-wrapper.
 
 // REDUX
 import { connect }          from 'react-redux';
-import {changeTileProvider} from './redux/actions/index.js';
 
 import NavLinkToLanding from './navlink-to-landing.jsx';
 
-const mapStateToProps = (state) => {
+import {IStore} from './redux/types.ts';
+
+
+type Props = {
+  isTargetSelected: boolean
+  , maximizedInfoPanel: boolean
+}
+
+const mapStateToProps = (state: IStore):Props => {
   return {
     isTargetSelected: state.target.id != null
-    , modalType: state.modalType
     , maximizedInfoPanel: state.maximizedInfoPanel
   };
 };
@@ -28,10 +34,10 @@ const mapStateToProps = (state) => {
 
 
 
-class MainMapContainer extends React.Component {
+class MainMapContainer extends React.Component<Props, any> {
 
 
-  constructor(props) {
+  constructor(props: {isTargetSelected: boolean, maximizedInfoPanel: boolean}) {
     super(props);
   }
 
@@ -44,10 +50,11 @@ class MainMapContainer extends React.Component {
                                          , {hidden: this.props.maximizedInfoPanel});
     const classesForMapDivValue = cx(classesForMapDiv);
     console.log(`classes are ${classesForMapDivValue}`);
-    const toolboxStyle = {flex: `0 0 ${this.props.geometryContext.toolboxTotalWidth()}px`
+    
+    const toolboxStyle = {flex: `0 0 ${(this.props as any).geometryContext.toolboxTotalWidth()}px`
                         , backgroundColor: 'green'};
 
-    const headerBarHeight = this.props.geometryContext.geometry.headerBarHeight;
+    const headerBarHeight = (this.props as any).geometryContext.geometry.headerBarHeight;
     const containerStyleOverrides = {paddingRight: 0, paddingLeft: 0};
     const gui = (
       <div className='container-fluid' key='main-gui-component' style={containerStyleOverrides}>
@@ -72,7 +79,7 @@ class MainMapContainer extends React.Component {
                 <Toolbox/>
               </div>
               <div className='col'>
-                <Map tileProviderId={this.props.tileProviderId}/>
+                <Map/>
               </div>
             </div>
           </div>

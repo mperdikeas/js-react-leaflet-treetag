@@ -90,7 +90,7 @@ import {clearModal
       , rgmgmntDeleteEnd
       , rgmgmntModifyStart
       , rgmgmntModifyEnd
-      , getConfigurationAndTreesAndThen}  from './redux/actions/index.js';
+      , getConfigurationAndTreesAndThen}  from './redux/actions/index.ts';
 
 import {isRegionsBeingFetched
       , selectedRegions

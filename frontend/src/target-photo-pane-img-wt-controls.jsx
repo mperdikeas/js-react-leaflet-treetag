@@ -23,7 +23,7 @@ import {fetchingNewPhotoForExistingTarget} from './redux/selectors.js';
 import { connect } from 'react-redux';
 
 import {delFeatPhoto
-      , getFeatPhoto} from './redux/actions/index.js';
+      , getFeatPhoto} from './redux/actions/index.ts';
 
 import {LOGGING_IN
       , GETTING_NUM_OF_PHOTOS

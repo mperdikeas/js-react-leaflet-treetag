@@ -14,7 +14,7 @@ import centerOnTarget           from './resources/target-32.png';
 
 // redux
 import { connect }                          from 'react-redux';
-import {toggleMode, displayModal, addToast} from './redux/actions/index.js';
+import {toggleMode, displayModal, addToast} from './redux/actions/index.ts';
 import {targetIsDirty} from './redux/selectors.js';
 
 import {MDL_NOTIFICATION

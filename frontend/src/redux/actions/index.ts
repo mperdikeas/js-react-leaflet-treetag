@@ -5,6 +5,17 @@ import chai from '../../util/chai-util.js';
 const assert = chai.assert;
 import { v4 as uuidv4 } from 'uuid';
 
+import {ActionUpdateMouseCoords
+        , ActionToggleMaximizeInfoPanel
+        , ActionUnsetTarget
+        , ActionGetFeatureAjaxConcluded
+        , ActionRevertTreeCoords
+        , ActionGetRegionsInProgress
+        , ActionRevertTreeInfo
+        , ActionWtTypeOnly} from './types.ts';
+
+
+
 import { UPDATE_MOUSE_COORDS
         , DISPLAY_MODAL
         , CLEAR_MODAL
@@ -29,7 +40,6 @@ import { UPDATE_MOUSE_COORDS
         , GET_FEATURE_AJAX_CONCLUDED
         , NEW_TARGET
         , GET_REGIONS_IN_PROGRESS
-        , GET_REGIONS_CONCLUDED
         , GET_REGIONS_SUCCESS
         , UPDATE_SELECTED_REGIONS
         , SET_RGE_MODE
@@ -50,8 +60,6 @@ import { UPDATE_MOUSE_COORDS
          , UPDATE_CONFIGURATION
          , UPDATE_TREES
        } from './action-types.js';
-
-import {CancelToken} from 'axios';
 
 import getFeatData from './get-feat-data.jsx';
 
@@ -74,20 +82,20 @@ import {MDL_NOTIFICATION
 import {tnu} from '../../util/util.js';
 
 
-export function updateMouseCoords(latlng) {
+export function updateMouseCoords(latlng: string) : ActionUpdateMouseCoords {
     return { type: UPDATE_MOUSE_COORDS, payload: {latlng} };
 }
 
-export function displayModal(modalType, modalProps) {
+export function displayModal(modalType: string, modalProps: any) {
     assert.isTrue(isValidModalType(modalType), `unrecognized modal type: [${modalType}]`);
     const {uuid} = modalProps;
-    assert.exists(uuid, `actions/index.js displayModal weird: ${tnu(uuid)}`);
+    assert.exists(uuid, `actions/index.ts displayModal weird: ${tnu(uuid)}`);
     return {type: DISPLAY_MODAL, payload: {modalType, modalProps}};
 }
 
 
 
-export function displayModalNotification(modalProps) {
+export function displayModalNotification(modalProps: any) {
     return displayModal(MDL_NOTIFICATION, Object.assign({}, modalProps, {uuid:  uuidv4()}));
 }
 
@@ -95,29 +103,25 @@ export function displayModalNewRegionDefinition() {
     return displayModal(MDL_NEW_REGION_DEFINITION, {uuid: uuidv4()});
 }
 
-export function displayModalEnterPartitionName(partitions) {
-    return displayModal(MDL_ENTER_PARTITION_NAME, {uuid:  uuidv4(), partitions});
-}
-
-export function clearModal(uuid) {
-    assert.isDefined(uuid, `/redux/actions/index.js :: clearModal(${uuid})`);
-    assert.isNotNull(uuid, `/redux/actions/index.js :: clearModal(${uuid})`);
+export function clearModal(uuid: number) {
+    assert.isDefined(uuid, `/redux/actions/index.ts :: clearModal(${uuid})`);
+    assert.isNotNull(uuid, `/redux/actions/index.ts :: clearModal(${uuid})`);
     return {type: CLEAR_MODAL, payload: uuid};
 }
 
-export function toggleMaximizeInfoPanel() {
-    return {type: TOGGLE_MAXIMIZE_INFO_PANEL, payload: null};
+export function toggleMaximizeInfoPanel(): ActionToggleMaximizeInfoPanel {
+    return {type: TOGGLE_MAXIMIZE_INFO_PANEL};
 }
 
 
-export function unsetTarget() {
-    return {type: UNSET_TARGET, payload: undefined};
+export function unsetTarget(): ActionUnsetTarget {
+    return {type: UNSET_TARGET};
 };
 
 
 
-export function unsetOrFetch(targetId) {
-    return (dispatch, getState) => {
+export function unsetOrFetch(targetId: number) {
+    return (dispatch: any, getState: any) => {
         cancelPendingRequests(getState());        
         if (getState().target.id === targetId) {
             dispatch(unsetTarget());
@@ -140,106 +144,104 @@ export function unsetOrFetch(targetId) {
     };
 }
 
-function newTarget(targetId) {
+function newTarget(targetId: number) {
     return {type: NEW_TARGET, payload: {targetId}};
 }
 
-export function setPaneToOpenInfoPanel(pane) {
+export function setPaneToOpenInfoPanel(pane: string) {
     return {type: SET_PANE_TO_OPEN_INFO_PANEL, payload: {pane}};
 }
 
-export function addToast(header, msg) {
+export function addToast(header: string, msg: string) {
     return {type: ADD_TOAST, payload: {header, msg}};
 }
 
-export function dismissToast(id) {
+export function dismissToast(id: number) {
     return {type: DISMISS_TOAST, payload: {id}};
 }
 
 
 
-export function getTreeInfoInProgress(id, axiosSource) {
+export function getTreeInfoInProgress(id: number, axiosSource: any) {
     return {type: GET_TREE_INFO_IN_PROGRESS, payload: {id, axiosSource}};
 }
 
-export function getFeatNumPhotosInProgress(id, axiosSource) {
+export function getFeatNumPhotosInProgress(id: number, axiosSource: any) {
     return {type: GET_FEAT_NUM_PHOTOS_IN_PROGRESS, payload: {id, axiosSource}};
 }
 
-export function getFeatPhotoInProgress(id, idx, axiosSource) {
+export function getFeatPhotoInProgress(id: number, idx: number, axiosSource: any) {
     return {type: GET_FEAT_PHOTO_IN_PROGRESS, payload: {id, idx, axiosSource}};
 }
 
 
-export function delFeatPhotoInProgress(id, idx) {
+export function delFeatPhotoInProgress(id: number, idx: number) {
     return {type: DEL_FEAT_PHOTO_IN_PROGRESS, payload: {id, idx}};
 }
 
 
 
-export function getFeatureAjaxConcluded() {
-    return {type: GET_FEATURE_AJAX_CONCLUDED, payload: undefined};
+export function getFeatureAjaxConcluded(): ActionGetFeatureAjaxConcluded {
+    return {type: GET_FEATURE_AJAX_CONCLUDED};
 }
 
-export function getTreeInfoSuccess(treeInfo) {
+export function getTreeInfoSuccess(treeInfo: any) {
     return {type: GET_TREE_INFO_SUCCESS, payload: treeInfo};
 }
 
-export function getFeatNumPhotosSuccess(num) {
+export function getFeatNumPhotosSuccess(num: number) {
     return {type: GET_FEAT_NUM_PHOTOS_SUCCESS, payload: num};
 }
 
-export function getFeatPhotoSuccess(img, t) {
+export function getFeatPhotoSuccess(img: any, t: any) {
     return {type: GET_FEAT_PHOTO_SUCCESS, payload: {img, t}};
 }
 
 
 
-export function markGetFeatureInfoFailed() {
-    return {type: MARK_GET_FEATURE_INFO_FAILED, payload: null};
-}
-
-export function setTreeInfoCurrent(treeInfo) {
+export function setTreeInfoCurrent(treeInfo: any) {
     return {type: SET_TREE_INFO_CURRENT, payload: treeInfo};
 }
 
-export function setTreeInfoOriginal(treeInfo) {
+export function setTreeInfoOriginal(treeInfo: any) {
     return {type: SET_TREE_INFO_ORIGINAL, payload: treeInfo};
 }
 
-export function revertTreeInfo() {
-    return {type: REVERT_TREE_INFO, payload: null};
+export function revertTreeInfo(): ActionRevertTreeInfo {
+    return {type: REVERT_TREE_INFO};
 }
 
 
-export function setTreeCoordsOriginal(coords) {
+export function setTreeCoordsOriginal(coords: any) {
     return {type: SET_TREE_COORDS_ORIGINAL, payload: coords};
 }
 
-export function setTreeCoords(coords) {
+export function setTreeCoords(coords: any) {
     return {type: SET_TREE_COORDS, payload: coords};
 }
 
-export function revertTreeCoords() {
-    return {type: REVERT_TREE_COORDS, payload: null};
+
+
+export function revertTreeCoords(): ActionRevertTreeCoords {
+    return {type: REVERT_TREE_COORDS};
 }
 
 
-export function getRegionsInProgress() {
-    return {type: GET_REGIONS_IN_PROGRESS, payload: null};
+export function getRegionsInProgress(): ActionGetRegionsInProgress {
+    return {type: GET_REGIONS_IN_PROGRESS};
 }
 
 
-export function getRegionsSuccess(regions) {
+export function getRegionsSuccess(regions: any) {
     return {type: GET_REGIONS_SUCCESS, payload: regions};
 }
 
-export function updateSelectedRegions(selectedRegions) {
+export function updateSelectedRegions(selectedRegions: any) {
     console.log('updateSelectedRegions, regions are: ', selectedRegions);
     return {type: UPDATE_SELECTED_REGIONS, payload: selectedRegions};
 }
 
-export function overlapsUpdateSelectedRegion(selectedRegion) {
+export function overlapsUpdateSelectedRegion(selectedRegion: any) {
    return {type: OVERLAPS_UPDATE_SELECTED_REGION, payload: selectedRegion};
 }
 
@@ -255,45 +257,45 @@ export {default as delFeatPhoto}       from './del-feat-photo.jsx';
 
 export {default as getRegions}       from './get-regions.jsx';
 
-export function setRGEMode(mode) {
+export function setRGEMode(mode: string) {
     console.log(`XXX setting rge mode to ${mode}`);
     ensureRGEModeIsValid(mode);
     return {type: SET_RGE_MODE, payload: mode};
 }
 
-export function setWktRegionUnderConstruction(wkt) {
+export function setWktRegionUnderConstruction(wkt: string) {
     return {type: SET_WKT_REGION_UNDER_CONSTRUCTION, payload: wkt};
 }
 
 export {default as createRegion} from './create-region.jsx';
 
-export function rgmgmntDeleteStart() {
-    return {type: REG_MGMNT_DELETE_START, payload: null};
+export function rgmgmntDeleteStart(): ActionWtTypeOnly {
+    return {type: REG_MGMNT_DELETE_START};
 }
 
-export function rgmgmntDeleteEnd() {
-    return {type: REG_MGMNT_DELETE_END, payload: null};
+export function rgmgmntDeleteEnd(): ActionWtTypeOnly {
+    return {type: REG_MGMNT_DELETE_END};
 }
 
-export function rgmgmntModifyStart() {
-    return {type: REG_MGMNT_MODIFY_START, payload: null};
+export function rgmgmntModifyStart(): ActionWtTypeOnly {
+    return {type: REG_MGMNT_MODIFY_START};
 }
 
-export function rgmgmntModifyEnd() {
-    return {type: REG_MGMNT_MODIFY_END, payload: null};
+export function rgmgmntModifyEnd(): ActionWtTypeOnly {
+    return {type: REG_MGMNT_MODIFY_END};
 }
 
 
 
 
-export function overlapsGetRegionsSuccess(regions)     {return {type: OVERLAPS_GET_REGIONS_SUCCESS, payload: regions};}
-export function overlapsSetRegion        (region)      {return {type: OVERLAPS_SET_REGION, payload: region};}
-export function overlapsSetPartitions    (partitions)  {return {type: OVERLAPS_SET_PARTITIONS, payload: partitions};}
-export function overlapsGetOverlapsInProgress   ()     {return {type: OVERLAPS_GET_OVERLAPS_IN_PROGRESS, payload: null};}
-export function overlapsGetOverlapsSuccess(overlaps)   {return {type: OVERLAPS_GET_OVERLAPS_IN_PROGRESS, payload: overlaps};}
+export function overlapsGetRegionsSuccess(regions: any)     {return {type: OVERLAPS_GET_REGIONS_SUCCESS, payload: regions};}
+export function overlapsSetRegion        (region: any)      {return {type: OVERLAPS_SET_REGION, payload: region};}
+export function overlapsSetPartitions    (partitions: any)  {return {type: OVERLAPS_SET_PARTITIONS, payload: partitions};}
+export function overlapsGetOverlapsInProgress   ():ActionWtTypeOnly     {return {type: OVERLAPS_GET_OVERLAPS_IN_PROGRESS};}
+export function overlapsGetOverlapsSuccess(overlaps: any)   {return {type: OVERLAPS_GET_OVERLAPS_IN_PROGRESS, payload: overlaps};}
 
-export function updateConfiguration(configuration) {return {type: UPDATE_CONFIGURATION, payload: configuration};}
-export function updateTrees(trees)                           {return {type: UPDATE_TREES, payload: trees};}
+export function updateConfiguration(configuration: any) {return {type: UPDATE_CONFIGURATION, payload: configuration};}
+export function updateTrees(trees: any)                           {return {type: UPDATE_TREES, payload: trees};}
 
 import getTrees from './get-trees.jsx';
 export {default as getTrees} from './get-trees.jsx';
@@ -302,9 +304,9 @@ export {default as getTreesConfiguration} from './get-trees-configuration.jsx';
 
 
 // cf. SSE-1592901297
-export function getConfigurationAndTreesAndThen(f) {
+export function getConfigurationAndTreesAndThen(f: ()=>void) {
     console.log('refetching trees and configuration');
-    return (dispatch) => {
+    return (dispatch: React.Dispatch<any>) => {
         Promise.all([dispatch(getTrees(1000))
                      , dispatch(getTreesConfiguration())])
             .then(()=>{

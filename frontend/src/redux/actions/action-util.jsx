@@ -4,7 +4,7 @@ import {cancelToken} from '../selectors.js';
 
 import {OP_NO_LONGER_RELEVANT} from '../../constants/axios-constants.js';
 
-import {clearModal} from './index.js';
+import {clearModal} from './index.ts';
 
 
 export function cancelPendingRequests(state) {

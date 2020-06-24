@@ -12,7 +12,7 @@ import {getRegionsInProgress
       , displayModal
       , clearModal
       , addToast
-      , } from './index.js';
+      , } from './index.ts';
 import {MDL_RETRY_CANCEL, MDL_NOTIFICATION_NO_DISMISS} from '../../constants/modal-types.js';
 import {CANCEL_TOKEN_TYPES
       , cancelIncompatibleRequests

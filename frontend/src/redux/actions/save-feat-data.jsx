@@ -5,11 +5,9 @@ import {axiosAuth} from '../../axios-setup.js';
 import {CancelToken} from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 
-import {markGetFeatureInfoInProgress
-      , displayModal
+import {displayModal
       , clearModal
-      , setTreeInfoOriginal
-      , markGetFeatureInfoFailed} from './index.js';
+      , setTreeInfoOriginal} from './index.ts';
 import {MDL_NOTIFICATION
       , MDL_NOTIFICATION_NO_DISMISS
       , MDL_RETRY_CANCEL} from '../../constants/modal-types.js';

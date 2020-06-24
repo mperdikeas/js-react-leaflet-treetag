@@ -14,7 +14,7 @@ import LandingPageContainer from './landing-page-container.tsx';
 
 
 
-import MainMapContainer from './main-map-container.jsx';
+import MainMapContainer from './main-map-container.tsx';
 import RegionMgmnt from './region-mgmnt.jsx';
 import RegionOverlaps from './region-overlaps.jsx';
 import About            from './about.jsx';
@@ -26,19 +26,10 @@ import ModalRoot                               from './modal-root.jsx';
 
 
 
-// TODO: maybe I should implement different context wrappers for each individual context
 import wrapContexts from './context/contexts-wrapper.tsx';
 
 export default function App() {
 
-  if (false)
-  return (
-    <Switch>
-      <PrivateRoute exact path='/main'>
-        <LandingPageContainer/>
-      </PrivateRoute>
-    </Switch>   
-  );
   
   
   return (

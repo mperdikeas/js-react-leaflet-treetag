@@ -3,7 +3,7 @@ import {getAccessToken} from '../../access-token-util.js';
 import {axiosAuth} from '../../axios-setup.js';
 
 
-import {displayModal, clearModal } from './index.js';
+import {displayModal, clearModal } from './index.ts';
 import {MDL_NOTIFICATION_NO_DISMISS} from '../../constants/modal-types.js';
 import { v4 as uuidv4 } from 'uuid';
 

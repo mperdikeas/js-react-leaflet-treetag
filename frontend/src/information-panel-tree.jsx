@@ -29,7 +29,7 @@ import {displayModalNotification
       , setTreeInfoOriginal
       , getFeatNumPhotos
       , getFeatData
-      , saveFeatData}  from './redux/actions/index.js';
+      , saveFeatData}  from './redux/actions/index.ts';
 
 
 

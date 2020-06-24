@@ -27,6 +27,3 @@ export default function wrapContexts(Component: React.ComponentType<any>): React
 }
 
 
-export function foo(x: React.ComponentType<any>): React.ComponentType<any> {
-  return x;
-  }

@@ -10,7 +10,7 @@ import { TreeSelect } from 'antd';
 import { connect }          from 'react-redux';
 
 import wrapContexts            from './context/contexts-wrapper.tsx';
-import {updateSelectedRegions} from './redux/actions/index.js';
+import {updateSelectedRegions} from './redux/actions/index.ts';
 import {existingRegionsAsAntdTreeControlData}   from './redux/selectors/index.js';
 
 

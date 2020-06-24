@@ -8,7 +8,7 @@ import {  connect   }     from 'react-redux';
 import {storeAccessToken} from '../../access-token-util.js';
 import {axiosPlain}       from '../../axios-setup.js';
 
-import {clearModal} from '../../redux/actions/index.js';
+import {clearModal} from '../../redux/actions/index.ts';
 
 import LoginForm     from './login-form.jsx';
 

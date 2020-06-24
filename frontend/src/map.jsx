@@ -69,7 +69,7 @@ import {updateMouseCoords
       , displayModal
       , unsetOrFetch
       , clearModal
-      , getConfigurationAndTreesAndThen}  from './redux/actions/index.js';
+      , getConfigurationAndTreesAndThen}  from './redux/actions/index.ts';
 
 
 import TreeCountStatistic from './tree-count-statistic.js';

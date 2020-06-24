@@ -8,7 +8,7 @@ import {axiosPlain} from '../../axios-setup.js';
 import {propsForRetryDialog} from './action-util.jsx';
 import {MDL_RETRY_CANCEL, MDL_NOTIFICATION} from '../../constants/modal-types.js';
 
-import {displayModal} from './index.js';
+import {displayModal} from './index.ts';
 
 
 export default function login({installation, username, password}, updateLogin, followUpFunc) {

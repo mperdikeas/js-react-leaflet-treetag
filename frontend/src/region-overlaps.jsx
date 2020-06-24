@@ -31,7 +31,7 @@ import {isRegionsBeingFetched
       , rgmgmntDuringDeletion
       , wktRegionUnderConstructionExists}   from './redux/selectors/index.js';
 
-import {getRegions} from './redux/actions/index.js';
+import {getRegions} from './redux/actions/index.ts';
 
 import NavLinkToLanding from './navlink-to-landing.jsx';
 

@@ -16,7 +16,7 @@ import {partitions
       , partition2regions} from './redux/selectors/index.js';
 
 
-import {createRegion, clearModal} from './redux/actions/index.js';
+import {createRegion, clearModal} from './redux/actions/index.ts';
 
 import PropTypes from 'prop-types';
 

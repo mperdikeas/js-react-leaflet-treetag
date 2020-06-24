@@ -20,7 +20,7 @@ import {revertTreeInfo
       , setPaneToOpenInfoPanel
       , setTreeInfoCurrent
       , setTreeInfoOriginal
-      , saveFeatData}  from './redux/actions/index.js';
+      , saveFeatData}  from './redux/actions/index.ts';
 
 
 import {targetIsDirty} from './redux/selectors.js';

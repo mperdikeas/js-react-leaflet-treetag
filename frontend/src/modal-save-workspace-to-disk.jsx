@@ -8,7 +8,7 @@ import './css/modal-dialog.css'; // TODO: use React emotion for element-scoped C
 import wrapContexts from './context/contexts-wrapper.tsx';
 
 import {  connect   }              from 'react-redux';
-import { clearModal, addToast } from './redux/actions/index.js';
+import { clearModal, addToast } from './redux/actions/index.ts';
 
 
 import {Form, Col, Row, Button, Nav} from 'react-bootstrap';

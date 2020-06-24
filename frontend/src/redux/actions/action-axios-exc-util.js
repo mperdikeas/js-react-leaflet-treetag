@@ -2,7 +2,7 @@ const assert = require('chai').assert;
 
 import { v4 as uuidv4 } from 'uuid';
 
-import {displayModal} from './index.js';
+import {displayModal} from './index.ts';
 import {MDL_LOGIN, MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
 
 import {OP_NO_LONGER_RELEVANT} from '../../constants/axios-constants.js';

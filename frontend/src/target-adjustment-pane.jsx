@@ -13,7 +13,7 @@ import L from 'leaflet';
 import {Athens} from './tree-markers.js';
 
 import {MDL_NOTIFICATION} from './constants/modal-types.js';
-import {setTreeCoords, revertTreeCoords, saveFeatData} from './redux/actions/index.js';
+import {setTreeCoords, revertTreeCoords, saveFeatData} from './redux/actions/index.ts';
 
 import wrapContexts from './context/contexts-wrapper.tsx';
 

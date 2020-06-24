@@ -5,7 +5,7 @@ const assert = require('chai').assert;
 import {Form, Col, Row, Button, Nav} from 'react-bootstrap';
 
 
-import {displayModal, clearModal, addToast} from './redux/actions/index.js';
+import {displayModal, clearModal, addToast} from './redux/actions/index.ts';
 
 import {MDL_NOTIFICATION} from './constants/modal-types.js';
 

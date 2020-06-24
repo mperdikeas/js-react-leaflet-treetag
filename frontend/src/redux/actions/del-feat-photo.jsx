@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import {displayModal
       , clearModal
       , getFeatNumPhotos
-      , addToast} from './index.js';
+      , addToast} from './index.ts';
 import {MDL_RETRY_CANCEL
       , MDL_NOTIFICATION_NO_DISMISS} from '../../constants/modal-types.js';
 

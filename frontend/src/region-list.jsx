@@ -20,7 +20,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { connect }          from 'react-redux';
 
 import {displayModalNotification, setRGEMode
-      , displayModalNewRegionDefinition} from './redux/actions/index.js';
+      , displayModalNewRegionDefinition} from './redux/actions/index.ts';
 import {rgeMode
       , partitions
       , rgmgmntSaveEnabled

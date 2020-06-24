@@ -9,7 +9,7 @@ import {getFeatNumPhotosInProgress
       , getFeatureAjaxConcluded
       , getFeatNumPhotosSuccess
       , getFeatPhoto
-      , displayModal} from './index.js';
+      , displayModal} from './index.ts';
 
 
 import {MDL_RETRY_CANCEL} from '../../constants/modal-types.js';

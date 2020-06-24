@@ -7,7 +7,7 @@ import {displayModal
       , clearModal
       , getRegions
       , addToast
-      , setWktRegionUnderConstruction} from './index.js';
+      , setWktRegionUnderConstruction} from './index.ts';
 import {MDL_NOTIFICATION
       , MDL_NOTIFICATION_NO_DISMISS
       , MDL_RETRY_CANCEL} from '../../constants/modal-types.js';

@@ -9,7 +9,7 @@ import {getTreeInfoInProgress
       , getFeatureAjaxConcluded
       , getTreeInfoSuccess
       , displayModal
-      , clearModal} from './index.js';
+      , clearModal} from './index.ts';
 import {MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
 
 import {cancelToken} from '../selectors.js';

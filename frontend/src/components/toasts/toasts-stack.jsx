@@ -9,7 +9,7 @@ import wrapContexts from '../../context/contexts-wrapper.tsx';
 
 // redux
 import {  connect   }              from 'react-redux';
-import { dismissToast } from '../../redux/actions/index.js';
+import { dismissToast } from '../../redux/actions/index.ts';
 
 
 import Toast from './toast.jsx';
