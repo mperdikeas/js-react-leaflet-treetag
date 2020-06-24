@@ -1,6 +1,8 @@
 import {globalGet, GSN} from './globalStore.js';
 
-const assert = require('chai').assert;
+import chai from './util/chai-util.js';
+const assert = chai.assert;
+
 
 export default class TreeCountStatistic {
 

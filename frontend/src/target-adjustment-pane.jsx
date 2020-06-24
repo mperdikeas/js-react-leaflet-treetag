@@ -1,7 +1,9 @@
 const React = require('react');
 var      cx = require('classnames');
 
-const assert = require('chai').assert;
+import chai from './util/chai-util.js';
+const assert = chai.assert;
+
 import {Form, Col, Row, Button, Nav, ButtonGroup} from 'react-bootstrap';
 
 // REDUX
@@ -26,7 +28,8 @@ import {haversineGreatCircleDistance, latitudeToMeters, longitudeToMeters} from 
 const mapStateToProps = (state) => {
   const markerHasBeenDisplaced = (JSON.stringify(state.target.treeInfo.current.coords) !== JSON.stringify(state.target.treeInfo.original.coords));
   return {
-    targetId: state.target.id
+    species: state.configuration?.species??undefined
+    , targetId: state.target.id
     , treeInfo: state.target.treeInfo.current
     , markerHasBeenDisplaced
     , originalLatLng: state.target.treeInfo.original.coords
@@ -135,14 +138,13 @@ class TargetAdjustmentPane extends React.Component {
 
   addMovableMarker = () => {
     this.clearMovableMarker()
-    const treeConfig = this.props.treesConfigurationContext.treesConfiguration;
     
     const markerInMainMap = this.targetId2Marker(this.props.targetId);
     const marker = new L.marker(markerInMainMap.getLatLng()
                               , {radius: 8
                                , autoPan: false // only small size adjustments are foreseen
                                , draggable: 'true'});
-    addPopup(marker, treeConfig[markerInMainMap.options.kind].name.singular);
+    addPopup(marker, this.props.species[markerInMainMap.options.kind].name.singular);
 
     marker.on('drag', (e) => {
       const latlngs = [this.initialLatLngOfMarker(), e.target.getLatLng()];
@@ -165,7 +167,6 @@ class TargetAdjustmentPane extends React.Component {
 
   addNeighbouringMarkers = () => {
     this.clearNeighbouringMarkers();
-    const treeConfig = this.props.treesConfigurationContext.treesConfiguration;
     const origMapReactComponent = globalGet(GSN.REACT_MAP);
     const markersInfo = origMapReactComponent.getInfoOfMarkersInBounds(this.map.getBounds()
                                                                      , this.props.targetId);
@@ -174,8 +175,8 @@ class TargetAdjustmentPane extends React.Component {
       const marker = L.circleMarker(latlng
                                   , {radius: 8
                                    , autoPan: false
-                                   , color: treeConfig[kind].color});
-      addPopup(marker, treeConfig[kind].name.singular)
+                                   , color: this.props.species[kind].color});
+      addPopup(marker, this.props.species[kind].name.singular)
       this.map.addLayer(marker)
     });
   }

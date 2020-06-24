@@ -118,9 +118,7 @@ const mergeProps = (stateProps, {dispatch}) => {
 
 
 const addTrees = (self) => {
-  console.log(`cag - entering function addTrees`);
   const {overlays, id2marker} = treeOverlays(self.props.treesConfiguration, self.props.trees);
-  console.log(`cag - obtained overlays and id2marker; proceeding to add markers`);
   self.id2marker = id2marker;
   for (const layerName in overlays) {
     const layerGroup = overlays[layerName];
@@ -145,7 +143,6 @@ class Map extends React.Component {
 
   constructor(props) {
     super(props);
-    console.log('caf - map.jsx constructor');
     this.layerGroup = null;
     this.clickableLayers = [];
     this.highlightedMarker = null;
@@ -254,8 +251,9 @@ class Map extends React.Component {
   countTreesInDrawWorkspace = () => {
     let count = 0;
     this.drawnItems.eachLayer( (layer) => {
-      count += this.countTreesInLayer(layer).total;
+      count += this.countTreesInLayer(layer).total();
     });
+    return count;
   }
 
 
@@ -270,7 +268,6 @@ class Map extends React.Component {
   }
   
   componentDidMount = () => {
-    console.log('caf - map.jsx :: componentDidMount');
     const uuid = uuidv4();
 
     this.props.pleaseWaitWhileAppIsLoading(uuid);
@@ -310,23 +307,20 @@ class Map extends React.Component {
             layer = e.layer;
       this.drawnItems.addLayer(layer);
       console.log(this.drawnItems.toGeoJSON(7));
-      attachStatsPopupOnLayer(layer);
+      this.attachStatsPopupOnLayer(layer);
     });
 
 
-    const eventsToTriggerPopupRefresh = ['draw:edited', 'draw:saved'
-                                       , 'draw:deleted'];
-    
-    eventsToTriggerPopupRefresh.forEach( (v) => {
-      this.map.on(v, (e)=>{
-        const layer = e.layer;
-        this.attachStatsPopupOnLayer(layer);
-      });
+    this.map.on(L.Draw.Event.EDITED, (e)=>{
+      const {type: evType, layers} = e;
+      assert.strictEqual(evType, L.Draw.Event.EDITED);
+      layers.eachLayer( (layer)=> this.attachStatsPopupOnLayer(layer) );
     });
+
     
-    const eventsToTriggerCounting = ['draw:created', ...eventsToTriggerPopupRefresh];
+    const eventsToTriggerCounting = [L.Draw.Event.CREATED, L.Draw.Event.EDITED];
     eventsToTriggerCounting.forEach( (v) => {
-      this.map.on(v, this.countTreesInDrawWorkspace);
+      this.map.on(v, ()=>{console.log(`${this.countTreesInDrawWorkspace()} trees found in draw layers`);});
     });
 
     
