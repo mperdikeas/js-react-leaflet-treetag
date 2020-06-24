@@ -7,7 +7,7 @@ const assert = chai.assert;
 import {connect} from 'react-redux';
 import { Form, Button } from 'react-bootstrap';
 
-import wrapContexts from './context/contexts-wrapper.jsx';
+import wrapContexts from './context/contexts-wrapper.tsx';
 
 import ReactComment from './react-comment.jsx';
 

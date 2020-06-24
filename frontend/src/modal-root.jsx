@@ -3,13 +3,13 @@ var      cx = require('classnames');
 
 const assert = require('chai').assert;
 
-import {GeometryContext} from './context/geometry-context.jsx';
+import {GeometryContext} from './context/geometry-context.tsx';
 
 import Map                                     from './map.jsx';
 
 import './css/modal-dialog.css'; // TODO: use React emotion for element-scoped CSS
 
-import wrapContexts from './context/contexts-wrapper.jsx';
+import wrapContexts from './context/contexts-wrapper.tsx';
 
 import ModalLogin                    from './components/login/modal-login.jsx';
 import ModalSaveWorkspaceToDisk      from './modal-save-workspace-to-disk.jsx';

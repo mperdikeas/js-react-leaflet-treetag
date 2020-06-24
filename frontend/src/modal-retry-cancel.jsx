@@ -8,7 +8,7 @@ const assert = require('chai').assert;
 
 import { Button } from 'react-bootstrap';
 
-import wrapContexts from './context/contexts-wrapper.jsx';
+import wrapContexts from './context/contexts-wrapper.tsx';
 
 class ModalRetryCancel extends React.Component {
 

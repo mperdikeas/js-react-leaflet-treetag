@@ -54,7 +54,7 @@ import {exactlyOne, allStrictEqual} from './util/util.js';
 import {BaseLayersForLayerControl} from './baseLayers.js';
 import {DefaultIcon, TreeIcon}          from './icons.js';
 
-import wrapContexts from './context/contexts-wrapper.jsx';
+import wrapContexts from './context/contexts-wrapper.tsx';
 
 import {layerIsEmpty, numOfLayersInLayerGroup} from './leaflet-util.js';
 

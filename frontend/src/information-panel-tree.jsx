@@ -38,7 +38,7 @@ import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS} from './constants/modal-t
 
 
 
-import wrapContexts from './context/contexts-wrapper.jsx';
+import wrapContexts from './context/contexts-wrapper.tsx';
 
 import {LOGGING_IN
       , LOADING_TREE_DATA // todo: not used any more - clear junk

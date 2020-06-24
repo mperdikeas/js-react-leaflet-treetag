@@ -46,7 +46,7 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 
-import wrapContexts from './context/contexts-wrapper.jsx';
+import wrapContexts from './context/contexts-wrapper.tsx';
 
 
 

@@ -12,7 +12,7 @@ import {
 
 import LandingPageContainer from './landing-page-container.tsx';
 
-/*
+
 
 import MainMapContainer from './main-map-container.jsx';
 import RegionMgmnt from './region-mgmnt.jsx';
@@ -24,13 +24,14 @@ import ToastsStack                             from './components/toasts/toasts-
 import ModalRoot                               from './modal-root.jsx';
 
 
-*/
+
 
 // TODO: maybe I should implement different context wrappers for each individual context
 import wrapContexts from './context/contexts-wrapper.tsx';
 
 export default function App() {
 
+  if (false)
   return (
     <Switch>
       <PrivateRoute exact path='/main'>
@@ -39,7 +40,7 @@ export default function App() {
     </Switch>   
   );
   
-/*  
+  
   return (
     <ModalRoot>
       <ToastsStack>
@@ -69,7 +70,7 @@ export default function App() {
     </ModalRoot>
 
   );
-*/
+
 }
 
 

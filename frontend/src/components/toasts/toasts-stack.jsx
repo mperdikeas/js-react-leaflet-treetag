@@ -3,9 +3,9 @@ var      cx = require('classnames');
 
 const assert = require('chai').assert;
 
-import {GeometryContext} from '../../context/geometry-context.jsx';
+import {GeometryContext} from '../../context/geometry-context.tsx';
 
-import wrapContexts from '../../context/contexts-wrapper.jsx';
+import wrapContexts from '../../context/contexts-wrapper.tsx';
 
 // redux
 import {  connect   }              from 'react-redux';

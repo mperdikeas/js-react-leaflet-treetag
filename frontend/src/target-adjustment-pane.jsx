@@ -15,7 +15,7 @@ import {Athens} from './tree-markers.js';
 import {MDL_NOTIFICATION} from './constants/modal-types.js';
 import {setTreeCoords, revertTreeCoords, saveFeatData} from './redux/actions/index.js';
 
-import wrapContexts from './context/contexts-wrapper.jsx';
+import wrapContexts from './context/contexts-wrapper.tsx';
 
 import {ATHENS, DEFAULT_ZOOM} from './constants/map-constants.js';
 

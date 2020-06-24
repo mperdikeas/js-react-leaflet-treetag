@@ -29,7 +29,7 @@ import {rgeMode
       , wktRegionUnderConstructionExists}   from './redux/selectors/index.js';
 import {RGE_MODE}   from './redux/constants/region-editing-mode.js';
 
-import wrapContexts            from './context/contexts-wrapper.jsx';
+import wrapContexts            from './context/contexts-wrapper.tsx';
 
 import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS} from './constants/modal-types.js';
 

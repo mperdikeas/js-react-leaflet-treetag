@@ -3,11 +3,11 @@ var      cx = require('classnames');
 
 const assert = require('chai').assert;
 
-import {GeometryContext} from './context/geometry-context.jsx';
+import {GeometryContext} from './context/geometry-context.tsx';
 
 import './css/modal-dialog.css'; // TODO: use React emotion for element-scoped CSS
 
-import wrapContexts from './context/contexts-wrapper.jsx';
+import wrapContexts from './context/contexts-wrapper.tsx';
 
 import UsernameReminderForm from './modal-username-reminder-form.jsx';
 

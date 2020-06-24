@@ -9,7 +9,7 @@ import {
 
 import LoginForm from './login-form.jsx';
 import SynelixisLogo from '../../resources/synelixis-logo-300x66.png';
-import wrapContexts from '../../context/contexts-wrapper.jsx';
+import wrapContexts from '../../context/contexts-wrapper.tsx';
 
 
 import { connect }          from 'react-redux';

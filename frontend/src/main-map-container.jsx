@@ -9,7 +9,7 @@ import ToastsStack                             from './components/toasts/toasts-
 import ModalRoot                               from './modal-root.jsx';
 import UserControl                             from './user-control.jsx';
 
-import wrapContexts                            from './context/contexts-wrapper.jsx';
+import wrapContexts                            from './context/contexts-wrapper.tsx';
 
 // REDUX
 import { connect }          from 'react-redux';

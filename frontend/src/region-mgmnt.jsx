@@ -12,7 +12,7 @@ import RegionList                              from './region-list.jsx';
 import PointCoordinates                        from './point-coordinates.jsx';
 import UserControl                             from './user-control.jsx';
 
-import wrapContexts                            from './context/contexts-wrapper.jsx';
+import wrapContexts                            from './context/contexts-wrapper.tsx';
 
 import NavLinkToLanding from './navlink-to-landing.jsx';
 

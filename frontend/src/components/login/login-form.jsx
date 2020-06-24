@@ -17,7 +17,7 @@ import login          from '../../redux/actions/login.js';
 
 
 
-import wrapContexts from '../../context/contexts-wrapper.jsx';
+import wrapContexts from '../../context/contexts-wrapper.tsx';
 
 
 const mapDispatchToProps = (dispatch) => {
