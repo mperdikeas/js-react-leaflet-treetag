@@ -19,7 +19,8 @@ const mode = useDevelopmentMode?'development':'production';
 
 const config = {
     mode: mode, // https://stackoverflow.com/a/51163094/274677
-    devtool: 'source-map',
+    devtool: 'inline-source-map', // changed that due to https://webpack.js.org/guides/typescript/
+//    devtool: 'source-map',
     devServer: {
         contentBase: './dist'
         /* NB. Both the following:
@@ -36,14 +37,26 @@ const config = {
         , historyApiFallback: true
         //        , historyApiFallback: {index: '/'}
     },
-    entry: './src/main.jsx',
+    entry: './src/main.tsx',
     output: {
         publicPath: "/",
         path: path.resolve(__dirname, 'dist'), // SSE-1591357301
         filename: 'bundle.js'
     },
+    resolve: { /*
+                * I am not sure why this is needed but I got it from here:
+                *     https://webpack.js.org/guides/typescript/
+                *
+                */
+        extensions: [ '.tsx', '.ts', '.js' ],
+    },
     module: {
         rules: [
+            {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            },
             {
                 test: /\.jsx?$/,
                 include: path.resolve(__dirname, 'src/'),

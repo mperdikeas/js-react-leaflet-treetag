@@ -1,14 +1,17 @@
 import React, {createContext} from 'react'
 
 
-export const LoginContext =  createContext();
+export const LoginContext =  createContext({} as any);
+
+interface IState {
+  username: string;
+}
 
 
 
+class LoginContextProvider extends React.Component<any, IState> {
 
-class LoginContextProvider extends React.Component {
-
-  constructor(props) {
+  constructor(props: any) {
     super(props);
     this.state =  {
       username: null
@@ -18,7 +21,7 @@ class LoginContextProvider extends React.Component {
   componentDidMount() {
   }
 
-  updateLogin = (username) => {
+  updateLogin = (username: string) => {
     this.setState({username});
     };
 

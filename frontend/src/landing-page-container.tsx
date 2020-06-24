@@ -1,23 +1,25 @@
-const React = require('react');
+//const React = require('react');
+
+import React from 'react';
 var      cx = require('classnames');
 
-const assert = require('chai').assert;
+import chai from './util/chai-util.js';
+const assert = chai.assert;
+
 
 import Map                                     from './map.jsx';
-import TreeInformationPanel                    from './information-panel-tree.jsx';
-import PointCoordinates                        from './point-coordinates.jsx';
-import Toolbox                                 from './toolbox.jsx';
-import ToastsStack                             from './components/toasts/toasts-stack.jsx';
-import ModalRoot                               from './modal-root.jsx';
-import UserControl                             from './user-control.jsx';
 
-import wrapContexts                            from './context/contexts-wrapper.jsx';
+
+
+
+
+
+import {default as wrapContexts}                            from './context/contexts-wrapper.tsx';
 
 import {Nav} from 'react-bootstrap';
 
 // REDUX
 import { connect }          from 'react-redux';
-import {changeTileProvider} from './redux/actions/index.js';
 
 
 
@@ -27,9 +29,20 @@ const REGION_OVERLAPS   = 'REGION_OVERLAPS';
 
 import { withRouter } from 'react-router-dom'
 
-class LandingPageContainer extends React.Component {
+import { RouteComponentProps } from 'react-router-dom';
 
-  onSelect = (selectedKey) => {
+// https://stackoverflow.com/a/49342714/274677
+interface IChildComponentProps extends RouteComponentProps<any> {
+  /* other props for ChildComponent */
+}
+
+class LandingPageContainer extends React.Component<IChildComponentProps, any> {
+
+  constructor(props: any) {
+    super(props);
+  }
+
+  onSelect = (selectedKey: string) => {
     switch (selectedKey) {
       case OVERVIEW_MAP:
         this.props.history.push('/main/map');
@@ -68,5 +81,8 @@ class LandingPageContainer extends React.Component {
   }
 }
 
-export default withRouter((wrapContexts(LandingPageContainer)));
+
+export default withRouter(wrapContexts(LandingPageContainer));
+
+
 

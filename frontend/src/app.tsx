@@ -1,4 +1,4 @@
-const React = require('react');
+import React from 'react';
 
 import {
   Switch,
@@ -10,7 +10,10 @@ import {
 } from 'react-router-dom';
 
 
-import LandingPageContainer from './landing-page-container.jsx';
+import LandingPageContainer from './landing-page-container.tsx';
+
+/*
+
 import MainMapContainer from './main-map-container.jsx';
 import RegionMgmnt from './region-mgmnt.jsx';
 import RegionOverlaps from './region-overlaps.jsx';
@@ -21,21 +24,22 @@ import ToastsStack                             from './components/toasts/toasts-
 import ModalRoot                               from './modal-root.jsx';
 
 
+*/
 
 // TODO: maybe I should implement different context wrappers for each individual context
-import wrapContexts from './context/contexts-wrapper.jsx';
+import wrapContexts from './context/contexts-wrapper.tsx';
 
 export default function App() {
-{/*  const protectedMap = (
-    <PrivateRoute path='/main'> 
-      <MainMapContainer/>
-    </PrivateRoute> 
+
+  return (
+    <Switch>
+      <PrivateRoute exact path='/main'>
+        <LandingPageContainer/>
+      </PrivateRoute>
+    </Switch>   
   );
-  const publicMap = (
-    <Route path='/main'> 
-      <MainMapContainer/>
-    </Route> 
-  );  */}
+  
+/*  
   return (
     <ModalRoot>
       <ToastsStack>
@@ -65,13 +69,20 @@ export default function App() {
     </ModalRoot>
 
   );
+*/
 }
 
-const PrivateRoute = wrapContexts(function ({ children, ...rest }) {
+
+
+interface HasLocation {
+  location: string;
+}
+
+const PrivateRoute = wrapContexts(function ({ children, ...rest }: any) {
   return (
     <Route
       {...rest}
-        render={function ({ location }) {
+        render={function ({ location }: HasLocation) {
             if (rest.loginContext.username)
               return children;
             else return (
@@ -86,4 +97,5 @@ const PrivateRoute = wrapContexts(function ({ children, ...rest }) {
     />
   );
 });
+
 

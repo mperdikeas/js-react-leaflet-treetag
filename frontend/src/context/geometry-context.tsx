@@ -1,14 +1,37 @@
 import React, {createContext} from 'react'
 
-
-export const GeometryContext =  createContext();
-
+import {throttle} from 'lodash';
 
 
+export const GeometryContext =  createContext({} as any);
 
-class GeometryContextProvider extends React.Component {
+interface IState {
+  screen: {height: number, width: number}
+  , geometry: {
+    toolbox: {
+      iconWidth: number
+      , padding: number
+      , border: number
+      , horizMargin: number
+    }
+    , headerBarHeight: number
+    , map: {
+      layoutControl: {
+        bottomY: number
+      }
+    }
+    , toastDiv: {
+      width: number
+      , marginRight: number
+    }
+  }
+}
 
-  constructor(props) {
+
+
+class GeometryContextProvider extends React.Component<any, IState> {
+
+  constructor(props: any) {
     super(props);
     this.state =  {
       screen: this.getViewPortInfo()
@@ -31,7 +54,7 @@ class GeometryContextProvider extends React.Component {
           }
       }
     };
-    this.handleResize = _.throttle(this.handleResize.bind(this), 250);    
+    this.handleResize = throttle(this.handleResize.bind(this), 250);    
   }
 
   getViewPortInfo = () => {

@@ -1,6 +1,3 @@
-const     _ = require('lodash');
-const assert = require('chai').assert;
-
 const L = require('leaflet');
 
 require('./ots/Leaflet.MakiMarkers.js');
