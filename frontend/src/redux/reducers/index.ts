@@ -1,6 +1,7 @@
 import chai from '../../util/chai-util.js';
 const assert = chai.assert;
 
+import {Action} from '../actions/types.ts';
 
 import configurationReducer           from './configuration-reducer.js';
 import treesReducer                   from './trees-reducer.js';
@@ -12,7 +13,9 @@ import maximizedInfoPanelReducer      from './maximizedInfoPanelReducer.js';
 import paneToOpenInfoPanelReducer     from './paneToOpenInfoPanelReducer.js';
 import regionsReducer                 from './regionsReducer.js';
 
-function rootReducer(state = {}, action) {
+
+
+function rootReducer(state: any = {}, action: Action) {
     return {
         configuration        : configurationReducer        (state.configuration, action),
         trees                : treesReducer                (state.trees, action),

@@ -1,4 +1,4 @@
-const React = require('react');
+import React, {FunctionComponent} from 'react';
 import proj4 from 'proj4';
 
 // https://spatialreference.org/ref/epsg/2100/
@@ -11,21 +11,37 @@ const WGS84  = 'EPSG:4326';
 const HGRS87 = 'EPSG:2100';
 
 // redux
-import { connect }          from 'react-redux';
+import { connect, ConnectedProps }          from 'react-redux';
 
-const mapStateToProps = (state) => {
+
+
+
+
+import {IStore} from './redux/types.ts';
+
+
+const mapStateToProps = (state: IStore) => {
   return {latlng: state.latlng};
 };
 
-function PointCoordinates({latlng}) {
+const connector = connect(mapStateToProps, null);
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+type Props = PropsFromRedux & {} // https://redux.js.org/recipes/usage-with-typescript
+
+
+const PointCoordinates: FunctionComponent<Props> = (x: Props) => {
+  const {latlng} = x;
   if (latlng===null)
     return null;
   else {
     const {lat, lng} = latlng;
     const precisionA = 8;
     const precisionB = 8;
+    // @ts-expect-error (TODO: remove when @types/leaflet does leaflet 1.6)
     const formatA = `${lat.toPrecision(precisionA)}:${lng.toPrecision(precisionA)}`;
     const [hgrs87lat, hgrs87long] = proj4(WGS84, HGRS87, [lng, lat]);
+    // @ts-expect-error (TODO: remove when @types/leaflet does leaflet 1.6)
     const formatB = `${hgrs87lat.toPrecision(precisionB)}:${hgrs87long.toPrecision(precisionB)}`;
     return (
       <>
@@ -53,4 +69,4 @@ function PointCoordinates({latlng}) {
 }
 
 
-export default connect(mapStateToProps, null)(PointCoordinates);
+export default connector(PointCoordinates);

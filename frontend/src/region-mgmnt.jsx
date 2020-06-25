@@ -9,7 +9,7 @@ import {Nav} from 'react-bootstrap';
 
 import RegionMgmntMap                          from './region-mgmnt-map.jsx';
 import RegionList                              from './region-list.jsx';
-import PointCoordinates                        from './point-coordinates.jsx';
+import PointCoordinates                        from './point-coordinates.tsx';
 import UserControl                             from './user-control.jsx';
 
 import wrapContexts                            from './context/contexts-wrapper.tsx';

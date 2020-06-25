@@ -12,7 +12,7 @@ import {ActionUpdateMouseCoords
         , ActionRevertTreeCoords
         , ActionGetRegionsInProgress
         , ActionRevertTreeInfo
-        , ActionWtTypeOnly} from './types.ts';
+        , ActionNoPayload} from './types.ts';
 
 
 
@@ -269,19 +269,19 @@ export function setWktRegionUnderConstruction(wkt: string) {
 
 export {default as createRegion} from './create-region.jsx';
 
-export function rgmgmntDeleteStart(): ActionWtTypeOnly {
+export function rgmgmntDeleteStart(): ActionNoPayload {
     return {type: REG_MGMNT_DELETE_START};
 }
 
-export function rgmgmntDeleteEnd(): ActionWtTypeOnly {
+export function rgmgmntDeleteEnd(): ActionNoPayload {
     return {type: REG_MGMNT_DELETE_END};
 }
 
-export function rgmgmntModifyStart(): ActionWtTypeOnly {
+export function rgmgmntModifyStart(): ActionNoPayload {
     return {type: REG_MGMNT_MODIFY_START};
 }
 
-export function rgmgmntModifyEnd(): ActionWtTypeOnly {
+export function rgmgmntModifyEnd(): ActionNoPayload {
     return {type: REG_MGMNT_MODIFY_END};
 }
 
@@ -291,7 +291,7 @@ export function rgmgmntModifyEnd(): ActionWtTypeOnly {
 export function overlapsGetRegionsSuccess(regions: any)     {return {type: OVERLAPS_GET_REGIONS_SUCCESS, payload: regions};}
 export function overlapsSetRegion        (region: any)      {return {type: OVERLAPS_SET_REGION, payload: region};}
 export function overlapsSetPartitions    (partitions: any)  {return {type: OVERLAPS_SET_PARTITIONS, payload: partitions};}
-export function overlapsGetOverlapsInProgress   ():ActionWtTypeOnly     {return {type: OVERLAPS_GET_OVERLAPS_IN_PROGRESS};}
+export function overlapsGetOverlapsInProgress   ():ActionNoPayload     {return {type: OVERLAPS_GET_OVERLAPS_IN_PROGRESS};}
 export function overlapsGetOverlapsSuccess(overlaps: any)   {return {type: OVERLAPS_GET_OVERLAPS_IN_PROGRESS, payload: overlaps};}
 
 export function updateConfiguration(configuration: any) {return {type: UPDATE_CONFIGURATION, payload: configuration};}

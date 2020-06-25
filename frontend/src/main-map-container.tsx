@@ -3,7 +3,7 @@ var      cx = require('classnames');
 
 import Map                                     from './map.jsx';
 import TreeInformationPanel                    from './information-panel-tree.jsx';
-import PointCoordinates                        from './point-coordinates.jsx';
+import PointCoordinates                        from './point-coordinates.tsx';
 import Toolbox                                 from './toolbox.jsx';
 import ToastsStack                             from './components/toasts/toasts-stack.jsx';
 import ModalRoot                               from './modal-root.jsx';
@@ -62,6 +62,9 @@ class MainMapContainer extends React.Component<Props, any> {
         <div className='row no-gutters justify-content-start align-items-center'
              style={{height: `${headerBarHeight}px`}}>
           <div className='col-4'>
+
+
+            
             <PointCoordinates/>
           </div>
           <div className='col-4'>

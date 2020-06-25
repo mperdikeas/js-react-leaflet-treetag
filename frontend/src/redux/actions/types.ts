@@ -28,6 +28,8 @@ export type ActionRevertTreeInfo = {
 }
 
 
-export type ActionWtTypeOnly = {
+export type ActionNoPayload = {
     readonly type: string
 }
+
+export type Action = ActionUpdateMouseCoords | ActionNoPayload;

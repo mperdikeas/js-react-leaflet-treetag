@@ -58,7 +58,7 @@ class GeometryContextProvider extends React.Component<any, IState> {
   }
 
   getViewPortInfo = () => {
-    return {height: $(window).height(), width: $(window).width()}
+    return {height: $(window).height() || 400, width: $(window).width() || 600}
   }
   
   componentDidMount() {

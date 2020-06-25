@@ -3,4 +3,7 @@ export type IStore = {
         id: number
     },
     maximizedInfoPanel: boolean
+    latlng: {
+        lat: number,
+        lng: number}
 }

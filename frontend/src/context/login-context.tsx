@@ -4,7 +4,7 @@ import React, {createContext} from 'react'
 export const LoginContext =  createContext({} as any);
 
 interface IState {
-  username: string;
+  username: string | null;
 }
 
 
