@@ -1,4 +1,4 @@
-export type RootStore = {
+export type RootState = {
     target: {
         id: number | null
     },

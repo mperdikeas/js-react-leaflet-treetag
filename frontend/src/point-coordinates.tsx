@@ -13,10 +13,10 @@ const HGRS87 = 'EPSG:2100';
 // redux
 import { connect, ConnectedProps }          from 'react-redux';
 
-import {RootStore} from './redux/types.ts';
+import {RootState} from './redux/types.ts';
 
 
-const mapStateToProps = (state: RootStore) => {
+const mapStateToProps = (state: RootState) => {
   return {latlng: state.latlng};
 };
 

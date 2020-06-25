@@ -9,18 +9,18 @@ import UserControl                             from './user-control.jsx';
 
 import wrapContexts                            from './context/contexts-wrapper.tsx';
 
-import { connect }          from 'react-redux';
+import { connect, MapStateToProps }          from 'react-redux';
 
 
 import NavLinkToLanding from './navlink-to-landing.jsx';
 
-import {RootStore} from './redux/types.ts';
+import {RootState} from './redux/types.ts';
 
-type MapStateToProps = {isTargetSelected: boolean, maximizedInfoPanel: boolean};
+type MapStateToPropsV = {isTargetSelected: boolean, maximizedInfoPanel: boolean};
 
 
-
-const mapStateToProps = (state: RootStore): MapStateToProps => {
+type MapStateToPropsF = MapStateToProps<MapStateToPropsV, {}, RootState>;
+const mapStateToProps: MapStateToPropsF = (state: RootState): MapStateToPropsV => {
   return {
     isTargetSelected: state.target.id != null
     , maximizedInfoPanel: state.maximizedInfoPanel
@@ -30,7 +30,7 @@ const mapStateToProps = (state: RootStore): MapStateToProps => {
 
 type OwnProps = {}
 
-type Props = MapStateToProps & OwnProps
+type Props = MapStateToPropsV & OwnProps
 
 
 class MainMapContainer extends React.Component<Props, any> {
@@ -96,6 +96,6 @@ class MainMapContainer extends React.Component<Props, any> {
   }
 }
 
-export default connect<MapStateToProps, null, OwnProps, RootStore>(mapStateToProps, null)(wrapContexts(MainMapContainer));
+export default connect<MapStateToPropsV, null, OwnProps, RootState>(mapStateToProps, null)(wrapContexts(MainMapContainer));
 
 
