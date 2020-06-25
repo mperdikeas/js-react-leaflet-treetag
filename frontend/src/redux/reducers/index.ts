@@ -1,6 +1,3 @@
-import chai from '../../util/chai-util.js';
-const assert = chai.assert;
-
 import {Action} from '../actions/types.ts';
 
 import configurationReducer           from './configuration-reducer.js';

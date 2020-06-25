@@ -1,6 +1,6 @@
-export type IStore = {
+export type RootStore = {
     target: {
-        id: number
+        id: number | null
     },
     maximizedInfoPanel: boolean
     latlng: {

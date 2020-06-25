@@ -13,26 +13,21 @@ const HGRS87 = 'EPSG:2100';
 // redux
 import { connect, ConnectedProps }          from 'react-redux';
 
+import {RootStore} from './redux/types.ts';
 
 
-
-
-import {IStore} from './redux/types.ts';
-
-
-const mapStateToProps = (state: IStore) => {
+const mapStateToProps = (state: RootStore) => {
   return {latlng: state.latlng};
 };
 
 const connector = connect(mapStateToProps, null);
 type PropsFromRedux = ConnectedProps<typeof connector>
 
-type Props = PropsFromRedux & {} // https://redux.js.org/recipes/usage-with-typescript
+type Props = PropsFromRedux & {} // sse-1593080374 https://redux.js.org/recipes/usage-with-typescript
 
 
-const PointCoordinates: FunctionComponent<Props> = (x: Props) => {
-  const {latlng} = x;
-  if (latlng===null)
+const PointCoordinates: FunctionComponent<Props> = ({latlng}: Props) => {
+  if (latlng===null) // TODO understand x? vs T | null
     return null;
   else {
     const {lat, lng} = latlng;

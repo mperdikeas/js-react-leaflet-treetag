@@ -5,26 +5,22 @@ import Map                                     from './map.jsx';
 import TreeInformationPanel                    from './information-panel-tree.jsx';
 import PointCoordinates                        from './point-coordinates.tsx';
 import Toolbox                                 from './toolbox.jsx';
-import ToastsStack                             from './components/toasts/toasts-stack.jsx';
-import ModalRoot                               from './modal-root.jsx';
 import UserControl                             from './user-control.jsx';
 
 import wrapContexts                            from './context/contexts-wrapper.tsx';
 
-// REDUX
 import { connect }          from 'react-redux';
+
 
 import NavLinkToLanding from './navlink-to-landing.jsx';
 
-import {IStore} from './redux/types.ts';
+import {RootStore} from './redux/types.ts';
+
+type MapStateToProps = {isTargetSelected: boolean, maximizedInfoPanel: boolean};
 
 
-type Props = {
-  isTargetSelected: boolean
-  , maximizedInfoPanel: boolean
-}
 
-const mapStateToProps = (state: IStore):Props => {
+const mapStateToProps = (state: RootStore): MapStateToProps => {
   return {
     isTargetSelected: state.target.id != null
     , maximizedInfoPanel: state.maximizedInfoPanel
@@ -32,12 +28,15 @@ const mapStateToProps = (state: IStore):Props => {
 };
 
 
+type OwnProps = {}
+
+type Props = MapStateToProps & OwnProps
 
 
 class MainMapContainer extends React.Component<Props, any> {
 
 
-  constructor(props: {isTargetSelected: boolean, maximizedInfoPanel: boolean}) {
+  constructor(props: Props) {
     super(props);
   }
 
@@ -97,5 +96,6 @@ class MainMapContainer extends React.Component<Props, any> {
   }
 }
 
-export default connect(mapStateToProps, null)(wrapContexts(MainMapContainer));
+export default connect<MapStateToProps, null, OwnProps, RootStore>(mapStateToProps, null)(wrapContexts(MainMapContainer));
+
 

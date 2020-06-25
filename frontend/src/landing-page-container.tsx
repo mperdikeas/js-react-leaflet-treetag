@@ -1,27 +1,10 @@
 //const React = require('react');
 
 import React from 'react';
-var      cx = require('classnames');
-
-import chai from './util/chai-util.js';
-const assert = chai.assert;
-
-
-import Map                                     from './map.jsx';
-
-
-
-
-
 
 import {default as wrapContexts}                            from './context/contexts-wrapper.tsx';
 
 import {Nav} from 'react-bootstrap';
-
-// REDUX
-import { connect }          from 'react-redux';
-
-
 
 const OVERVIEW_MAP      = 'OVERVIEW_MAP';
 const REGION_MGMNT      = 'REGION_MGMNT';

@@ -68,8 +68,6 @@ import getFeatNumPhotos from './get-feat-num-photos.jsx';
 
 import {isValidModalType} from '../../constants/modal-types.js';
 
-import {CT_UNIT} from '../../constants.js';
-
 import {cancelPendingRequests} from './action-util.jsx';
 
 import {INFORMATION, PHOTOS, HISTORY, ADJUST}                 from '../../constants/information-panel-panes.js';
@@ -292,7 +290,7 @@ export function overlapsGetRegionsSuccess(regions: any)     {return {type: OVERL
 export function overlapsSetRegion        (region: any)      {return {type: OVERLAPS_SET_REGION, payload: region};}
 export function overlapsSetPartitions    (partitions: any)  {return {type: OVERLAPS_SET_PARTITIONS, payload: partitions};}
 export function overlapsGetOverlapsInProgress   ():ActionNoPayload     {return {type: OVERLAPS_GET_OVERLAPS_IN_PROGRESS};}
-export function overlapsGetOverlapsSuccess(overlaps: any)   {return {type: OVERLAPS_GET_OVERLAPS_IN_PROGRESS, payload: overlaps};}
+export function overlapsGetOverlapsSuccess(overlaps: any)   {return {type: OVERLAPS_GET_OVERLAPS_SUCCESS, payload: overlaps};}
 
 export function updateConfiguration(configuration: any) {return {type: UPDATE_CONFIGURATION, payload: configuration};}
 export function updateTrees(trees: any)                           {return {type: UPDATE_TREES, payload: trees};}

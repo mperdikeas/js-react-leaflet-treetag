@@ -3,10 +3,7 @@ import React from 'react';
 import {
   Switch,
   Route,
-  Link,
-  Redirect,
-  useHistory,
-  useLocation
+  Redirect
 } from 'react-router-dom';
 
 
