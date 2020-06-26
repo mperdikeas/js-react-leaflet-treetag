@@ -1,39 +1,20 @@
-export type ActionUpdateMouseCoords = {
+export type ActionUpdateMouseCoords = StandardAction<{latlng: string}>
+
+export type ActionToggleMaximizeInfoPanel = ActionNoPayload;
+export type ActionUnsetTarget             = ActionNoPayload;
+export type ActionGetFeatureAjaxConcluded = ActionNoPayload;
+export type ActionRevertTreeCoords        = ActionNoPayload;
+export type ActionGetRegionsInProgress    = ActionNoPayload;
+export type ActionRevertTreeInfo          = ActionNoPayload;
+
+
+export type StandardAction<T> = {
     readonly type: string,
-    readonly payload: {latlng: string}
-}
-
-export type ActionToggleMaximizeInfoPanel = {
-    readonly type: string
-}
-
-export type ActionUnsetTarget = {
-    readonly type: string
-}
-
-export type ActionGetFeatureAjaxConcluded = {
-    readonly type: string
-}
-
-export type ActionRevertTreeCoords = {
-   readonly type: string
-}
-
-export type ActionGetRegionsInProgress = {
-   readonly type: string
-}
-
-export type ActionRevertTreeInfo = {
-   readonly type: string
-}
-
-export type VanillaAction = {
-    readonly type: string,
-    readonly payload: any
+    readonly payload: T
 }
 
 export type ActionNoPayload = {
     readonly type: string
 }
 
-export type Action = VanillaAction | ActionUpdateMouseCoords | ActionNoPayload;
+export type Action = StandardAction<any> | ActionUpdateMouseCoords | ActionNoPayload;

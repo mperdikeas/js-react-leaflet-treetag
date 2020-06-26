@@ -5,7 +5,7 @@ import chai from '../../util/chai-util.js';
 const assert = chai.assert;
 import { v4 as uuidv4 } from 'uuid';
 
-import {VanillaAction
+import {StandardAction
         , ActionUpdateMouseCoords
         , ActionToggleMaximizeInfoPanel
         , ActionUnsetTarget
@@ -62,7 +62,7 @@ import { UPDATE_MOUSE_COORDS
          , UPDATE_TREES
        } from './action-types.js';
 
-import getFeatData from './get-feat-data.jsx';
+import getFeatData from './get-feat-data.tsx';
 
 import getFeatNumPhotos from './get-feat-num-photos.jsx';
 
@@ -85,7 +85,7 @@ export function updateMouseCoords(latlng: string) : ActionUpdateMouseCoords {
     return { type: UPDATE_MOUSE_COORDS, payload: {latlng} };
 }
 
-export function displayModal(modalType: string, modalProps: any): VanillaAction {
+export function displayModal(modalType: string, modalProps: any): StandardAction<any> {
     assert.isTrue(isValidModalType(modalType), `unrecognized modal type: [${modalType}]`);
     const {uuid} = modalProps;
     assert.exists(uuid, `actions/index.ts displayModal weird: ${tnu(uuid)}`);
@@ -247,7 +247,7 @@ export function overlapsUpdateSelectedRegion(selectedRegion: any) {
 
 export {default as login} from './login.js';
 
-export {default as getFeatData}        from './get-feat-data.jsx';
+export {default as getFeatData}        from './get-feat-data.tsx';
 export {default as getFeatPhoto}       from './get-feat-photo.jsx';
 export {default as getFeatNumPhotos}   from './get-feat-num-photos.jsx';
 

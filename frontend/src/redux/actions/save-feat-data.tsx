@@ -1,4 +1,5 @@
-const assert = require('chai').assert;
+import chai from '../../util/chai-util.js';
+const assert = chai.assert;
 
 import {axiosAuth} from '../../axios-setup.js';
 
@@ -22,7 +23,7 @@ import {propsForRetryDialog} from './action-util.jsx';
 
 import {handleAxiosException} from './action-axios-exc-util.js';
 
-import {VanillaAction} from './types.ts';
+import {StandardAction} from './types.ts';
 
 import {TreeInfoWithId, BackendResponse} from '../../backend.d.ts';
 
@@ -30,12 +31,12 @@ const targetId2Marker = (targetId: number) => {
   return globalGet(GSN.REACT_MAP).id2marker[targetId];
 }
 
-const displayTreeDataHasBeenUpdated = (dispatch: React.Dispatch<VanillaAction>, id: number)=>{
+const displayTreeDataHasBeenUpdated = (dispatch: React.Dispatch<StandardAction<any>>, id: number)=>{
   const html = `τα νέα δεδομένα για το δένδρο #${id} αποθηκεύτηκαν`;
   dispatch(displayModal(MDL_NOTIFICATION, {html, uuid:uuidv4()}));
 }
 
-const displayModalSavingTreeData = (dispatch: React.Dispatch<VanillaAction>, id: number, uuid: string)=>{
+const displayModalSavingTreeData = (dispatch: React.Dispatch<StandardAction<any>>, id: number, uuid: string)=>{
   const html = `αποθήκευση δεδομένων για το δένδρο #${id}`;
   dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html, uuid}))
 };
