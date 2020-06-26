@@ -5,7 +5,8 @@ import chai from '../../util/chai-util.js';
 const assert = chai.assert;
 import { v4 as uuidv4 } from 'uuid';
 
-import {ActionUpdateMouseCoords
+import {VanillaAction
+        , ActionUpdateMouseCoords
         , ActionToggleMaximizeInfoPanel
         , ActionUnsetTarget
         , ActionGetFeatureAjaxConcluded
@@ -84,7 +85,7 @@ export function updateMouseCoords(latlng: string) : ActionUpdateMouseCoords {
     return { type: UPDATE_MOUSE_COORDS, payload: {latlng} };
 }
 
-export function displayModal(modalType: string, modalProps: any) {
+export function displayModal(modalType: string, modalProps: any): VanillaAction {
     assert.isTrue(isValidModalType(modalType), `unrecognized modal type: [${modalType}]`);
     const {uuid} = modalProps;
     assert.exists(uuid, `actions/index.ts displayModal weird: ${tnu(uuid)}`);
@@ -250,7 +251,7 @@ export {default as getFeatData}        from './get-feat-data.jsx';
 export {default as getFeatPhoto}       from './get-feat-photo.jsx';
 export {default as getFeatNumPhotos}   from './get-feat-num-photos.jsx';
 
-export {default as saveFeatData}       from './save-feat-data.jsx';
+export {default as saveFeatData}       from './save-feat-data.tsx';
 export {default as delFeatPhoto}       from './del-feat-photo.jsx';
 
 export {default as getRegions}       from './get-regions.jsx';
