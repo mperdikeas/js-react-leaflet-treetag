@@ -60,7 +60,7 @@ import { UPDATE_MOUSE_COORDS
 
          , UPDATE_CONFIGURATION
          , UPDATE_TREES
-       } from './action-types.js';
+       } from './action-types.ts';
 
 import getFeatData from './get-feat-data.tsx';
 

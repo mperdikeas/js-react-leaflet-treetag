@@ -1,3 +1,4 @@
+import {ActionType} from './action-types.ts';
 export type ActionUpdateMouseCoords = StandardAction<{latlng: string}>
 
 export type ActionToggleMaximizeInfoPanel = ActionNoPayload;
@@ -9,12 +10,12 @@ export type ActionRevertTreeInfo          = ActionNoPayload;
 
 
 export type StandardAction<T> = {
-    readonly type: string,
+    readonly type: ActionType,
     readonly payload: T
 }
 
 export type ActionNoPayload = {
-    readonly type: string
+    readonly type: ActionType
 }
 
 export type Action = StandardAction<any> | ActionUpdateMouseCoords | ActionNoPayload;

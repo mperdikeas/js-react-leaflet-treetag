@@ -8,7 +8,7 @@ import {UPDATE_SELECTED_REGIONS
         , REG_MGMNT_DELETE_END
         , REG_MGMNT_MODIFY_START
         , REG_MGMNT_MODIFY_END
-       }  from '../actions/action-types.js';
+       }  from '../actions/action-types.ts';
 
 import {sca_fake_return} from '../../util/util.js';
 

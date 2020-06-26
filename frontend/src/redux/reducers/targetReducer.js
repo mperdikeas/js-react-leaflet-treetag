@@ -1,3 +1,5 @@
+import chai from '../../util/chai-util.js';
+const assert = chai.assert;
 import {UNSET_TARGET
         , GET_TREE_INFO_IN_PROGRESS
         , GET_FEAT_NUM_PHOTOS_IN_PROGRESS
@@ -17,11 +19,8 @@ import {UNSET_TARGET
         , REVERT_TREE_COORDS
 
         , GET_NUM_PHOTOS_IN_PROGRESS
-        , NEW_TARGET}  from '../actions/action-types.js';
+        , NEW_TARGET}  from '../actions/action-types.ts';
 
-
-
-const assert = require('chai').assert;
 
 
 /* TODO: rethink the assumption that at any point in time there is single axios cancellable

@@ -5,7 +5,7 @@ import {OVERLAPS_UPDATE_SELECTED_REGION,
         OVERLAPS_SET_REGION,
         OVERLAPS_SET_PARTITIONS,
         OVERLAPS_GET_OVERLAPS_IN_PROGRESS,
-        OVERLAPS_GET_OVERLAPS_SUCCESS}  from '../actions/action-types.js';
+        OVERLAPS_GET_OVERLAPS_SUCCESS}  from '../actions/action-types.ts';
 
 import {sca_fake_return} from '../../util/util.js';
 

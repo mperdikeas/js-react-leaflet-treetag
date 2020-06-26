@@ -1,6 +1,6 @@
 const assert = require('chai').assert;
 
-import {ADD_TOAST, DISMISS_TOAST} from '../actions/action-types.js';
+import {ADD_TOAST, DISMISS_TOAST} from '../actions/action-types.ts';
 
 
 
