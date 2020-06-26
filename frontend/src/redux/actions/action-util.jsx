@@ -1,6 +1,6 @@
 const React = require('react');
 import { v4 as uuidv4 } from 'uuid';
-import {cancelToken} from '../selectors.js';
+import {cancelToken} from '../selectors.ts';
 
 import {OP_NO_LONGER_RELEVANT} from '../../constants/axios-constants.js';
 

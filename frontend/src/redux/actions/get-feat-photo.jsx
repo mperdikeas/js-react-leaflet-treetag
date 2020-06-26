@@ -12,7 +12,7 @@ import {getFeatPhotoInProgress
       , clearModal} from './index.ts';
 import {MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
 
-import {cancelToken} from '../selectors.js';
+import {cancelToken} from '../selectors.ts';
 
 import {urlForPhoto} from './feat-url-util.js';
 

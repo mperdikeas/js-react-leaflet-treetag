@@ -15,7 +15,7 @@ import {MDL_RETRY_CANCEL
 
 import {OP_NO_LONGER_RELEVANT} from '../../util/axios-util.js';
 
-import {cancelToken} from '../selectors.js';
+import {cancelToken} from '../selectors.ts';
 
 import {urlForPhotoDeletion} from './feat-url-util.js';
 

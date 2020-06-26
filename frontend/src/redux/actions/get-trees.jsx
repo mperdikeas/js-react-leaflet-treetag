@@ -19,7 +19,7 @@ import {CANCEL_TOKEN_TYPES
       , cancelIncompatibleRequests
       , addCancelToken} from '../../util/axios-util.js';
 
-import {cancelToken} from '../selectors.js';
+import {cancelToken} from '../selectors.ts';
 
 import {urlForPhoto} from './feat-url-util.js';
 

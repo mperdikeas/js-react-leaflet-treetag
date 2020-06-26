@@ -14,7 +14,7 @@ import {getFeatNumPhotosInProgress
 
 import {MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
 
-import {cancelToken} from '../selectors.js';
+import {cancelToken} from '../selectors.ts';
 
 import {urlForNumOfPhotos} from './feat-url-util.js';
 

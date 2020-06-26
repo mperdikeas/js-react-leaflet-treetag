@@ -1,3 +1,5 @@
+// https://stackoverflow.com/a/53746948/274677
+
 // TypeScript will infer a string union type from the literal values passed to
 // this function. Without `extends string`, it would instead generalize them
 // to the common string type. 

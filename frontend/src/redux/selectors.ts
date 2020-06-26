@@ -1,5 +1,7 @@
 const assert = require('chai').assert;
 
+import {RootState} from './types.ts';
+
 import {sca_fake_return, isNotNullOrUndefined} from '../util/util.js';
 
 
@@ -11,30 +13,14 @@ import {INFORMATION
         , ADJUST} from '../constants/information-panel-panes.js';
 
 
-export function treeInfoNotFetchedYetOrIsBeingUpdated(state) {
-    assert.exists(state.targetId, 'treeInfoNotFetchedYetOrIsBeingUpdated selector - inconceivable that targetId is null or undefined');
-/*    if (state.targetId===null) {
-        return false;
-        } else {*/
-    return (state.treeInfo.original===null);
-
-    /*
-        if (state.treeInfo.original===null) {
-            return true;
-        } else {
-            return (state.targetId !== state.treeInfo.original.id);
-        }*/
-//    }
-};
-
-export function targetIsDirty(state) {
+export function targetIsDirty(state: RootState) {
     if (state.target.treeInfo != null)
         return JSON.stringify(state.target.treeInfo.original)!==JSON.stringify(state.target.treeInfo.current);
     else
         return false;
 }
 
-export function targetInitialAjaxReadInProgress(state) {
+export function targetInitialAjaxReadInProgress(state: RootState) {
     assert.isOk(state.paneToOpenInfoPanel, 'SNAFU 1 in targetAjaxReadInProgress');
     switch (state.paneToOpenInfoPanel) {
     case INFORMATION:
@@ -51,7 +37,7 @@ export function targetInitialAjaxReadInProgress(state) {
     }
 }
 
-export function typeOfTargetInitialAjaxReadInProgress(state) {
+export function typeOfTargetInitialAjaxReadInProgress(state: RootState) {
     assert.isOk(state.paneToOpenInfoPanel, 'SNAFU 1 in typeOfTargetAjaxReadInProgress');
     assert.isTrue(isNotNullOrUndefined(state.target.id), 'SNAFU 2 in typeOfTargetAjaxReadInProgress');
     switch (state.paneToOpenInfoPanel) {
@@ -70,23 +56,12 @@ export function typeOfTargetInitialAjaxReadInProgress(state) {
     }
 }
 
-export function fetchingNewPhotoForExistingTarget(state) {
-    /*
-    assert.isOk(state.paneToOpenInfoPanel, 'SNAFU 1 in fetchingNewPhotoForExistingTarget');
-    assert.strictEqual(state.paneToOpenInfoPanel, PHOTOS, 'SNAFU 2 in fetchingNewPhotoForExistingTarget');
-    assert.isTrue(isNotNullOrUndefined(state.target.photos.num), 'SNAFU 3 in fetchingNewPhotoForExistingTarget');
-    assert.isTrue(isNotNullOrUndefined(state.target.photos.idx), 'SNAFU 4 in fetchingNewPhotoForExistingTarget');
-    assert.isDefined(state.target.photos.img, 'SNAFU 5 in fetchingNewPhotoForExistingTarget');
-    assert.isDefined(state.target.photos.t, 'SNAFU 6 in fetchingNewPhotoForExistingTarget');
-    if ((state.target.photos.t == null) || (state.target.photos.img == null)) {
-        assert.isTrue(state.target.photos.t === state.target.photos.img);
-    }
-*/
-    return state.target.photos.img === null;
+export function fetchingNewPhotoForExistingTarget(state: RootState) {
+    return state.target!.photos!.img === null;
 }
 
 
-export function cancelToken(state) {
+export function cancelToken(state: RootState) {
     if (state.target)
         return state.target.axiosSource;
     else

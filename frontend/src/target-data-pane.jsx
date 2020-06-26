@@ -23,7 +23,7 @@ import {revertTreeInfo
       , saveFeatData}  from './redux/actions/index.ts';
 
 
-import {targetIsDirty} from './redux/selectors.js';
+import {targetIsDirty} from './redux/selectors.ts';
 
 const mapStateToProps = (state) => {
   return {

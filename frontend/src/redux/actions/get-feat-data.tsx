@@ -7,6 +7,10 @@ import {axiosAuth} from '../../axios-setup.js';
 //import {CancelToken} from '../../../node_modules/axios/index.js';
 import CancelToken from '../../../node_modules/axios/lib/cancel/CancelToken.js';
 
+
+// https://stackoverflow.com/q/62596831/274677
+// import {CancelToken as CancelTokenT} from '../../../node_modules/axios/index.d.ts';
+
 import {getTreeInfoInProgress
       , getFeatureAjaxConcluded
       , getTreeInfoSuccess

@@ -16,7 +16,7 @@ import DownArrow from './resources/down-arrow.png';
 import {sca_fake_return, isNotNullOrUndefined} from './util/util.js';
 
 
-import {fetchingNewPhotoForExistingTarget} from './redux/selectors.js';
+import {fetchingNewPhotoForExistingTarget} from './redux/selectors.ts';
 
 
 // REDUX
