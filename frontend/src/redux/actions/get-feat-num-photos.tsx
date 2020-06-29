@@ -1,34 +1,29 @@
-const React = require('react');
-const assert = require('chai').assert;
-import {getAccessToken} from '../../access-token-util.js';
+import {Dispatch} from 'react';
+import CancelToken from '../../../node_modules/axios/lib/cancel/CancelToken.js';
+
+import chai from '../../util/chai-util.js'
+const assert = chai.assert;
+
 import {axiosAuth} from '../../axios-setup.js';
-import {CancelToken} from 'axios';
-
-
 import {getFeatNumPhotosInProgress
       , getFeatureAjaxConcluded
       , getFeatNumPhotosSuccess
       , getFeatPhoto
       , displayModal} from './index.ts';
-
-
 import {MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
-
-import {cancelToken} from '../selectors.ts';
-
 import {urlForNumOfPhotos} from './feat-url-util.js';
-
 import {cancelPendingRequests, propsForRetryDialog} from './action-util.tsx';
-
 import {handleAxiosException} from './action-axios-exc-util.ts';
+import {RootState} from '../types.ts';
+import {BackendResponse} from '../../backend.d.ts';
 
-export default function getFeatNumPhotos(id) {
+export default function getFeatNumPhotos(id: number) {
   const actionCreator = `getFeatNumPhotos(${id}`;
   console.log(actionCreator);
 
 
   const source = CancelToken.source();
-  return (dispatch, getState) => {
+  return (dispatch: Dispatch<any>, getState: ()=>RootState) => {
 
     cancelPendingRequests(getState());
     const f = ()=>dispatch(getFeatNumPhotos(id));
@@ -36,7 +31,7 @@ export default function getFeatNumPhotos(id) {
     const url = urlForNumOfPhotos(id);
     console.log(`${actionCreator} :: URL is: ${url}`);
     
-    axiosAuth.get(url, {cancelToken: source.token}).then(res => {
+    axiosAuth.get(url, {cancelToken: source.token}).then( (res: BackendResponse) => {
       dispatch(getFeatureAjaxConcluded());      
       /* SSE-1585746250
        * This is a ValueOrInternalServerExceptionData data type on the server side
@@ -49,18 +44,18 @@ export default function getFeatNumPhotos(id) {
        */            
 
       const {t, err} = res.data;
-      if (err !== null)
+      if (err !== null) {
+        assert.isNull(t)
         console.error(err);
-      if (err===null) {
+        dispatch( displayModal(MDL_RETRY_CANCEL, propsForRetryDialog(dispatch, f, url, actionCreator, 'server-side error', err)) );
+      } else {
         const num = t;
         dispatch( getFeatNumPhotosSuccess(num));
         if (num > 0) {
           dispatch(getFeatPhoto(id, 0));
         } else
         ; // I don't need to handle this (!?)
-      } else {
-        dispatch( displayModal(MDL_RETRY_CANCEL, propsForRetryDialog(dispatch, f, url, actionCreator, 'server-side error', err)) );
       }
-    }).catch(err => handleAxiosException(err, dispatch, f, url, actionCreator)
+    }).catch( (err: any) => handleAxiosException(err, dispatch, f, url, actionCreator)
     );// catch
   }}

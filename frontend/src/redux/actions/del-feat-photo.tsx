@@ -1,4 +1,8 @@
 import {Dispatch} from 'react';
+
+// @ts-expect-error
+import CancelToken from '../../../node_modules/axios/lib/cancel/CancelToken.js';
+
 import chai from '../../util/chai-util.js';
 const assert = chai.assert;
 

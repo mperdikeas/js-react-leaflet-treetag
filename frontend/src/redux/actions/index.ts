@@ -64,7 +64,7 @@ import { UPDATE_MOUSE_COORDS
 
 import getFeatData from './get-feat-data.tsx';
 
-import getFeatNumPhotos from './get-feat-num-photos.jsx';
+import getFeatNumPhotos from './get-feat-num-photos.tsx';
 
 
 import {isValidModalType} from '../../constants/modal-types.js';
@@ -249,7 +249,7 @@ export {default as login} from './login.js';
 
 export {default as getFeatData}        from './get-feat-data.tsx';
 export {default as getFeatPhoto}       from './get-feat-photo.jsx';
-export {default as getFeatNumPhotos}   from './get-feat-num-photos.jsx';
+export {default as getFeatNumPhotos}   from './get-feat-num-photos.tsx';
 
 export {default as saveFeatData}       from './save-feat-data.tsx';
 export {default as delFeatPhoto}       from './del-feat-photo.tsx';
@@ -298,8 +298,8 @@ export function updateTrees(trees: any)                           {return {type:
 
 import getTrees from './get-trees.jsx';
 export {default as getTrees} from './get-trees.jsx';
-import getTreesConfiguration from './get-trees-configuration.jsx';
-export {default as getTreesConfiguration} from './get-trees-configuration.jsx';
+import getTreesConfiguration from './get-trees-configuration.tsx';
+export {default as getTreesConfiguration} from './get-trees-configuration.tsx';
 
 
 // cf. SSE-1592901297

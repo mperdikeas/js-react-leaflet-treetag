@@ -1,11 +1,14 @@
-const React = require('react');
+import React, {Dispatch} from 'react';
+// @ts-expect-error
+import CancelToken from '../../../node_modules/axios/lib/cancel/CancelToken.js';
 
 import chai from '../../util/chai-util.js';
+//  @ts-expect-error
 const assert = chai.assert;
 
-import {getAccessToken} from '../../access-token-util.js';
+
 import {axiosAuth} from '../../axios-setup.js';
-import {CancelToken} from 'axios';
+
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -16,22 +19,17 @@ import {displayModal
     ,   updateConfiguration}
 from './index.ts';
 import {MDL_RETRY_CANCEL, MDL_NOTIFICATION_NO_DISMISS} from '../../constants/modal-types.js';
-import {CANCEL_TOKEN_TYPES
-      , cancelIncompatibleRequests
-      , addCancelToken} from '../../util/axios-util.js';
 
-import {cancelToken} from '../selectors.ts';
-
-import {urlForPhoto} from './feat-url-util.js';
-
-import {cancelPendingRequests} from './action-util.tsx';
+import {BackendResponse} from '../../backend.d.ts';
 
 import {handleAxiosException} from './action-axios-exc-util.ts';
+import {RootState} from '../types.ts';
+import {propsForRetryDialog} from './action-util.tsx';
 
 export default function getTreesConfiguration() {
   const actionCreator = `getTreesConfiguration`;
 
-  return (dispatch, getState) => {
+  return (dispatch: Dispatch<any>, getState: ()=>RootState) => {
     const f = ()=>dispatch(getTreesConfiguration());
 
     const uuid = uuidv4();
@@ -43,8 +41,8 @@ export default function getTreesConfiguration() {
     const url = '/getConfiguration';
 
     // cf. SSE-1592901297    
-    return axiosAuth.get(url).then(res => {
-      dispatch(clearModal(uuid))
+    return axiosAuth.get(url).then( (res: BackendResponse) => {
+      dispatch(clearModal(uuid));
       // corr-id: SSE-1585746250
       const {t, err} = res.data; 
       if (err===null) {
@@ -57,7 +55,7 @@ export default function getTreesConfiguration() {
         }
       } else {
         dispatch( displayModal(MDL_RETRY_CANCEL, propsForRetryDialog(dispatch, f, url, actionCreator, 'server-side error', err)) );
-      }}).catch(err => {
+      }}).catch((err: any) => {
         dispatch(clearModal(uuid));
         handleAxiosException(err, dispatch, f, url, actionCreator);
       }); // catch
