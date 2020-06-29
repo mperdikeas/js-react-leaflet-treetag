@@ -1,28 +1,28 @@
-const assert = require('chai').assert;
-
 import { v4 as uuidv4 } from 'uuid';
+
+import {Dispatch} from 'react';
+
+import {MDL_NOTIFICATION} from '../../constants/modal-types.js';
 
 import {displayModal} from './index.ts';
 import {MDL_LOGIN, MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
 
-import {OP_NO_LONGER_RELEVANT} from '../../constants/axios-constants.js';
+import {OP_NO_LONGER_RELEVANT} from '../../util/axios-util.js';
 
-import {urlForFeatData} from './feat-url-util.js';
+import {propsForRetryDialog} from './action-util.tsx';
 
-import {propsForRetryDialog} from './action-util.jsx';
+import {SERVER_ERROR_CODES} from './action-constants.ts';
 
-import {SERVER_ERROR_CODES} from './action-constants.js';
-
-
+import {StandardAction} from './types.ts';
 
 import {isInsufficientPrivilleges} from '../../util-privilleges.js';
 
-const displayNotificationInsufPrivilleges = (dispatch, uuid)=>{
-    const msgInsufPrivl = 'the logged-in user has insufficient privilleges for this operation'; 
-    dispatch(displayModal(MDL_NOTIFICATION, {html: msgInsufPrivl, uuid}));
+const displayNotificationInsufPrivilleges = (dispatch: Dispatch<StandardAction<{html: string, uuid:string}>>, uuid: string)=>{
+    const html = 'the logged-in user has insufficient privilleges for this operation'; 
+    dispatch(displayModal(MDL_NOTIFICATION, {html, uuid}));
 };
 
-export function handleAxiosException(err, dispatch, f, url, actionCreator) {
+export function handleAxiosException(err: any, dispatch: Dispatch<any>, f:()=>void, url: string, actionCreator: string) {
     if (isInsufficientPrivilleges(err)) {
         console.warn(`${actionCreator} at url: [${url}] ~*~ insuf priv detected`);
         displayNotificationInsufPrivilleges(dispatch, uuidv4());
@@ -41,6 +41,9 @@ export function handleAxiosException(err, dispatch, f, url, actionCreator) {
         default: {
             console.error(err.response);
             console.error(err.response.data);
+            console.error(`error code extracted as: ${code}`);
+            console.error(`error msg extracted as: ${msg}`);
+            console.error('details follow:', details);
             dispatch( displayModal(MDL_RETRY_CANCEL, propsForRetryDialog(dispatch, f, url, actionCreator, `unrec code: ${code}`, err.response.data)) );
         }
         } // switch

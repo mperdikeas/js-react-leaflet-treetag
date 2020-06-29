@@ -69,7 +69,7 @@ import getFeatNumPhotos from './get-feat-num-photos.jsx';
 
 import {isValidModalType} from '../../constants/modal-types.js';
 
-import {cancelPendingRequests} from './action-util.jsx';
+import {cancelPendingRequests} from './action-util.tsx';
 
 import {INFORMATION, PHOTOS, HISTORY, ADJUST}                 from '../../constants/information-panel-panes.js';
 

@@ -19,11 +19,11 @@ import {cancelToken} from '../selectors.ts';
 
 import {urlForPhotoDeletion} from './feat-url-util.js';
 
-import {cancelPendingRequests} from './action-util.jsx';
+import {cancelPendingRequests} from './action-util.tsx';
 
-import {handleAxiosException} from './action-axios-exc-util.js';
+import {handleAxiosException} from './action-axios-exc-util.ts';
 
-import {propsForRetryDialog} from './action-util.jsx';
+import {propsForRetryDialog} from './action-util.tsx';
 
 export default function delFeatPhoto(id, idx) {
   const actionCreator = `delFeatPhoto(${id}, ${idx})`;

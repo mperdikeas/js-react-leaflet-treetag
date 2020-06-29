@@ -16,10 +16,10 @@ import {cancelToken} from '../selectors.ts';
 
 import {urlForPhoto} from './feat-url-util.js';
 
-import {cancelPendingRequests} from './action-util.jsx';
+import {cancelPendingRequests} from './action-util.tsx';
 
-import {handleAxiosException} from './action-axios-exc-util.js';
-import {propsForRetryDialog} from './action-util.jsx';
+import {handleAxiosException} from './action-axios-exc-util.ts';
+import {propsForRetryDialog} from './action-util.tsx';
 
 export default function getFeatPhoto(id, idx) {
   const actionCreator = `getFeatPhoto(${id}, ${idx})`;

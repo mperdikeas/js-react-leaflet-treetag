@@ -1,6 +1,8 @@
 import {ActionType} from './action-types.ts';
 export type ActionUpdateMouseCoords = StandardAction<{latlng: string}>
 
+//export type ModalNotificationAction = StandardAction<{html: string, uuid: string}>
+
 export type ActionToggleMaximizeInfoPanel = ActionNoPayload;
 export type ActionUnsetTarget             = ActionNoPayload;
 export type ActionGetFeatureAjaxConcluded = ActionNoPayload;

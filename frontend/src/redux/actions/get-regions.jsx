@@ -22,9 +22,9 @@ import {cancelToken} from '../selectors.ts';
 
 import {urlForPhoto} from './feat-url-util.js';
 
-import {cancelPendingRequests} from './action-util.jsx';
+import {cancelPendingRequests} from './action-util.tsx';
 
-import {handleAxiosException} from './action-axios-exc-util.js';
+import {handleAxiosException} from './action-axios-exc-util.ts';
 
 export default function getRegions(toastOnSuccess=false) {
   const actionCreator = `getRegions`;

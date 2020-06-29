@@ -17,11 +17,11 @@ import {isInsufficientPrivilleges} from '../../util-privilleges.js';
 import {GSN, globalGet} from '../../globalStore.js';
 
 import {isNotNullOrUndefined} from '../../util/util.js';
-import {propsForRetryDialog} from './action-util.jsx';
+import {propsForRetryDialog} from './action-util.tsx';
 
 
 
-import {handleAxiosException} from './action-axios-exc-util.js';
+import {handleAxiosException} from './action-axios-exc-util.ts';
 
 
 function displayModalCreatingNewRegion (dispatch, region, partition, uuid) {

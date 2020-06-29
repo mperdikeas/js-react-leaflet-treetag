@@ -1,24 +1,26 @@
-const React = require('react');
+import React, {Dispatch} from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import {cancelToken} from '../selectors.ts';
 
-import {OP_NO_LONGER_RELEVANT} from '../../constants/axios-constants.js';
+import {OP_NO_LONGER_RELEVANT} from '../../util/axios-util.js';
 
 import {clearModal} from './index.ts';
 
+import {RootState} from '../types.ts';
 
-export function cancelPendingRequests(state) {
+
+export function cancelPendingRequests(state: RootState) {
   /* If there are any pending axios requests we have to cancel them.
    */
   const cancelTokenV = cancelToken(state);
   if (cancelTokenV) {
     cancelTokenV.cancel(OP_NO_LONGER_RELEVANT);
-    console.debug('action-util.jsx :: cancelPendingRequests: cancelled axios request');
+    console.debug('action-util.tsx :: cancelPendingRequests: cancelled axios request');
   } else
-  console.debug('action-util.jsx :: cancelPendingRequests: NO cancel token found');
+  console.debug('action-util.tsx :: cancelPendingRequests: NO cancel token found');
 }
 
-function htmlForServerErrorMessage(url, actionCreator, ctx, err) {
+function htmlForServerErrorMessage(url: string, actionCreator: string, ctx: string, err: Object) {
   return (
     <>
     <div>
@@ -50,7 +52,7 @@ function htmlForServerErrorMessage(url, actionCreator, ctx, err) {
   );
 }
 
-export function propsForRetryDialog(dispatch, f, url, actionCreator, ctx, err) {
+export function propsForRetryDialog(dispatch: Dispatch<any>, f: ()=>void, url: string, actionCreator: string, ctx: string, err: Object) {
   const html = htmlForServerErrorMessage(url, actionCreator, ctx, err);
   const uuid = uuidv4();
   const cancelAction = ()=>dispatch(clearModal(uuid));

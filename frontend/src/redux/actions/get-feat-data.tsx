@@ -24,9 +24,9 @@ import {BackendResponse} from '../../backend.d.ts';
 
 import {urlForFeatData} from './feat-url-util.js';
 
-import {cancelPendingRequests, propsForRetryDialog} from './action-util.jsx';
+import {cancelPendingRequests, propsForRetryDialog} from './action-util.tsx';
 
-import {handleAxiosException} from './action-axios-exc-util.js';
+import {handleAxiosException} from './action-axios-exc-util.ts';
 
 export default function getFeatureData(id: number) {
   const actionCreator = `getFeatureData(${id})`;

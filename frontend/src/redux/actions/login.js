@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import {storeAccessToken} from '../../access-token-util.js';
 import {axiosPlain} from '../../axios-setup.js';
-import {propsForRetryDialog} from './action-util.jsx';
+import {propsForRetryDialog} from './action-util.tsx';
 import {MDL_RETRY_CANCEL, MDL_NOTIFICATION} from '../../constants/modal-types.js';
 
 import {displayModal} from './index.ts';
