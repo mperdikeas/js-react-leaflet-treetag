@@ -252,7 +252,7 @@ export {default as getFeatPhoto}       from './get-feat-photo.jsx';
 export {default as getFeatNumPhotos}   from './get-feat-num-photos.jsx';
 
 export {default as saveFeatData}       from './save-feat-data.tsx';
-export {default as delFeatPhoto}       from './del-feat-photo.jsx';
+export {default as delFeatPhoto}       from './del-feat-photo.tsx';
 
 export {default as getRegions}       from './get-regions.jsx';
 

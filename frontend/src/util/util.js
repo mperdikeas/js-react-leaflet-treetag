@@ -1,12 +1,8 @@
-const assert = require('chai').assert;
-function theAnswer() {
-    const rv = (()=>{
-        return 42;
-    })();
-    return rv;
-}
+import chai from './chai-util.js';
+const assert = chai.assert;
 
-function allStrictEqual(xs) {
+
+export function allStrictEqual(xs) {
     assert.isTrue(Array.isArray(xs));
     if (xs.length <= 1)
         return true;
@@ -20,18 +16,18 @@ function allStrictEqual(xs) {
     }
 }
 
-function exactlyOne(...theArgs) {
+export function exactlyOne(...theArgs) {
     const truthyCount = theArgs.reduce( (previous, current) => {
         return previous + (!!current);
     }, 0);
     return truthyCount == 1;
 }
 
-function sca_fake_return() {
+export function sca_fake_return() {
     return 'returning this just to satisfy Static Code Analysis';
 }
 
-function setCookie(name, value, days) {
+export function setCookie(name, value, days) {
   var expires = "";
   if (days) {
     var date = new Date();
@@ -43,7 +39,7 @@ function setCookie(name, value, days) {
 }
 
 
-function readCookie(name, panicIfMoreThanOnce, panicIfNotFound) {
+export function readCookie(name, panicIfMoreThanOnce, panicIfNotFound) {
     const c = document.cookie.split('; ');
     const cookies = {};
 
@@ -63,7 +59,7 @@ function readCookie(name, panicIfMoreThanOnce, panicIfNotFound) {
     return rv;
 }
 
-function uniqValues(xs) {
+export function uniqValues(xs) {
     assert.isTrue(Array.isArray(xs));
     function onlyUnique(value, index, self) { 
         return self.indexOf(value) === index;
@@ -72,13 +68,13 @@ function uniqValues(xs) {
     return xs.filter( onlyUnique );
 }
 
-function randomItem(items) {
+export function randomItem(items) {
     assert.isTrue(Array.isArray(items));    
     const rv = items[Math.floor(Math.random() * items.length)];
     return rv;
 }
 
-function areEqualShallow(a, b) {
+export function areEqualShallow(a, b) {
     for(let key in a) {
         if(!(key in b) || a[key] !== b[key]) {
             return false;
@@ -93,12 +89,12 @@ function areEqualShallow(a, b) {
 }
 
 // TODO: use chai exists instead
-function isNotNullOrUndefined(v) {
+export function isNotNullOrUndefined(v) {
     return (v!==undefined) && (v!==null);
 }
 
 
-function tnu(x) { // Text representation for Null or Undefined
+export function tnu(x) { // Text representation for Null or Undefined
     if (x===null)
         return 'null';
     else if (x===undefined)
@@ -109,19 +105,6 @@ function tnu(x) { // Text representation for Null or Undefined
 }
 
 // reports the elements in [bs] that do not appear in [as]
-function deepDiff(as, bs) {
+export function deepDiff(as, bs) {
     return bs.filter(x => !as.some(item => JSON.stringify(item)===JSON.stringify(x)));
 }
-
-exports.theAnswer         = theAnswer;
-exports.allStrictEqual    = allStrictEqual;
-exports.exactlyOne        = exactlyOne;
-exports.sca_fake_return   = sca_fake_return;
-exports.setCookie         = setCookie;
-exports.readCookie        = readCookie;
-exports.uniqValues        = uniqValues;
-exports.randomItem        = randomItem;
-exports.areEqualShallow   = areEqualShallow;
-exports.isNotNullOrUndefined = isNotNullOrUndefined;
-exports.tnu               = tnu;
-exports.deepDiff          = deepDiff;
