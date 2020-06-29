@@ -1,53 +1,47 @@
-const React = require('react');
-const assert = require('chai').assert;
+import {Dispatch} from 'react';
 import {axiosAuth} from '../../axios-setup.js';
 import { v4 as uuidv4 } from 'uuid';
 
+import {StandardAction} from './types.ts';
+
 import {displayModal
+      , displayModalNotification
       , clearModal
       , getRegions
       , addToast
       , setWktRegionUnderConstruction} from './index.ts';
-import {MDL_NOTIFICATION
-      , MDL_NOTIFICATION_NO_DISMISS
-      , MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
+import {MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
 
-import {isInsufficientPrivilleges} from '../../util-privilleges.js';
 
 import {GSN, globalGet} from '../../globalStore.js';
-
-import {isNotNullOrUndefined} from '../../util/util.js';
 import {propsForRetryDialog} from './action-util.tsx';
-
-
-
+import {BackendResponse} from '../../backend.d.ts';
 import {handleAxiosException} from './action-axios-exc-util.ts';
 
 
-function displayModalCreatingNewRegion (dispatch, region, partition, uuid) {
+function displayModalCreatingNewRegion (dispatch: Dispatch<StandardAction<any>>, region: string, partition: string, uuid: string) {
   const html = `saving region ${region} under partition ${partition} ...`;
-  dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html, uuid}));
+  dispatch(displayModalNotification({html, uuid}));
 }
 
-function notifyRegionHasBeenCreated (dispatch, region, partition) {
+function notifyRegionHasBeenCreated (dispatch: Dispatch<StandardAction<any>>, region: string, partition: string) {
   const msg = `region '${region}' has been successfully created under ${partition}`;
   dispatch(addToast('region created', msg));
 }
 
-export default function createRegion(region, wkt, partition, idOfDialogsToClear) {
+export default function createRegion(region: string, wkt: string, partition: string, idOfDialogsToClear: string[]) {
   const actionCreator = `createRegion(${region}, ${partition}, [${idOfDialogsToClear.join(', ')}]`;
-  console.log(actionCreator);
 
-  return (dispatch) => {
+  return (dispatch: Dispatch<any>) => {
     const f = ()=>dispatch(createRegion(region, wkt, partition, idOfDialogsToClear));
 
     const url = `/partitions/elem/${partition}/regions/elem/${region}`;
-    console.log(`${actionCreator} - axios URL is: ${url}`);
+    console.debug(`${actionCreator} - axios URL is: ${url}`);
     const uuid = uuidv4();
     displayModalCreatingNewRegion(dispatch, region, partition, uuid);
 
     axiosAuth.put(url, wkt)
-             .then(res => {
+             .then( (res: BackendResponse) => {
                dispatch(clearModal(uuid));
                const {t, err} = res.data;
                console.log(t); // todo: examine for possible race conditions
@@ -60,9 +54,9 @@ export default function createRegion(region, wkt, partition, idOfDialogsToClear)
                  notifyRegionHasBeenCreated(dispatch, region, partition);
                  dispatch(getRegions(true));
                  globalGet(GSN.REACT_RGM_MAP).clearDrawnRegions();
-                 dispatch(setWktRegionUnderConstruction(null));
+                 dispatch(setWktRegionUnderConstruction(wkt));
                }
-             }).catch( err => {
+             }).catch( (err: any) => {
                dispatch(clearModal(uuid));
                handleAxiosException(err, dispatch, f, url, actionCreator);
              });

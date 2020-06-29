@@ -102,7 +102,7 @@ export function displayModalNewRegionDefinition() {
     return displayModal(MDL_NEW_REGION_DEFINITION, {uuid: uuidv4()});
 }
 
-export function clearModal(uuid: number) {
+export function clearModal(uuid: string) {
     assert.isDefined(uuid, `/redux/actions/index.ts :: clearModal(${uuid})`);
     assert.isNotNull(uuid, `/redux/actions/index.ts :: clearModal(${uuid})`);
     return {type: CLEAR_MODAL, payload: uuid};
@@ -151,7 +151,7 @@ export function setPaneToOpenInfoPanel(pane: string) {
     return {type: SET_PANE_TO_OPEN_INFO_PANEL, payload: {pane}};
 }
 
-export function addToast(header: string, msg: string) {
+export function addToast(header: string, msg: string): StandardAction<{header: string, msg: string}> {
     return {type: ADD_TOAST, payload: {header, msg}};
 }
 
@@ -266,7 +266,7 @@ export function setWktRegionUnderConstruction(wkt: string) {
     return {type: SET_WKT_REGION_UNDER_CONSTRUCTION, payload: wkt};
 }
 
-export {default as createRegion} from './create-region.jsx';
+export {default as createRegion} from './create-region.tsx';
 
 export function rgmgmntDeleteStart(): ActionNoPayload {
     return {type: REG_MGMNT_DELETE_START};
