@@ -248,7 +248,7 @@ export function overlapsUpdateSelectedRegion(selectedRegion: any) {
 export {default as login} from './login.js';
 
 export {default as getFeatData}        from './get-feat-data.tsx';
-export {default as getFeatPhoto}       from './get-feat-photo.jsx';
+export {default as getFeatPhoto}       from './get-feat-photo.tsx';
 export {default as getFeatNumPhotos}   from './get-feat-num-photos.tsx';
 
 export {default as saveFeatData}       from './save-feat-data.tsx';
