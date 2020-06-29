@@ -254,7 +254,7 @@ export {default as getFeatNumPhotos}   from './get-feat-num-photos.tsx';
 export {default as saveFeatData}       from './save-feat-data.tsx';
 export {default as delFeatPhoto}       from './del-feat-photo.tsx';
 
-export {default as getRegions}       from './get-regions.jsx';
+export {default as getRegions}       from './get-regions.tsx';
 
 export function setRGEMode(mode: string) {
     console.log(`XXX setting rge mode to ${mode}`);

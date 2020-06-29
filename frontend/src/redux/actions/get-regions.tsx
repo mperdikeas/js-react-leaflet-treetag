@@ -1,11 +1,13 @@
-const React = require('react');
-const assert = require('chai').assert;
-import {getAccessToken} from '../../access-token-util.js';
+import React, {Dispatch} from 'react';
+import CancelToken from '../../../node_modules/axios/lib/cancel/CancelToken.js';
+
+import chai from '../../util/chai-util.js'
+//@ts-expect-error
+const assert = chai.assert;
+
 import {axiosAuth} from '../../axios-setup.js';
-import {CancelToken} from 'axios';
 
 import { v4 as uuidv4 } from 'uuid';
-
 
 import {getRegionsInProgress
       , getRegionsSuccess
@@ -18,13 +20,10 @@ import {CANCEL_TOKEN_TYPES
       , cancelIncompatibleRequests
       , addCancelToken} from '../../util/axios-util.js';
 
-import {cancelToken} from '../selectors.ts';
-
-import {urlForPhoto} from './feat-url-util.js';
-
-import {cancelPendingRequests} from './action-util.tsx';
-
 import {handleAxiosException} from './action-axios-exc-util.ts';
+import {propsForRetryDialog} from './action-util.tsx';
+
+import {BackendResponse} from '../../backend.d.ts';
 
 export default function getRegions(toastOnSuccess=false) {
   const actionCreator = `getRegions`;
@@ -33,7 +32,7 @@ export default function getRegions(toastOnSuccess=false) {
   cancelIncompatibleRequests(TOKEN_TYPE);
   const source = CancelToken.source();
   addCancelToken(TOKEN_TYPE, source.token);
-  return (dispatch, getState) => {
+  return (dispatch: Dispatch<any>) => {
     const f = ()=>dispatch(getRegions());
 
 
@@ -47,7 +46,7 @@ export default function getRegions(toastOnSuccess=false) {
     dispatch (getRegionsInProgress());
     const url = '/partitions';
 
-    axiosAuth.get(url, {cancelToken: source.token}).then(res => {
+    axiosAuth.get(url, {cancelToken: source.token}).then((res: BackendResponse) => {
       dispatch(clearModal(uuid))
       // corr-id: SSE-1585746250
       const {t, err} = res.data; 
@@ -61,7 +60,7 @@ export default function getRegions(toastOnSuccess=false) {
         }
       } else {
         dispatch( displayModal(MDL_RETRY_CANCEL, propsForRetryDialog(dispatch, f, url, actionCreator, 'server-side error', err)) );
-      }}).catch(err => {
+      }}).catch((err:any) => {
         dispatch(clearModal(uuid));
         handleAxiosException(err, dispatch, f, url, actionCreator);
       }); // catch
