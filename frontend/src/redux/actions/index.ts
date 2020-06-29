@@ -296,8 +296,8 @@ export function overlapsGetOverlapsSuccess(overlaps: any)   {return {type: OVERL
 export function updateConfiguration(configuration: any) {return {type: UPDATE_CONFIGURATION, payload: configuration};}
 export function updateTrees(trees: any)                           {return {type: UPDATE_TREES, payload: trees};}
 
-import getTrees from './get-trees.jsx';
-export {default as getTrees} from './get-trees.jsx';
+import getTrees from './get-trees.tsx';
+export {default as getTrees} from './get-trees.tsx';
 import getTreesConfiguration from './get-trees-configuration.tsx';
 export {default as getTreesConfiguration} from './get-trees-configuration.tsx';
 

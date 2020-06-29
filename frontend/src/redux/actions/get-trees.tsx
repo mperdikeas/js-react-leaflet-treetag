@@ -1,11 +1,9 @@
-const React = require('react');
+import React, {Dispatch} from 'react';
 
 import chai from '../../util/chai-util.js';
 const assert = chai.assert;
 
-import {getAccessToken} from '../../access-token-util.js';
 import {axiosAuth} from '../../axios-setup.js';
-import {CancelToken} from 'axios';
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -15,53 +13,23 @@ import {displayModal
       , addToast
       , updateTrees} from './index.ts';
 import {MDL_RETRY_CANCEL, MDL_NOTIFICATION_NO_DISMISS} from '../../constants/modal-types.js';
-import {CANCEL_TOKEN_TYPES
-      , cancelIncompatibleRequests
-      , addCancelToken} from '../../util/axios-util.js';
-
-import {cancelToken} from '../selectors.ts';
-
-import {urlForPhoto} from './feat-url-util.js';
-
-import {cancelPendingRequests} from './action-util.tsx';
 
 import {handleAxiosException} from './action-axios-exc-util.ts';
+import {propsForRetryDialog} from './action-util.tsx';
 
-export default function getTrees(N) {
+import {RootState} from '../types.ts';
+import {BackendResponse} from '../../backend.d.ts';
+
+export default function getTrees(N: number) {
   const actionCreator = `getTrees(${N})`;
 
-  return (dispatch, getState) => {
+  return (dispatch: Dispatch<any>, getState: ()=>RootState) => {
     const f = ()=>dispatch(getTrees(N));
 
     const uuid = uuidv4();
     const html = <span>fetching tree high-level data &hellip; </span>;
     console.log(`cag - display modal for fetching trees with uuid=${uuid}`);
     dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html, uuid}))
-
-
-    /*
-function getTrees(N) {
-    const url = '/getTrees';
-    return axiosAuth.get(url
-                    ).then(res => {
-                        if (res.data.err != null) {
-                            console.log('getTrees API call error');
-                            assert.fail(res.data.err);
-                            return sca_fake_return();
-                        } else {
-                            console.log('getTrees API call success');
-                            assert.isTrue(Array.isArray(res.data.t));
-                            if (res.data.t.length < N) // TODO: I shouldn't have that on production
-                                return res.data.t;
-                            else
-                                return res.data.t.slice(0, N);
-                        }
-                    }).catch( err => {
-                        possiblyInsufPrivPanicInAnyCase(err);
-                    });
-}
-
-    */
 
     const url = '/getTrees';
 
@@ -72,7 +40,7 @@ function getTrees(N) {
      *         https://github.com/reduxjs/redux/issues/723
      *  
      */
-    return axiosAuth.get(url).then(res => {
+    return axiosAuth.get(url).then((res: BackendResponse) => {
       console.log(`cag - getTree success clearing modal ${uuid}`);
       dispatch(clearModal(uuid))
       // corr-id: SSE-1585746250
@@ -95,7 +63,7 @@ function getTrees(N) {
         }
       } else {
         dispatch( displayModal(MDL_RETRY_CANCEL, propsForRetryDialog(dispatch, f, url, actionCreator, 'server-side error', err)) );
-    }}).catch(err => {
+    }}).catch((err: any) => {
       console.error(err);
       console.log(`cag - getTree failure clearing modal ${uuid}`);
         dispatch(clearModal(uuid));
