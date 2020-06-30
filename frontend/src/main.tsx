@@ -1,4 +1,4 @@
-const     $ = require('jquery');
+import * as $ from 'jquery';
 declare const window: any;
 window.$ = $; // make jquery available to other scripts (not really applicable in our case) and the console
 require('jquery-ui-bundle'); // https://stackoverflow.com/a/39230057/274677

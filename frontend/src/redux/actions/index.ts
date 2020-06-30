@@ -102,7 +102,7 @@ export function displayModalNewRegionDefinition() {
     return displayModal(MDL_NEW_REGION_DEFINITION, {uuid: uuidv4()});
 }
 
-export function clearModal(uuid: string) {
+export function clearModal(uuid: string) : StandardAction<string>{
     assert.isDefined(uuid, `/redux/actions/index.ts :: clearModal(${uuid})`);
     assert.isNotNull(uuid, `/redux/actions/index.ts :: clearModal(${uuid})`);
     return {type: CLEAR_MODAL, payload: uuid};
@@ -245,7 +245,7 @@ export function overlapsUpdateSelectedRegion(selectedRegion: any) {
 }
 
 
-export {default as login} from './login.js';
+export {default as login} from './login.ts';
 
 export {default as getFeatData}        from './get-feat-data.tsx';
 export {default as getFeatPhoto}       from './get-feat-photo.tsx';

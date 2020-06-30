@@ -11,7 +11,7 @@ import './css/modal-dialog.css'; // TODO: use React emotion for element-scoped C
 
 import wrapContexts from './context/contexts-wrapper.tsx';
 
-import ModalLogin                    from './components/login/modal-login.jsx';
+import ModalLogin                    from './components/login/modal-login.tsx';
 import ModalSaveWorkspaceToDisk      from './modal-save-workspace-to-disk.jsx';
 import ModalInsertGeoJSONToWorkspace from './modal-insert-geoJSON-workspace.jsx';
 import ModalUsernameReminder         from './modal-username-reminder.jsx';

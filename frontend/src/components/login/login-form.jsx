@@ -13,7 +13,7 @@ const LinkEventKeys = {FORGOT_USERNAME: 'forgot-username'
                      , FORGOT_PASSWORD: 'forgot-password'};
 
 import {displayModal} from '../../redux/actions/index.ts';
-import login          from '../../redux/actions/login.js';
+import login          from '../../redux/actions/login.ts';
 
 
 
