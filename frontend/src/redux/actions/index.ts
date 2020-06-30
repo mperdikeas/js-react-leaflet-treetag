@@ -66,17 +66,16 @@ import getFeatData from './get-feat-data.tsx';
 
 import getFeatNumPhotos from './get-feat-num-photos.tsx';
 
-
-import {isValidModalType} from '../../constants/modal-types.js';
-
 import {cancelPendingRequests} from './action-util.tsx';
 
 import {INFORMATION, PHOTOS, HISTORY, ADJUST}                 from '../../constants/information-panel-panes.js';
 
 import {ensureRGEModeIsValid} from '../constants/region-editing-mode.js';
 
-import {MDL_NOTIFICATION
-        , MDL_NEW_REGION_DEFINITION} from '../../constants/modal-types.js';
+import {isValidModalType
+        , MDL_NOTIFICATION
+        , MDL_NEW_REGION_DEFINITION
+        , MDL_LOGIN} from '../../constants/modal-types.js';
 
 import {tnu} from '../../util/util.js';
 
@@ -92,6 +91,10 @@ export function displayModal(modalType: string, modalProps: any): StandardAction
     return {type: DISPLAY_MODAL, payload: {modalType, modalProps}};
 }
 
+
+export function displayModalLogin(f: ()=> void) : StandardAction<{uuid: string, followUpFunc: ()=> void}> {
+    return displayModal(MDL_LOGIN, {uuid: uuidv4(), followUpFunc: f});
+}
 
 
 export function displayModalNotification(modalProps: any) {

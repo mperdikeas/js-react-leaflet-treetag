@@ -4,8 +4,8 @@ import {Dispatch} from 'react';
 
 import {MDL_NOTIFICATION} from '../../constants/modal-types.js';
 
-import {displayModal} from './index.ts';
-import {MDL_LOGIN, MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
+import {displayModal, displayModalLogin} from './index.ts';
+import {MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
 
 import {OP_NO_LONGER_RELEVANT} from '../../util/axios-util.js';
 
@@ -34,8 +34,7 @@ export function handleAxiosException(err: any, dispatch: Dispatch<any>, f:()=>vo
         const {code, msg, details} = err.response.data;
         switch(code) {
         case SERVER_ERROR_CODES.JWT_VERIF_FAILED: {
-            dispatch( displayModal(MDL_LOGIN, {uuid: uuidv4()
-                                               , followUpFunc: f}));
+            dispatch( displayModalLogin(f) );
             break;
         }
         default: {
