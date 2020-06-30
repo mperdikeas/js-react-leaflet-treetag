@@ -1,4 +1,4 @@
-import {Action} from '../actions/types.ts';
+import {Action} from '../actions/action-types.ts';
 
 import configurationReducer           from './configuration-reducer.js';
 import treesReducer                   from './trees-reducer.js';

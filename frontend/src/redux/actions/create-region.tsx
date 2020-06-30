@@ -2,7 +2,7 @@ import {Dispatch} from 'react';
 import {axiosAuth} from '../../axios-setup.js';
 import { v4 as uuidv4 } from 'uuid';
 
-import {StandardAction} from './types.ts';
+import {StandardAction} from './action-types.ts';
 
 import {displayModal
       , displayModalNotification

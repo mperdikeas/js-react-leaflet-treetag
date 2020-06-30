@@ -1,5 +1,4 @@
-import {GET_REGIONS_IN_PROGRESS
-        , GET_REGIONS_SUCCESS}  from '../actions/action-type-keys.ts';
+import {ActionTypeKeys} from '../actions/action-type-keys.ts';
 
 import chai from '../../util/chai-util.js';
 const assert = chai.assert;
@@ -7,10 +6,10 @@ const assert = chai.assert;
 
 export default (state = undefined, action) => {
     switch (action.type) {
-    case GET_REGIONS_IN_PROGRESS: {
+    case ActionTypeKeys.GET_REGIONS_IN_PROGRESS: {
         return undefined;
     }
-    case GET_REGIONS_SUCCESS: {
+    case ActionTypeKeys.GET_REGIONS_SUCCESS: {
         return action.payload;
     }
     default:

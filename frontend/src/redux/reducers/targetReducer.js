@@ -1,27 +1,7 @@
 import chai from '../../util/chai-util.js';
 const assert = chai.assert;
-import {UNSET_TARGET
-        , GET_TREE_INFO_IN_PROGRESS
-        , GET_FEAT_NUM_PHOTOS_IN_PROGRESS
-        , GET_FEAT_PHOTO_IN_PROGRESS        
 
-        , GET_FEATURE_AJAX_CONCLUDED 
-
-        , GET_TREE_INFO_SUCCESS
-        , GET_FEAT_NUM_PHOTOS_SUCCESS
-        , GET_FEAT_PHOTO_SUCCESS
-        
-        , SET_TREE_INFO_CURRENT
-        , SET_TREE_INFO_ORIGINAL
-
-        , SET_TREE_COORDS
-        , REVERT_TREE_INFO
-        , REVERT_TREE_COORDS
-
-        , GET_NUM_PHOTOS_IN_PROGRESS
-        , NEW_TARGET}  from '../actions/action-type-keys.ts';
-
-
+import {ActionTypeKeys} from '../actions/action-type-keys.ts';
 
 /* TODO: rethink the assumption that at any point in time there is single axios cancellable
  *       for every target, be it for tree data or photos
@@ -33,13 +13,13 @@ function initState(id) {
 }
 export default (state = initState(null), action) => {
     switch (action.type) {
-    case UNSET_TARGET: {
+    case ActionTypeKeys.UNSET_TARGET: {
         return {id: null, treeInfo: null, photos: null};
     }
-    case NEW_TARGET: {
+    case ActionTypeKeys.NEW_TARGET: {
         return initState(action.payload.targetId);
     }
-    case GET_TREE_INFO_IN_PROGRESS: {
+    case ActionTypeKeys.GET_TREE_INFO_IN_PROGRESS: {
         return Object.assign({}
                              , state
                              , {id: action.payload.id
@@ -48,7 +28,7 @@ export default (state = initState(null), action) => {
                                 , axiosSource: action.payload.axiosSource});
     }
 
-    case GET_FEAT_NUM_PHOTOS_IN_PROGRESS: {
+    case ActionTypeKeys.GET_FEAT_NUM_PHOTOS_IN_PROGRESS: {
         return Object.assign({}
                              , state
                              , {id: action.payload.id
@@ -58,7 +38,7 @@ export default (state = initState(null), action) => {
                                            , t: undefined}  // time when image was taken in SSE
                                 , axiosSource: action.payload.axiosSource});
     }
-    case GET_FEAT_PHOTO_IN_PROGRESS: {
+    case ActionTypeKeys.GET_FEAT_PHOTO_IN_PROGRESS: {
         const img = (state.photos.img === undefined)?undefined:null; // mighty deep
         const t = img;
         return Object.assign({}
@@ -69,13 +49,13 @@ export default (state = initState(null), action) => {
                                                         , {idx: action.payload.idx, img, t})
                                 , axiosSource: action.payload.axiosSource});
     }
-    case GET_FEATURE_AJAX_CONCLUDED: {
+    case ActionTypeKeys.GET_FEATURE_AJAX_CONCLUDED: {
         return Object.assign({}
                              , state
                              , {axiosSource: null});
 
     }
-    case GET_TREE_INFO_SUCCESS: {
+    case ActionTypeKeys.GET_TREE_INFO_SUCCESS: {
         assert.strictEqual(state.id, action.payload.id);
         const original = JSON.parse(JSON.stringify(action.payload));
         const current  = JSON.parse(JSON.stringify(action.payload));
@@ -83,7 +63,7 @@ export default (state = initState(null), action) => {
                              , state
                              , {treeInfo: {original, current}});
     }
-    case GET_FEAT_NUM_PHOTOS_SUCCESS: {
+    case ActionTypeKeys.GET_FEAT_NUM_PHOTOS_SUCCESS: {
         const num = action.payload;
         const idx =  (num>0)?0:null;
         const img = (idx === null)?null:undefined;
@@ -93,7 +73,7 @@ export default (state = initState(null), action) => {
                              , state
                              , {photos});
     }
-    case GET_FEAT_PHOTO_SUCCESS: {
+    case ActionTypeKeys.GET_FEAT_PHOTO_SUCCESS: {
         const {img, t} = action.payload;
         return Object.assign({}
                              , state
@@ -103,21 +83,21 @@ export default (state = initState(null), action) => {
 
     }                        
         
-    case SET_TREE_INFO_CURRENT: {
+    case ActionTypeKeys.SET_TREE_INFO_CURRENT: {
         return Object.assign({}
                              , state
                              , {treeInfo: Object.assign({}
                                                         , state.treeInfo
                                                         , {current: JSON.parse(JSON.stringify(action.payload))})});
     }
-    case SET_TREE_INFO_ORIGINAL: {
+    case ActionTypeKeys.SET_TREE_INFO_ORIGINAL: {
         return Object.assign({}
                              , state
                              , {treeInfo: Object.assign({}
                                                         , state.treeInfo
                                                         , {original: JSON.parse(JSON.stringify(action.payload))})});
     }        
-    case SET_TREE_COORDS: {
+    case ActionTypeKeys.SET_TREE_COORDS: {
         return Object.assign({}
                              , state
                              , {treeInfo: Object.assign({}
@@ -126,7 +106,7 @@ export default (state = initState(null), action) => {
                                                                                   , state.treeInfo.current
                                                                                   , {coords: action.payload})})});
     }
-    case REVERT_TREE_INFO: {
+    case ActionTypeKeys.REVERT_TREE_INFO: {
         const current = JSON.parse(JSON.stringify(state.treeInfo.original));
         return Object.assign({}
                              , state
@@ -134,7 +114,7 @@ export default (state = initState(null), action) => {
                                                         , state.treeInfo
                                                         , {current})});
     }
-    case REVERT_TREE_COORDS: {
+    case ActionTypeKeys.REVERT_TREE_COORDS: {
 //        const currentDeepCopy = JSON.parse(JSON.stringify(state.treeInfo.current));
   //      const newCurrent = Object.assign(currentDeepCopy, {coords: JSON.parse(JSON.stringify(state.treeInfo.original.coords))});
         return Object.assign({}

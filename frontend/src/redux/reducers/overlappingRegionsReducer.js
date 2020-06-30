@@ -1,11 +1,7 @@
 import chai from '../../util/chai-util.js';
 const assert = chai.assert;
 
-import {OVERLAPS_UPDATE_SELECTED_REGION,
-        OVERLAPS_SET_REGION,
-        OVERLAPS_SET_PARTITIONS,
-        OVERLAPS_GET_OVERLAPS_IN_PROGRESS,
-        OVERLAPS_GET_OVERLAPS_SUCCESS}  from '../actions/action-type-keys.ts';
+import {ActionTypeKeys} from '../actions/action-type-keys.ts';
 
 import {sca_fake_return} from '../../util/util.js';
 
@@ -22,18 +18,16 @@ export default (state = {selected: undefined
                          , partitions: undefined
                          , overlaps: undefined}, action) => {
                              switch (action.type) {
-                             case OVERLAPS_UPDATE_SELECTED_REGION:
+                             case ActionTypeKeys.OVERLAPS_UPDATE_SELECTED_REGION:
                                  return Object.assign({}, state, {selected: action.payload});
-                             case OVERLAPS_SET_REGION:
+                             case ActionTypeKeys.OVERLAPS_SET_REGION:
                                  return Object.assign({}, state, {selected: action.payload});
-                             case OVERLAPS_SET_PARTITIONS:
+                             case ActionTypeKeys.OVERLAPS_SET_PARTITIONS:
                                  return Object.assign({}, state, {partitions: action.payload});
-
-                             case OVERLAPS_GET_OVERLAPS_IN_PROGRESS:
+                             case ActionTypeKeys.OVERLAPS_GET_OVERLAPS_IN_PROGRESS:
                                  return Object.assign({}, state, {overlaps: undefined});
-                             case OVERLAPS_GET_OVERLAPS_SUCCESS:
+                             case ActionTypeKeys.OVERLAPS_GET_OVERLAPS_SUCCESS:
                                  return Object.assign({}, state, {overlaps: action.payload});
-                                 
                              default:
                                  return state;
                              }

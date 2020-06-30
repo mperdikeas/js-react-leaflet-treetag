@@ -6,12 +6,7 @@ import CancelToken from '../../../node_modules/axios/lib/cancel/CancelToken.js';
 import chai from '../../util/chai-util.js';
 const assert = chai.assert;
 
-
-
-//import {StandardAction} from './types.ts';
-
 import {axiosAuth} from '../../axios-setup.js';
-
 
 import {RootState} from '../types.ts';
 import { v4 as uuidv4 } from 'uuid';

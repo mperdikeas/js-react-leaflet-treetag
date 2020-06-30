@@ -2,18 +2,18 @@ const assert = require('chai').assert;
 
 const React = require('react');
 
-import {DISPLAY_MODAL, CLEAR_MODAL} from '../actions/action-type-keys.ts';
+import {ActionTypeKeys} from '../actions/action-type-keys.ts';
 
 
 export default (modals = [], action) => {
     switch (action.type) {
-    case DISPLAY_MODAL: {
+    case ActionTypeKeys.DISPLAY_MODAL: {
         const newModal = {modalType: action.payload.modalType, modalProps: action.payload.modalProps};
         const rv = [...modals, newModal];
         console.log(`cag - display modal - a total of ${rv.length} modals are now displayed`);
         return rv;
     }
-    case CLEAR_MODAL: {
+    case ActionTypeKeys.CLEAR_MODAL: {
         const uuid = action.payload;
         console.log(`looking for [${uuid}] among ${modals.length} modals`);
         let j = 0;

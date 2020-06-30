@@ -23,7 +23,7 @@ import {propsForRetryDialog} from './action-util.tsx';
 
 import {handleAxiosException} from './action-axios-exc-util.ts';
 
-import {StandardAction, ActionSaveFeatData} from './types.ts';
+import {StandardAction, ActionSaveFeatData} from './action-types.ts';
 
 import {TreeInfoWithId, BackendResponse} from '../../backend.d.ts';
 

@@ -13,7 +13,7 @@ import {propsForRetryDialog} from './action-util.tsx';
 
 import {SERVER_ERROR_CODES} from './action-constants.ts';
 
-import {StandardAction} from './types.ts';
+import {StandardAction} from './action-types.ts';
 
 import {isInsufficientPrivilleges} from '../../util-privilleges.js';
 

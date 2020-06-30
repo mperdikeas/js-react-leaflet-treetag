@@ -20,7 +20,7 @@ import {propsForRetryDialog} from './action-util.tsx';
 import {RootState} from '../types.ts';
 import {BackendResponse} from '../../backend.d.ts';
 
-export default function getTrees(N: number) {
+export default function getTrees(N: number): (d: Dispatch<any>, gs: ()=>RootState)=>void {
   const actionCreator = `getTrees(${N})`;
 
   return (dispatch: Dispatch<any>, getState: ()=>RootState) => {

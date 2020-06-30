@@ -8,7 +8,7 @@ const assert = chai.assert;
 
 
 import {clearModal} from '../../redux/actions/index.ts';
-import {StandardAction} from '../../redux/actions/types.ts';
+import {StandardAction} from '../../redux/actions/action-types.ts';
 
 import LoginForm     from './login-form.jsx';
 
