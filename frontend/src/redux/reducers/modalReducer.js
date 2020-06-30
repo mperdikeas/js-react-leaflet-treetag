@@ -2,7 +2,7 @@ const assert = require('chai').assert;
 
 const React = require('react');
 
-import {DISPLAY_MODAL, CLEAR_MODAL} from '../actions/action-types.ts';
+import {DISPLAY_MODAL, CLEAR_MODAL} from '../actions/action-type-keys.ts';
 
 
 export default (modals = [], action) => {

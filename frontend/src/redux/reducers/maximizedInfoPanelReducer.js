@@ -1,4 +1,4 @@
-import {TOGGLE_MAXIMIZE_INFO_PANEL} from '../actions/action-types.ts';
+import {TOGGLE_MAXIMIZE_INFO_PANEL} from '../actions/action-type-keys.ts';
 
 export default (state = false, action) => {
     switch (action.type) {

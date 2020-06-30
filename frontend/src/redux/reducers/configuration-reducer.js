@@ -1,4 +1,4 @@
-import {UPDATE_CONFIGURATION} from '../actions/action-types.ts';
+import {UPDATE_CONFIGURATION} from '../actions/action-type-keys.ts';
 export default (state = undefined, action) => {
     switch (action.type) {
     case UPDATE_CONFIGURATION:

@@ -5,7 +5,7 @@ import {MARK_GET_FEATURE_INFO_IN_PROGRESS
         , SET_TREE_INFO
         , SET_TREE_COORDS
         , REVERT_TREE_INFO
-        , REVERT_TREE_COORDS}  from '../actions/action-types.ts';
+        , REVERT_TREE_COORDS}  from '../actions/action-type-keys.ts';
 
 
 export default (state = {original: null

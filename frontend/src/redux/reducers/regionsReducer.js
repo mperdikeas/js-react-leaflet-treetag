@@ -1,6 +1,6 @@
 import {GET_REGIONS_IN_PROGRESS
         , GET_REGIONS_SUCCESS
-        , UPDATE_SELECTED_REGIONS}  from '../actions/action-types.ts';
+        , UPDATE_SELECTED_REGIONS}  from '../actions/action-type-keys.ts';
 
 import chai from '../../util/chai-util.js';
 const assert = chai.assert;

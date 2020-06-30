@@ -1,4 +1,4 @@
-import {UPDATE_MOUSE_COORDS} from '../actions/action-types.ts';
+import {UPDATE_MOUSE_COORDS} from '../actions/action-type-keys.ts';
 export default (state = null, action) => {
     switch (action.type) {
     case UPDATE_MOUSE_COORDS:

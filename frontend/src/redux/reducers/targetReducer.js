@@ -19,7 +19,7 @@ import {UNSET_TARGET
         , REVERT_TREE_COORDS
 
         , GET_NUM_PHOTOS_IN_PROGRESS
-        , NEW_TARGET}  from '../actions/action-types.ts';
+        , NEW_TARGET}  from '../actions/action-type-keys.ts';
 
 
 

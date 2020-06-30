@@ -1,6 +1,6 @@
 import {Dispatch} from 'react';
 
-import {ActionType, SET_TREE_INFO_CURRENT, SET_TREE_INFO_ORIGINAL} from './action-types.ts';
+import {ActionType, SET_TREE_INFO_CURRENT, SET_TREE_INFO_ORIGINAL} from './action-type-keys.ts';
 
 
 import {TreeInfoWithId} from '../../backend.d.ts';
