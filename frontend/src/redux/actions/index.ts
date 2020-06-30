@@ -13,7 +13,9 @@ import {StandardAction
         , ActionRevertTreeCoords
         , ActionGetRegionsInProgress
         , ActionRevertTreeInfo
-        , ActionNoPayload} from './types.ts';
+        , ActionNoPayload
+        , ActionSetTreeInfoCurrent
+        , ActionSetTreeInfoOriginal} from './types.ts';
 
 
 
@@ -78,6 +80,7 @@ import {isValidModalType
         , MDL_LOGIN} from '../../constants/modal-types.js';
 
 import {tnu} from '../../util/util.js';
+
 
 
 export function updateMouseCoords(latlng: string) : ActionUpdateMouseCoords {
@@ -201,11 +204,11 @@ export function getFeatPhotoSuccess(img: any, t: any) {
 
 
 
-export function setTreeInfoCurrent(treeInfo: any) {
+export function setTreeInfoCurrent(treeInfo: any): ActionSetTreeInfoCurrent {
     return {type: SET_TREE_INFO_CURRENT, payload: treeInfo};
 }
 
-export function setTreeInfoOriginal(treeInfo: any) {
+export function setTreeInfoOriginal(treeInfo: any): ActionSetTreeInfoOriginal {
     return {type: SET_TREE_INFO_ORIGINAL, payload: treeInfo};
 }
 

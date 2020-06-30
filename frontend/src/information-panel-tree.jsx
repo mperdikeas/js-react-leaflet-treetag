@@ -17,7 +17,7 @@ import {Nav} from 'react-bootstrap';
 import L from 'leaflet';
 
 require('./css/information-panel.css');
-import TargetDataPane       from './target-data-pane.jsx';
+import TargetDataPane       from './target-data-pane.tsx';
 import TargetPhotoPane      from './target-photo-pane.jsx';
 import TargetMetadataPane   from './target-metadata-pane.jsx';
 import TargetAdjustmentPane from './target-adjustment-pane.jsx';

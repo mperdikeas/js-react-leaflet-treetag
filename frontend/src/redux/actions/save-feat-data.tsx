@@ -23,7 +23,7 @@ import {propsForRetryDialog} from './action-util.tsx';
 
 import {handleAxiosException} from './action-axios-exc-util.ts';
 
-import {StandardAction} from './types.ts';
+import {StandardAction, ActionSaveFeatData} from './types.ts';
 
 import {TreeInfoWithId, BackendResponse} from '../../backend.d.ts';
 
@@ -41,7 +41,7 @@ const displayModalSavingTreeData = (dispatch: React.Dispatch<StandardAction<any>
   dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html, uuid}))
 };
 
-export default function saveFeatData(treeInfo: TreeInfoWithId) {
+export default function saveFeatData(treeInfo: TreeInfoWithId): ActionSaveFeatData {
   const actionCreator = `saveFeatData(${treeInfo.id}, ...)`;
   console.log(actionCreator);
 

@@ -1,13 +1,13 @@
-const React = require('react');
-var      cx = require('classnames');
+import React from 'react';
+
 
 import chai from './util/chai-util.js';
 const assert = chai.assert;
 
-import {Form, Col, Row, Button, Nav, ButtonGroup} from 'react-bootstrap';
+import {Form, Button, ButtonGroup} from 'react-bootstrap';
 
 // REDUX
-import { connect }          from 'react-redux';
+import { connect, ConnectedProps }          from 'react-redux';
 
 import {IntegerDataFieldFactory
       , BooleanDataFieldFactory
@@ -16,8 +16,6 @@ import {IntegerDataFieldFactory
 
 
 import {revertTreeInfo
-      , toggleMaximizeInfoPanel
-      , setPaneToOpenInfoPanel
       , setTreeInfoCurrent
       , setTreeInfoOriginal
       , saveFeatData}  from './redux/actions/index.ts';
@@ -25,34 +23,49 @@ import {revertTreeInfo
 
 import {targetIsDirty} from './redux/selectors.ts';
 
-const mapStateToProps = (state) => {
+
+import {RootState} from './redux/types.ts';
+
+import {TreeInfoWithId} from './backend.d.ts';
+
+const mapStateToProps = (state: RootState) => {
   return {
     healthStatuses: state.configuration.healthStatuses
     , targetIsDirty: targetIsDirty(state)
     , targetId: state.target.id
-    , treeInfo: state.target.treeInfo.current
+    , treeInfo: state.target.treeInfo!.current
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  const msgInsufPriv1 = 'ο χρήστης δεν έχει τα προνόμια για να εκτελέσει αυτήν την λειτουργία';
-  const msgTreeDataHasBeenUpdated = targetId => `τα νέα δεδομένα για το δένδρο #${targetId} αποθηκεύτηκαν`;
+const mapDispatchToProps = (dispatch: React.Dispatch<any>) => {
   return {
     revertTreeInfo        : ()       => dispatch(revertTreeInfo     ())
-    , setTreeInfoCurrent: (treeInfo) => dispatch(setTreeInfoCurrent (treeInfo))
-    , setTreeInfoOriginal: (treeInfo) => dispatch(setTreeInfoOriginal(treeInfo))
-    , saveFeatData: (treeInfo) => dispatch(saveFeatData(treeInfo))
+    , setTreeInfoCurrent: (treeInfo: TreeInfoWithId) => dispatch(setTreeInfoCurrent (treeInfo))
+    , setTreeInfoOriginal: (treeInfo: TreeInfoWithId) => dispatch(setTreeInfoOriginal(treeInfo))
+    , saveFeatData: (treeInfo: TreeInfoWithId) => dispatch(saveFeatData(treeInfo))
   };
 }
+
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type PropsFromRedux = ConnectedProps<typeof connector>;
+type Props = PropsFromRedux & {}
 
 
 import wrapContexts from './context/contexts-wrapper.tsx';
 
 
 
-class TargetDataPane extends React.Component {
+class TargetDataPane extends React.Component<Props, {}> {
 
-    constructor(props) {
+  private IntegerDataField: any;
+  private BooleanDataField: any;
+  private SelectDataField: any;
+  private TextAreaDataField: any;
+  
+
+    constructor(props: Props) {
       super(props);
       /* Creating the components here (and not in the render() method) is necessary.
        * See the following for more:
@@ -69,28 +82,28 @@ class TargetDataPane extends React.Component {
 
 
 
-  revert = (ev) => {
+  revert = (ev: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     ev.preventDefault();
     ev.stopPropagation();
     this.props.revertTreeInfo();
   }
 
-  updateTreeData = (treeInfo) => {
+  updateTreeData = (treeInfo: TreeInfoWithId) => {
     this.props.setTreeInfoCurrent(treeInfo);
   }
 
-  setTreeInfoOriginal = (treeInfo) => {
+  setTreeInfoOriginal = (treeInfo: TreeInfoWithId) => {
     this.props.setTreeInfoOriginal(treeInfo);
   }
 
 
-  handleChange = (fieldName, value) => {
+  handleChange = (fieldName: any, value: any) => {
     //    const newTreeData = {...this.props.treeData, [fieldName]: value};
     const newTreeInfo = {...this.props.treeInfo, [fieldName]: value};
     this.updateTreeData(newTreeInfo);
   }
 
-  handleSubmit = (ev) => {
+  handleSubmit = (ev: any) => {
     ev.preventDefault();
     ev.stopPropagation();
     this.props.saveFeatData(this.props.treeInfo);
@@ -98,7 +111,7 @@ class TargetDataPane extends React.Component {
 
 
   render() {
-    assert.exists(this.props.treeInfo, 'target-data-pane.jsx::render');
+    assert.exists(this.props.treeInfo, 'target-data-pane.tsx::render');
     console.log('tree data follows:');
     console.log(this.props.treeInfo);
     console.log('---------------------');
@@ -158,6 +171,6 @@ class TargetDataPane extends React.Component {
 
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(TargetDataPane));
+export default connector(wrapContexts(TargetDataPane));
 
 
