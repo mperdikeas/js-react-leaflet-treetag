@@ -1,5 +1,5 @@
 import React, {Dispatch} from 'react';
-import CancelToken from '../../../node_modules/axios/lib/cancel/CancelToken.js';
+const {CancelToken} = require('axios');
 
 import chai from '../../util/chai-util.js'
 //@ts-expect-error
@@ -23,7 +23,7 @@ import {CANCEL_TOKEN_TYPES
 import {handleAxiosException} from './action-axios-exc-util.ts';
 import {propsForRetryDialog} from './action-util.tsx';
 
-import {BackendResponse} from '../../backend.d.ts';
+import {BackendResponse, PartitionsForInstallation} from '../../backend.d.ts';
 
 export default function getRegions(toastOnSuccess=false) {
   const actionCreator = `getRegions`;
@@ -46,7 +46,7 @@ export default function getRegions(toastOnSuccess=false) {
     dispatch (getRegionsInProgress());
     const url = '/partitions';
 
-    axiosAuth.get(url, {cancelToken: source.token}).then((res: BackendResponse<any>) => {
+    axiosAuth.get(url, {cancelToken: source.token}).then((res: BackendResponse<PartitionsForInstallation>) => {
       dispatch(clearModal(uuid))
       // corr-id: SSE-1585746250
       const {t, err} = res.data; 

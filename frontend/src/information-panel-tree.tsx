@@ -34,7 +34,7 @@ import {areEqualShallow, sca_fake_return} from './util/util.js';
 
 import {targetIsDirty
       , targetInitialAjaxReadInProgress
-      , typeOfTargetInitialAjaxReadInProgress} from './redux/selectors.ts';
+      , typeOfTargetInitialAjaxReadInProgress} from './redux/selectors/index.ts';
 
 const loading  = require('./resources/loading.gif');
 

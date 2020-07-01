@@ -9,7 +9,7 @@ import {Nav} from 'react-bootstrap';
 import { TreeSelect, Radio, Button } from 'antd';
 
 import RegionMgmntMap                          from './region-mgmnt-map.jsx';
-import RegionList                              from './region-list.jsx';
+import RegionList                              from './region-list.tsx';
 import PointCoordinates                        from './point-coordinates.tsx';
 import UserControl                             from './user-control.jsx';
 
@@ -29,7 +29,7 @@ import {isRegionsBeingFetched
       , partitions
       , rgmgmntSaveEnabled
       , rgmgmntDuringDeletion
-      , wktRegionUnderConstructionExists}   from './redux/selectors/index.js';
+      , wktRegionUnderConstructionExists}   from './redux/selectors/index.ts';
 
 import {getRegions} from './redux/actions/index.ts';
 

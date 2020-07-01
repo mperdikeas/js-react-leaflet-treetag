@@ -77,7 +77,7 @@ import TreeCountStatistic from './tree-count-statistic.js';
 
 import {msgTreeDataIsDirty, displayNotificationIfTargetIsDirty} from './common.jsx';
 
-import {targetIsDirty} from './redux/selectors.ts';
+import {targetIsDirty} from './redux/selectors/index.ts';
 
 const mapStateToProps = (state) => {
   if ((state.target.treeInfo != null) && (state.target.treeInfo.original != null)) {

@@ -5,7 +5,7 @@ import {axiosAuth} from '../../axios-setup.js';
 // https://stackoverflow.com/q/62592351/274677
 //import {CancelToken} from 'axios';
 //import {CancelToken} from '../../../node_modules/axios/index.js';
-import CancelToken from '../../../node_modules/axios/lib/cancel/CancelToken.js';
+const {CancelToken} = require('axios');// from '../../../node_modules/axios/lib/cancel/CancelToken.js';
 
 
 // https://stackoverflow.com/q/62596831/274677

@@ -21,7 +21,7 @@ import {revertTreeInfo
       , saveFeatData}  from './redux/actions/index.ts';
 
 
-import {targetIsDirty} from './redux/selectors.ts';
+import {targetIsDirty} from './redux/selectors/index.ts';
 
 
 import {RootState} from './redux/types.ts';

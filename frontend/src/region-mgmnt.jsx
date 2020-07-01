@@ -8,7 +8,7 @@ const assert = chai.assert;
 import {Nav} from 'react-bootstrap';
 
 import RegionMgmntMap                          from './region-mgmnt-map.jsx';
-import RegionList                              from './region-list.jsx';
+import RegionList                              from './region-list.tsx';
 import PointCoordinates                        from './point-coordinates.tsx';
 import UserControl                             from './user-control.jsx';
 

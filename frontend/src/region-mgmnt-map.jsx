@@ -76,7 +76,7 @@ import {ABOMINATION_CNFG_NOT_AVAILABLE} from './constants/msg-constants.js';
 
 import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS} from './constants/modal-types.js';
 
-import {RGE_MODE} from './redux/constants/region-editing-mode.js'
+import {RGE_MODE} from './redux/constants/region-editing-mode.ts'
 
 import { connect }          from 'react-redux';
 import {clearModal
@@ -95,10 +95,11 @@ import {clearModal
 import {isRegionsBeingFetched
       , selectedRegions
       , wktRegionUnderConstructionExists
-} from './redux/selectors/index.js';
+      , rgeMode
+} from './redux/selectors/index.ts';
 
 import TreeCountStatistic from './tree-count-statistic.js';
-import {rgeMode} from './redux/selectors/index.js';
+
 import {regionListDiff} from './region-mgmnt-map-util.js';
 
 import {getShapeType} from './leaflet-util.js';
@@ -163,6 +164,9 @@ proj4.defs([
 ]);
 const WGS84  = 'EPSG:4326';
 const HGRS87 = 'EPSG:2100';
+
+
+export type Key_Name_WKT = {key: string, name: string, wkt: string};
 
 class RegionMgmntMap extends React.Component {
 

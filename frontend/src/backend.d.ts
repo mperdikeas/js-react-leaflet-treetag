@@ -52,8 +52,14 @@ export type LoginResult = {
     loginFailureReason: string;
 };
 
+export type PartitionsForInstallation = Record<string, Record<string, Region>>;
+
 export type BackendResponse<T> = {
     data: {t: T, err: any}
 }
 
 
+export type Region = {
+    name: string,
+    wkt: string
+}

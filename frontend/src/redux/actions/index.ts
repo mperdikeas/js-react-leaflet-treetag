@@ -47,6 +47,8 @@ import {ActionUpdateMouseCoords
         , ActionOverlapsGetOverlapsSuccess
         , ActionUpdateConfiguration
         , ActionUpdateTrees
+        , ActionSetRGEMode
+        , ActionSetWktRegionUnderConstruction
         , ActionRgmgmntDeleteStart
         , ActionRgmgmntDeleteEnd
         , ActionRgmgmntModifyStart
@@ -60,8 +62,6 @@ import getFeatNumPhotos from './get-feat-num-photos.tsx';
 import {cancelPendingRequests} from './action-util.tsx';
 
 import {InformationPanelPane} from '../../information-panel-tree.tsx';
-
-import {ensureRGEModeIsValid} from '../constants/region-editing-mode.js';
 
 import {isValidModalType
         , MDL_NOTIFICATION
@@ -250,14 +250,12 @@ export {default as delFeatPhoto}       from './del-feat-photo.tsx';
 
 export {default as getRegions}       from './get-regions.tsx';
 
-export function setRGEMode(mode: string) {
-    console.log(`XXX setting rge mode to ${mode}`);
-    ensureRGEModeIsValid(mode);
-    return {type: ActionTypeKeys.SET_RGE_MODE, payload: mode};
+export function setRGEMode(mode: string): ActionSetRGEMode {
+    return {type: ActionTypeKeys.SET_RGE_MODE, payload: {mode}};
 }
 
-export function setWktRegionUnderConstruction(wkt: string) {
-    return {type: ActionTypeKeys.SET_WKT_REGION_UNDER_CONSTRUCTION, payload: wkt};
+export function setWktRegionUnderConstruction(wkt: string): ActionSetWktRegionUnderConstruction {
+    return {type: ActionTypeKeys.SET_WKT_REGION_UNDER_CONSTRUCTION, payload: {wkt}};
 }
 
 export {default as createRegion} from './create-region.tsx';

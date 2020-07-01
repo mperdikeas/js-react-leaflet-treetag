@@ -13,7 +13,7 @@ import ReactComment from './react-comment.jsx';
 
 import {partitions
       , wktRegionUnderConstruction
-      , partition2regions} from './redux/selectors/index.js';
+      , partition2regions} from './redux/selectors/index.ts';
 
 
 import {createRegion, clearModal} from './redux/actions/index.ts';

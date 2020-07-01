@@ -1,5 +1,6 @@
 import {Dispatch} from 'react';
-import CancelToken from '../../../node_modules/axios/lib/cancel/CancelToken.js';
+//import CancelToken from '../../../node_modules/axios/lib/cancel/CancelToken.js';
+const {CancelToken} = require('axios');
 
 import chai from '../../util/chai-util.js'
 const assert = chai.assert;

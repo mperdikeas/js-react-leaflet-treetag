@@ -1,4 +1,4 @@
-import chai from '../../util/chai-util.js';
+iedmport chai from '../../util/chai-util.js';
 const assert = chai.assert;
 
 
@@ -6,7 +6,7 @@ import {ActionTypeKeys} from '../actions/action-type-keys.ts';
 
 import {sca_fake_return} from '../../util/util.js';
 
-import {RGE_MODE, ensureRGEModeIsValid} from '../constants/region-editing-mode.js';
+import {RGE_MODE, ensureRGEModeIsValid} from '../constants/region-editing-mode.ts';
 
 
 export default (state = {mode: RGE_MODE.UNENGAGED

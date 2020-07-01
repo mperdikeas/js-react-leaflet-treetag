@@ -1,6 +1,6 @@
 import React, {Dispatch} from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import {cancelToken} from '../selectors.ts';
+import {cancelToken} from '../selectors/index.ts';
 
 import {OP_NO_LONGER_RELEVANT} from '../../util/axios-util.js';
 

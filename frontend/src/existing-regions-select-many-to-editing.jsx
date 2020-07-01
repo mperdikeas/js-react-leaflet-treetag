@@ -11,7 +11,7 @@ import { connect }          from 'react-redux';
 
 import wrapContexts            from './context/contexts-wrapper.tsx';
 import {updateSelectedRegions} from './redux/actions/index.ts';
-import {existingRegionsAsAntdTreeControlData}   from './redux/selectors/index.js';
+import {existingRegionsAsAntdTreeControlData}   from './redux/selectors/index.ts';
 
 
 const mapStateToProps = (state) => {

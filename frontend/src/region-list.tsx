@@ -1,23 +1,21 @@
-const React = require('react');
-var      cx = require('classnames');
-const     $ = require('jquery');
+import React, {Dispatch} from 'react';
+
+import { connect, ConnectedProps } from 'react-redux';
 
 import chai from './util/chai-util.js';
 const assert = chai.assert;
 
 
-import { AgGridReact } from 'ag-grid-react';
+
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 import 'antd/dist/antd.css';
-import { TreeSelect, Radio, Button } from 'antd';
+import { Radio, Button } from 'antd';
 
-import { v4 as uuidv4 } from 'uuid';
-
-//import {Form, Col, Row, Button, Nav, ButtonGroup} from 'react-bootstrap';
-// REDUX
-import { connect }          from 'react-redux';
+import {ActionSetRGEMode
+      , ActionDisplayModalNotification
+      , ActionDisplayModalNewRegionDefinition} from './redux/actions/action-types.ts';
 
 import {displayModalNotification, setRGEMode
       , displayModalNewRegionDefinition} from './redux/actions/index.ts';
@@ -26,29 +24,29 @@ import {rgeMode
       , rgmgmntSaveEnabled
       , rgmgmntDuringDeletion
       , isRegionsBeingFetched
-      , wktRegionUnderConstructionExists}   from './redux/selectors/index.js';
-import {RGE_MODE}   from './redux/constants/region-editing-mode.js';
+      , wktRegionUnderConstructionExists}   from './redux/selectors/index.ts';
+import {RGE_MODE}   from './redux/constants/region-editing-mode.ts';
 
 import wrapContexts            from './context/contexts-wrapper.tsx';
 
-import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS} from './constants/modal-types.js';
+
 
 import ExistingRegionsSelectManyToEditing from './existing-regions-select-many-to-editing.jsx';
+import {RootState} from './redux/types.ts';
 
-
-function viewDisabled(state) {
+function viewDisabled(state: RootState) {
   return rgmgmntDuringDeletion(state); // || (rgeMode(state)===RGE_MODE.UNENGAGED);
 }
 
-function createDisabled(state) {
+function createDisabled(state: RootState) {
   return rgmgmntDuringDeletion(state); // || (rgeMode(state)===RGE_MODE.CREATING);
 }
 
-function modifyDisabled(state) {
+function modifyDisabled(state: RootState) {
   return rgmgmntDuringDeletion(state); // || (rgeMode(state)===RGE_MODE.MODIFYING);
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: RootState) => {
   return {
     isRegionsBeingFetched: isRegionsBeingFetched(state)
     , rgeMode: rgeMode(state)
@@ -64,19 +62,21 @@ const mapStateToProps = (state) => {
 
 
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: Dispatch<ActionSetRGEMode | ActionDisplayModalNotification | ActionDisplayModalNewRegionDefinition>) => {
   return {
-      displayNotification  : (html)=>dispatch(displayModalNotification({html}))
-    , displayNewRegionDefinition  : (uuid, partitions)=>dispatch(displayModalNewRegionDefinition(uuid, partitions))
-    , setRGEMode: (mode)=>dispatch(setRGEMode(mode))
+      displayNotification: (html: string)=>dispatch(displayModalNotification(html))
+    , displayNewRegionDefinition: ()=>dispatch(displayModalNewRegionDefinition())
+    , setRGEMode: (mode: RGE_MODE)=>dispatch(setRGEMode(mode))
   };
 };
 
+const connector = connect(mapStateToProps, mapDispatchToProps);
 
+type PropsFromRedux = ConnectedProps<typeof connector>
 
-class RegionList extends React.Component {
+class RegionList extends React.Component<PropsFromRedux, {}> {
 
-  constructor(props) {
+  constructor(props: PropsFromRedux) {
     super(props);
   }
 
@@ -90,7 +90,7 @@ class RegionList extends React.Component {
     this.props.setRGEMode(RGE_MODE.MODIFYING);
   }
 
-  onChange = (value)=> {
+  onChange = (value: RGE_MODE)=> {
     const regionUnderCreation = 'a region is being created; to proceed, either save the region or delete it';
     switch (value) {
       case RGE_MODE.CREATING:
@@ -109,13 +109,13 @@ class RegionList extends React.Component {
           this.props.setRGEMode(RGE_MODE.UNENGAGED);
         break;
       default:
-        assert.fail(`region-list.jsx::onChange unhandled value: [${value}]`);
+        assert.fail(`region-list.tsx::onChange unhandled value: [${value}]`);
     }
   }
 
   saveRegion = () => {
     console.log('save region');
-    this.props.displayNewRegionDefinition(uuidv4(), this.props.partitions);
+    this.props.displayNewRegionDefinition();
   }
 
   render = () => {
@@ -148,11 +148,11 @@ class RegionList extends React.Component {
         {modeControls}
 
         <Radio.Group style={{marginBottom: '1em'
-                           , display: 'flex'
-                           , flexDirection: 'row'
-                           , justifyContent: 'space-around'}}
-                     buttonStyle='solid'
-                     onChange={(e)=>this.onChange(e.target.value)} value={this.props.rgeMode}>
+                          , display: 'flex'
+                          , flexDirection: 'row'
+                          , justifyContent: 'space-around'}}
+                    buttonStyle='solid'
+                    onChange={(e: any)=>this.onChange(e.target.value)} value={this.props.rgeMode}>
           <Radio.Button checked={this.props.rgeMode===RGE_MODE.UNENGAGED} disabled={this.props.viewDisabled || (this.props.rgeMode===RGE_MODE.UNENGAGED)} value={RGE_MODE.UNENGAGED}>View</Radio.Button>
           <Radio.Button checked={this.props.rgeMode===RGE_MODE.CREATING} disabled={this.props.createDisabled || (this.props.rgeMode===RGE_MODE.CREATING)} value={RGE_MODE.CREATING}>Create</Radio.Button>
           <Radio.Button checked={this.props.rgeMode===RGE_MODE.MODIFYING} disabled={this.props.modifyDisabled || (this.props.rgeMode===RGE_MODE.MODIFYING)} value={RGE_MODE.MODIFYING}>Modify</Radio.Button>

@@ -2,7 +2,10 @@
 //import CancelToken from '../../node_modules/axios/lib/cancel/CancelToken.js';
 import {CancelTokenSource} from '../../node_modules/axios/index.d.ts';
 
-import {TreeInfoWithId} from '../backend.d.ts';
+import {TreeInfoWithId, PartitionsForInstallation} from '../backend.d.ts';
+
+import {EditingRegionsReducerState} from './reducers/editing-regions-reducer.ts';
+
 export type RootState = { // todo adorn with readonly
     configuration: {
         healthStatuses: any[]
@@ -22,6 +25,9 @@ export type RootState = { // todo adorn with readonly
     latlng: {
         lat: number,
         lng: number},
-    paneToOpenInfoPanel: string // todo: use enum
+    paneToOpenInfoPanel: string, // todo: use enum
+    regions: {existing: PartitionsForInstallation
+              , editing: EditingRegionsReducerState
+              , overlaps: any}
     
 }

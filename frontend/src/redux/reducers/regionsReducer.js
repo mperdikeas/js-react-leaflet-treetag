@@ -7,7 +7,7 @@ const assert = chai.assert;
 
 
 import existingRegionsReducer    from './existingRegionsReducer.js';
-import editingRegionsReducer     from './editingRegionsReducer.js';
+import editingRegionsReducer     from './editing-regions-reducer.ts';
 import overlappingRegionsReducer from './overlappingRegionsReducer.js';
 
 export default (state = {}, action) => {

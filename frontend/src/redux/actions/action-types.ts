@@ -1,7 +1,7 @@
 import {Dispatch} from 'react';
 
 import {ActionTypeKeys} from './action-type-keys.ts';
-import {Coordinates, TreeInfoWithId} from '../../backend.d.ts';
+import {Coordinates, TreeInfoWithId, PartitionsForInstallation} from '../../backend.d.ts';
 
 import {InformationPanelPane} from '../../information-panel-tree.tsx';
 
@@ -147,7 +147,7 @@ export type ActionGetRegionsInProgress = {
 
 export type ActionGetRegionsSuccess = {
     readonly type: ActionTypeKeys.GET_REGIONS_SUCCESS,
-    readonly payload: any
+    readonly payload: PartitionsForInstallation
 }
 
 export type ActionUpdateSelectedRegions = {
@@ -198,6 +198,15 @@ export type ActionUpdateTrees = {
 
 export type F_ActionSaveFeatData        = (dispatch: Dispatch<any>)=>void;
 
+export type ActionSetRGEMode = {
+    readonly type: ActionTypeKeys.SET_RGE_MODE,
+    readonly payload: {mode: string}
+}
+
+export type ActionSetWktRegionUnderConstruction = {
+    readonly type: ActionTypeKeys.SET_WKT_REGION_UNDER_CONSTRUCTION,
+    readonly payload: {wkt: string}
+}
 
 export type ActionRgmgmntDeleteStart = {
     readonly type: ActionTypeKeys.REG_MGMNT_DELETE_START
@@ -254,6 +263,8 @@ export type Action =
     | ActionOverlapsGetOverlapsSuccess
     | ActionUpdateConfiguration
     | ActionUpdateTrees
+    | ActionSetRGEMode
+    | ActionSetWktRegionUnderConstruction
     | ActionRgmgmntDeleteStart
     | ActionRgmgmntDeleteEnd
     | ActionRgmgmntModifyStart
