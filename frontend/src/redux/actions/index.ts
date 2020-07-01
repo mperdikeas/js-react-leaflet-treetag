@@ -59,7 +59,7 @@ import getFeatNumPhotos from './get-feat-num-photos.tsx';
 
 import {cancelPendingRequests} from './action-util.tsx';
 
-import {INFORMATION, PHOTOS, HISTORY, ADJUST}                 from '../../constants/information-panel-panes.js';
+import {InformationPanelPane} from '../../information-panel-tree.tsx';
 
 import {ensureRGEModeIsValid} from '../constants/region-editing-mode.js';
 
@@ -71,7 +71,7 @@ import {isValidModalType
 
 import {tnu} from '../../util/util.js';
 
-
+import {RootState} from '../types.ts';
 
 export function updateMouseCoords(latlng: string) : ActionUpdateMouseCoords {
     return {type: ActionTypeKeys.UPDATE_MOUSE_COORDS, payload: {latlng}};
@@ -117,13 +117,13 @@ export function unsetTarget(): ActionUnsetTarget {
     return {type: ActionTypeKeys.UNSET_TARGET};
 };
 
-export function setPaneToOpenInfoPanel(pane: string): ActionSetPaneToOpenInfoPanel {
+export function setPaneToOpenInfoPanel(pane: InformationPanelPane): ActionSetPaneToOpenInfoPanel {
     return {type: ActionTypeKeys.SET_PANE_TO_OPEN_INFO_PANEL, payload: {pane}};
 }
 
 
 export function unsetOrFetch(targetId: number) : ActionUnsetOrFetch {
-    return (dispatch: Dispatch<any>, getState: any) => {
+    return (dispatch: Dispatch<any>, getState: ()=>RootState) => {
         cancelPendingRequests(getState());        
         if (getState().target.id === targetId) {
             dispatch(unsetTarget());
@@ -131,12 +131,12 @@ export function unsetOrFetch(targetId: number) : ActionUnsetOrFetch {
             dispatch(newTarget(targetId));
             const pane = getState().paneToOpenInfoPanel;
             switch (pane) {
-            case INFORMATION:
-            case HISTORY:
-            case ADJUST:
+            case InformationPanelPane.INFORMATION:
+            case InformationPanelPane.HISTORY:
+            case InformationPanelPane.ADJUST:
                 dispatch(getFeatData(targetId));
                 break;
-            case PHOTOS:
+            case InformationPanelPane.PHOTOS:
                 dispatch(getFeatNumPhotos(targetId));
                 break;
             default:

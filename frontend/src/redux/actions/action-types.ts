@@ -3,6 +3,8 @@ import {Dispatch} from 'react';
 import {ActionTypeKeys} from './action-type-keys.ts';
 import {Coordinates, TreeInfoWithId} from '../../backend.d.ts';
 
+import {InformationPanelPane} from '../../information-panel-tree.tsx';
+
 export type ActionUpdateMouseCoords = {
     readonly type: ActionTypeKeys.UPDATE_MOUSE_COORDS,
     readonly payload: {latlng: string}
@@ -51,7 +53,7 @@ export type ActionUnsetTarget = {
 
 export type ActionSetPaneToOpenInfoPanel = {
     readonly type: ActionTypeKeys.SET_PANE_TO_OPEN_INFO_PANEL,
-    readonly payload: {pane: string}
+    readonly payload: {pane: InformationPanelPane}
 }
 
 export type ActionUnsetOrFetch = (dispatch: Dispatch<any>, getState: any) => void;

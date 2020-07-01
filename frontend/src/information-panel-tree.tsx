@@ -23,10 +23,6 @@ import {displayModalNotification
 
 import {RootState} from './redux/types.ts';
 
-import {INFORMATION, PHOTOS, HISTORY, ADJUST} from './constants/information-panel-panes.js';
-
-
-
 import {TreeInfoWithId} from './backend.d.ts';
 import wrapContexts from './context/contexts-wrapper.tsx';
 
@@ -74,6 +70,14 @@ const mapDispatchToProps = (dispatch: Dispatch<any>) => {
 }
 
 
+export enum InformationPanelPane {
+    INFORMATION = 'INFORMATION',
+    PHOTOS      = 'PHOTOS',
+    HISTORY     = 'HISTORY',
+    ADJUST      = 'ADJUST'
+};
+
+
 // refid: SSE-1589888176
 const mergeProps = ( stateProps: StateProps, {dispatch}: {dispatch: Dispatch<any>}) => {
   const msgTreeDataHasBeenUpdated = (targetId: number) => `τα νέα δεδομένα για το δένδρο #${targetId} αποθηκεύτηκαν`;
@@ -84,13 +88,13 @@ const mergeProps = ( stateProps: StateProps, {dispatch}: {dispatch: Dispatch<any
     , saveFeatData: (treeInfo: TreeInfoWithId) => dispatch(saveFeatData(treeInfo))
     , displayTreeDataHasBeenUpdated: (targetId: number)=>dispatch(displayModalNotification(msgTreeDataHasBeenUpdated(targetId)))
     , toggleMaximizeInfoPanel: ()=>dispatch(toggleMaximizeInfoPanel())
-    , setPaneToOpenInfoPanelAndPossiblyFetchPhoto: (pane: string) => {
+    , setPaneToOpenInfoPanelAndPossiblyFetchPhoto: (pane: InformationPanelPane) => {
       dispatch(setPaneToOpenInfoPanel(pane))
       if (stateProps.photos===null) {
         dispatch(getFeatNumPhotos(stateProps.targetId!));
       }
     }
-    , setPaneToOpenInfoPanelAndPossiblyFetchData: (pane: string) => {
+    , setPaneToOpenInfoPanelAndPossiblyFetchData: (pane: InformationPanelPane) => {
       dispatch(setPaneToOpenInfoPanel(pane))
       if (stateProps.treeInfo===null) {
         dispatch(getFeatData(stateProps.targetId!));
@@ -124,25 +128,25 @@ class TreeInformationPanel extends React.Component<PropsFromRedux, never> {
   
   onInformation = () => {
     if (!this.displayNotificationIfTargetIsDirty()) {
-      this.props.setPaneToOpenInfoPanelAndPossiblyFetchData(INFORMATION);
+      this.props.setPaneToOpenInfoPanelAndPossiblyFetchData(InformationPanelPane.INFORMATION);
     }
   }
 
   onPhotos = () => {
     if (!this.displayNotificationIfTargetIsDirty()) {
-      this.props.setPaneToOpenInfoPanelAndPossiblyFetchPhoto(PHOTOS);
+      this.props.setPaneToOpenInfoPanelAndPossiblyFetchPhoto(InformationPanelPane.PHOTOS);
     }
   }
 
   onHistory = () => {
     if (!this.displayNotificationIfTargetIsDirty()) {
-      this.props.setPaneToOpenInfoPanelAndPossiblyFetchData(HISTORY);
+      this.props.setPaneToOpenInfoPanelAndPossiblyFetchData(InformationPanelPane.HISTORY);
     }
   }
 
   onAdjust = () => {
     if (!this.displayNotificationIfTargetIsDirty()) {
-      this.props.setPaneToOpenInfoPanelAndPossiblyFetchData(ADJUST);
+      this.props.setPaneToOpenInfoPanelAndPossiblyFetchData(InformationPanelPane.ADJUST);
     }
   }
   
@@ -181,37 +185,37 @@ class TreeInformationPanel extends React.Component<PropsFromRedux, never> {
           </div>
 
         <Nav variant='pills' activeKey={this.props.tab} justify={true}
-            onSelect={(selectedKey: string) => {
-                     switch (selectedKey) {
-                       case INFORMATION:
-                         this.onInformation();
-                         break;
-                       case PHOTOS:
-                         this.onPhotos();
-                         break;
-                       case HISTORY:
-                         this.onHistory();
-                         break;
-                       case ADJUST:
-                         this.onAdjust();
-                         break;
-                       default:
-                         throw `unhandled key: ${selectedKey}`;
-                     }
-                     }
-                     }
+             onSelect={(selectedKey: any) => {
+               switch (selectedKey) {
+                 case InformationPanelPane.INFORMATION:
+                   this.onInformation();
+                   break;
+                 case InformationPanelPane.PHOTOS:
+                   this.onPhotos();
+                   break;
+                 case InformationPanelPane.HISTORY:
+                   this.onHistory();
+                   break;
+                 case InformationPanelPane.ADJUST:
+                   this.onAdjust();
+                   break;
+                 default:
+                   throw `unhandled key: ${selectedKey}`;
+               }
+             }
+             }
         >
         <Nav.Item>
-          <Nav.Link eventKey={INFORMATION}>Γενικά</Nav.Link>
+          <Nav.Link eventKey={InformationPanelPane.INFORMATION}>Γενικά</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey={PHOTOS}>Φωτό</Nav.Link>
+          <Nav.Link eventKey={InformationPanelPane.PHOTOS}>Φωτό</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey={HISTORY}>Ιστορικό</Nav.Link>
+          <Nav.Link eventKey={InformationPanelPane.HISTORY}>Ιστορικό</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link eventKey={ADJUST}>Μετατόπιση</Nav.Link>
+          <Nav.Link eventKey={InformationPanelPane.ADJUST}>Μετατόπιση</Nav.Link>
         </Nav.Item>
         </Nav>
           
@@ -259,17 +263,17 @@ class TreeInformationPanel extends React.Component<PropsFromRedux, never> {
       } // switch
     } else {
       switch (this.props.tab) {
-        case INFORMATION:
+        case InformationPanelPane.INFORMATION:
           return (
             <TargetDataPane />
           );
-        case PHOTOS:
+        case InformationPanelPane.PHOTOS:
           return <TargetPhotoPane/>
-        case HISTORY:
+        case InformationPanelPane.HISTORY:
           return (
             <TargetMetadataPane/>
           );
-        case ADJUST: {
+        case InformationPanelPane.ADJUST: {
           return <TargetAdjustmentPane />;
         }
         default:

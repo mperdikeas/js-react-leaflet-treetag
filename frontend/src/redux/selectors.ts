@@ -7,10 +7,7 @@ import {sca_fake_return, isNotNullOrUndefined} from '../util/util.js';
 
 
 
-import {INFORMATION
-        , PHOTOS
-        , HISTORY
-        , ADJUST} from '../constants/information-panel-panes.js';
+import {InformationPanelPane} from '../information-panel-tree.tsx';
 
 
 export function targetIsDirty(state: RootState) {
@@ -23,14 +20,12 @@ export function targetIsDirty(state: RootState) {
 export function targetInitialAjaxReadInProgress(state: RootState): boolean {
     assert.isOk(state.paneToOpenInfoPanel, 'SNAFU 1 in targetAjaxReadInProgress');
     switch (state.paneToOpenInfoPanel) {
-    case INFORMATION:
-    case HISTORY:
-    case ADJUST:
-        const v = (state.target.id != null) && ((state.target.treeInfo === null) || (state.target.treeInfo.original === null));
-        return v;
-    case PHOTOS:
-        const v2 = (state.target.id != null) && ((state.target.photos == null) || (state.target.photos.img === undefined));
-        return v2;
+    case InformationPanelPane.INFORMATION:
+    case InformationPanelPane.HISTORY:
+    case InformationPanelPane.ADJUST:
+        return (state.target.id != null) && ((state.target.treeInfo === null) || (state.target.treeInfo.original === null));
+    case InformationPanelPane.PHOTOS:
+        return (state.target.id != null) && ((state.target.photos == null) || (state.target.photos.img === undefined));
     default:
         assert.fail(`SNAFU 2 in targetAjaxReadInProgress ~ unhandled case: [${state.paneToOpenInfoPanel}]`);
         return sca_fake_return() as unknown as boolean;
@@ -41,11 +36,11 @@ export function typeOfTargetInitialAjaxReadInProgress(state: RootState): string 
     assert.isOk(state.paneToOpenInfoPanel, 'SNAFU 1 in typeOfTargetAjaxReadInProgress');
     assert.isTrue(isNotNullOrUndefined(state.target.id), 'SNAFU 2 in typeOfTargetAjaxReadInProgress');
     switch (state.paneToOpenInfoPanel) {
-    case INFORMATION:
-    case HISTORY:
-    case ADJUST:
+    case InformationPanelPane.INFORMATION:
+    case InformationPanelPane.HISTORY:
+    case InformationPanelPane.ADJUST:
         return 'feat-data-retrieval';
-    case PHOTOS:
+    case InformationPanelPane.PHOTOS:
         if ((state.target.photos == null) || (state.target.photos.num === undefined))
             return 'feat-num-photos-retrieval';
         else
