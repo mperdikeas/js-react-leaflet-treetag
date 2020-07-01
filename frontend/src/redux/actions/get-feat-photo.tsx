@@ -21,7 +21,7 @@ import {handleAxiosException} from './action-axios-exc-util.ts';
 import {propsForRetryDialog} from './action-util.tsx';
 
 import {RootState} from '../types.ts';
-import {BackendResponse} from '../../backend.d.ts';
+import {BackendResponse, FeatPhoto} from '../../backend.d.ts';
 
 export default function getFeatPhoto(id: number, idx: number) {
   const actionCreator = `getFeatPhoto(${id}, ${idx})`;
@@ -36,7 +36,7 @@ export default function getFeatPhoto(id: number, idx: number) {
     const url = urlForPhoto(id, idx);
     console.log(`${actionCreator} :: URL is: ${url}`);
 
-    axiosAuth.get(url, {cancelToken: source.token}).then((res: BackendResponse) => {
+    axiosAuth.get(url, {cancelToken: source.token}).then((res: BackendResponse<FeatPhoto>) => {
       dispatch(getFeatureAjaxConcluded());
       // corr-id: SSE-1585746250
       const {t, err} = res.data; 

@@ -8,13 +8,13 @@ const assert = chai.assert;
 
 
 import {clearModal} from '../../redux/actions/index.ts';
-import {StandardAction} from '../../redux/actions/action-types.ts';
+import {ActionClearModal} from '../../redux/actions/action-types.ts';
 
 import LoginForm     from './login-form.jsx';
 
 
 
-const mapDispatchToProps = (dispatch: Dispatch<StandardAction<string>>) => {
+const mapDispatchToProps = (dispatch: Dispatch<ActionClearModal>) => {
   return {
     clearModal: (uuid: string) => dispatch(clearModal(uuid))
   };

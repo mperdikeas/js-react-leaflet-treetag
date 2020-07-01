@@ -5,12 +5,13 @@ import {axiosAuth} from '../../axios-setup.js';
 
 import { v4 as uuidv4 } from 'uuid';
 
+import {ActionDisplayModalNotification} from './action-types.ts';
+
 import {displayModal
+      , displayModalNotification
       , clearModal
       , setTreeInfoOriginal} from './index.ts';
-import {MDL_NOTIFICATION
-      , MDL_NOTIFICATION_NO_DISMISS
-      , MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
+import {MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
 
 
 
@@ -23,7 +24,7 @@ import {propsForRetryDialog} from './action-util.tsx';
 
 import {handleAxiosException} from './action-axios-exc-util.ts';
 
-import {StandardAction, ActionSaveFeatData} from './action-types.ts';
+import {ActionSaveFeatData} from './action-types.ts';
 
 import {TreeInfoWithId, BackendResponse} from '../../backend.d.ts';
 
@@ -31,14 +32,14 @@ const targetId2Marker = (targetId: number) => {
   return globalGet(GSN.REACT_MAP).id2marker[targetId];
 }
 
-const displayTreeDataHasBeenUpdated = (dispatch: React.Dispatch<StandardAction<any>>, id: number)=>{
+const displayTreeDataHasBeenUpdated = (dispatch: React.Dispatch<ActionDisplayModalNotification>, id: number)=>{
   const html = `τα νέα δεδομένα για το δένδρο #${id} αποθηκεύτηκαν`;
-  dispatch(displayModal(MDL_NOTIFICATION, {html, uuid:uuidv4()}));
+  dispatch(displayModalNotification(html));
 }
 
-const displayModalSavingTreeData = (dispatch: React.Dispatch<StandardAction<any>>, id: number, uuid: string)=>{
+const displayModalSavingTreeData = (dispatch: React.Dispatch<ActionDisplayModalNotification>, id: number, uuid: string)=>{
   const html = `αποθήκευση δεδομένων για το δένδρο #${id}`;
-  dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html, uuid}))
+  dispatch(displayModalNotification(html));
 };
 
 export default function saveFeatData(treeInfo: TreeInfoWithId): ActionSaveFeatData {
@@ -57,7 +58,7 @@ export default function saveFeatData(treeInfo: TreeInfoWithId): ActionSaveFeatDa
     displayModalSavingTreeData(dispatch, id, uuid);
 
     axiosAuth.post(url, treeInfo)
-             .then( (res: BackendResponse) => {
+             .then( (res: BackendResponse<never>) => {
                dispatch(clearModal(uuid));
                const {err} = res.data;
                if (err != null) {

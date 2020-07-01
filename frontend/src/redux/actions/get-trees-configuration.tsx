@@ -41,7 +41,7 @@ export default function getTreesConfiguration() {
     const url = '/getConfiguration';
 
     // cf. SSE-1592901297    
-    return axiosAuth.get(url).then( (res: BackendResponse) => {
+    return axiosAuth.get(url).then( (res: BackendResponse<any>) => { // TODO: the back-end response can be alot more specific
       dispatch(clearModal(uuid));
       // corr-id: SSE-1585746250
       const {t, err} = res.data; 

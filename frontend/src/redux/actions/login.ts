@@ -13,7 +13,7 @@ import {MDL_RETRY_CANCEL, MDL_NOTIFICATION} from '../../constants/modal-types.js
 
 import {displayModal} from './index.ts';
 
-import {BackendResponse} from '../../backend.d.ts';
+import {BackendResponse, LoginResult} from '../../backend.d.ts';
 export default function login({installation, username, password}: {installation: string, username: string, password: string}, updateLogin: any, followUpFunc: ()=>void) {
     assert.exists(followUpFunc);
     console.log(`login:: followUpFunc is ${followUpFunc.name}`);
@@ -28,7 +28,7 @@ export default function login({installation, username, password}: {installation:
             installation: installation,
             username: username,
             password: password
-        }).then( (res: BackendResponse) => {
+        }).then( (res: BackendResponse<LoginResult>) => {
             if (res.data.err != null) {
                 console.error(`error at ${actionCreator}, url: [${url}]: `, res.data.err);
                 console.error(JSON.stringify(res.data.err));

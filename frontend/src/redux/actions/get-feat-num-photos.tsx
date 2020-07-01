@@ -31,7 +31,7 @@ export default function getFeatNumPhotos(id: number) {
     const url = urlForNumOfPhotos(id);
     console.log(`${actionCreator} :: URL is: ${url}`);
     
-    axiosAuth.get(url, {cancelToken: source.token}).then( (res: BackendResponse) => {
+    axiosAuth.get(url, {cancelToken: source.token}).then( (res: BackendResponse<number>) => {
       dispatch(getFeatureAjaxConcluded());      
       /* SSE-1585746250
        * This is a ValueOrInternalServerExceptionData data type on the server side

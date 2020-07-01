@@ -2,9 +2,10 @@ import { v4 as uuidv4 } from 'uuid';
 
 import {Dispatch} from 'react';
 
-import {MDL_NOTIFICATION} from '../../constants/modal-types.js';
+import {ActionDisplayModalLogin, ActionDisplayModalNotification} from './action-types.ts';
+import {displayModal, displayModalLogin, displayModalNotification} from './index.ts';
 
-import {displayModal, displayModalLogin} from './index.ts';
+
 import {MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
 
 import {OP_NO_LONGER_RELEVANT} from '../../util/axios-util.js';
@@ -13,16 +14,15 @@ import {propsForRetryDialog} from './action-util.tsx';
 
 import {SERVER_ERROR_CODES} from './action-constants.ts';
 
-import {StandardAction} from './action-types.ts';
-
 import {isInsufficientPrivilleges} from '../../util-privilleges.js';
 
-const displayNotificationInsufPrivilleges = (dispatch: Dispatch<StandardAction<{html: string, uuid:string}>>, uuid: string)=>{
+type F = (dispatch: Dispatch<ActionDisplayModalNotification>, uuid: string) => void;
+const displayNotificationInsufPrivilleges: F = (dispatch, uuid)=>{
     const html = 'the logged-in user has insufficient privilleges for this operation'; 
-    dispatch(displayModal(MDL_NOTIFICATION, {html, uuid}));
+    dispatch(displayModalNotification(html));
 };
 
-export function handleAxiosException(err: any, dispatch: Dispatch<any>, f:()=>void, url: string, actionCreator: string) {
+export function handleAxiosException(err: any, dispatch: Dispatch<ActionDisplayModalLogin | ActionDisplayModalNotification>, f:()=>void, url: string, actionCreator: string) {
     if (isInsufficientPrivilleges(err)) {
         console.warn(`${actionCreator} at url: [${url}] ~*~ insuf priv detected`);
         displayNotificationInsufPrivilleges(dispatch, uuidv4());

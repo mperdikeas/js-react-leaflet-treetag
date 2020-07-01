@@ -42,9 +42,18 @@ export interface TreeInfoWithId extends TreeInfo {
     id: number;
 }
 
+export type FeatPhoto = {
+    imageBase64: string;
+    instant: number;
+};
 
-export type BackendResponse = {
-    data: {t: any, err: any}
+export type LoginResult = {
+    accessToken: string;
+    loginFailureReason: string;
+};
+
+export type BackendResponse<T> = {
+    data: {t: T, err: any}
 }
 
 

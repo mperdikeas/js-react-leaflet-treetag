@@ -41,11 +41,16 @@ import {ActionUpdateMouseCoords
         , ActionUpdateSelectedRegions
         , ActionOverlapsUpdateSelectedRegion
         , ActionOverlapsGetRegionsSuccess
+        , ActionOverlapsSetRegion
         , ActionOverlapsSetPartitions
         , ActionOverlapsGetOverlapsInProgress
         , ActionOverlapsGetOverlapsSuccess
         , ActionUpdateConfiguration
-        , ActionNoPayload} from './action-types.ts';
+        , ActionUpdateTrees
+        , ActionRgmgmntDeleteStart
+        , ActionRgmgmntDeleteEnd
+        , ActionRgmgmntModifyStart
+        , ActionRgmgmntModifyEnd} from './action-types.ts';
 
 
 import getFeatData from './get-feat-data.tsx';
@@ -60,6 +65,7 @@ import {ensureRGEModeIsValid} from '../constants/region-editing-mode.js';
 
 import {isValidModalType
         , MDL_NOTIFICATION
+        , MDL_NOTIFICATION_NO_DISMISS
         , MDL_NEW_REGION_DEFINITION
         , MDL_LOGIN} from '../../constants/modal-types.js';
 
@@ -84,8 +90,12 @@ export function displayModalLogin(f: ()=> void) : ActionDisplayModalLogin {
 }
 
 
-export function displayModalNotification(modalProps: any): ActionDisplayModalNotification {
-    return displayModal(MDL_NOTIFICATION, Object.assign({}, modalProps, {uuid:  uuidv4()}));
+export function displayModalNotification(html: string): ActionDisplayModalNotification {
+    return displayModal(MDL_NOTIFICATION, {html, uuid:  uuidv4()});
+}
+
+export function displayModalNotificationNonDismissable(html: string, uuid: string): ActionDisplayModalNotification { // NB: using the same type
+    return displayModal(MDL_NOTIFICATION_NO_DISMISS, {html, uuid});
 }
 
 export function displayModalNewRegionDefinition(): ActionDisplayModalNewRegionDefinition {
@@ -173,7 +183,7 @@ export function getFeatureAjaxConcluded(): ActionGetFeatureAjaxConcluded {
 }
 
 export function getTreeInfoSuccess(treeInfo: TreeInfoWithId): ActionGetTreeInfoSuccess {
-    return {type: ActionTypeKeys.GET_TREE_INFO_SUCCESS, payload: {treeInfo}};
+    return {type: ActionTypeKeys.GET_TREE_INFO_SUCCESS, payload: treeInfo};
 }
 
 export function getFeatNumPhotosSuccess(num: number): ActionGetFeatNumPhotosSuccess {
@@ -252,19 +262,19 @@ export function setWktRegionUnderConstruction(wkt: string) {
 
 export {default as createRegion} from './create-region.tsx';
 
-export function rgmgmntDeleteStart(): ActionNoPayload {
+export function rgmgmntDeleteStart(): ActionRgmgmntDeleteStart {
     return {type: ActionTypeKeys.REG_MGMNT_DELETE_START};
 }
 
-export function rgmgmntDeleteEnd(): ActionNoPayload {
+export function rgmgmntDeleteEnd(): ActionRgmgmntDeleteEnd {
     return {type: ActionTypeKeys.REG_MGMNT_DELETE_END};
 }
 
-export function rgmgmntModifyStart(): ActionNoPayload {
+export function rgmgmntModifyStart(): ActionRgmgmntModifyStart {
     return {type: ActionTypeKeys.REG_MGMNT_MODIFY_START};
 }
 
-export function rgmgmntModifyEnd(): ActionNoPayload {
+export function rgmgmntModifyEnd(): ActionRgmgmntModifyEnd {
     return {type: ActionTypeKeys.REG_MGMNT_MODIFY_END};
 }
 
@@ -288,11 +298,11 @@ export function overlapsGetOverlapsSuccess(overlaps: any): ActionOverlapsGetOver
     return {type: ActionTypeKeys.OVERLAPS_GET_OVERLAPS_SUCCESS, payload: overlaps};
 }
 
-export function updateConfiguration(configuration: any): ActionUpdateConfiguration {
+export function updateConfiguration(configuration: any): ActionUpdateConfiguration { // TODO: this can be alot more speciific
     return {type: ActionTypeKeys.UPDATE_CONFIGURATION, payload: configuration};
 }
 
-export function updateTrees(trees: any): UpdateTrees {
+export function updateTrees(trees: any): ActionUpdateTrees {
     return {type: ActionTypeKeys.UPDATE_TREES, payload: trees};
 }
 

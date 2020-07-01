@@ -56,7 +56,8 @@ export default (state = initState(null), action) => {
 
     }
     case ActionTypeKeys.GET_TREE_INFO_SUCCESS: {
-        assert.strictEqual(state.id, action.payload.id);
+        console.log(action.payload);
+        assert.strictEqual(state.id, action.payload.id, `targetReducer.js case ${ActionTypeKeys.GET_TREE_INFO_SUCCESS} expecting state.id=${state.id} to equal action.payload.id=${action.payload.id}`);
         const original = JSON.parse(JSON.stringify(action.payload));
         const current  = JSON.parse(JSON.stringify(action.payload));
         return Object.assign({}

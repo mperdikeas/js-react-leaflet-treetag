@@ -40,7 +40,7 @@ export default function getTrees(N: number): (d: Dispatch<any>, gs: ()=>RootStat
      *         https://github.com/reduxjs/redux/issues/723
      *  
      */
-    return axiosAuth.get(url).then((res: BackendResponse) => {
+    return axiosAuth.get(url).then((res: BackendResponse<any>) => {
       console.log(`cag - getTree success clearing modal ${uuid}`);
       dispatch(clearModal(uuid))
       // corr-id: SSE-1585746250

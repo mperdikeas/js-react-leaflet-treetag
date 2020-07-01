@@ -2,10 +2,10 @@ import {Dispatch} from 'react';
 import {axiosAuth} from '../../axios-setup.js';
 import { v4 as uuidv4 } from 'uuid';
 
-import {StandardAction} from './action-types.ts';
+import {ActionDisplayModalNotification, ActionAddToast} from './action-types.ts';
 
 import {displayModal
-      , displayModalNotification
+      , displayModalNotificationNonDismissable
       , clearModal
       , getRegions
       , addToast
@@ -19,12 +19,12 @@ import {BackendResponse} from '../../backend.d.ts';
 import {handleAxiosException} from './action-axios-exc-util.ts';
 
 
-function displayModalCreatingNewRegion (dispatch: Dispatch<StandardAction<any>>, region: string, partition: string, uuid: string) {
+function displayModalCreatingNewRegion (dispatch: Dispatch<ActionDisplayModalNotification>, region: string, partition: string, uuid: string) {
   const html = `saving region ${region} under partition ${partition} ...`;
-  dispatch(displayModalNotification({html, uuid}));
+  dispatch(displayModalNotificationNonDismissable(html, uuid));
 }
 
-function notifyRegionHasBeenCreated (dispatch: Dispatch<StandardAction<any>>, region: string, partition: string) {
+function notifyRegionHasBeenCreated (dispatch: Dispatch<ActionAddToast>, region: string, partition: string) {
   const msg = `region '${region}' has been successfully created under ${partition}`;
   dispatch(addToast('region created', msg));
 }
@@ -41,7 +41,7 @@ export default function createRegion(region: string, wkt: string, partition: str
     displayModalCreatingNewRegion(dispatch, region, partition, uuid);
 
     axiosAuth.put(url, wkt)
-             .then( (res: BackendResponse) => {
+             .then( (res: BackendResponse<any>) => {
                dispatch(clearModal(uuid));
                const {t, err} = res.data;
                console.log(t); // todo: examine for possible race conditions

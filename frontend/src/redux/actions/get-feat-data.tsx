@@ -20,7 +20,7 @@ import {MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
 
 import {RootState} from '../types.ts';
 
-import {BackendResponse} from '../../backend.d.ts';
+import {BackendResponse, TreeInfoWithId} from '../../backend.d.ts';
 
 import {urlForFeatData} from './feat-url-util.js';
 
@@ -42,10 +42,11 @@ export default function getFeatureData(id: number) {
     console.log(`${actionCreator} :: URL is: ${url}`);
 
     axiosAuth.get(url, {cancelToken: source.token}
-    ).then( (res: BackendResponse) => {
+    ).then( (res: BackendResponse<TreeInfoWithId>) => {
       dispatch(getFeatureAjaxConcluded());
       // corr-id: SSE-1585746250
       const {t, err} = res.data;
+      console.error(t);
       if (err != null) {
         console.error(`${actionCreator} :: error at URL [${url}]`);
         console.error(res.data.err);

@@ -47,7 +47,7 @@ export default function delFeatPhoto(id: number, idx: number) {
 
     dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html, uuid}));
 
-    axiosAuth.delete(url).then( (res: BackendResponse) => {
+    axiosAuth.delete(url).then( (res: BackendResponse<never>) => {
       dispatch(clearModal(uuid));
 
       const {t, err} = res.data;

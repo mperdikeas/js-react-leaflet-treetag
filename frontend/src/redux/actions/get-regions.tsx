@@ -46,7 +46,7 @@ export default function getRegions(toastOnSuccess=false) {
     dispatch (getRegionsInProgress());
     const url = '/partitions';
 
-    axiosAuth.get(url, {cancelToken: source.token}).then((res: BackendResponse) => {
+    axiosAuth.get(url, {cancelToken: source.token}).then((res: BackendResponse<any>) => {
       dispatch(clearModal(uuid))
       // corr-id: SSE-1585746250
       const {t, err} = res.data; 

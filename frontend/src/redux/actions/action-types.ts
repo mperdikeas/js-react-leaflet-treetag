@@ -23,7 +23,7 @@ export type ActionDisplayModalLogin = {
 export type ActionDisplayModalNotification = {
     readonly type: ActionTypeKeys.DISPLAY_MODAL,
     readonly payload:  {modalType: string, // TODO: nail that
-                        modalProps: {uuid: string}
+                        modalProps: {html: string, uuid: string}
                        }
 };
 
@@ -98,7 +98,7 @@ export type ActionGetFeatureAjaxConcluded = {
 
 export type ActionGetTreeInfoSuccess = {
     readonly type: ActionTypeKeys.GET_TREE_INFO_SUCCESS,
-    readonly payload: {treeInfo: TreeInfoWithId}
+    readonly payload: TreeInfoWithId
 }
 
 export type ActionGetFeatNumPhotosSuccess = {
@@ -176,8 +176,7 @@ export type ActionOverlapsSetPartitions = {
 }
 
 export type ActionOverlapsGetOverlapsInProgress = {
-    readonly type: ActionTypeKeys.OVERLAPS_GET_OVERLAPS_IN_PROGRESS,
-    readonly payload: any
+    readonly type: ActionTypeKeys.OVERLAPS_GET_OVERLAPS_IN_PROGRESS
 }
 
 export type ActionOverlapsGetOverlapsSuccess = {
@@ -190,7 +189,7 @@ export type ActionUpdateConfiguration = {
     readonly payload: any
 }
 
-export type UpdateTrees = {
+export type ActionUpdateTrees = {
     readonly type: ActionTypeKeys.UPDATE_TREES,
     readonly payload: any
 }
@@ -198,20 +197,20 @@ export type UpdateTrees = {
 export type ActionSaveFeatData        = (dispatch: Dispatch<any>)=>void;
 
 
-export type RgmgmntDeleteStart = {
-    readonly type ActionTypeKeys.REG_MGMNT_DELETE_START
+export type ActionRgmgmntDeleteStart = {
+    readonly type: ActionTypeKeys.REG_MGMNT_DELETE_START
 }
 
-export type RgmgmntDeleteEnd = {
-    readonly type ActionTypeKeys.REG_MGMNT_DELETE_END
+export type ActionRgmgmntDeleteEnd = {
+    readonly type: ActionTypeKeys.REG_MGMNT_DELETE_END
 }
 
-export type RgmgmntModifyStart = {
-    readonly type ActionTypeKeys.REG_MGMNT_MODIFY_START
+export type ActionRgmgmntModifyStart = {
+    readonly type: ActionTypeKeys.REG_MGMNT_MODIFY_START
 }
 
-export type RgmgmntModifyEnd = {
-    readonly type ActionTypeKeys.REG_MGMNT_MODIFY_END
+export type ActionRgmgmntModifyEnd = {
+    readonly type: ActionTypeKeys.REG_MGMNT_MODIFY_END
 }
 
 
@@ -253,4 +252,8 @@ export type Action =
     | ActionOverlapsGetOverlapsInProgress
     | ActionOverlapsGetOverlapsSuccess
     | ActionUpdateConfiguration
-    | UpdateTrees;
+    | ActionUpdateTrees
+    | ActionRgmgmntDeleteStart
+    | ActionRgmgmntDeleteEnd
+    | ActionRgmgmntModifyStart
+    | ActionRgmgmntModifyEnd;
