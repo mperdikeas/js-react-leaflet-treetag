@@ -56,7 +56,7 @@ export type ActionSetPaneToOpenInfoPanel = {
     readonly payload: {pane: InformationPanelPane}
 }
 
-export type ActionUnsetOrFetch = (dispatch: Dispatch<any>, getState: any) => void;
+export type F_ActionUnsetOrFetch = (dispatch: Dispatch<any>, getState: any) => void;
 
 export type ActionNewTarget = {
     readonly type: ActionTypeKeys.NEW_TARGET,
@@ -196,7 +196,7 @@ export type ActionUpdateTrees = {
     readonly payload: any
 }
 
-export type ActionSaveFeatData        = (dispatch: Dispatch<any>)=>void;
+export type F_ActionSaveFeatData        = (dispatch: Dispatch<any>)=>void;
 
 
 export type ActionRgmgmntDeleteStart = {
@@ -226,7 +226,6 @@ export type Action =
     | ActionToggleMaximizeInfoPanel
     | ActionUnsetTarget
     | ActionSetPaneToOpenInfoPanel
-    | ActionUnsetOrFetch
     | ActionNewTarget
     | ActionAddToast
     | ActionDismissToast

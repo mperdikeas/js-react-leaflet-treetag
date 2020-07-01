@@ -1,6 +1,6 @@
 import {Action} from '../actions/action-types.ts';
 
-import configurationReducer           from './configuration-reducer.js';
+import configurationReducer           from './configuration-reducer.ts';
 import treesReducer                   from './trees-reducer.js';
 import toastReducer                   from './toastReducer.js';
 import mouseCoordsReducer             from './mouseCoordsReducer.js';

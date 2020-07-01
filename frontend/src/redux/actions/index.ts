@@ -16,7 +16,7 @@ import {ActionUpdateMouseCoords
         , ActionDisplayModalNewRegionDefinition
         , ActionClearModal
         , ActionSetPaneToOpenInfoPanel
-        , ActionUnsetOrFetch
+        , F_ActionUnsetOrFetch
         , ActionNewTarget
         , ActionAddToast
         , ActionDismissToast
@@ -122,7 +122,7 @@ export function setPaneToOpenInfoPanel(pane: InformationPanelPane): ActionSetPan
 }
 
 
-export function unsetOrFetch(targetId: number) : ActionUnsetOrFetch {
+export function unsetOrFetch(targetId: number) : F_ActionUnsetOrFetch {
     return (dispatch: Dispatch<any>, getState: ()=>RootState) => {
         cancelPendingRequests(getState());        
         if (getState().target.id === targetId) {
