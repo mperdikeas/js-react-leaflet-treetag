@@ -9,6 +9,9 @@ export interface BasicTreeInfo {
     coords: Coordinates;
 };
 
+export interface BasicTreeInfoWithId extends BasicTreeInfo {
+    id: number;
+};
 
 export type TreeAction = {
     instant: number;
@@ -63,3 +66,21 @@ export type Region = {
     name: string,
     wkt: string
 }
+
+
+export type TreeConfiguration = {
+    readonly name: TreeName,
+    readonly layer: string,
+    readonly color: string
+}
+    
+
+export type Species = Record<number, TreeConfiguration>;
+export type HealthStatuses = {readonly code2name: Record<number, string>};
+export type Activities = Record<number, string>;
+
+export type Configuration = {
+    readonly species: Species,
+    readonly healthStatuses: HealthStatuses,
+    readonly activities: Activities
+};

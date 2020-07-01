@@ -4,15 +4,16 @@ import configurationReducer           from './configuration-reducer.ts';
 import treesReducer                   from './trees-reducer.js';
 import toastReducer                   from './toastReducer.js';
 import mouseCoordsReducer             from './mouseCoordsReducer.js';
-import targetReducer                  from './targetReducer.js';
+import targetReducer                  from './target-reducer.ts';
 import modalReducer                   from './modalReducer.js';
 import maximizedInfoPanelReducer      from './maximizedInfoPanelReducer.js';
 import paneToOpenInfoPanelReducer     from './paneToOpenInfoPanelReducer.js';
 import regionsReducer                 from './regionsReducer.js';
 
+import {RootState} from '../types.ts';
 
 
-function rootReducer(state: any = {}, action: Action) {
+function rootReducer(state: any = {}, action: Action): RootState {
     return {
         configuration        : configurationReducer        (state.configuration, action),
         trees                : treesReducer                (state.trees, action),

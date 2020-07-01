@@ -14,14 +14,14 @@ require('./ots/leaflet-heat.js');
 require('@ansur/leaflet-pulse-icon/dist/L.Icon.Pulse.css');
 require('@ansur/leaflet-pulse-icon/dist/L.Icon.Pulse.js');
 
-
+declare const window: any;
 
 window.shp=require('shpjs');
 require('./ots/leaflet.shpfile.js');
 
 
-const React = require('react');
-var      cx = require('classnames');
+import React, {Dispatch} from 'react';
+
 
 import chai from './util/chai-util.js';
 const assert = chai.assert;
@@ -43,20 +43,22 @@ import 'leaflet-draw/dist/leaflet.draw.css';
 
 import proj4 from 'proj4';
 
-import keycode from 'keycode';
 
+// @ts-expect-error
 import Wkt from 'wicket';
 
 require('../node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css');
 require('../node_modules/leaflet.markercluster/dist/leaflet.markercluster.js');
 
-import {exactlyOne, allStrictEqual} from './util/util.js';
-import {BaseLayersForLayerControl} from './baseLayers.js';
-import {DefaultIcon, TreeIcon}          from './icons.js';
+// https://stackoverflow.com/a/37680203/274677
+const {BaseLayersForLayerControl}: {BaseLayersForLayerControl: any} = require('./baseLayers.js');
+
+
+import {BasicTreeInfoWithId, Species} from './backend.d.ts';
 
 import wrapContexts from './context/contexts-wrapper.tsx';
 
-import {layerIsEmpty, numOfLayersInLayerGroup} from './leaflet-util.js';
+
 
 // const Buffer = require('buffer').Buffer;
 // const Iconv  = require('iconv').Iconv;
@@ -67,22 +69,22 @@ import {GSN, globalSet} from './globalStore.js';
 import '../node_modules/leaflet-measure/dist/leaflet-measure.en.js';
 import '../node_modules/leaflet-measure/dist/leaflet-measure.css';
 
-import {axiosAuth} from './axios-setup.js';
+
 
 import {ota_Callicrates, treeOverlays} from './tree-markers.js';
 
 import {ATHENS, DEFAULT_ZOOM} from './constants/map-constants.js';
 import {ABOMINATION_CNFG_NOT_AVAILABLE} from './constants/msg-constants.js';
 
-import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS} from './constants/modal-types.js';
+import {MDL_NOTIFICATION_NO_DISMISS} from './constants/modal-types.js';
 
 import {RGE_MODE} from './redux/constants/region-editing-mode.ts'
 
-import { connect }          from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import {clearModal
       , updateMouseCoords
       , displayModal
-      , unsetOrFetch
+
       , getRegions
       , setWktRegionUnderConstruction
       , displayModalNotification
@@ -102,11 +104,24 @@ import TreeCountStatistic from './tree-count-statistic.js';
 
 import {regionListDiff} from './region-mgmnt-map-util.js';
 
-import {getShapeType} from './leaflet-util.js';
+import {RootState} from './redux/types.ts';
 
 require('./region-mgmnt-map.css');
 
-const mapStateToProps = (state) => {
+export type Key_Name_WKT = {key: string, name: string, wkt: string};
+
+type StateProps = {
+  treesConfiguration: Species | undefined,
+  trees: BasicTreeInfoWithId[],
+  treesOrConfShouldBeFetched: boolean,
+  isRegionsBeingFetched: boolean,
+  selectedRegions: Key_Name_WKT[],
+  rgeMode: RGE_MODE,
+  wktRegionUnderConstructionExists: boolean
+};
+
+type F = (state: RootState) => StateProps;
+const mapStateToProps: F = (state) => {
   return {
     treesConfiguration: state.configuration?.species??undefined
     , trees: state.trees
@@ -118,38 +133,40 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: Dispatch<any>) => {
   const pleaseWaitWhileAppIsLoading    = <span>please wait while drawing map data &hellip; </span>;
-  const aRegionHasAlredyBeenDefined = <span>a region has already been defined! you can't define more than one</span>;
+  const aRegionHasAlredyBeenDefined: React.ReactNode = <span>a region has already been defined! you can't define more than one</span>;
   return {
-    pleaseWaitWhileAppIsLoading: (uuid)=>dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: pleaseWaitWhileAppIsLoading, uuid}))
-    , aRegionHasAlredyBeenDefined: ()=>dispatch(displayModalNotification({html: aRegionHasAlredyBeenDefined}))
-    , clearModal: (uuid)=> dispatch(clearModal(uuid))
-    , updateCoordinates                 : (latlng)   => dispatch(updateMouseCoords(latlng))
+    pleaseWaitWhileAppIsLoading: (uuid: string)=>dispatch(displayModal(MDL_NOTIFICATION_NO_DISMISS, {html: pleaseWaitWhileAppIsLoading, uuid}))
+    , aRegionHasAlredyBeenDefined: ()=>dispatch(displayModalNotification(aRegionHasAlredyBeenDefined))
+    , clearModal: (uuid: string)=> dispatch(clearModal(uuid))
+    , updateCoordinates: (latlng: string)   => dispatch(updateMouseCoords(latlng))
     , getRegions: ()=>dispatch(getRegions())
-    , setWktRegionUnderConstruction: (wkt) => dispatch(setWktRegionUnderConstruction(wkt))
+    , setWktRegionUnderConstruction: (wkt: string | null) => dispatch(setWktRegionUnderConstruction(wkt))
     , rgmgmntDeleteStart: ()=>dispatch(rgmgmntDeleteStart())
     , rgmgmntDeleteEnd: ()=>dispatch(rgmgmntDeleteEnd())
     , rgmgmntModifyStart: ()=>dispatch(rgmgmntModifyStart())
     , rgmgmntModifyEnd: ()=>dispatch(rgmgmntModifyEnd())
-    , addTrees: (self)=>dispatch(getConfigurationAndTreesAndThen(()=>addTrees(self)))
+    , addTrees: (self: RegionMgmntMap)=>dispatch(getConfigurationAndTreesAndThen(()=>addTrees(self)))
   };
 }
 
-const addTrees = (self) => {
+const connector = connect(mapStateToProps, mapDispatchToProps);
+type PropsFromRedux = ConnectedProps<typeof connector> & {geometryContext: any} // TODO: get rid of context
+
+const addTrees = (self: RegionMgmntMap) => {
   console.log(`cag - entering function addTrees`);
-  const {overlays/*, id2marker*/} = treeOverlays(self.props.treesConfiguration, self.props.trees);
+  const {overlays/*, id2marker*/}: {overlays: Record<string, any>} = treeOverlays(self.props.treesConfiguration, self.props.trees);
   console.log(`cag - obtained overlays and id2marker; proceeding to add markers`);
-//  self.id2marker = id2marker;
+
   for (const layerName in overlays) {
     const layerGroup = overlays[layerName];
     layerGroup.addTo(self.map);
     self.clickableLayers.push(layerGroup);
-    layerGroup.eachLayer ( (marker)=>{
+    layerGroup.eachLayer ( (marker: any)=>{
       marker.options.interactive = false; // https://stackoverflow.com/a/60642381/274677
     });
 
-  //  self.addClickListenersToMarkersOnLayer(layerGroup);
     self.layersControl.addOverlay(layerGroup, layerName);
   }      
 }
@@ -162,20 +179,25 @@ proj4.defs([
     'EPSG:2100',
     '+proj=tmerc +lat_0=0 +lon_0=24 +k=0.9996 +x_0=500000 +y_0=0 +ellps=GRS80 +towgs84=-199.87,74.79,246.62,0,0,0,0 +units=m +no_defs']
 ]);
-const WGS84  = 'EPSG:4326';
-const HGRS87 = 'EPSG:2100';
 
 
-export type Key_Name_WKT = {key: string, name: string, wkt: string};
 
-class RegionMgmntMap extends React.Component {
 
-  constructor(props) {
+
+class RegionMgmntMap extends React.Component<PropsFromRedux, {}> {
+
+
+  public clickableLayers: any[] = [];
+  private wkt: any = new Wkt.Wkt(); // no wicket types for Typescript
+  private regions = new Map();
+  public map: any | undefined;
+  public layersControl: any | undefined;
+  private handleResize = ()=>{ throw 'region-mgmnt-map.tsx: handleResize is not implemented yet'; };
+  private drawnItems: any | undefined;
+  private drawControl: any | undefined;
+  
+  constructor(props: PropsFromRedux) {
     super(props);
-    this.layerGroup = null;
-    this.clickableLayers = [];
-    this.wkt = new Wkt.Wkt();
-    this.regions = new Map();
     globalSet(GSN.REACT_RGM_MAP, this);
   }
 
@@ -183,24 +205,18 @@ class RegionMgmntMap extends React.Component {
     return this.props.geometryContext.screen.height - this.props.geometryContext.geometry.headerBarHeight
   }
 
-
-
-
   componentWillUnmount = () => {
     window.removeEventListener ('resize', this.handleResize);
     this.map.off('click');
     this.map.remove();
   }
 
-
-
-
-  countTreesInLayer = (layer) => {
+  countTreesInLayer = (layer: any) => {
     const rv = new TreeCountStatistic();
     this.clickableLayers.forEach( (markers) => {
-      markers.eachLayer ( (marker)=>{
+      markers.eachLayer ( (marker: any)=>{
         if (layer instanceof L.Polygon) {
-          if (layer.contains(marker.getLatLng())) {
+          if ( (layer as any).contains(marker.getLatLng())) {
             rv.increment(marker.options.kind);
           }
         }
@@ -215,7 +231,7 @@ class RegionMgmntMap extends React.Component {
   }
   
 
-  componentDidUpdate = (prevProps, prevState) => {
+  componentDidUpdate = (prevProps: StateProps, prevState: {}) => {
     console.log('component did upate');
     if ((prevProps.rgeMode !== RGE_MODE.CREATING) && (this.props.rgeMode === RGE_MODE.CREATING))
       this.addDrawControl();
@@ -223,7 +239,8 @@ class RegionMgmntMap extends React.Component {
       console.log(`XXX about to remove draw control, mode is: ${this.props.rgeMode}`);
       this.removeDrawControl();
     }
-    const {regionsAdded, regionsRemoved} = regionListDiff(prevProps.selectedRegions, this.props.selectedRegions);
+    const {regionsAdded, regionsRemoved}: {regionsAdded: Key_Name_WKT[], regionsRemoved: Key_Name_WKT[]}
+           = regionListDiff(prevProps.selectedRegions, this.props.selectedRegions);
     console.log('regions added are: ', regionsAdded);
     console.log('regions removed are: ', regionsRemoved);
     regionsAdded.forEach( (regionAdded) => {
@@ -238,7 +255,7 @@ class RegionMgmntMap extends React.Component {
     });    
   }
 
-  addRegionToMap(key, name, wkt) {
+  addRegionToMap(key: string, name: string, wkt: string) {
     assert.isOk(name);
     assert.isOk(wkt);
     assert.isOk(key);
@@ -251,7 +268,7 @@ class RegionMgmntMap extends React.Component {
     this.regions.set(key, layer);
   }
 
-  removeRegionFromMap(key, name, wkt) {
+  removeRegionFromMap(key: string, name: string, wkt: string) {
     // TODO: is there a way to make use of the name and wtc values?
     assert.isOk(name);
     assert.isOk(wkt);
@@ -268,11 +285,8 @@ class RegionMgmntMap extends React.Component {
     this.props.pleaseWaitWhileAppIsLoading(uuid);
 
     window.addEventListener    ('resize', this.handleResize);
-    this.map = L.map('map-id', {
-      center: ATHENS,
-      zoom: DEFAULT_ZOOM,
-      zoomControl: false
-    });
+    // @ts-expect-error
+    this.map = L.map('map-id', {center: ATHENS, zoom: DEFAULT_ZOOM, zoomControl: false});
 
     this.map.doubleClickZoom.disable();
 
@@ -283,18 +297,18 @@ class RegionMgmntMap extends React.Component {
     else
       addTrees(this);
 
-    this.map.on(L.Draw.Event.CREATED     , (e) => this.onDrawCreation(e));
-    this.map.on(L.Draw.Event.EDITED      , (e) => this.onDrawEdited(e));
-    this.map.on(L.Draw.Event.EDITSTART   , (e) => this.onDrawEditStart(e));
-    this.map.on(L.Draw.Event.EDITSTOP    , (e) => this.onDrawEditEnd(e));
+    this.map.on(L.Draw.Event.CREATED     , (e: any) => this.onDrawCreation(e));
+    this.map.on(L.Draw.Event.EDITED      , (e: any) => this.onDrawEdited(e));
+    this.map.on(L.Draw.Event.EDITSTART   , (e: any) => this.onDrawEditStart(e));
+    this.map.on(L.Draw.Event.EDITSTOP    , (e: any) => this.onDrawEditEnd(e));
 
 
-    this.map.on(L.Draw.Event.DELETED     , (e) => this.onDrawDeleted(e));    
-    this.map.on(L.Draw.Event.DELETESTART , (e) => this.onDrawDeleteStart(e));
-    this.map.on(L.Draw.Event.DELETESTOP  , (e) => this.onDrawDeleteEnd(e));
+    this.map.on(L.Draw.Event.DELETED     , (e: any) => this.onDrawDeleted(e));    
+    this.map.on(L.Draw.Event.DELETESTART , (e: any) => this.onDrawDeleteStart(e));
+    this.map.on(L.Draw.Event.DELETESTOP  , (e: any) => this.onDrawDeleteEnd(e));
 
     
-    this.map.on('mousemove', (e) => {
+    this.map.on('mousemove', (e: any) => {
       this.props.updateCoordinates(e.latlng);
     })
 
@@ -307,30 +321,30 @@ class RegionMgmntMap extends React.Component {
       this.props.getRegions();
   }
 
-  onDrawEditStart = (e) => {
+  onDrawEditStart = (e: any) => {
     this.props.rgmgmntModifyStart();
   }
 
-  onDrawEditEnd = (e) => {
+  onDrawEditEnd = (e: any) => {
     this.props.rgmgmntModifyEnd();
   }
   
 
-  onDrawDeleteStart = (e) => {
-    assert.strictEqual(this.props.rgeMode, RGE_MODE.CREATING, `region-mgmnt-map.jsx::onDrawDeleteStart mode was ${this.props.rgeMode}`);
+  onDrawDeleteStart = (e: any) => {
+    assert.strictEqual(this.props.rgeMode, RGE_MODE.CREATING, `region-mgmnt-map.tsx::onDrawDeleteStart mode was ${this.props.rgeMode}`);
     assert.isTrue(this.props.wktRegionUnderConstructionExists);
     this.props.rgmgmntDeleteStart();
   }
 
-  onDrawDeleted = (e) => {
-    assert.strictEqual(this.props.rgeMode, RGE_MODE.CREATING, `region-mgmnt-map.jsx::onDrawDeleteEnd mode was ${this.props.rgeMode}`);
+  onDrawDeleted = (e: any) => {
+    assert.strictEqual(this.props.rgeMode, RGE_MODE.CREATING, `region-mgmnt-map.tsx::onDrawDeleteEnd mode was ${this.props.rgeMode}`);
     assert.isTrue(this.props.wktRegionUnderConstructionExists);
     this.clearDrawnRegions();
     this.props.setWktRegionUnderConstruction(null);
   }
 
-  onDrawDeleteEnd = (e) => {
-    assert.strictEqual(this.props.rgeMode, RGE_MODE.CREATING, `region-mgmnt-map.jsx::onDrawDeleteEnd mode was ${this.props.rgeMode}`);
+  onDrawDeleteEnd = (e: any) => {
+    assert.strictEqual(this.props.rgeMode, RGE_MODE.CREATING, `region-mgmnt-map.tsx::onDrawDeleteEnd mode was ${this.props.rgeMode}`);
     this.props.rgmgmntDeleteEnd();
   }
 
@@ -345,7 +359,7 @@ class RegionMgmntMap extends React.Component {
                    , thousandsSep: '.'
                    , activeColor: '#A1EB0E'
                    , completedColor: '#DEAE09'};
-    const measureControl = new L.Control.Measure(options);
+    const measureControl = new (L.Control as any).Measure(options);
     measureControl.addTo(this.map);
   }
 
@@ -360,7 +374,7 @@ class RegionMgmntMap extends React.Component {
         polyline: false,
         circlemarker: false, // GeoJSON does not support circles
         circle: false,       // --------------------------------
-        rectangle: true,
+        rectangle: true as any,
         marker: false,
         polygon: {
           shapeOptions: {
@@ -394,7 +408,7 @@ class RegionMgmntMap extends React.Component {
 
 
   addLayerGroupsExceptPromisingLayers = () => {
-    const overlays = {};
+    const overlays: {[index: string]: any} = {};
     overlays['Καλλικράτης'] = ota_Callicrates;
     this.layersControl = L.control.layers(BaseLayersForLayerControl, overlays).addTo(this.map);
     BaseLayersForLayerControl.ESRI.addTo(this.map);
@@ -402,21 +416,21 @@ class RegionMgmntMap extends React.Component {
 
 
 
-  onDrawCreation = (e) => {
-    assert.strictEqual(this.props.rgeMode, RGE_MODE.CREATING, `region-mgmnt-map.jsx::onDrawCreation mode was ${this.props.rgeMode}`);
+  onDrawCreation = (e: any) => {
+    assert.strictEqual(this.props.rgeMode, RGE_MODE.CREATING, `region-mgmnt-map.tsx::onDrawCreation mode was ${this.props.rgeMode}`);
     if (this.props.wktRegionUnderConstructionExists) {
       this.props.aRegionHasAlredyBeenDefined();
     } else {
       const type = e.layerType,
             layer = e.layer;
-      //    this.map.addLayer(layer); // TODO: I used to have that but I don't think it's needed
+      console.debug(type);
       this.drawnItems.addLayer(layer);
       this.createOrSetNewRegionAndPopup(layer);
     }
   }
 
-  onDrawEdited = (e) => {
-    assert.strictEqual(this.props.rgeMode, RGE_MODE.CREATING, `region-mgmnt-map.jsx::onDrawCreation mode was ${this.props.rgeMode}`);
+  onDrawEdited = (e: any) => {
+    assert.strictEqual(this.props.rgeMode, RGE_MODE.CREATING, `region-mgmnt-map.tsx::onDrawCreation mode was ${this.props.rgeMode}`);
 
     console.log(e);
     const layers = e.layers;
@@ -428,10 +442,10 @@ class RegionMgmntMap extends React.Component {
       this.createOrSetNewRegionAndPopup(layers2[0]);
   }
 
-  createOrSetNewRegionAndPopup = (layer) => {
+  createOrSetNewRegionAndPopup = (layer: any) => {
     this.props.setWktRegionUnderConstruction(stringify(layer.toGeoJSON(12)));
 
-    assert.isTrue(layer instanceof L.Polygon, `region-mgmnt-map.jsx::onDrawCreation layer is not a polygon`);
+    assert.isTrue(layer instanceof L.Polygon, `region-mgmnt-map.tsx::onDrawCreation layer is not a polygon`);
 
     console.log(`area is ${L.GeometryUtil.geodesicArea(layer.getLatLngs())}`);
     const countResult = this.countTreesInLayer(layer);
@@ -458,7 +472,7 @@ class RegionMgmntMap extends React.Component {
 
 }
 
-function gsonLayerFromGeometry(name, geometry) {
+function gsonLayerFromGeometry(name: any, geometry: any) {
   const properties =  {name, popupContent:name};
   const geoJson =  { type: 'Feature', properties, geometry};
 
@@ -468,8 +482,9 @@ function gsonLayerFromGeometry(name, geometry) {
     opacity: 0.40,
     fillOpacity: 0.40
   };
-  const onEachFeature = (feature, layer) => {
+  const onEachFeature = (feature: any, layer: any) => {
     layer.on('mouseover', function () {
+      // @ts-expect-error
       this.setStyle({
         weight: 7
         , opacity: 1
@@ -477,6 +492,7 @@ function gsonLayerFromGeometry(name, geometry) {
       });
     });
     layer.on('mouseout', function () {
+      // @ts-expect-error
       this.setStyle({
         weight: 3
         , opacity: 0.40
@@ -494,8 +510,8 @@ function gsonLayerFromGeometry(name, geometry) {
     layer.bindPopup(`<h4>${feature.properties.name}</h4><p>${feature.properties.popupContent}</p>`, popupOptions);
   };
 
-  const options = {style, onEachFeature};
-  const layer = L.geoJSON(geoJson, options);
+  const options: any = {style, onEachFeature};
+  const layer: any = L.geoJSON(geoJson as any, options);
   layer.bindTooltip(
     name,
     {
@@ -507,11 +523,4 @@ function gsonLayerFromGeometry(name, geometry) {
   }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(wrapContexts(RegionMgmntMap));
-
-      const ABOMINATION_MSG = 'it is inconceivable that, at this point, the TreesConfigurationContextProvider'
-                             +' should have failed to obtain the treesConfiguration object. If this abomination should come'
-                             +' to transpire then an approach similar to that used in ref:sse-1587477558 should be adopted.'
-                             +' However, given that it is highly unlikely that this should ever come to pass, I consider'
-                             +' it an overkill to adopt such an approach pre-emptively. In constrast, the approach in'
-                             +' ref:sse-1587477558 was, in fact, necessary';
+export default connector(wrapContexts(RegionMgmntMap));

@@ -1,20 +1,39 @@
 import chai from '../../util/chai-util.js';
 const assert = chai.assert;
 
+import {Action} from '../actions/action-types.ts';
 import {ActionTypeKeys} from '../actions/action-type-keys.ts';
+
+const {CancelTokenSource} = require('axios');
+
+import {TreeInfoWithId} from '../../backend.d.ts';
 
 /* TODO: rethink the assumption that at any point in time there is single axios cancellable
  *       for every target, be it for tree data or photos
  */
 
 
-function initState(id) {
+export type TargetReducerState = {
+    id: number | null,
+    treeInfo: {original: TreeInfoWithId
+               , current: TreeInfoWithId
+              } | null,
+    photos: {num: number
+             , idx: number
+             , img: string | null | undefined
+             , t: number | null | undefined} | null,
+    axiosSource: (typeof CancelTokenSource) | null
+};
+
+function initState(id: number | null): TargetReducerState {
     return {id, treeInfo: null, photos: null, axiosSource: null};
 }
-export default (state = initState(null), action) => {
+
+type F = (state: TargetReducerState, action: Action) => TargetReducerState;
+const targetReducer: F = (state = initState(null), action) => {
     switch (action.type) {
     case ActionTypeKeys.UNSET_TARGET: {
-        return {id: null, treeInfo: null, photos: null};
+        return Object.assign({}, state, {id: null, treeInfo: null, photos: null});
     }
     case ActionTypeKeys.NEW_TARGET: {
         return initState(action.payload.targetId);
@@ -39,8 +58,8 @@ export default (state = initState(null), action) => {
                                 , axiosSource: action.payload.axiosSource});
     }
     case ActionTypeKeys.GET_FEAT_PHOTO_IN_PROGRESS: {
-        const img = (state.photos.img === undefined)?undefined:null; // mighty deep
-        const t = img;
+        const img: undefined | null = (state.photos!.img === undefined)?undefined:null;
+        const t: undefined | null = img;
         return Object.assign({}
                              , state
                              , {id: action.payload.id
@@ -57,7 +76,7 @@ export default (state = initState(null), action) => {
     }
     case ActionTypeKeys.GET_TREE_INFO_SUCCESS: {
         console.log(action.payload);
-        assert.strictEqual(state.id, action.payload.id, `targetReducer.js case ${ActionTypeKeys.GET_TREE_INFO_SUCCESS} expecting state.id=${state.id} to equal action.payload.id=${action.payload.id}`);
+        assert.strictEqual(state.id, action.payload.id, `target-reducer.ts case ${ActionTypeKeys.GET_TREE_INFO_SUCCESS} expecting state.id=${state.id} to equal action.payload.id=${action.payload.id}`);
         const original = JSON.parse(JSON.stringify(action.payload));
         const current  = JSON.parse(JSON.stringify(action.payload));
         return Object.assign({}
@@ -130,5 +149,6 @@ export default (state = initState(null), action) => {
     default:
         return state;
     }
-}
+};
 
+export default targetReducer;

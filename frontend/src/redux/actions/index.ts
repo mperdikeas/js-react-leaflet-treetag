@@ -1,7 +1,7 @@
 //import chai from '../../util/chai-util.js';
 //chai.Assertion.includeStack = true; // https://stackoverflow.com/a/13396945/274677
 
-import {Dispatch} from 'react';
+import React, {Dispatch} from 'react';
 
 import chai from '../../util/chai-util.js';
 const assert = chai.assert;
@@ -90,7 +90,7 @@ export function displayModalLogin(f: ()=> void) : ActionDisplayModalLogin {
 }
 
 
-export function displayModalNotification(html: string): ActionDisplayModalNotification {
+export function displayModalNotification(html: React.ReactNode | string): ActionDisplayModalNotification {
     return displayModal(MDL_NOTIFICATION, {html, uuid: uuidv4()});
 }
 
@@ -254,7 +254,7 @@ export function setRGEMode(mode: string): ActionSetRGEMode {
     return {type: ActionTypeKeys.SET_RGE_MODE, payload: {mode}};
 }
 
-export function setWktRegionUnderConstruction(wkt: string): ActionSetWktRegionUnderConstruction {
+export function setWktRegionUnderConstruction(wkt: string | null): ActionSetWktRegionUnderConstruction {
     return {type: ActionTypeKeys.SET_WKT_REGION_UNDER_CONSTRUCTION, payload: {wkt}};
 }
 

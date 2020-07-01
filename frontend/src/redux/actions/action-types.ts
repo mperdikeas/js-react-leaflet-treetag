@@ -1,7 +1,10 @@
-import {Dispatch} from 'react';
+import React, {Dispatch} from 'react';
 
 import {ActionTypeKeys} from './action-type-keys.ts';
-import {Coordinates, TreeInfoWithId, PartitionsForInstallation} from '../../backend.d.ts';
+import {Coordinates
+        , TreeInfoWithId
+        , PartitionsForInstallation
+        , Configuration} from '../../backend.d.ts';
 
 import {InformationPanelPane} from '../../information-panel-tree.tsx';
 
@@ -25,7 +28,7 @@ export type ActionDisplayModalLogin = {
 export type ActionDisplayModalNotification = {
     readonly type: ActionTypeKeys.DISPLAY_MODAL,
     readonly payload:  {modalType: string, // TODO: nail that
-                        modalProps: {html: string, uuid: string}
+                        modalProps: {html: React.ReactNode | string, uuid: string}
                        }
 };
 
@@ -188,7 +191,7 @@ export type ActionOverlapsGetOverlapsSuccess = {
 
 export type ActionUpdateConfiguration = {
     readonly type: ActionTypeKeys.UPDATE_CONFIGURATION,
-    readonly payload: any
+    readonly payload: Configuration
 }
 
 export type ActionUpdateTrees = {
@@ -205,7 +208,7 @@ export type ActionSetRGEMode = {
 
 export type ActionSetWktRegionUnderConstruction = {
     readonly type: ActionTypeKeys.SET_WKT_REGION_UNDER_CONSTRUCTION,
-    readonly payload: {wkt: string}
+    readonly payload: {wkt: string | null}
 }
 
 export type ActionRgmgmntDeleteStart = {

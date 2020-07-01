@@ -20,82 +20,82 @@ public class Configuration {
 
 
     public static Configuration example() {
-        final LinkedHashMap<Integer, TreeConfiguration> rv = new LinkedHashMap<>();
+        final LinkedHashMap<Integer, TreeConfiguration> species = new LinkedHashMap<>();
         {
-            rv.put(1, new TreeConfiguration(new TreeName("ελιά", "ελιές")
+            species.put(1, new TreeConfiguration(new TreeName("ελιά", "ελιές")
                                             , "ελιές"
                                             , "#A1EB0E"));
 
-            rv.put(2, new TreeConfiguration(new TreeName("ελιά κορωνέικη", "ελιές κορωνέικες")
+            species.put(2, new TreeConfiguration(new TreeName("ελιά κορωνέικη", "ελιές κορωνέικες")
                                             , "ελιές"
                                             , "#09DB0E"));
-            rv.put(3, new TreeConfiguration(new TreeName("αγριελιά", "αγριελιές")
+            species.put(3, new TreeConfiguration(new TreeName("αγριελιά", "αγριελιές")
                                             , "ελιές"
                                             , "#07CB0E"));
 
-            rv.put(10, new TreeConfiguration(new TreeName("μανταρινιά", "μανταρινιές")
+            species.put(10, new TreeConfiguration(new TreeName("μανταρινιά", "μανταρινιές")
                                              , "εσπεριδοειδή"
                                              , "#05CB0E"));
-            rv.put(11, new TreeConfiguration(new TreeName("λεμονιά", "λεμονιές")
+            species.put(11, new TreeConfiguration(new TreeName("λεμονιά", "λεμονιές")
                                              , "εσπεριδοειδή"
                                              , "#04CB0E"));
-            rv.put(12, new TreeConfiguration(new TreeName("νεραντζιά", "νεραντζιές")
+            species.put(12, new TreeConfiguration(new TreeName("νεραντζιά", "νεραντζιές")
                                              , "εσπεριδοειδή"
                                              , "#04CB0E"));
-            rv.put(13, new TreeConfiguration(new TreeName("πορτοκαλιά", "πορτοκαλιές")
+            species.put(13, new TreeConfiguration(new TreeName("πορτοκαλιά", "πορτοκαλιές")
                                              , "εσπεριδοειδή"
                                              , "#04AB2E"));
-            rv.put(14, new TreeConfiguration(new TreeName("βερυκοκιά", "βερυκοκιές")
+            species.put(14, new TreeConfiguration(new TreeName("βερυκοκιά", "βερυκοκιές")
                                              , "εσπεριδοειδή"
                                              , "#039B2E"));
 
 
-            rv.put(15, new TreeConfiguration(new TreeName("ροδακινιά", "ροδακινιές")
+            species.put(15, new TreeConfiguration(new TreeName("ροδακινιά", "ροδακινιές")
                                              , "καρποφόρα"
                                              , "#039B2E"));
-            rv.put(16, new TreeConfiguration(new TreeName("αμυγδαλιά", "αμυγδαλιές")
+            species.put(16, new TreeConfiguration(new TreeName("αμυγδαλιά", "αμυγδαλιές")
                                              , "καρποφόρα"
                                              , "#037B2E"));
-            rv.put(16, new TreeConfiguration(new TreeName("μπανάνα", "μπανανιές")
+            species.put(16, new TreeConfiguration(new TreeName("μπανάνα", "μπανανιές")
                                              , "καρποφόρα"
                                              , "#033B2E"));
-            rv.put(17, new TreeConfiguration(new TreeName("μηλιά", "μηλιές")
+            species.put(17, new TreeConfiguration(new TreeName("μηλιά", "μηλιές")
                                              , "καρποφόρα"
                                              , "#033B5E"));
-            rv.put(18, new TreeConfiguration(new TreeName("καρυδιά", "καρυδιές")
+            species.put(18, new TreeConfiguration(new TreeName("καρυδιά", "καρυδιές")
                                              , "καρποφόρα"
                                              , "#033B8E"));
-            rv.put(19, new TreeConfiguration(new TreeName("φουντουκιά", "φουντουκιές")
+            species.put(19, new TreeConfiguration(new TreeName("φουντουκιά", "φουντουκιές")
                                              , "καρποφόρα"
                                              , "#033B9E"));
 
-            rv.put(20, new TreeConfiguration(new TreeName("πεύκο", "πεύκα")
+            species.put(20, new TreeConfiguration(new TreeName("πεύκο", "πεύκα")
                                              , "κωνοφώρα"
                                              , "#03999E"));                        
-            rv.put(21, new TreeConfiguration(new TreeName("κυπαρίσσι", "κυπαρίσσια")
+            species.put(21, new TreeConfiguration(new TreeName("κυπαρίσσι", "κυπαρίσσια")
                                              , "κωνοφώρα"
                                              , "#03779E"));
-            rv.put(22, new TreeConfiguration(new TreeName("αγριοκυπάρισο", "αγριοκυπάρισο")
+            species.put(22, new TreeConfiguration(new TreeName("αγριοκυπάρισο", "αγριοκυπάρισο")
                                              , "κωνοφώρα"
                                              , "#03449E"));
-            rv.put(23, new TreeConfiguration(new TreeName("έλατο", "έλατα")
+            species.put(23, new TreeConfiguration(new TreeName("έλατο", "έλατα")
                                              , "κωνοφώρα"
                                              , "#FF449E"));
 
         
-            rv.put(24, new TreeConfiguration(new TreeName("πλάτανος", "πλατάνια")
+            species.put(24, new TreeConfiguration(new TreeName("πλάτανος", "πλατάνια")
                                              , "διακοσμητικά"
                                              , "#11FF9E"));      
-            rv.put(25, new TreeConfiguration(new TreeName("ευκάλυπτος", "ευκάλυπτοι")
+            species.put(25, new TreeConfiguration(new TreeName("ευκάλυπτος", "ευκάλυπτοι")
                                              , "διακοσμητικά"
                                              , "#11FF00"));
-            rv.put(26, new TreeConfiguration(new TreeName("φοίνικας αραβικός", "φοίνικες αραβικοί")
+            species.put(26, new TreeConfiguration(new TreeName("φοίνικας αραβικός", "φοίνικες αραβικοί")
                                              , "διακοσμητικά"
                                              , "#3344FF"));
-            rv.put(27, new TreeConfiguration(new TreeName("φοίνικας κυπριακός", "φοίνικες κυπριακοί")
+            species.put(27, new TreeConfiguration(new TreeName("φοίνικας κυπριακός", "φοίνικες κυπριακοί")
                                              , "διακοσμητικά"
                                              , "#88EEFF"));
-            rv.put(28, new TreeConfiguration(new TreeName("γιούκα", "γιούκες")
+            species.put(28, new TreeConfiguration(new TreeName("γιούκα", "γιούκες")
                                              , "διακοσμητικά"
                                              , "#00FFFF"));        
         }
@@ -118,7 +118,7 @@ public class Configuration {
             activities.put(7, "clear litter");
             activities.put(8, "address powerline proximity");
         }        
-        return new Configuration(rv, healthStatuses, activities);
+        return new Configuration(species, healthStatuses, activities);
     }
 
 

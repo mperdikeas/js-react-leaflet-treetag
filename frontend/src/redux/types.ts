@@ -1,26 +1,14 @@
-//import {CancelTokenSource} from 'axios';
-//import CancelToken from '../../node_modules/axios/lib/cancel/CancelToken.js';
-import {CancelTokenSource} from '../../node_modules/axios/index.d.ts';
-
-import {TreeInfoWithId, PartitionsForInstallation} from '../backend.d.ts';
+import {BasicTreeInfoWithId
+        , PartitionsForInstallation
+        , Configuration} from '../backend.d.ts';
 
 import {EditingRegionsReducerState} from './reducers/editing-regions-reducer.ts';
+import {TargetReducerState} from './reducers/target-reducer.ts';
 
 export type RootState = { // todo adorn with readonly
-    configuration: {
-        healthStatuses: any[]
-    },
-    target: {
-        id: number | null,
-        treeInfo: {original: TreeInfoWithId
-                   , current: TreeInfoWithId
-                  } | null,
-        photos: {num: number
-                 , idx: number
-                 , img: string
-                 , t: number} | null,
-        axiosSource: CancelTokenSource
-    },
+    configuration: Configuration | undefined
+    trees: BasicTreeInfoWithId[]
+    target: TargetReducerState,
     maximizedInfoPanel: boolean
     latlng: {
         lat: number,
@@ -28,6 +16,6 @@ export type RootState = { // todo adorn with readonly
     paneToOpenInfoPanel: string, // todo: use enum
     regions: {existing: PartitionsForInstallation
               , editing: EditingRegionsReducerState
-              , overlaps: any}
+              , overlaps: any} | null
     
 }

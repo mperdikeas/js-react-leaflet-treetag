@@ -13,9 +13,9 @@ import {InformationPanelPane} from '../../information-panel-tree.tsx';
 import {RGE_MODE}   from '../constants/region-editing-mode.ts';
 
 
-import {Key_Name_WKT} from '../../region-mgmnt-map.jsx';
+import {Key_Name_WKT} from '../../region-mgmnt-map.tsx';
 
-export function selectedRegions(state: RootState) {
+export function selectedRegions(state: RootState): Key_Name_WKT[] {
     if (isRegionsBeingFetched(state))
         return [];
 
