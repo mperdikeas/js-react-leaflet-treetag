@@ -9,6 +9,7 @@ import {ActionDisplayModalNotification} from './action-types.ts';
 
 import {displayModal
       , displayModalNotification
+      , displayModalNotificationNonDismissable
       , clearModal
       , setTreeInfoOriginal} from './index.ts';
 import {MDL_RETRY_CANCEL} from '../../constants/modal-types.js';
@@ -39,7 +40,7 @@ const displayTreeDataHasBeenUpdated = (dispatch: React.Dispatch<ActionDisplayMod
 
 const displayModalSavingTreeData = (dispatch: React.Dispatch<ActionDisplayModalNotification>, id: number, uuid: string)=>{
   const html = `αποθήκευση δεδομένων για το δένδρο #${id}`;
-  dispatch(displayModalNotification(html));
+  dispatch(displayModalNotificationNonDismissable(html, uuid));
 };
 
 export default function saveFeatData(treeInfo: TreeInfoWithId): ActionSaveFeatData {
