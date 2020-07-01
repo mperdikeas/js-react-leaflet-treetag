@@ -1,21 +1,11 @@
-const React = require('react');
-var      cx = require('classnames');
+import React, {Dispatch} from 'react';
+import { connect, ConnectedProps } from 'react-redux';
+import {Nav} from 'react-bootstrap';
+import cx from 'classnames';
+
 
 import chai from './util/chai-util.js';
 const assert = chai.assert;
-
-
-import { connect }          from 'react-redux';
-
-import {axiosAuth} from './axios-setup.js';
-
-
-import {CancelToken} from 'axios';
-
-import {Nav} from 'react-bootstrap';
-
-import L from 'leaflet';
-
 require('./css/information-panel.css');
 import TargetDataPane       from './target-data-pane.tsx';
 import TargetPhotoPane      from './target-photo-pane.jsx';
@@ -26,23 +16,20 @@ import {displayModalNotification
       , toggleMaximizeInfoPanel
       , setPaneToOpenInfoPanel
       , setTreeInfoCurrent
-      , setTreeInfoOriginal
+
       , getFeatNumPhotos
       , getFeatData
       , saveFeatData}  from './redux/actions/index.ts';
 
-
+import {RootState} from './redux/types.ts';
 
 import {INFORMATION, PHOTOS, HISTORY, ADJUST} from './constants/information-panel-panes.js';
-import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS} from './constants/modal-types.js';
 
 
 
+import {TreeInfoWithId} from './backend.d.ts';
 import wrapContexts from './context/contexts-wrapper.tsx';
 
-import {LOGGING_IN
-      , LOADING_TREE_DATA // todo: not used any more - clear junk
-      , SAVING_TREE_DATA} from './constants/information-panel-tree-server-call-types.js';
 
 import {msgTreeDataIsDirty, displayNotificationIfTargetIsDirty} from './common.jsx';
 
@@ -56,7 +43,19 @@ import {targetIsDirty
 const loading  = require('./resources/loading.gif');
 
 
-const mapStateToProps = (state) => {
+type StateProps = {
+  maximizedInfoPanel: boolean,
+  targetId: number | null,
+  targetIsDirty: boolean,
+  tab: string,
+  treeInfo: any, // TODO
+  photos: any, // TODO
+  targetInitialAjaxReadInProgress: boolean,
+  typeOfTargetInitialAjaxReadInProgress: string
+};
+
+
+const mapStateToProps: (state: RootState)=>StateProps = (state) => {
   return {
     maximizedInfoPanel: state.maximizedInfoPanel
     , targetId: state.target.id
@@ -70,76 +69,59 @@ const mapStateToProps = (state) => {
 };
 
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: Dispatch<any>) => {
   return {dispatch};
 }
 
 
 // refid: SSE-1589888176
-const mergeProps = ( stateProps, {dispatch}) => {
-  const msgTreeDataHasBeenUpdated = targetId => `τα νέα δεδομένα για το δένδρο #${targetId} αποθηκεύτηκαν`;
-  const msgSavingTreeData = targetId => `αποθήκευση δεδομένων για το δένδρο #${targetId}`;
+const mergeProps = ( stateProps: StateProps, {dispatch}: {dispatch: Dispatch<any>}) => {
+  const msgTreeDataHasBeenUpdated = (targetId: number) => `τα νέα δεδομένα για το δένδρο #${targetId} αποθηκεύτηκαν`;
+
   return {
     ...stateProps
-    , getFeatData:(id) => dispatch(getFeatData(id))
-    , saveFeatData: (treeInfo) => dispatch(saveFeatData(treeInfo))
-    , displayTreeDataHasBeenUpdated: (targetId)=>dispatch(displayModalNotification({html: msgTreeDataHasBeenUpdated(targetId)}))
+    , getFeatData:(id: number) => dispatch(getFeatData(id))
+    , saveFeatData: (treeInfo: TreeInfoWithId) => dispatch(saveFeatData(treeInfo))
+    , displayTreeDataHasBeenUpdated: (targetId: number)=>dispatch(displayModalNotification(msgTreeDataHasBeenUpdated(targetId)))
     , toggleMaximizeInfoPanel: ()=>dispatch(toggleMaximizeInfoPanel())
-    , setPaneToOpenInfoPanelAndPossiblyFetchPhoto: (pane) => {
+    , setPaneToOpenInfoPanelAndPossiblyFetchPhoto: (pane: string) => {
       dispatch(setPaneToOpenInfoPanel(pane))
       if (stateProps.photos===null) {
-        dispatch(getFeatNumPhotos(stateProps.targetId));
+        dispatch(getFeatNumPhotos(stateProps.targetId!));
       }
     }
-    , setPaneToOpenInfoPanelAndPossiblyFetchData: (pane) => {
+    , setPaneToOpenInfoPanelAndPossiblyFetchData: (pane: string) => {
       dispatch(setPaneToOpenInfoPanel(pane))
       if (stateProps.treeInfo===null) {
-        dispatch(getFeatData(stateProps.targetId));
+        dispatch(getFeatData(stateProps.targetId!));
       }
     }    
-    , displayNotificationTargetIsDirty  : ()=>dispatch(displayModalNotification({html: msgTreeDataIsDirty(stateProps.targetId)}))
-    , setTreeInfoCurrent: (treeInfo) => dispatch(setTreeInfoCurrent (treeInfo))
+    , displayNotificationTargetIsDirty  : ()=>dispatch(displayModalNotification(msgTreeDataIsDirty(stateProps.targetId)))
+    , setTreeInfoCurrent: (treeInfo: TreeInfoWithId) => dispatch(setTreeInfoCurrent (treeInfo))
   };
 }
 
-class TreeInformationPanel extends React.Component {
+const connector = connect(mapStateToProps, mapDispatchToProps, mergeProps);
 
-  constructor(props) {
+type PropsFromRedux = ConnectedProps<typeof connector> & {geometryContext: any} // TODO find way to obtain props from context or remove geometry context altogether
+
+class TreeInformationPanel extends React.Component<PropsFromRedux, never> {
+
+  constructor(props: PropsFromRedux) {
     super(props);
-    this.state = this.getInitialState();
-    this.source = CancelToken.source();
   }
 
-  shouldComponentUpdate(nextProps) {
+  shouldComponentUpdate(nextProps: PropsFromRedux) {
     return !areEqualShallow(this.props, nextProps);
     }
-
-
-  getInitialState = () => {
-    return {
-      error: null
-    };
-  }
 
   displayNotificationIfTargetIsDirty = displayNotificationIfTargetIsDirty.bind(this);
   
 
-  targetId2Marker = (targetId) => {
+  targetId2Marker = (targetId: number) => {
     return globalGet(GSN.REACT_MAP).id2marker[targetId];
   }
   
-  handleSubmit = (ev) => {
-    ev.preventDefault();
-    ev.stopPropagation();
-    this.props.saveFeatData(this.props.treeInfo);
-  }
-
-  fetchTreeDataIfNecessary = () => {
-      if (this.props.treeInfo == null)
-        this.props.getFeatData(this.props.targetId);
-  }
-
-
   onInformation = () => {
     if (!this.displayNotificationIfTargetIsDirty()) {
       this.props.setPaneToOpenInfoPanelAndPossiblyFetchData(INFORMATION);
@@ -176,10 +158,6 @@ class TreeInformationPanel extends React.Component {
     } else {
       console.log(`tab is  ${this.props.tab}, targetId is: ${this.props.targetId}`);
       const defaultClasses = {'nav-link': true};
-      const informationClasses = Object.assign({}, defaultClasses, {'active': this.props.tab===INFORMATION});
-      const photoClasses = Object.assign({}, defaultClasses, {'active': this.props.tab===PHOTOS});
-      const historyClasses = Object.assign({}, defaultClasses, {'active': this.props.tab===HISTORY});
-      const adjustClasses = Object.assign({}, defaultClasses, {'active': this.props.tab===ADJUST});      
 
       const paneToDisplay = this.paneToDisplay();
       const toggleTxt = this.props.maximizedInfoPanel?'Ελαχιστοποίηση':'Μεγιστοποίηση';
@@ -190,10 +168,7 @@ class TreeInformationPanel extends React.Component {
           info on&nbsp;
           <span style={{fontFamily: 'monospace'}}>{this.props.targetId}</span>
       </div>);
-      const tagDummy = (<div className='col-6' style={{fontSize: '130%'}}>
-          Tag #
-          <span style={{fontFamily: 'monospace'}}>198305193817</span>
-      </div>);
+
       const heightStyle = {height: `${this.getInformationPanelHeight()}px`, overflow: 'scroll'};
 
       return (
@@ -206,7 +181,7 @@ class TreeInformationPanel extends React.Component {
           </div>
 
         <Nav variant='pills' activeKey={this.props.tab} justify={true}
-            onSelect={(selectedKey) => {
+            onSelect={(selectedKey: string) => {
                      switch (selectedKey) {
                        case INFORMATION:
                          this.onInformation();
@@ -279,7 +254,7 @@ class TreeInformationPanel extends React.Component {
             </>
           );
         default:
-          assert.fail(`snafu in information-panel-tree.jsx :: unrecognized pane: [${this.props.typeOfTargetInitialAjaxReadInProgress}]`);
+          assert.fail(`snafu in information-panel-tree.tsx :: unrecognized pane: [${this.props.typeOfTargetInitialAjaxReadInProgress}]`);
           return sca_fake_return();
       } // switch
     } else {
@@ -298,7 +273,7 @@ class TreeInformationPanel extends React.Component {
           return <TargetAdjustmentPane />;
         }
         default:
-          assert.fail(`information-panel-tree.jsx :: paneToDisplay ~ unhandled case: [${this.props.tab}]`);
+          assert.fail(`information-panel-tree.tsx :: paneToDisplay ~ unhandled case: [${this.props.tab}]`);
           return null; // SCA
       }
     } // else
@@ -307,5 +282,5 @@ class TreeInformationPanel extends React.Component {
 
 
 
-export default connect(mapStateToProps, mapDispatchToProps, mergeProps)(wrapContexts(TreeInformationPanel));
+export default connector(wrapContexts(TreeInformationPanel));
 

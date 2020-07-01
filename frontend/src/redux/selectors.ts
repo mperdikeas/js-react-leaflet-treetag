@@ -20,7 +20,7 @@ export function targetIsDirty(state: RootState) {
         return false;
 }
 
-export function targetInitialAjaxReadInProgress(state: RootState) {
+export function targetInitialAjaxReadInProgress(state: RootState): boolean {
     assert.isOk(state.paneToOpenInfoPanel, 'SNAFU 1 in targetAjaxReadInProgress');
     switch (state.paneToOpenInfoPanel) {
     case INFORMATION:
@@ -33,11 +33,11 @@ export function targetInitialAjaxReadInProgress(state: RootState) {
         return v2;
     default:
         assert.fail(`SNAFU 2 in targetAjaxReadInProgress ~ unhandled case: [${state.paneToOpenInfoPanel}]`);
-        return sca_fake_return();
+        return sca_fake_return() as unknown as boolean;
     }
 }
 
-export function typeOfTargetInitialAjaxReadInProgress(state: RootState) {
+export function typeOfTargetInitialAjaxReadInProgress(state: RootState): string {
     assert.isOk(state.paneToOpenInfoPanel, 'SNAFU 1 in typeOfTargetAjaxReadInProgress');
     assert.isTrue(isNotNullOrUndefined(state.target.id), 'SNAFU 2 in typeOfTargetAjaxReadInProgress');
     switch (state.paneToOpenInfoPanel) {

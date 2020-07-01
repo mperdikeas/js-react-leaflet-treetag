@@ -2,7 +2,7 @@ import React from 'react';
 var      cx = require('classnames');
 
 import Map                                     from './map.jsx';
-import TreeInformationPanel                    from './information-panel-tree.jsx';
+import TreeInformationPanel                    from './information-panel-tree.tsx';
 import PointCoordinates                        from './point-coordinates.tsx';
 import Toolbox                                 from './toolbox.jsx';
 import UserControl                             from './user-control.jsx';

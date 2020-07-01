@@ -67,6 +67,7 @@ import {MDL_NOTIFICATION, MDL_NOTIFICATION_NO_DISMISS} from './constants/modal-t
 import { connect }          from 'react-redux';
 import {updateMouseCoords
       , displayModal
+      , displayModalNotification
       , unsetOrFetch
       , clearModal
       , getConfigurationAndTreesAndThen}  from './redux/actions/index.ts';
@@ -110,7 +111,7 @@ const mergeProps = (stateProps, {dispatch}) => {
                          , clearModal: (uuid)=> dispatch(clearModal(uuid))
                          , updateCoordinates                 : (latlng)   => dispatch(updateMouseCoords(latlng))
                          , unsetOrFetch : (targetId) => dispatch(unsetOrFetch(targetId))
-                         , displayNotificationTargetIsDirty  : ()=>dispatch(displayModal(MDL_NOTIFICATION, {html: msgTreeDataIsDirty(stateProps.targetId), uuid: uuidv4()}))
+                         , displayNotificationTargetIsDirty  : ()=>dispatch(displayModalNotification(msgTreeDataIsDirty(stateProps.targetId)))
                          , addTrees: (self)=> dispatch(getConfigurationAndTreesAndThen(()=>addTrees(self)))
                          });
 }

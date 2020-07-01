@@ -91,7 +91,7 @@ export function displayModalLogin(f: ()=> void) : ActionDisplayModalLogin {
 
 
 export function displayModalNotification(html: string): ActionDisplayModalNotification {
-    return displayModal(MDL_NOTIFICATION, {html, uuid:  uuidv4()});
+    return displayModal(MDL_NOTIFICATION, {html, uuid: uuidv4()});
 }
 
 export function displayModalNotificationNonDismissable(html: string, uuid: string): ActionDisplayModalNotification { // NB: using the same type

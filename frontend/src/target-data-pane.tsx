@@ -53,10 +53,6 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 type Props = PropsFromRedux & {}
 
 
-import wrapContexts from './context/contexts-wrapper.tsx';
-
-
-
 class TargetDataPane extends React.Component<Props, {}> {
 
   private IntegerDataField: any;
@@ -171,6 +167,6 @@ class TargetDataPane extends React.Component<Props, {}> {
 
 
 
-export default connector(wrapContexts(TargetDataPane));
+export default connector(TargetDataPane);
 
 
