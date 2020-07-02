@@ -109,33 +109,23 @@ export function partition2regions(state: RootState): {[index: string]: string} {
 }
 
 export function wktRegionUnderConstruction(state: RootState) {
-    const rv = state.regions!.editing.regionUnderCreation?.wkt ?? null;
-    console.log(`xxx - wktRegionUnderConstruction evaluated as: ${rv}`);
-    return rv;
+    return state.regions!.editing.regionUnderCreation?.wkt ?? null;
 }
 
 export function wktRegionUnderConstructionExists(state: RootState) {
-    const rv = (wktRegionUnderConstruction(state) !== null);
-    console.log(`xxx - wktRegionUnderConstructionExists evaluated as: ${rv}`);
-    return rv;
+    return (wktRegionUnderConstruction(state) !== null);
 }
 
 export function rgmgmntDuringDeletion(state: RootState) {
-    const rv = state.regions.editing.duringDeletion;
-    console.log(`xxx - rgmgmntDuringDeletion evaluated as ${rv}`);
-    return rv;
+    return state.regions.editing.duringDeletion;
 }
 
 export function rgmgmntDuringModification(state: RootState) {
-    const rv = state.regions.editing.duringModification;
-    console.log(`xxx - rgmgmntDuringModification evaluated as ${rv}`);
-    return rv;
+    return state.regions.editing.duringModification;
 }
 
 export function rgmgmntSaveEnabled(state: RootState) {
-    const rv = (wktRegionUnderConstructionExists(state) && (!rgmgmntDuringDeletion(state)) && (!rgmgmntDuringModification(state)));
-    console.log(`xxx - rgmgmntSaveEnabled evaluated as ${rv}`);
-    return rv;
+    return (wktRegionUnderConstructionExists(state) && (!rgmgmntDuringDeletion(state)) && (!rgmgmntDuringModification(state)));
 }
 
 

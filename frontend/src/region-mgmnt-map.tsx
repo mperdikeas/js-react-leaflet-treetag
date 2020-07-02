@@ -97,8 +97,7 @@ import {clearModal
 import {isRegionsBeingFetched
       , selectedRegions
       , wktRegionUnderConstructionExists
-      , rgeMode
-} from './redux/selectors/index.ts';
+      , rgeMode} from './redux/selectors/index.ts';
 
 import TreeCountStatistic from './tree-count-statistic.js';
 
@@ -229,7 +228,14 @@ class RegionMgmntMap extends React.Component<PropsFromRedux, {}> {
     assert.isOk(this.drawnItems);
     this.drawnItems.clearLayers();
   }
-  
+
+
+  drawRegions = (regions: Key_Name_WKT[]) => {
+    regions.forEach( (region) => {
+      const {key, name, wkt} = region;
+      this.addRegionToMap(key, name, wkt);
+    });
+  }
 
   componentDidUpdate = (prevProps: StateProps, prevState: {}) => {
     console.log('component did upate');
@@ -243,10 +249,7 @@ class RegionMgmntMap extends React.Component<PropsFromRedux, {}> {
            = regionListDiff(prevProps.selectedRegions, this.props.selectedRegions);
     console.log('regions added are: ', regionsAdded);
     console.log('regions removed are: ', regionsRemoved);
-    regionsAdded.forEach( (regionAdded) => {
-      const {key, name, wkt} = regionAdded;
-      this.addRegionToMap(key, name, wkt);
-    });
+    this.drawRegions(regionsAdded);
 
     regionsRemoved.forEach( (regionRemoved) => {
       const {key, name, wkt} = regionRemoved;
@@ -319,6 +322,9 @@ class RegionMgmntMap extends React.Component<PropsFromRedux, {}> {
 
     if (this.props.isRegionsBeingFetched)
       this.props.getRegions();
+
+    this.drawRegions(this.props.selectedRegions);
+
   }
 
   onDrawEditStart = (e: any) => {
