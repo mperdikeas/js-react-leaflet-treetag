@@ -1,21 +1,22 @@
 import {BasicTreeInfoWithId
-        , PartitionsForInstallation
         , Configuration} from '../backend.d.ts';
 
-import {EditingRegionsReducerState} from './reducers/editing-regions-reducer.ts';
-import {TargetReducerState} from './reducers/target-reducer.ts';
+import {ToastsReducerState}     from './reducers/toast-reducer.ts';
+import {TargetReducerState}     from './reducers/target-reducer.ts';
+import {RegionsReducerState}    from './reducers/regions-reducer.ts';
+import {Modal}                  from './reducers/modal-reducer.ts';
+
 
 export type RootState = { // todo adorn with readonly
-    configuration: Configuration | undefined
-    trees: BasicTreeInfoWithId[]
+    configuration: Configuration | undefined,
+    trees: BasicTreeInfoWithId[],
+    toasts: ToastsReducerState,
     target: TargetReducerState,
-    maximizedInfoPanel: boolean
+    modals: Modal[],
+    maximizedInfoPanel: boolean,
     latlng: {
         lat: number,
         lng: number},
     paneToOpenInfoPanel: string, // todo: use enum
-    regions: {existing: PartitionsForInstallation
-              , editing: EditingRegionsReducerState
-              , overlaps: any} | null
-    
+    regions: RegionsReducerState
 }

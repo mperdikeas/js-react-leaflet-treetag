@@ -68,7 +68,7 @@ const targetReducer: F = (state = initState(null), action) => {
                                                         , {idx: action.payload.idx, img, t})
                                 , axiosSource: action.payload.axiosSource});
     }
-    case ActionTypeKeys.GET_FEATURE_AJAX_CONCLUDED: {
+    case ActionTypeKeys.GET_FEAT_AJAX_CONCLUDED: {
         return Object.assign({}
                              , state
                              , {axiosSource: null});
@@ -123,11 +123,11 @@ const targetReducer: F = (state = initState(null), action) => {
                              , {treeInfo: Object.assign({}
                                                         , state.treeInfo
                                                         , {current: Object.assign({}
-                                                                                  , state.treeInfo.current
+                                                                                  , state.treeInfo!.current
                                                                                   , {coords: action.payload})})});
     }
     case ActionTypeKeys.REVERT_TREE_INFO: {
-        const current = JSON.parse(JSON.stringify(state.treeInfo.original));
+        const current = JSON.parse(JSON.stringify(state.treeInfo!.original));
         return Object.assign({}
                              , state
                              , {treeInfo: Object.assign({}
@@ -142,8 +142,8 @@ const targetReducer: F = (state = initState(null), action) => {
                              , {treeInfo: Object.assign({}
                                                         , state.treeInfo
                                                         , {current: Object.assign({}
-                                                                                  , state.treeInfo.current
-                                                                                  , {coords: JSON.parse(JSON.stringify(state.treeInfo.original.coords))})})});
+                                                                                  , state.treeInfo!.current
+                                                                                  , {coords: JSON.parse(JSON.stringify(state.treeInfo!.original.coords))})})});
     }
 
     default:

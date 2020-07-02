@@ -10,6 +10,7 @@ import {RootState} from '../types.ts';
 import {sca_fake_return, isNotNullOrUndefined} from '../../util/util.js';
 
 import {InformationPanelPane} from '../../information-panel-tree.tsx';
+import {PartitionsForInstallation} from '../../backend.d.ts';
 import {RGE_MODE}   from '../constants/region-editing-mode.ts';
 
 
@@ -19,8 +20,8 @@ export function selectedRegions(state: RootState): Key_Name_WKT[] {
     if (isRegionsBeingFetched(state))
         return [];
 
-    const existingRegions = state.regions.existing;
-    const selected = state.regions.editing.selected;
+    const existingRegions: PartitionsForInstallation = state.regions!.existing!;
+    const selected: string[] = state.regions!.editing.selected;
     assert.isOk(existingRegions);
     assert.isOk(selected);
 
@@ -76,39 +77,39 @@ export function selectedRegions(state: RootState): Key_Name_WKT[] {
 
 
 export function existingRegionsAsAntdTreeControlData(state: RootState) {
-    assert.isDefined(state.regions.existing);
-    return reduxRegionsToAntdData(state.regions.existing);
+    assert.isDefined(state.regions!.existing);
+    return reduxRegionsToAntdData(state.regions!.existing);
 }
 
 
 // TODO: rename that to isRegionsUninitializedOrRefreshed
 // sse-1592816552
 export function isRegionsBeingFetched(state: RootState) {
-    return (state.regions.existing===undefined);
+    return (state.regions!.existing===undefined);
 }
 
 export function rgeMode(state: RootState): RGE_MODE { // region editing mode
-    return state.regions.editing.mode;
+    return state.regions!.editing.mode;
 }
 
 // returns an array of partition names
-export function partitions(state: RootState) {
+export function partitions(state: RootState): string[] | undefined {
     if (isRegionsBeingFetched(state))
         return undefined;
     else
-        return Object.keys(state.regions.existing);
+        return Object.keys(state.regions!.existing!);
 }
 
-export function partition2regions(state: RootState) {
+export function partition2regions(state: RootState): {[index: string]: string} {
     const rv: {[index: string]:any} = {};
-    for (const [key, value] of Object.entries(state.regions.existing)) {
+    for (const [key, value] of Object.entries(state.regions!.existing!)) {
         rv[key] = Object.keys(value);
     }
     return rv;
 }
 
 export function wktRegionUnderConstruction(state: RootState) {
-    return state.regions.editing.regionUnderCreation?.wkt ?? null;
+    return state.regions!.editing.regionUnderCreation?.wkt ?? null;
 }
 
 export function wktRegionUnderConstructionExists(state: RootState) {

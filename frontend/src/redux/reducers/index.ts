@@ -2,13 +2,13 @@ import {Action} from '../actions/action-types.ts';
 
 import configurationReducer           from './configuration-reducer.ts';
 import treesReducer                   from './trees-reducer.js';
-import toastReducer                   from './toastReducer.js';
+import toastReducer                   from './toast-reducer.ts';
 import mouseCoordsReducer             from './mouseCoordsReducer.js';
 import targetReducer                  from './target-reducer.ts';
-import modalReducer                   from './modalReducer.js';
+import modalReducer                   from './modal-reducer.ts';
 import maximizedInfoPanelReducer      from './maximizedInfoPanelReducer.js';
 import paneToOpenInfoPanelReducer     from './paneToOpenInfoPanelReducer.js';
-import regionsReducer                 from './regionsReducer.js';
+import regionsReducer                 from './regions-reducer.ts';
 
 import {RootState} from '../types.ts';
 

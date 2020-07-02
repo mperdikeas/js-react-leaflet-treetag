@@ -30,7 +30,7 @@ import {TreeInfoWithId} from './backend.d.ts';
 
 const mapStateToProps = (state: RootState) => {
   return {
-    healthStatuses: state.configuration.healthStatuses
+    healthStatuses: state.configuration!.healthStatuses
     , targetIsDirty: targetIsDirty(state)
     , targetId: state.target.id
     , treeInfo: state.target.treeInfo!.current

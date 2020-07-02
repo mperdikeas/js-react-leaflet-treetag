@@ -1,11 +1,16 @@
-const assert = require('chai').assert;
+import chai from '../../util/chai-util.js'
+const assert = chai.assert;
 
-const React = require('react');
-
+import {Action}         from '../actions/action-types.ts';
 import {ActionTypeKeys} from '../actions/action-type-keys.ts';
 
+export type Modal = {
+    readonly modalType: any, // TODO
+    readonly modalProps: any
+};
 
-export default (modals = [], action) => {
+
+export default (modals: Modal[] = [], action: Action): Modal[] => {
     switch (action.type) {
     case ActionTypeKeys.DISPLAY_MODAL: {
         const newModal = {modalType: action.payload.modalType, modalProps: action.payload.modalProps};
@@ -17,16 +22,17 @@ export default (modals = [], action) => {
         const uuid = action.payload;
         console.log(`looking for [${uuid}] among ${modals.length} modals`);
         let j = 0;
-        let idxs = [];
+
         if (modals.length>0) {
-            const modals2 = [];
+            const modals2: Modal[] = [];
             modals.forEach( (modal) => {
                 assert.isDefined(modal.modalProps.uuid);
                 assert.isNotNull(modal.modalProps.uuid);
                 if (modal.modalProps.uuid !== uuid)
                     modals2.push(Object.assign({}, modal));
                 else {
-                    const modalToClose = modal;
+                    const modalToClose: Modal = modal;
+                    console.debug('This is the modal that get\'s closed:', modalToClose);
                     j ++;
                     if (j>1) {
                         console.warn(`Mighty weird: modal with UUID [${uuid}] encountered ${j} times so far!`);
