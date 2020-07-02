@@ -54,7 +54,7 @@ export default function createRegion(region: string, wkt: string, partition: str
                  notifyRegionHasBeenCreated(dispatch, region, partition);
                  dispatch(getRegions(true));
                  globalGet(GSN.REACT_RGM_MAP).clearDrawnRegions();
-                 dispatch(setWktRegionUnderConstruction(wkt));
+                 dispatch(setWktRegionUnderConstruction(null));
                }
              }).catch( (err: any) => {
                dispatch(clearModal(uuid));

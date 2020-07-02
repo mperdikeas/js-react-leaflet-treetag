@@ -273,7 +273,7 @@ class RegionMgmntMap extends React.Component<PropsFromRedux, {}> {
     assert.isOk(name);
     assert.isOk(wkt);
     assert.isOk(key);
-    if (false)
+    if (true)
       console.log(`region with key: '${key}', name: '${name}' and WKT: '${wkt}' is to be removed`);
     assert.isTrue(this.regions.has(key));
     this.regions.get(key).removeFrom(this.map);
