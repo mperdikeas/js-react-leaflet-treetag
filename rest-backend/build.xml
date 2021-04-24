@@ -8,7 +8,7 @@
         service-oriented WAR exposing a REST interface
     </description>
 
-    <import file="/home/mperdikeas/archetype-java-ant-ivy/build-system-machinery/build-common-war.xml"/>
+    <import file="../../archetype-java-ant-ivy/build-system-machinery/build-common-war.xml"/>
 
 </project>
 

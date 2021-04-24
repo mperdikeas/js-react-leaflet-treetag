@@ -31,6 +31,7 @@
         <dependency org="org.springframework"       name="spring-beans"         rev="4.3.5.RELEASE" conf="compile-time->master"/>
         <dependency org="org.freemarker"            name="freemarker"           rev="2.3.23"        conf="compile-time->master"/>
         <dependency org="io.jsonwebtoken"        name="jjwt-api"            rev="0.10.7"        conf="compile-time->master"/>
+        <dependency org="com.sun.activation" name="javax.activation" rev="1.2.0" conf="compile-time->master"/>
         <!-- run-time dependencies                                              -->
         <!-- we need the below during runtime, along with their transitive deps -->
         <dependency org="com.google.code.gson"      name="gson"                rev="2.8.0"         conf="run-time->default"/>

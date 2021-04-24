@@ -4,10 +4,12 @@
          default="build"
          name="common">
 
+    <property name="enable-ibiblio" value="true"/>
+
     <description>
         domain-agnostic Java utilities
     </description>
 
-    <import file="/home/mperdikeas/archetype-java-ant-ivy/build-system-machinery/build-common-jar.xml"/> 
+    <import file="../../archetype-java-ant-ivy/build-system-machinery/build-common-jar.xml"/> 
 
 </project>
