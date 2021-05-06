@@ -42,7 +42,8 @@ public class DBFacade implements IDBFacade {
     
     public DBFacade() {
         this.users = new LinkedHashMap<String, UserInfo>();
-        users.put("admin", new UserInfo("pass", "mperdikeas@gmail.com"));
+        users.put("admin"     , new UserInfo("pass"       , "mperdikeas@gmail.com"));
+        users.put("m.bampouri", new UserInfo("aegean81949!", "icsdm519015@icsd.aegean.gr"));
         this.trees = new LinkedHashMap<>();
         this.tree2photos = new LinkedHashMap<>();
         this.r = new Random(0);
